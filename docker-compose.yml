@@ -9,4 +9,4 @@ services:
         - 5000:5000
     image: express-api:API
     container_name: express-api
-    command: npm start      
+    command: npm start
