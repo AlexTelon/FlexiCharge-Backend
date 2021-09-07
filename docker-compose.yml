@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  backend-app:
+    build: ./backend-app
+    image: backend_app
+    ports: 
+      - 8080:8080
+    env_file: .env
+    depends_on: 
+      - postgres_db
+  postgres_db:
+    build: ./postgre-db
+    image: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports: 
+      - 5432:5432
+    volumes: 
+      - postgres_db-data:/var/lib/postgresql/data
+volumes: 
+  postgres_db-data:
