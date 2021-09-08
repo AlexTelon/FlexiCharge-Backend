@@ -4,6 +4,6 @@
 - cd /FlexiCharge-Backend
 - docker-compose up
 
-# Add modules
+# Add packages
 - cd /FlexiCharge-Backend/backend-app
-- yarn add "package name"
+- npm install "package name"
