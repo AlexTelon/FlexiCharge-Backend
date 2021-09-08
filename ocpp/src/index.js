@@ -17,6 +17,8 @@ wss.on('connection', function connection(ws, req) {
         var requestType = request[2]
         
         console.log("Incoming request call: " + requestType)
+
+        ws.send(JSON.stringify('[3,"call-id",{"status":"Accepted","currentTime":"2019-03-17T05:36:37.760Z","interval":60}]'))
     });
     
 });
