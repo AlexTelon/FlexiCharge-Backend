@@ -5,6 +5,8 @@ services:
     image: backend_app
     ports: 
       - 8080:8080
+    volumes:
+      - ./backend-app/src:/backend-app/src
     depends_on: 
       - postgres_db
   postgres_db:
