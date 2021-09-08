@@ -9,14 +9,14 @@ wss.on('connection', function connection(ws, req) {
     let originArray = origin.split("/")
     let chargerSerial = originArray[originArray.length - 1]
 
-    console.log(ws)
-    console.log(req)
-    console.log(origin)
-    console.log(chargerSerial)
+    console.log("Incoming connection from charger with ID: " + chargerSerial)
 
     ws.on('message', function incoming(message) {
         //console.log('received: %s', message);
         var request = JSON.parse(message)
-        console.log(request)
+        var requestType = request[2]
+        
+        console.log("Incoming request call: " + requestType)
     });
+    
 });
