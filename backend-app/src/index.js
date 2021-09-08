@@ -1,12 +1,15 @@
-const express = require('express')
+const awilix = require('awilix')
 
-const PORT = process.env.PORT || 8080
+const container = awilix.createContainer()
 
-const app = express()
-app.get('/', (req, res) => {
-    res.send('Helloo')
+container.register({
+    dataAccessLayerDatabase: awilix.asFunction(require('./data-access-layer/data-access-database')),
+    businessLogicDatabase: awilix.asFunction(require('./business-logic-layer/business-logic-database')),
+    databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')),
+
+    app: awilix.asFunction(require('./presentation-layer/app'))
 })
 
-app.listen(PORT, () => {
-    console.log(`Backend app is running on port ${PORT}`)
-})
+const app = container.resolve("app")
+
+app.listen(8080)
