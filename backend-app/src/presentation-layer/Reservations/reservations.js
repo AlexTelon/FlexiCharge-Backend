@@ -2,7 +2,15 @@ var express = require('express')
 var router = express.Router()
 
 router.get('/', function (req, res) {
-    res.send('Reservations')
+    res.send('Get all reservations')
+})
+
+router.get('/:userId', function(req, res){
+    res.send('Get specific reservation')
+})
+
+router.get('/:chargerId', function(req, res){
+    res.send('Get specific reservation')
 })
 
 router.post('/', function(req, res){
@@ -13,10 +21,6 @@ router.delete('/:id', function(req,res){
     res.send('delete specific reservation')
 })
 
-
-router.get('/:id', function(req, res){
-    res.send('Get specific reservation')
-})
 
 router.post('/')
 

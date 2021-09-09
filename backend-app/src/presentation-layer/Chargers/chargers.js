@@ -9,9 +9,8 @@ router.get('/:id', function (req, res) {
     res.send(req.params.id)
 })
 
-//Don´t quite understand this one below, but it is for returning all of the available chargers, ignore it for now
-router.get('/', function(req, res){ 
-    res.send('return all available chargers');
+router.get('/available', function(req, res){ 
+    res.senda('return all available chargers');
 })
 
 router.post('/', function(req, res){
