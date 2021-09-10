@@ -26,15 +26,11 @@ class CognitoService {
             SecretHash: this.generateHash(username),
             UserAttributes: userAttributes
         }
-        console.log(params);
 
         try {
-            const data = await this.cognitoIdentity.signUp(params).promise();
-            console.log(data);
+            await this.cognitoIdentity.signUp(params).promise();
             return true;
-
         } catch (error) {
-            console.log(error);
             return false;
         }
     }
