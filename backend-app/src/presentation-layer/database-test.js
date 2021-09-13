@@ -21,29 +21,54 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     coordinates: [39.807222, -76.984722]
                 };
                 const charger = {
-                    chargerID: '3',
-                    location: point,
-                    chargePointID: '1337',
-                    status: '200'
+                    chargerID: 1,
+                    location: [57.777725, 14.163085],
+                    chargePointID: 1,
+                    status: 1
                 }
 
-                databaseInterfaceCharger.createCharger(charger, function(errors, success) {
+                databaseInterfaceCharger.addCharger(charger.chargerID, charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
-                    console.log(success)
+                    console.log(chargerAdded)
+                    response.redirect("/")
 
-                    const reservation = {
-                        reservationID: 4,
-                        userID: 3,
-                        chargerID: 4,
-                        start: '5467',
-                        end: '201'
-                    }
-                    databaseInterfaceReservations.createReservations(reservation, function(errors, success) {
-                        console.log(errors)
-                        console.log(success)
-                        response.redirect("/")
-                    })
+                    // databaseInterfaceCharger.getChargers(function(errors, chargers) {
+                    //     console.log(errors)
+                    //     console.log(chargers)
+                    //     response.redirect("/")
+                    // })
+
+                    // databaseInterfaceCharger.getCharger(charger.chargerID, function(errors, charger) {
+                    //     console.log(errors)
+                    //     console.log(charger)
+                    //     response.redirect("/")
+                    // })
+
+                    // databaseInterfaceCharger.getAvailableChargers(function(errors, chargers) {
+                    //     console.log(errors)
+                    //     console.log(chargers)
+                    //     response.redirect("/")
+                    // })
+
+                    // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                    //     console.log(errors)
+                    //     console.log(chargers)
+                    //     response.redirect("/")
+                    // })
+
+                    // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, chargers) {
+                    //     console.log(errors)
+                    //     console.log(chargers)
+                    //     response.redirect("/")
+                    // })
+
                 })
+
+                // databaseInterfaceCharger.getChargers(function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
+                // })
 
                 break;
             case 'reservation':
