@@ -1,9 +1,12 @@
-const { Sequelize , DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
     dialect: "postgres"
-  });
+});
+
+
+sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
 try {
     sequelize.authenticate();
@@ -21,7 +24,7 @@ const Chargers = sequelize.define('Chargers', {
         allowNull: false
     },
     location: {
-        type: DataTypes.STRING,
+        type: DataTypes.GEOMETRY('POINT'),
         unique: true,
         allowNull: false
     },
@@ -33,7 +36,7 @@ const Chargers = sequelize.define('Chargers', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
-},{
+}, {
     timestamps: false
 });
 
@@ -53,15 +56,11 @@ const Reservations = sequelize.define('Reservations', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    chargerID: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     userID: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
-},{
+}, {
     timestamps: false
 });
 
@@ -84,10 +83,6 @@ const Transactions = sequelize.define('Transactions', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    chargerID: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     timestamp: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -100,14 +95,19 @@ const Transactions = sequelize.define('Transactions', {
         type: DataTypes.INTEGER,
         allowNull: false
     }
-},{
+}, {
     timestamps: false
 });
 
+Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
+Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
+
+Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
+Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
+
 sequelize.sync({ force: true });
 
-module.exports = function ({}) {
-    const exports = {Chargers, Transactions, Reservations}
+module.exports = function({}) {
+    const exports = { Chargers, Transactions, Reservations }
     return exports
 }
-

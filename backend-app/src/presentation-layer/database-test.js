@@ -13,39 +13,56 @@ module.exports = function({ businessLogicDatabase }) {
 
     router.get("/check", function(request, response) {
 
-        switch ('transaction') {
+        switch ('charger') {
             case 'charger':
+
+                const point = {
+                    type: 'Point',
+                    coordinates: [39.807222, -76.984722]
+                };
                 const charger = {
                     chargerID: '3',
-                    location: 'x:15562e56e4265y:6276537637736z:738768368387',
-                    chargePointID:'1337',
-                    status:'200'
+                    location: point,
+                    chargePointID: '1337',
+                    status: '200'
                 }
 
-                businessLogicDatabase.createCharger(charger,function(errors, success) {
+                businessLogicDatabase.createCharger(charger, function(errors, success) {
                     console.log(errors)
                     console.log(success)
-                    response.redirect("/")
+
+                    const reservation = {
+                        reservationID: 4,
+                        userID: 3,
+                        chargerID: 4,
+                        start: '5467',
+                        end: '201'
+                    }
+                    businessLogicDatabase.createReservations(reservation, function(errors, success) {
+                        console.log(errors)
+                        console.log(success)
+                        response.redirect("/")
+                    })
                 })
-                
+
                 break;
             case 'reservation':
                 const reservation = {
                     reservationID: 3,
                     userID: 3,
-                    chargerID: '5',
-                    start:'5467',
-                    end:'201'
+                    chargerID: 3,
+                    start: '5467',
+                    end: '201'
                 }
-                businessLogicDatabase.createReservations(reservation,function(errors, success) {
+                businessLogicDatabase.createReservations(reservation, function(errors, success) {
                     console.log(errors)
                     console.log(success)
                     response.redirect("/")
                 })
-            
+
                 break;
             case 'transaction':
-                
+
                 const transaction = {
                     transactionID: 1,
                     userID: 1,
@@ -56,14 +73,14 @@ module.exports = function({ businessLogicDatabase }) {
                     paymentID: 44
                 }
 
-                businessLogicDatabase.createTransaction(transaction,function(errors, success) {
+                businessLogicDatabase.createTransaction(transaction, function(errors, success) {
                     console.log(errors)
                     console.log(success)
                     response.redirect("/")
                 })
-            
-            break;
-        
+
+                break;
+
             default:
                 break;
         }
