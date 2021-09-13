@@ -3,7 +3,7 @@
  */
 const express = require('express')
 
-module.exports = function({ businessLogicDatabase }) {
+module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservations, databaseInterfaceTransactions }) {
 
     const router = express.Router()
 
@@ -27,7 +27,7 @@ module.exports = function({ businessLogicDatabase }) {
                     status: '200'
                 }
 
-                businessLogicDatabase.createCharger(charger, function(errors, success) {
+                databaseInterfaceCharger.createCharger(charger, function(errors, success) {
                     console.log(errors)
                     console.log(success)
 
@@ -38,7 +38,7 @@ module.exports = function({ businessLogicDatabase }) {
                         start: '5467',
                         end: '201'
                     }
-                    businessLogicDatabase.createReservations(reservation, function(errors, success) {
+                    databaseInterfaceReservations.createReservations(reservation, function(errors, success) {
                         console.log(errors)
                         console.log(success)
                         response.redirect("/")
@@ -54,7 +54,7 @@ module.exports = function({ businessLogicDatabase }) {
                     start: '5467',
                     end: '201'
                 }
-                businessLogicDatabase.createReservations(reservation, function(errors, success) {
+                databaseInterfaceReservations.createReservations(reservation, function(errors, success) {
                     console.log(errors)
                     console.log(success)
                     response.redirect("/")
@@ -73,7 +73,7 @@ module.exports = function({ businessLogicDatabase }) {
                     paymentID: 44
                 }
 
-                businessLogicDatabase.createTransaction(transaction, function(errors, success) {
+                databaseInterfaceTransactions.createTransaction(transaction, function(errors, success) {
                     console.log(errors)
                     console.log(success)
                     response.redirect("/")

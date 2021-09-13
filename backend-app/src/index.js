@@ -3,11 +3,20 @@ const awilix = require('awilix')
 const container = awilix.createContainer()
 
 container.register({
-    dataAccessLayerDatabase: awilix.asFunction(require('./data-access-layer/charger-repository')),
-    businessLogicDatabase: awilix.asFunction(require('./business-logic-layer/business-logic-database')),
-    databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')),
+
+    //data access layers
+    dataAccessLayerCharger: awilix.asFunction(require('./data-access-layer/charger-repository')),
+    dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
+    dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
+
+    //business logic layers
+    databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
+    databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
+    databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
 
+    //presentation layers
+    databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')), //Remove before production
     app: awilix.asFunction(require('./presentation-layer/app'))
 })
 
