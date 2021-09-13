@@ -6,9 +6,9 @@ const chargers = require('./Chargers/chargers')
 const transactions = require('./Transactions/transactions')
 const reservations = require('./Reservations/reservations')
 const auth = require('./Auth/auth.js')
+const protected = require('./Auth/protected.js')
 
 module.exports = function ({ databaseTestPresentation }) {
-
 
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
@@ -21,6 +21,7 @@ module.exports = function ({ databaseTestPresentation }) {
     app.use('/transactions', transactions)
     app.use('/reservations', reservations)
     app.use('/auth', auth)
+    app.use('/protected', protected)
 
     app.use('/database', databaseTestPresentation)
 

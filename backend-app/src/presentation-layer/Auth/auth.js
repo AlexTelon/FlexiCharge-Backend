@@ -10,7 +10,6 @@ router.get('/', (request, response) => {
 
 router.post('/sign-up', function (req, res) {
 
-    console.log(req.body);
     const { username, password, email, name, family_name } = req.body;
     const cognito = new CognitoService();
 
@@ -21,21 +20,38 @@ router.post('/sign-up', function (req, res) {
 
     cognito.signUpUser(username, password, userAttributes)
         .then(result => {
-            if (result) {
-                console.log(result);
+            if (result === true) {
                 res.status(200).end()
             } else {
-                console.log(result);
-                res.status(500).end()
+                res.json({ result }).end()
             }
         });
 })
 
-router.get('/sign-in', function (req, res) {
-    res.send('sign-in')
+router.post('/sign-in', function (req, res) {
+
+    const cognito = new CognitoService();
+
+    const { username, password } = req.body;
+
+    cognito.signInUser(username, password)
+        .then(result => {
+            res.json(result).end()
+        })
 })
-router.get('/verify', function (req, res) {
-    res.send('verify')
+
+router.post('/verify', function (req, res) {
+    const { username, code } = req.body;
+    const cognito = new CognitoService();
+
+    cognito.verifyAccount(username, code)
+        .then(result => {
+            if (result === true) {
+                res.status(200).json(result).end()
+            } else {
+                res.status(400).json(result).end()
+            }
+        })
 })
 
 module.exports = router
