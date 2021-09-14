@@ -1,11 +1,19 @@
 const express = require('express')
 
-module.exports = function ({ businessLogicDatabase }) {
+module.exports = function ({ databaseInterfaceReservations }) {
 
     const router = express.Router()
 
     router.get('/', function (req, res) {
-        res.send('Get all reservations')
+        const id = req.params.id
+        databaseInterfaceReservations.getReservation(id,
+            function(error,reservation){
+               if(error){
+                  res.status(500).json(error)
+               }else{
+                 res.status(200).json(reservation)
+               }
+        })
     })
 
     router.get('/:userId', function (req, res) {

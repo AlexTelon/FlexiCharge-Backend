@@ -1,13 +1,13 @@
 var express = require('express')
 
 
-module.exports = function ({ businessLogicDatabase }) {
+module.exports = function ({ dataAccessLayerCharger }) {
 
     const router = express.Router()
 
     router.get('/', function (req, res) {
         
-        businessLogicDatabase.getChargers(function (error, chargers) {
+        dataAccessLayerCharger.getChargers(function (error, chargers) {
             if (errorCodes.length > 0) {
                 response.status(500).json(error)
             } else {
@@ -18,7 +18,7 @@ module.exports = function ({ businessLogicDatabase }) {
 
     router.get('/:id', function (req, res) {
         const id = request.params.id
-        businessLogicDatabase.getCharger(id, function (errors, charger) {
+        dataAccessLayerCharger.getCharger(id, function (errors, charger) {
             if (charger) {
                 response.status(200).json(charger)
             } else {
@@ -28,7 +28,7 @@ module.exports = function ({ businessLogicDatabase }) {
     })
 
     router.get('/available', function(req, res){ 
-        businessLogicDatabase.getAvailableChargers(status, function (errors, charger) {
+        dataAccessLayerCharger.getAvailableChargers(status, function (errors, charger) {
             if (status == 1) {
                 response.status(200).json(chargers)
             } else {
@@ -44,7 +44,7 @@ module.exports = function ({ businessLogicDatabase }) {
             chargerPointID: request.body.chargerPointId,
             status: 0
         }
-        businessLogicDatabase.addCharger(charger, function (errorCodes) {
+        dataAccessLayerCharger.addCharger(charger, function (errorCodes) {
             if (errorCodes.length == 0) {
                 response.status(201).json(charger)
             } else {
@@ -60,7 +60,7 @@ module.exports = function ({ businessLogicDatabase }) {
 
     router.delete('/:id', function(req, res){
         const id = request.params.id
-        businessLogicDatabase.removeCharger(id, function (errors) {
+        dataAccessLayerCharger.removeCharger(id, function (errors) {
             if (errors.length == 0) {
                 response.status(204).end()
             } else {
@@ -76,7 +76,7 @@ module.exports = function ({ businessLogicDatabase }) {
             chargerPointID: request.body.chargerPointId,
             newStatus: request.body.status
         }
-        businessLogicDatabase.updateChargerStatus(charger, function (errors) {
+        dataAccessLayerCharger.updateChargerStatus(charger, function (errors) {
             if (!charger) {
                 response.status(404).end()
             } else {

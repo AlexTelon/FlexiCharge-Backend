@@ -1,11 +1,19 @@
 var express = require('express')
 
-module.exports = function ({ businessLogicDatabase }) {
+module.exports = function ({ databaseInterfaceTransactions }) {
 
     const router = express.Router()
 
     router.get('/', function (req, res) {
-        res.send('Transactions')
+        const id = req.params.id
+        databaseInterfaceTransactions.getTransaction(id,
+            function(error, transaction){
+                if(errorTransaction.length > 0){
+                    res.status(500).json(error)
+                }else{
+                    res.status(200).json(transaction)
+                }
+            })
     })
 
     router.post('/', function (req, res) {
