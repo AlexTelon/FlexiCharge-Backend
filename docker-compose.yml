@@ -7,3 +7,10 @@ services:
       - 8080:8080
     volumes:
       - ./backend-app/src:/backend-app/src
+  ocpp-server:
+    build: ./ocpp
+    image: ocpp
+    ports:
+      - 1337:1337
+    volumes:
+      - ./ocpp/src:/ocpp/src
