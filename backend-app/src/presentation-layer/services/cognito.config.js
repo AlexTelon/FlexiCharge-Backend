@@ -26,16 +26,46 @@ class CognitoService {
             SecretHash: this.generateHash(username),
             UserAttributes: userAttributes
         }
-        console.log(params);
-
         try {
             const data = await this.cognitoIdentity.signUp(params).promise();
-            console.log(data);
-            return true;
+            return true
+        } catch (error) {
+            return error
+        }
+    }
+
+    async verifyAccount(username, code) {
+        const params = {
+            ClientId: this.clientId,
+            ConfirmationCode: code,
+            SecretHash: this.generateHash(username),
+            Username: username,
+        };
+
+        try {
+            const data = await this.cognitoIdentity.confirmSignUp(params).promise();
+            return true
+        } catch (error) {
+            return error
+        }
+    }
+
+    async signInUser(username, password) {
+        const params = {
+            AuthFlow: 'USER_PASSWORD_AUTH',
+            ClientId: this.clientId,
+            AuthParameters: {
+                'USERNAME': username,
+                'PASSWORD': password,
+                'SECRET_HASH': this.generateHash(username)
+            }
+        }
+        try {
+            const data = await this.cognitoIdentity.initiateAuth(params).promise()
+            return data
 
         } catch (error) {
-            console.log(error);
-            return false;
+            return error
         }
     }
 

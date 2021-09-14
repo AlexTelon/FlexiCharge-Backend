@@ -1,41 +1,53 @@
-var express = require('express')
-var router = express.Router()
-const bodyParser = require('body-parser')
+// var express = require('express')
+// var router = express.Router()
+// const bodyParser = require('body-parser')
 
-const CognitoService = require('../services/cognito.config')
+// const CognitoService = require('./Auth/cognito.config')
 
-router.get('/', (request, response) => {
-    response.send('AuthZzzzZZzzzzz')
-})
+// router.post('/sign-up', function (req, res) {
 
-router.post('/sign-up', function (req, res) {
+//     const { username, password, email, name, family_name } = req.body;
+//     const cognito = new CognitoService();
 
-    console.log(req.body);
-    const { username, password, email, name, family_name } = req.body;
-    const cognito = new CognitoService();
+//     let userAttributes = [];
+//     userAttributes.push({ Name: 'email', Value: email });
+//     userAttributes.push({ Name: 'name', Value: name });
+//     userAttributes.push({ Name: 'family_name', Value: family_name });
 
-    let userAttributes = [];
-    userAttributes.push({ Name: 'email', Value: email });
-    userAttributes.push({ Name: 'name', Value: name });
-    userAttributes.push({ Name: 'family_name', Value: family_name });
+//     cognito.signUpUser(username, password, userAttributes)
+//         .then(result => {
+//             if (result === true) {
+//                 res.status(200).end()
+//             } else {
+//                 res.json({ result }).end()
+//             }
+//         });
+// })
 
-    cognito.signUpUser(username, password, userAttributes)
-        .then(result => {
-            if (result) {
-                console.log(result);
-                res.status(200).end()
-            } else {
-                console.log(result);
-                res.status(500).end()
-            }
-        });
-})
+// router.post('/sign-in', function (req, res) {
 
-router.get('/sign-in', function (req, res) {
-    res.send('sign-in')
-})
-router.get('/verify', function (req, res) {
-    res.send('verify')
-})
+//     const cognito = new CognitoService();
 
-module.exports = router
+//     const { username, password } = req.body;
+
+//     cognito.signInUser(username, password)
+//         .then(result => {
+//             res.json(result).end()
+//         })
+// })
+
+// router.post('/verify', function (req, res) {
+//     const { username, code } = req.body;
+//     const cognito = new CognitoService();
+
+//     cognito.verifyAccount(username, code)
+//         .then(result => {
+//             if (result === true) {
+//                 res.status(200).json(result).end()
+//             } else {
+//                 res.status(400).json(result).end()
+//             }
+//         })
+// })
+
+// module.exports = router
