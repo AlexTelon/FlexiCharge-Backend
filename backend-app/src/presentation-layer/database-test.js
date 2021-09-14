@@ -27,10 +27,13 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     status: 1
                 }
 
+                
+
                 databaseInterfaceCharger.addCharger(charger.chargerID, charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
                     response.redirect("/")
+                })
 
                     // databaseInterfaceCharger.getChargers(function(errors, chargers) {
                     //     console.log(errors)
@@ -62,7 +65,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     //     response.redirect("/")
                     // })
 
-                })
+                // })
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
                 //     console.log(errors)
@@ -73,17 +76,42 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 break;
             case 'reservation':
                 const reservation = {
-                    reservationID: 3,
-                    userID: 3,
-                    chargerID: 3,
-                    start: '5467',
-                    end: '201'
+                    reservationID: 1,
+                    userID: 1,
+                    chargerID: 1,
+                    start: 1,
+                    end: 4
                 }
-                databaseInterfaceReservations.createReservations(reservation, function(errors, success) {
-                    console.log(errors)
-                    console.log(success)
-                    response.redirect("/")
-                })
+
+                // databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation){
+                //     console.log(errors)
+                //     console.log(chargerReservation)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation){
+                //     console.log(errors)
+                //     console.log(userReservation)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
+                //     console.log(errors)
+                //     console.log(reservation)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceReservations.addReservation(reservation.reservationID, reservation.chargerID, reservation.userID, reservation.start, reservation.end, function(errors, reservation){
+                //     console.log(errors)
+                //     console.log(reservation)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceReservations.getReservation(reservation.reservationID, function(errors, reservation){
+                //     console.log(errors)
+                //     console.log(reservation)
+                //     response.redirect("/")
+                // })
 
                 break;
             case 'transaction':
