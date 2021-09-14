@@ -73,7 +73,6 @@ module.exports = function ({ databaseInterfaceCharger }) {
 
     router.put('/:id', function(request,response){
         //authMiddleware.verifyToken(request, respone);
-
         const chargerId = request.params.id
         const newLocation = request.body.location
         const chargerPointID = request.body.chargerPointId
