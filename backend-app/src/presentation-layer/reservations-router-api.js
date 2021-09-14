@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = function ({ businessLogicDatabase }) {
+module.exports = function ({ databaseInterfaceReservations }) {
 
     const router = express.Router()
 
