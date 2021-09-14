@@ -5,12 +5,12 @@ router.get('/', function (req, res) {
     res.send('Get all reservations')
 })
 
-router.get('/:userId', function(req, res){
-    res.send('Get specific reservation')
+router.get('/user/:userId', function(req, res){
+    res.send('Get specific reservation for a user')
 })
 
-router.get('/:chargerId', function(req, res){
-    res.send('Get specific reservation')
+router.get('/charger/:chargerId', function(req, res){
+    res.send('Get specific reservation for a charger')
 })
 
 router.post('/', function(req, res){
