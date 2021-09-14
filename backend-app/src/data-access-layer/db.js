@@ -107,6 +107,42 @@ Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 
 sequelize.sync({ force: true });
 
+const chargerOneLocation = {
+    type: 'Point',
+    coordinates: [57.777725, 14.163085]
+};
+const chargerTwoLocation = {
+    type: 'Point',
+    coordinates: [57.777714, 14.163010]
+};
+
+Chargers.create({
+    location: chargerOneLocation,
+    chargePointID: 1,
+    status: 1
+});
+Chargers.create({
+    location: chargerTwoLocation,
+    chargePointID: 1,
+    status: 0
+});
+
+Transactions.create({
+    chargerID: 1,
+    meterStart: 1631521252,
+    meterStop: 1631522000,
+    paymentID: 1,
+    userID: 1,
+    timestamp: 1631522252
+});
+
+Reservations.create({
+    chargerID: 1,
+    userID: 1,
+    start: 164966755,
+    end: 164968555
+});
+
 module.exports = function({}) {
     const exports = { Chargers, Transactions, Reservations }
     return exports
