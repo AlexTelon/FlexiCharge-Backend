@@ -35,7 +35,7 @@ module.exports = function({ databaseInterfaceCharger}) {
   - getChargers() 
   - getAvailableChargers()
 
-```
+
 ## Database Interface Errorcodes and explanation
 - internalError: General internal error
 - databaseError: Error communicating with the database
