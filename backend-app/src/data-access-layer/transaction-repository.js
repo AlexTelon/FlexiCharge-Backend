@@ -39,10 +39,10 @@ module.exports = function({ databaseInit }) {
         }
 
         databaseInit.Transactions.create(transaction)
-            .then(a => callback([], true))
+            .then(transaction => callback([], transaction.transactionID))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], false)
+                callback(["internalError"], [])
             })
     }
     exports.updateTransactionPayment = function(transactionID, paymentID){
@@ -53,10 +53,10 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         })
-        .then(a => callback([], true))
+        .then(transaction => callback([], transaction))
         .catch(e => {
             console.log(e)
-            callback(['internalError'], false)
+            callback(['internalError'], [])
         })
 
 
@@ -69,13 +69,13 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         })
-        .then(a => callback([], true))
+        .then(transaction => callback([], transaction))
         .catch(e => {
             console.log(e)
-            callback(['internalError'], false)
+            callback(['internalError'], [])
         })
 
     }
-    
+
     return exports
 }
