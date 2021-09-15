@@ -11,7 +11,6 @@ module.exports = function({ dataAccessLayerCharger }) {
                 callback([], chargers)
             }
         })
-
     }
 
     exports.getCharger = function(chargerID, callback) {
@@ -34,6 +33,7 @@ module.exports = function({ dataAccessLayerCharger }) {
         })
     }
 
+    //TODO: Change return value to be newly created chargerId
     exports.addCharger = function(chargerId, chargePointId, location, callback) {
         dataAccessLayerCharger.addCharger(chargerId, chargePointId, location, function(errorCodes, chargerAdded) { //ChargerAdded = bool
             if (errorCodes.length > 0) {
@@ -54,6 +54,7 @@ module.exports = function({ dataAccessLayerCharger }) {
         })
     }
 
+    //TODO: Change return value to be newly updated charger
     exports.updateChargerStatus = function(chargerId, status, callback) {
         dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(errorCodes, chargerUpdated) { //chargerUpdated = bool
             if (errorCodes.length > 0) {
