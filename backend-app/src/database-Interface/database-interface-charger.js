@@ -6,7 +6,7 @@ module.exports = function({ dataAccessLayerCharger }) {
     exports.getChargers = function(callback) {
         dataAccessLayerCharger.getChargers(function(errorCodes, chargers) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], chargers)
             }
@@ -16,7 +16,7 @@ module.exports = function({ dataAccessLayerCharger }) {
     exports.getCharger = function(chargerID, callback) {
         dataAccessLayerCharger.getCharger(chargerID, function(errorCodes, charger) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], charger)
             }
@@ -26,7 +26,7 @@ module.exports = function({ dataAccessLayerCharger }) {
     exports.getAvailableChargers = function(callback) {
         dataAccessLayerCharger.getAvailableChargers(function(errorCodes, chargers) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], chargers)
             }

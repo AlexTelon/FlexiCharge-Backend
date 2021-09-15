@@ -7,7 +7,7 @@ module.exports = function({ databaseInit }) {
     exports.createTransaction = function(transaction, callback) {
 
         databaseInit.Transactions.create(transaction)
-            .then(a => callback([], transaction.transactionID))
+            .then(transaction => callback([], transaction.transactionID))
             .catch(e => {
                 if (e) {
                     console.log(e)
