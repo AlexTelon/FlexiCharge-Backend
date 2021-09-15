@@ -9,7 +9,7 @@ module.exports = function({ databaseInit }) {
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(["internalError"], [])
             })
     }
 
@@ -18,7 +18,7 @@ module.exports = function({ databaseInit }) {
         .then(chargerReservation => callback([], chargerReservation))
         .catch(e=> {
             console.log(e)
-            callback(["internallError"], [])
+            callback(["internalError"], [])
         })
     }
 
@@ -44,7 +44,7 @@ module.exports = function({ databaseInit }) {
         .catch(e => {
             if (e) {
                 console.log(e)
-                callback("Can not create reservation", false)
+                callback("couldNotCreateReservation", false)
             } else {
                 console.log(e)
                 callback(e, null)
