@@ -1,5 +1,3 @@
-const { Client } = require('pg')
-
 module.exports = function({ databaseInit }) {
 
     const exports = {}
@@ -9,7 +7,7 @@ module.exports = function({ databaseInit }) {
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
-                callback(["internallError", []])
+                callback(e, [])
             })
     }
 
@@ -18,7 +16,7 @@ module.exports = function({ databaseInit }) {
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(e, [])
             })
     }
 
@@ -27,7 +25,7 @@ module.exports = function({ databaseInit }) {
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(e, [])
             })
     }
 
@@ -44,9 +42,9 @@ module.exports = function({ databaseInit }) {
 
         databaseInit.Chargers.create(charger)
             .then(charger => callback([], charger.chargerID))
-            .catch(error => {
-                console.log(error)
-                callback(["internalError"], false)
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
             })
     }
 
@@ -62,7 +60,7 @@ module.exports = function({ databaseInit }) {
             })
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], false)
+                callback(e, false)
             })
     }
 
@@ -77,7 +75,7 @@ module.exports = function({ databaseInit }) {
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
-                callback(['internalError'], [])
+                callback(e, [])
             })
     }
 
