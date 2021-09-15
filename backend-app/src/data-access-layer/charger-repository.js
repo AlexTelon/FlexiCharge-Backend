@@ -31,10 +31,9 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function(chargerId, chargePointId, location, callback) {
+    exports.addCharger = function(chargePointId, location, callback) {
 
         const charger = {
-            chargerID: chargerId,
             location: point = {
                 type: 'Point',
                 coordinates: location
@@ -44,9 +43,9 @@ module.exports = function({ databaseInit }) {
         }
 
         databaseInit.Chargers.create(charger)
-            .then(a => callback([], true))
-            .catch(e => {
-                console.log(e)
+            .then(charger => callback([], charger.chargerID))
+            .catch(error => {
+                console.log(error)
                 callback(["internalError"], false)
             })
     }
@@ -75,10 +74,10 @@ module.exports = function({ databaseInit }) {
                 returning: true,
                 raw: true
             })
-            .then(a => callback([], true))
+            .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
-                callback(['internalError'], false)
+                callback(['internalError'], [])
             })
     }
 

@@ -6,18 +6,17 @@ module.exports = function({ dataAccessLayerCharger }) {
     exports.getChargers = function(callback) {
         dataAccessLayerCharger.getChargers(function(errorCodes, chargers) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], chargers)
             }
         })
-
     }
 
     exports.getCharger = function(chargerID, callback) {
         dataAccessLayerCharger.getCharger(chargerID, function(errorCodes, charger) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], charger)
             }
@@ -27,19 +26,20 @@ module.exports = function({ dataAccessLayerCharger }) {
     exports.getAvailableChargers = function(callback) {
         dataAccessLayerCharger.getAvailableChargers(function(errorCodes, chargers) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, null)
+                callback(errorCodes, [])
             } else {
                 callback([], chargers)
             }
         })
     }
 
-    exports.addCharger = function(chargerId, chargePointId, location, callback) {
-        dataAccessLayerCharger.addCharger(chargerId, chargePointId, location, function(errorCodes, chargerAdded) { //ChargerAdded = bool
+
+    exports.addCharger = function(chargePointId, location, callback) {
+        dataAccessLayerCharger.addCharger(chargePointId, location, function(errorCodes, chargerId) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, chargerAdded)
+                callback(errorCodes, [])
             } else {
-                callback([], chargerAdded)
+                callback([], chargerId)
             }
         })
     }
@@ -54,12 +54,13 @@ module.exports = function({ dataAccessLayerCharger }) {
         })
     }
 
+
     exports.updateChargerStatus = function(chargerId, status, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(errorCodes, chargerUpdated) { //chargerUpdated = bool
+        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(errorCodes, charger) {
             if (errorCodes.length > 0) {
-                callback(errorCodes, chargerUpdated)
+                callback(errorCodes, [])
             } else {
-                callback([], chargerUpdated)
+                callback([], charger)
             }
         })
     }
