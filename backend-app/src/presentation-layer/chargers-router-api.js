@@ -29,13 +29,13 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.get('/available', function(request, response){ 
+    router.get('chargers/available', function(request, response){ 
         //authMiddleware.verifyToken(request, respone);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (chargers) {
                 response.status(200).json(chargers)
             } else {
-                response.status(404).end(errors)
+                response.status(404).json(errors)
             }
         })
     })
