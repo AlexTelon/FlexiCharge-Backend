@@ -8,7 +8,7 @@ module.exports = function ({ databaseInterfaceReservations }) {
         const id = req.params.id
         databaseInterfaceReservations.getReservation(id,
             function(error,reservation){
-               if(error){
+               if(error.length > 0){
                   res.status(500).json(error)
                }else{
                  res.status(200).json(reservation)

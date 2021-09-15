@@ -21,10 +21,10 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, respone);
         const id = request.params.id
         databaseInterfaceCharger.getCharger(id, function (errors, charger) {
-            if (charger) {
-                response.status(200).json(charger)
+            if (errors.lenth > 0) {
+                response.status(400).json({errors:errors})
             } else {
-                response.status(404).end(errors)
+                response.status(200).end(charger)
             }
         })
     })
