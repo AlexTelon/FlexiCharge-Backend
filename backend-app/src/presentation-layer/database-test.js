@@ -27,7 +27,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     status: 1
                 }
 
-                
+
 
                 databaseInterfaceCharger.addCharger(charger.chargerID, charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
@@ -35,35 +35,35 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     response.redirect("/")
                 })
 
-                    // databaseInterfaceCharger.getChargers(function(errors, chargers) {
-                    //     console.log(errors)
-                    //     console.log(chargers)
-                    //     response.redirect("/")
-                    // })
+                // databaseInterfaceCharger.getChargers(function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
+                // })
 
-                    // databaseInterfaceCharger.getCharger(charger.chargerID, function(errors, charger) {
-                    //     console.log(errors)
-                    //     console.log(charger)
-                    //     response.redirect("/")
-                    // })
+                // databaseInterfaceCharger.getCharger(charger.chargerID, function(errors, charger) {
+                //     console.log(errors)
+                //     console.log(charger)
+                //     response.redirect("/")
+                // })
 
-                    // databaseInterfaceCharger.getAvailableChargers(function(errors, chargers) {
-                    //     console.log(errors)
-                    //     console.log(chargers)
-                    //     response.redirect("/")
-                    // })
+                // databaseInterfaceCharger.getAvailableChargers(function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
+                // })
 
-                    // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                    //     console.log(errors)
-                    //     console.log(chargers)
-                    //     response.redirect("/")
-                    // })
+                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
+                // })
 
-                    // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, chargers) {
-                    //     console.log(errors)
-                    //     console.log(chargers)
-                    //     response.redirect("/")
-                    // })
+                // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
+                // })
 
                 // })
 

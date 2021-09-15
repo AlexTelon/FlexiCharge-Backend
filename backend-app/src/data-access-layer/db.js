@@ -30,6 +30,7 @@ const Chargers = sequelize.define('Chargers', {
     },
     chargePointID: {
         type: DataTypes.INTEGER,
+        unique: true,
         allowNull: false
     },
     status: {
@@ -49,7 +50,6 @@ const Reservations = sequelize.define('Reservations', {
     },
     start: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false
     },
     end: {
