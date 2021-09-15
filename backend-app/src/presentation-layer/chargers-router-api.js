@@ -24,7 +24,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(404).end(errors)
+                response.status(200).end(charger)
             }
         })
     })
