@@ -1,6 +1,4 @@
 const awilix = require('awilix')
-const ocpp = require('./xOCPP/server_ocpp')
-
 const container = awilix.createContainer()
 
 container.register({
@@ -20,14 +18,14 @@ container.register({
     databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')), //Remove before production
     
     //ocpp
-    //ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
+    ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
 
-    
     app: awilix.asFunction(require('./presentation-layer/app'))
 })
 
-//const app = container.resolve("app")
+const app = container.resolve("app")
+const ocpp = container.resolve("ocpp")
 
 ocpp.startServer()
 
-//app.listen(8080)
+app.listen(8080)
