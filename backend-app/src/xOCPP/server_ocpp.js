@@ -3,16 +3,27 @@ const WebSocket = require('ws')
 
 
 
-let connectedChargers = []
+const connectedChargers = []
 
 module.exports = function({}) {
 
     exports.startServer = function() {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
+
+        function validateCharger(chargerId){
+            if(chargerId.length == 6){
+                if(chargerId.match(/^[0-9]+$/) != null){
+                    return true
+                }else{
+                    return false
+                }
+            }else{
+                return false
+            }
+        }
     
         wss.on('connection', function connection(ws, req) {
-            
             // saving websocket with serial number
             let origin = req.url
             let originArray = origin.split("/")
@@ -23,9 +34,12 @@ module.exports = function({}) {
             })
 
             console.log("Incoming connection from charger with ID: " + chargerSerial)
-            
             console.log("Number of connected chargers: " + connectedChargers.length)
-    
+            
+            if(!validateCharger(chargerSerial)){
+                ws.close()
+            }
+
             ws.on('message', function incoming(message) {
                 var request = JSON.parse(message)
                 var requestType = request[2]
@@ -36,7 +50,7 @@ module.exports = function({}) {
             })
 
             ws.on('close', function disconnection(){
-                connectedChargers = connectedChargers.splice(chargerSerial, 1)
+                connectedChargers.splice(ws)
                 console.log("Disconnected connection from charger with ID: " + chargerSerial)
                 console.log("Number of connected chargers:" + connectedChargers.length)
             })
