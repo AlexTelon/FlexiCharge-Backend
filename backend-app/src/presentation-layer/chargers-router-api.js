@@ -24,7 +24,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(200).end(charger)
+                response.status(404).end(errors)
             }
         })
     })
@@ -32,10 +32,10 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.get('/chargers/available', function(request, response){ 
         //authMiddleware.verifyToken(request, respone);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
-            if (errors.length == 0) {
-                response.status(200).end(chargers)
+            if (errors.length > 0) {
+                response.status(404).end(errors)
             } else {
-                response.status(404).json(errors)
+                response.status(200).json(chargers)
             }
         })
     })
@@ -75,15 +75,11 @@ module.exports = function ({ databaseInterfaceCharger }) {
         const chargerId = request.params.id
         const newStatus = request.body.status
     
-        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, chargerUpdated) {
-            if (errors) {
-                response.status(404).end()
+        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
+            if (errors.length == 0) {
+                response.status(204).json(charger)
             } else {
-                if (errors.length == 0) {
-                    response.status(204).json(chargerUpdated)
-                } else {
-                    response.status(400).json(errors)
-                }
+                response.status(400).json(errors)
             }
         })
     })
