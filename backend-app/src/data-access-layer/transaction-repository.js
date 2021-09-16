@@ -30,12 +30,13 @@ module.exports = function({ databaseInit }) {
                 callback(["internalError"], [])
             })
     }
-    exports.addTransaction = function(userID, chargerID, MeterStartValue){
+    exports.addTransaction = function(userID, chargerID, MeterStartValue, timestamp, callback){
 
         const transaction = {
             userID: userID,
             chargerID: chargerID,
-            meterStop: MeterStartValue
+            meterStart: MeterStartValue,
+            timestamp: timestamp
         }
 
         databaseInit.Transactions.create(transaction)
@@ -45,7 +46,7 @@ module.exports = function({ databaseInit }) {
                 callback(["internalError"], [])
             })
     }
-    exports.updateTransactionPayment = function(transactionID, paymentID){
+    exports.updateTransactionPayment = function(transactionID, paymentID, callback){
         databaseInit.Transactions.update({
             paymentID: paymentID
         }, {
@@ -53,7 +54,7 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         })
-        .then(transaction => callback([], transaction))
+        .then(transaction => callback([], transaction[1]))
         .catch(e => {
             console.log(e)
             callback(['internalError'], [])
@@ -63,13 +64,13 @@ module.exports = function({ databaseInit }) {
     }
     exports.updateTransactionMeter = function(transactionID, meterValue, callback){
         databaseInit.Transactions.update({
-            meterValue: meterValue
+            meterStop: meterValue
         }, {
             where: { transactionID: transactionID },
             returning: true,
             raw: true
         })
-        .then(transaction => callback([], transaction))
+        .then(transaction => callback([], transaction[1]))
         .catch(e => {
             console.log(e)
             callback(['internalError'], [])
