@@ -32,10 +32,10 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.get('chargers/available', function(request, response){ 
         //authMiddleware.verifyToken(request, respone);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
-            if (errors.length == 0) {
-                response.status(200).end(chargers)
+            if (errors.length > 0) {
+                response.status(404).end(errors)
             } else {
-                response.status(404).json(errors)
+                response.status(200).json(chargers)
             }
         })
     })
