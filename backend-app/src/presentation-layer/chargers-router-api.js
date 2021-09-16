@@ -24,12 +24,12 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(404).end(errors)
+                response.status(200).end(charger)
             }
         })
     })
 
-    router.get('chargers/available', function(request, response){ 
+    router.get('/chargers/available', function(request, response){ 
         //authMiddleware.verifyToken(request, respone);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
@@ -75,9 +75,9 @@ module.exports = function ({ databaseInterfaceCharger }) {
         const chargerId = request.params.id
         const newStatus = request.body.status
     
-        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
+        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, chargerUpdated) {
             if (errors.length == 0) {
-                response.status(204).json(charger)
+                response.status(204).json(chargerUpdated)
             } else {
                 response.status(400).json(errors)
             }
