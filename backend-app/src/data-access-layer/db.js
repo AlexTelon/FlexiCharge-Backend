@@ -101,7 +101,8 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync({ force: true }).then(function(){
+sequelize.sync({ force: true }).then(function() {
+
     const chargerOneLocation = {
         type: 'Point',
         coordinates: [57.777725, 14.163085]
@@ -134,6 +135,7 @@ sequelize.sync({ force: true }).then(function(){
         start: 164966755,
         end: 164968555
     });
+
 });
 
 module.exports = function({}) {
