@@ -29,11 +29,25 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
 
 
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+
+                    databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                        console.log(errors)
+                        console.log(chargers)
+                        response.redirect("/")
+                    })
+
+                })
+
+            
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
                 //     console.log(chargerAdded)
                 //     response.redirect("/")
                 // })
+
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
                 //     console.log(errors)
@@ -53,11 +67,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
                 // })
 
-                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                //     console.log(errors)
-                //     console.log(chargers)
-                //     response.redirect("/")
-                // })
+
 
                 // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, updatedCharger) {
                 //     console.log(errors)
