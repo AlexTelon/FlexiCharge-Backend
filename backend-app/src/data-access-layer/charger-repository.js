@@ -53,9 +53,13 @@ module.exports = function({ databaseInit }) {
                 where: { chargerID: chargerId },
                 raw: true
             })
-            .then(_ => {
+            .then(numberDeletedOfChargers => {
 
-                callback([], true)
+                if (numberDeletedOfChargers == 0) {
+                    callback([], false)
+                } else {
+                    callback([], true)
+                }
 
             })
             .catch(e => {

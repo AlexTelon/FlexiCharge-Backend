@@ -23,7 +23,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
                 })
             } else {
                 if (charger == null) {
-                    callback([], ['dbChargerNotExists'])
+                    callback([], [])
                 } else {
                     callback([], charger)
                 }

@@ -21,7 +21,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     coordinates: [39.807222, -76.984722]
                 };
                 const charger = {
-                    chargerID: 4,
+                    chargerID: 44,
                     location: [57.777725, 14.163087],
                     chargePointID: 4,
                     status: 4
@@ -29,11 +29,19 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
 
 
-                // databaseInterfaceCharger.addCharger(charger.chargerID, charger.chargePointID, charger.location, function(errors, chargerAdded) {
-                //     console.log(errors)
-                //     console.log(chargerAdded)
-                //     response.redirect("/")
-                // })
+
+
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+
+                    databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                        console.log(errors)
+                        console.log(chargers)
+                        response.redirect("/")
+                    })
+
+                })
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
                 //     console.log(errors)
@@ -53,11 +61,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
                 // })
 
-                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                //     console.log(errors)
-                //     console.log(chargers)
-                //     response.redirect("/")
-                // })
+
 
                 // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, chargers) {
                 //     console.log(errors)

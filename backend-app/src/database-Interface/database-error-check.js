@@ -33,40 +33,40 @@ module.exports = function({}) {
 
         switch (error.constructor) {
             case UniqueConstraintError:
-                callback(['dbConstraintError'])
+                callback(['dbUniqueConstraintError'])
                 break;
             case AccessDeniedError:
-                callback(['dbAccessDeniedError'])
+                callback(['dbError'])
                 break;
             case ConnectionAcquireTimeoutError:
-                callback(['dbConnectionAcquireTimeoutError'])
+                callback(['dbError'])
                 break;
             case ConnectionRefusedError:
-                callback(['dbConnectionRefusedError'])
+                callback(['dbError'])
                 break;
             case ConnectionTimedOutError:
-                callback(['dbConnectionTimedOutError'])
+                callback(['dbError'])
                 break;
             case HostNotFoundError:
-                callback(['dbHostNotFoundError'])
+                callback(['dbError'])
                 break;
             case HostNotReachableError:
-                callback(['dbHostNotReachableError'])
+                callback(['dbError'])
                 break;
             case InvalidConnectionError:
-                callback(['dbInvalidConnectionError'])
+                callback(['dbError'])
                 break;
             case ExclusionConstraintError:
-                callback(['dbExclusionConstraintError'])
+                callback(['dbError'])
                 break;
             case ForeignKeyConstraintError:
                 callback(['dbForeignKeyConstraintError'])
                 break;
             case UnknownConstraintError:
-                callback(['dbUnknownConstraintError'])
+                callback(['dbError'])
                 break;
             default:
-                callback(['dbInternalError'])
+                callback(['dbError'])
                 break;
         }
     }
