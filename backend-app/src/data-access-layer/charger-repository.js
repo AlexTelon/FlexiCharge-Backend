@@ -74,7 +74,7 @@ module.exports = function({ databaseInit }) {
                 returning: true,
                 raw: true
             })
-            .then(charger => callback([], charger[1]))
+            .then(charger => callback([], charger[1][0]))
             .catch(e => {
                 console.log(e)
                 callback(['internalError'], [])
