@@ -16,7 +16,6 @@ container.register({
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
 
     //presentation layers
-    databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')), //Remove before production
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),
     reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
