@@ -21,21 +21,38 @@ module.exports = function () {
                 if (result === true) {
                     res.status(200).end()
                 } else {
-                    res.status(400).json({ message: result.message, code: result.code, time: result.time, statusCode: result.statusCode }).end()
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
                 }
             });
+    })
+
+    router.post('/admin/sign-in', function (req, res) {
+        const cognito = new CognitoService();
+
+        const { username, password } = req.body;
+
+        cognito.signInAdmin(username, password)
+            .then(result => {
+                if (result.statusCode === undefined) {
+                    res.status(200).json(result).end()
+                } else if (result.statusCode === 403) {
+                    res.status(403).json(result).end()
+                } else {
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                }
+            })
+
     })
 
     router.post('/sign-in', function (req, res) {
 
         const cognito = new CognitoService();
-
         const { username, password } = req.body;
 
         cognito.signInUser(username, password)
             .then(result => {
                 if (result.statusCode == 400) {
-                    res.status(400).json({ message: result.message, code: result.code, time: result.time, statusCode: result.statusCode }).end()
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
                 } else if (result.statusCode == undefined) {
                     res.status(200).json(result).end()
                 } else {
@@ -53,7 +70,7 @@ module.exports = function () {
                 if (result === true) {
                     res.status(200).end()
                 } else {
-                    res.status(400).json({ message: result.message, code: result.code, time: result.time, statusCode: result.statusCode }).end()
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
                 }
             })
     })

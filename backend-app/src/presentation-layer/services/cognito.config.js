@@ -6,6 +6,12 @@ const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware();
 
+const authError = {
+    message: 'The user is not authorized for this content.',
+    code: 'UserNotAuthorizedException',
+    statusCode: '403'
+}
+
 class CognitoService {
 
     config = {
@@ -48,6 +54,43 @@ class CognitoService {
             const data = await this.cognitoIdentity.confirmSignUp(params).promise();
             return true
         } catch (error) {
+            return error
+        }
+    }
+
+    async signInAdmin(username, password) {
+        const params = {
+            AuthFlow: 'USER_PASSWORD_AUTH',
+            ClientId: this.clientId,
+            AuthParameters: {
+                'USERNAME': username,
+                'PASSWORD': password,
+                'SECRET_HASH': this.generateHash(username)
+            }
+        }
+        try {
+
+            const tokens = await this.cognitoIdentity.initiateAuth(params).promise();
+            const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
+
+            if (userdata['cognito:groups'] === undefined) {
+                return authError
+            } else if (userdata['cognito:groups'].includes('Admin')) {
+                const data = {
+                    accessToken: tokens.AuthenticationResult.AccessToken,
+                    email: userdata.email,
+                    username: userdata['cognito:username'],
+                    name: userdata.name,
+                    family_name: userdata.family_name,
+                    user_id: userdata.sub
+                }
+                return data
+            } else {
+                return authError
+            }
+
+        } catch (error) {
+            console.log(error);
             return error
         }
     }
