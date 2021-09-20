@@ -30,7 +30,7 @@ const Chargers = sequelize.define('Chargers', {
     },
     chargePointID: {
         type: DataTypes.INTEGER,
-        unique: true,
+        unique: false,
         allowNull: false
     },
     status: {
@@ -77,11 +77,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     meterStop: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    meterStop: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -89,7 +85,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     userID: {
         type: DataTypes.INTEGER,

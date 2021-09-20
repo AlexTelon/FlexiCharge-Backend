@@ -12,8 +12,8 @@ module.exports = function({ dataAccessLayerTransaction }) {
         })
     }
 
-    exports.getTransactionForUser = function(userID, callback) {
-        dataAccessLayerTransaction.getTransactionForUser(userID, function(errorCodes, userTransaction) {
+    exports.getTransactionsForUser = function(userID, callback) {
+        dataAccessLayerTransaction.getTransactionsForUser(userID, function(errorCodes, userTransaction) {
             if (errorCodes.length > 0) {
                 callback(errorCodes, [])
             } else {
@@ -22,8 +22,8 @@ module.exports = function({ dataAccessLayerTransaction }) {
         })
     }
 
-    exports.getTransactionForCharger = function(chargerID, callback) {
-        dataAccessLayerTransaction.getTransactionForCharger(chargerID, function(errorCodes, chargerTransaction) {
+    exports.getTransactionsForCharger = function(chargerID, callback) {
+        dataAccessLayerTransaction.getTransactionsForCharger(chargerID, function(errorCodes, chargerTransaction) {
             if (errorCodes.length > 0) {
                 callback(errorCodes, [])
             } else {
@@ -33,7 +33,8 @@ module.exports = function({ dataAccessLayerTransaction }) {
     }
 
     exports.addTransaction = function(userID, chargerID, MeterStartValue, callback) {
-        dataAccessLayerTransaction.addTransaction(transactionID, userID, chargerID, MeterStartValue, function(errorCodes, transactionId) { //addTransaction = bool
+        timestamp = (Date.now() / 1000 | 0)
+        dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(errorCodes, transactionId) {
             if (errorCodes.length > 0) {
                 callback(errorCodes, [])
             } else {
@@ -43,21 +44,21 @@ module.exports = function({ dataAccessLayerTransaction }) {
     }
 
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
-        dataAccessLayerTransaction.updateTransactionPayment(transactionID, paymentID, function(errorCodes, uppdateTransaction) { //uppdateTransaction = bool
+        dataAccessLayerTransaction.updateTransactionPayment(transactionID, paymentID, function(errorCodes, updatedTransaction) {
             if (errorCodes.length > 0) {
                 callback(errorCodes, [])
             } else {
-                callback([], uppdateTransaction)
+                callback([], updatedTransaction)
             }
         })
     }
 
     exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
-        dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(errorCodes, updateTransactionMeter) { //updateTransactionMeter = bool
+        dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(errorCodes, updatedTransaction) {
             if (errorCodes.length > 0) {
                 callback(errorCodes, [])
             } else {
-                callback([], updateTransactionMeter)
+                callback([], updatedTransaction)
             }
         })
     }

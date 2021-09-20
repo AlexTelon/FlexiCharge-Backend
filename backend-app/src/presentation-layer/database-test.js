@@ -11,7 +11,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
         next()
     })
 
-    router.get("/check", function(request, response) {
+    router.get("/check", async function(request, response) {
 
         switch ('charger') {
             case 'charger':
@@ -21,13 +21,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     coordinates: [39.807222, -76.984722]
                 };
                 const charger = {
-                    chargerID: 44,
-                    location: [57.777725, 14.163087],
-                    chargePointID: 4,
-                    status: 4
+                    chargerID: 1,
+                    location: [57.777726, 14.163085],
+                    chargePointID: 1,
+                    status: 2
                 }
-
-
 
 
 
@@ -42,6 +40,14 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     })
 
                 })
+
+            
+                // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                //     console.log(errors)
+                //     console.log(chargerAdded)
+                //     response.redirect("/")
+                // })
+
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
                 //     console.log(errors)
@@ -63,9 +69,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
 
 
-                // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, chargers) {
+                // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, updatedCharger) {
                 //     console.log(errors)
-                //     console.log(chargers)
+                //     console.log(updatedCharger)
                 //     response.redirect("/")
                 // })
 
@@ -82,7 +88,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 const reservation = {
                     reservationID: 1,
                     userID: 1,
-                    chargerID: 1,
+                    chargerID: 2,
                     start: 1,
                     end: 4
                 }
@@ -105,9 +111,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
                 // })
 
-                // databaseInterfaceReservations.addReservation(reservation.reservationID, reservation.chargerID, reservation.userID, reservation.start, reservation.end, function(errors, reservation){
+                // databaseInterfaceReservations.addReservation(reservation.chargerID, reservation.userID, reservation.start, reservation.end, function(errors, reservationId){
                 //     console.log(errors)
-                //     console.log(reservation)
+                //     console.log(reservationId)
                 //     response.redirect("/")
                 // })
 
@@ -123,18 +129,48 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 const transaction = {
                     transactionID: 1,
                     userID: 1,
-                    chargerID: 3,
+                    chargerID: 1,
                     meterStart: 22,
                     meterStop: 44,
                     timestamp: 12,
                     paymentID: 44
                 }
 
-                databaseInterfaceTransactions.createTransaction(transaction, function(errors, success) {
-                    console.log(errors)
-                    console.log(success)
-                    response.redirect("/")
-                })
+                // databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
+                //     console.log(errors)
+                //     console.log(transactionId)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
+                //     console.log(errors)
+                //     console.log(transaction)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceTransactions.getTransactionsForUser(transaction.userID, function(errors, transactions) {
+                //     console.log(errors)
+                //     console.log(transactions)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceTransactions.getTransactionsForCharger(transaction.chargerID, function(errors, transactions) {
+                //     console.log(errors)
+                //     console.log(transactions)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
+                //     console.log(errors)
+                //     console.log(updatedTransaction)
+                //     response.redirect("/")
+                // })
+
+                // databaseInterfaceTransactions.updateTransactionMeter(transaction.transactionID, transaction.meterStop, function(errors, updatedTransaction) {
+                //     console.log(errors)
+                //     console.log(updatedTransaction)
+                //     response.redirect("/")
+                // })
 
                 break;
 
