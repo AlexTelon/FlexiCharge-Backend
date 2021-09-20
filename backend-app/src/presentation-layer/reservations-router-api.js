@@ -8,7 +8,7 @@ module.exports = function ({ databaseInterfaceReservations }) {
         const id = req.params.id
         databaseInterfaceReservations.getReservation(id, function(error, reservation){
             if(error.length == 0){
-                es.status(200).json(reservation)
+                res.status(200).json(reservation)
             }else{
                 res.status(404).end(error)
             }
@@ -19,8 +19,15 @@ module.exports = function ({ databaseInterfaceReservations }) {
         res.send('Get all reservations for a specific user')
     })
 
-    router.get('/:chargerId', function (req, res) {
-        res.send('Get specific reservation för a specific charger')
+    router.get('/chargerReservation/:chargerID', function (req, res) {
+        const chargerId = req.params.chargerID
+        databaseInterfaceReservations.getReservationForCharger(chargerId, function(error, chargerReservation){
+            if(error.length == 0){
+                res.status(200).json(chargerReservation)
+            }else{
+                res.status(404).end(error)
+            }
+        })
     })
 
     router.post('/', function (req, res) {
@@ -28,12 +35,12 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.delete('/:id', function (req, res) {
-        const id = request.params.id
-        databaseInterfaceCharger.removeReservation(id, function (errors) {
+        const id = req.params.id
+        databaseInterfaceReservations.removeReservation(id, function (errors) {
             if (errors.length == 0) {
-                response.status(204).json()
+                res.status(204).json()
             } else {
-                response.status(404).end()
+                res.status(404).end()
             }
         })
     })

@@ -1,13 +1,13 @@
 var express = require('express')
-const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
+//const AuthMiddleware = require('./middleware/auth.middleware')
+//const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceCharger }) {
 
     const router = express.Router()
 
     router.get('/', function (request, response) {
-        authMiddleware.verifyToken(request, response);
+        //authMiddleware.verifyToken(request, response);
         databaseInterfaceCharger.getChargers(function (error, chargers) {
             if (error.length > 0) {
                 response.status(500).end(error)
@@ -18,23 +18,19 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.get('/:id', function (request, response) {
-        authMiddleware.verifyToken(request, response);
+      //  authMiddleware.verifyToken(request, response);
         const id = request.params.id
         databaseInterfaceCharger.getCharger(id, function (errors, charger) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(200).end(charger)
+                response.status(404).end(errors)
             }
         })
     })
 
     router.get('/chargers/available', function(request, response){ 
-<<<<<<< HEAD
-        //authMiddleware.verifyToken(request, respone);
-=======
-        authMiddleware.verifyToken(request, response);
->>>>>>> a7508465bf1f4be895bcae8940e4c67025511af8
+       // authMiddleware.verifyToken(request, response);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
                 response.status(404).end(errors)
@@ -45,7 +41,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.post('/', function(request, response){
-        authMiddleware.verifyToken(request, response);
+        //authMiddleware.verifyToken(request, response);
         const chargerPointId = request.body.chargePointID
         const location = request.body.location
         databaseInterfaceCharger.addCharger(chargerPointId, location, function (errorCodes, chargerId) {
@@ -63,7 +59,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.delete('/:id', function (request, response) {
-        authMiddleware.verifyToken(request, response);
+        //authMiddleware.verifyToken(request, response);
         const id = request.params.id
         databaseInterfaceCharger.removeCharger(id, function (errors) {
             if (errors.length == 0) {
@@ -75,17 +71,12 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.put('/:id', function(request,response){
-        authMiddleware.verifyToken(request, response);
+       // authMiddleware.verifyToken(request, response);
         const chargerId = request.params.id
         const newStatus = request.body.status
-<<<<<<< HEAD
-    
-        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, chargerUpdated) {
-=======
         databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
->>>>>>> a7508465bf1f4be895bcae8940e4c67025511af8
             if (errors.length == 0) {
-                response.status(204).json(chargerUpdated)
+                response.status(204).json(charger)
             } else {
                 response.status(400).end(errors)
             }
