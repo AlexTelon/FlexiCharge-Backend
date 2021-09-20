@@ -30,6 +30,7 @@ const Chargers = sequelize.define('Chargers', {
     },
     chargePointID: {
         type: DataTypes.INTEGER,
+        unique: false,
         allowNull: false
     },
     status: {
@@ -49,7 +50,6 @@ const Reservations = sequelize.define('Reservations', {
     },
     start: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false
     },
     end: {
@@ -77,11 +77,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     meterStop: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    meterStop: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -89,7 +85,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     userID: {
         type: DataTypes.INTEGER,
@@ -105,7 +101,40 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync({ force: true });
+sequelize.sync({ force: true }).then(function(){
+    const chargerOneLocation = {
+        type: 'Point',
+        coordinates: [57.777725, 14.163085]
+    };
+    const chargerTwoLocation = {
+        type: 'Point',
+        coordinates: [57.777714, 14.163010]
+    };
+    Chargers.create({
+        location: chargerOneLocation,
+        chargePointID: 1,
+        status: 1
+    });
+    Chargers.create({
+        location: chargerTwoLocation,
+        chargePointID: 1,
+        status: 0
+    });
+    Transactions.create({
+        chargerID: 1,
+        meterStart: 1631521252,
+        meterStop: 1631522000,
+        paymentID: 1,
+        userID: 1,
+        timestamp: 1631522252
+    });
+    Reservations.create({
+        chargerID: 1,
+        userID: 1,
+        start: 164966755,
+        end: 164968555
+    });
+});
 
 module.exports = function({}) {
     const exports = { Chargers, Transactions, Reservations }
