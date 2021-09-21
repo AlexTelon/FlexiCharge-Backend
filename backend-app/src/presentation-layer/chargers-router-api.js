@@ -21,7 +21,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         const id = request.params.id
         databaseInterfaceCharger.getCharger(id, function (errors, charger) {
-            if(errors.length == 0 && charger.length == 0){
+            if (errors.length == 0 && charger.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
                 response.status(200).json(charger)
@@ -66,7 +66,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
             if (errors.length == 0 && isChargerDeleted) {
                 response.status(204).json()
-            } else if(errors.length == 0 && !isChargerDeleted) {
+            } else if (errors.length == 0 && !isChargerDeleted) {
                 response.status(404).json()
             } else {
                 response.status(500).json(errors)

@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const bodyParser = require('body-parser')
 
-module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter }) { //authenticationRouter
+module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter }) { //authenticationRouter
 
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
@@ -25,6 +25,7 @@ module.exports = function ({ chargersRouter, transactionsRouter, reservationsRou
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
     app.use('/auth', authenticationRouter)
+    app.use('/auth/admin', adminRouter)
 
     return app
 
