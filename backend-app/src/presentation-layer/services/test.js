@@ -59,3 +59,4 @@ function createCognitoUser(userId, email, password) {
         })
         .catch(console.error);
 }
+
