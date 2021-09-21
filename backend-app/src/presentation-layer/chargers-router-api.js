@@ -10,7 +10,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         databaseInterfaceCharger.getChargers(function (error, chargers) {
             if (error.length > 0) {
-                response.status(500).end(error)
+                response.status(500).json(error)
             } else {
                 response.status(200).json(chargers)
             }
@@ -33,7 +33,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
-                response.status(404).end(errors)
+                response.status(404).json(errors)
             } else {
                 response.status(200).json(chargers)
             }
@@ -49,9 +49,9 @@ module.exports = function ({ databaseInterfaceCharger }) {
                 response.status(201).json(chargerId)
             } else {
                 if (errorCodes == "internalError") {
-                    response.status(500).end(errorCodes)
+                    response.status(500).json(errorCodes)
                 } else {
-                    response.status(404).end(errorCodes)
+                    response.status(404).json(errorCodes)
                 }
 
             }
@@ -65,7 +65,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errors.length == 0) {
                 response.status(204).json()
             } else {
-                response.status(404).end()
+                response.status(404).json(erros)
             }
         })
     })
@@ -78,7 +78,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(400).end(errors)
+                response.status(400).json(errors)
             }
         })
     })
