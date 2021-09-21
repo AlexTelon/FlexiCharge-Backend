@@ -32,6 +32,25 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
         })
     }
 
+
+    exports.getChargerBySerialNumber = function(serialNumber, callback) {
+        dataAccessLayerCharger.getChargerBySerialNumber(serialNumber, function(error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                if (charger == null) {
+                    callback([], [])
+                } else {
+                    callback([], charger)
+                }
+
+            }
+        })
+    }
+
+
     exports.getAvailableChargers = function(callback) {
         dataAccessLayerCharger.getAvailableChargers(function(error, chargers) {
             if (Object.keys(error).length > 0) {
@@ -45,8 +64,8 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
     }
 
 
-    exports.addCharger = function(chargePointId, location, callback) {
-        dataAccessLayerCharger.addCharger(chargePointId, location, function(error, chargerId) {
+    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
+        dataAccessLayerCharger.addCharger(chargePointId, serialNumber, location, function(error, chargerId) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     console.log(errorCode)
