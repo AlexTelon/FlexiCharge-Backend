@@ -5,11 +5,11 @@ const CognitoService = require('./services/cognito.config')
 
 module.exports = function () {
     const router = express.Router()
+    const cognito = new CognitoService();
 
     router.post('/sign-up', function (req, res) {
 
         const { username, password, email, name, family_name } = req.body;
-        const cognito = new CognitoService();
 
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
@@ -26,27 +26,10 @@ module.exports = function () {
             });
     })
 
-    router.post('/admin/sign-in', function (req, res) {
-        const cognito = new CognitoService();
 
-        const { username, password } = req.body;
-
-        cognito.signInAdmin(username, password)
-            .then(result => {
-                if (result.statusCode === undefined) {
-                    res.status(200).json(result).end()
-                } else if (result.statusCode === 403) {
-                    res.status(403).json(result).end()
-                } else {
-                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
-                }
-            })
-
-    })
 
     router.post('/sign-in', function (req, res) {
 
-        const cognito = new CognitoService();
         const { username, password } = req.body;
 
         cognito.signInUser(username, password)
@@ -63,7 +46,6 @@ module.exports = function () {
 
     router.post('/verify', function (req, res) {
         const { username, code } = req.body;
-        const cognito = new CognitoService();
 
         cognito.verifyAccount(username, code)
             .then(result => {

@@ -1,12 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
-
-sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+//sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
 try {
     sequelize.authenticate();
@@ -24,13 +24,13 @@ const Chargers = sequelize.define('Chargers', {
         allowNull: false
     },
     location: {
-        type: DataTypes.GEOMETRY('POINT'),
-        unique: true,
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
+        unique: false,
         allowNull: false
     },
     chargePointID: {
         type: DataTypes.INTEGER,
-        unique: true,
+        unique: false,
         allowNull: false
     },
     status: {
@@ -77,11 +77,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     meterStop: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    meterStop: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -89,7 +85,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     userID: {
         type: DataTypes.INTEGER,
@@ -105,40 +101,36 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync({ force: true }).then(function(){
-    const chargerOneLocation = {
-        type: 'Point',
-        coordinates: [57.777725, 14.163085]
-    };
-    const chargerTwoLocation = {
-        type: 'Point',
-        coordinates: [57.777714, 14.163010]
-    };
-    Chargers.create({
-        location: chargerOneLocation,
-        chargePointID: 1,
-        status: 1
-    });
-    Chargers.create({
-        location: chargerTwoLocation,
-        chargePointID: 2,
-        status: 0
-    });
-    Transactions.create({
-        chargerID: 1,
-        meterStart: 1631521252,
-        meterStop: 1631522000,
-        paymentID: 1,
-        userID: 1,
-        timestamp: 1631522252
-    });
-    Reservations.create({
-        chargerID: 1,
-        userID: 1,
-        start: 164966755,
-        end: 164968555
-    });
-});
+sequelize.sync().then(function(){
+    Chargers.findAndCountAll().then(function({rows, count}){
+        if(count < 1) {
+            Chargers.create({
+                location: [57.777714, 14.163010],
+                chargePointID: 1,
+                status: 1
+            });
+            Chargers.create({
+                location: [57.777725, 14.163085],
+                chargePointID: 1,
+                status: 0
+            });
+            Transactions.create({
+                chargerID: 1,
+                meterStart: 1631521252,
+                meterStop: 1631522000,
+                paymentID: 1,
+                userID: 1,
+                timestamp: 1631522252
+            });
+            Reservations.create({
+                chargerID: 1,
+                userID: 1,
+                start: 164966755,
+                end: 164968555
+            });
+        }
+    })
+})
 
 module.exports = function({}) {
     const exports = { Chargers, Transactions, Reservations }
