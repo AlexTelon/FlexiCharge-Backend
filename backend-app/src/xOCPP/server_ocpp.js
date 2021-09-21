@@ -37,7 +37,7 @@ module.exports = function({}) {
             console.log("Number of connected chargers: " + connectedChargers.length)
             
             if(!validateCharger(chargerSerial)){
-                ws.close()
+                ws.close();
             }
 
             ws.on('message', function incoming(message) {
