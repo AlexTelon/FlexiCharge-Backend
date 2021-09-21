@@ -27,8 +27,6 @@ module.exports = function ({ databaseTestPresentation, chargersRouter, transacti
     app.use('/auth', authenticationRouter)
     app.use('/auth/admin', adminRouter)
 
-    app.use('/database', databaseTestPresentation)
-
     return app
 
 }
