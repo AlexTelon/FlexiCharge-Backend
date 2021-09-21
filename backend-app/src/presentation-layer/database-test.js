@@ -13,7 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('charger') {
+        switch ('reservation') {
             case 'charger':
 
                 const point = {
@@ -41,7 +41,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
                 })
 
-            
+
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
                 //     console.log(chargerAdded)
@@ -88,16 +88,20 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 const reservation = {
                     reservationID: 1,
                     userID: 1,
-                    chargerID: 2,
+                    chargerID: 1,
                     start: 1,
                     end: 4
                 }
 
-                // databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation){
-                //     console.log(errors)
-                //     console.log(chargerReservation)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation) {
+                    console.log(errors)
+                    console.log(chargerReservation)
+                    databaseInterfaceReservations.removeReservation(55, function(errors, reservation) {
+                        console.log(errors)
+                        console.log(reservation)
+                        response.redirect("/")
+                    })
+                })
 
                 // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation){
                 //     console.log(errors)
