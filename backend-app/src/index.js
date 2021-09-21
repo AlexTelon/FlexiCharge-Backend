@@ -22,6 +22,7 @@ container.register({
     
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
+    ocppInterface: awilix.asFunction(require('./xOCPP//interface')),
 
 
     app: awilix.asFunction(require('./presentation-layer/app'))
