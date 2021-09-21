@@ -2,18 +2,18 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationCons
 
     const exports = {}
 
-    function getLocationValidationErrors(location){
-        const LocationValidationErrors = []
+    // function getLocationValidationErrors(location){
+    //     const LocationValidationErrors = []
  
-        if(location[0] < validationConstants.LATITUDE_MIN_VALUE || location[0] > validationConstants.LATITUDE_MAX_VALUE){
-            LocationValidationErrors.push("invalidLatitude")
-        }
-        if(location[1] < validationConstants.LONGITUDE_MIN_VALUE || location[1] > validationConstants.LONGITUDE_MAX_VALUE){
-            LocationValidationErrors.push("invalidLongitude")
-        }
+    //     if(location[0] < validationConstants.LATITUDE_MIN_VALUE || location[0] > validationConstants.LATITUDE_MAX_VALUE){
+    //         LocationValidationErrors.push("invalidLatitude")
+    //     }
+    //     if(location[1] < validationConstants.LONGITUDE_MIN_VALUE || location[1] > validationConstants.LONGITUDE_MAX_VALUE){
+    //         LocationValidationErrors.push("invalidLongitude")
+    //     }
 
-        return LocationValidationErrors
-    }
+    //     return LocationValidationErrors
+    // }
 
 
     exports.getChargers = function(callback) {
@@ -59,7 +59,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationCons
 
 
     exports.addCharger = function(chargePointId, location, callback) {
-        const locationValidation = getLocationValidationErrors(location)
+        const locationValidation = validationConstants.getLocationValidation(location)
         if(locationValidation.length > 0){
             callback(locationValidation, null)
         }else{
