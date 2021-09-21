@@ -25,7 +25,7 @@ const Chargers = sequelize.define('Chargers', {
     },
     location: {
         type: DataTypes.GEOMETRY('POINT'),
-        unique: true,
+        unique: false,
         allowNull: false
     },
     chargePointID: {
