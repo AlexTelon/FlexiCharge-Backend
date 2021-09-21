@@ -4,48 +4,54 @@ module.exports = function ({ databaseInterfaceReservations }) {
 
     const router = express.Router()
 
-    router.get('/:id', function (req, res) {
-        const id = req.params.id
-        databaseInterfaceReservations.getReservation(id, function(error, reservation){
-            if(error.length == 0){
-                res.status(200).json(reservation)
-            }else{
-                res.status(404).end(error)
-            }
-        })
-    })
-
-    router.get('/:userId', function (req, res) {
-        res.send('Get all reservations for a specific user')
-    })
-
-    router.get('/chargerReservation/:chargerID', function (req, res) {
-        const chargerId = req.params.chargerID
-        databaseInterfaceReservations.getReservationForCharger(chargerId, function(error, chargerReservation){
-            if(error.length == 0){
-                res.status(200).json(chargerReservation)
-            }else{
-                res.status(404).end(error)
-            }
-        })
-    })
-
-    router.post('/', function (req, res) {
-        res.send('add reservations')
-    })
-
-    router.delete('/:id', function (req, res) {
-        const id = req.params.id
-        databaseInterfaceReservations.removeReservation(id, function (errors) {
-            if (errors.length == 0) {
-                res.status(204).json()
+    router.get('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const reservationId = request.params.id
+        databaseInterfaceReservations.getReservation(reservationId, function (errors, reservation) {
+            if (errors.length == 0 && reservation.length == 0) {
+                response.status(404).end()
+            } else if (errors.length == 0) {
+                response.status(200).json(reservation)
             } else {
-                res.status(404).end()
+                response.status(500).json(errors)
             }
         })
     })
 
+    router.get('/userReservation/:userID', function (request, response) {
+          
+    })
 
+    router.get('/chargerReservation/:chargerID', function (request, response) {
+        const chargerId = request.params.chargerID
+        databaseInterfaceReservations.getReservationForCharger(chargerId, function(error, chargerReservation){
+            if(error.length == 0 && chargerReservation.length == 0){
+                response.status(404).end()
+            }else if(error.length == 0){
+                response.status(200).json(chargerReservation)
+            }else{
+                response.status(500).json(error)
+            }
+        })
+    })
+
+    router.post('/', function (request, response) {
+        
+        
+    })
+
+    router.delete('/:id', function (request, response) {
+        const reservationId = request.params.id
+        databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
+            if (errors.length == 0 && isReservationDeleted) {
+                response.status(204).json()
+            } else if(errors.length == 0 && !isReservationDeleted){
+                response.status(404).json()
+            }else{
+                response.status(500).json(errors)
+            }
+        })
+    })
 
     return router
 }

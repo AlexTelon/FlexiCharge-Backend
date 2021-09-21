@@ -1,6 +1,6 @@
 var express = require('express')
-//const AuthMiddleware = require('./middleware/auth.middleware')
-//const authMiddleware = new AuthMiddleware()
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceCharger }) {
 
@@ -74,8 +74,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.put('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+    router.put('/:id', function(request,response){
+       // authMiddleware.verifyToken(request, response);
         const chargerId = request.params.id
         const newStatus = request.body.status
         databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
