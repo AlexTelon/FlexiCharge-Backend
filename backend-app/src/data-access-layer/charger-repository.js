@@ -30,12 +30,8 @@ module.exports = function({ databaseInit }) {
     }
 
     exports.addCharger = function(chargePointId, location, callback) {
-
         const charger = {
-            location: point = {
-                type: 'Point',
-                coordinates: location
-            },
+            location: location,
             chargePointID: chargePointId,
             status: 0
         }

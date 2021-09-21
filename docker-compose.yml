@@ -7,3 +7,15 @@ services:
       - 8080:8080
     volumes:
       - ./backend-app/src:/backend-app/src
+    env_file: .env
+    depends_on: 
+      - postgre_db
+  postgre_db:
+    build: ./postgres-db
+    image: postgre_db
+    container_name: postgre_db
+    ports:
+      - "5432:5432"
+    environment: 
+      POSTGRES_DB: postgredb
+      POSTGRES_PASSWORD: abc123
