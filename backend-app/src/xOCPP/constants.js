@@ -7,6 +7,8 @@ module.exports = function({}){
             CALLRESULT: 3,
             CALLERROR: 4
         }
+
+        return messageTypeID
     }
 
 

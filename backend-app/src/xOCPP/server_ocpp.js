@@ -6,7 +6,7 @@ module.exports = function({clientHandler}) {
     exports.startServer = function() {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
-    
+        
         wss.on('connection', function connection(ws, req) {
             
             // Get the charger's serial number:

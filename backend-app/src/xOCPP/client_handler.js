@@ -1,11 +1,11 @@
 module.exports = function({databaseInterfaceCharger, messageHandler}) {
 
     exports.handleConnection = function(newSocket, chargerSerial, connectedChargers) {
-        databaseInterfaceCharger.getChargerByChargePointId(chargerSerial, function(errorCodes, charger){
+        databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function(errorCodes, charger){
             if (errorCodes.length) {
                 console.log(errorCodes)
             } else {
-                if (charger == null) {
+                if (charger.length == 0) {
                     console.log("Charger with serial # " + chargerSerial + " was refused connection. Reason: Not found in system.")
                     // TODO: Skicka error till laddaren
                     newSocket.close()
@@ -21,11 +21,10 @@ module.exports = function({databaseInterfaceCharger, messageHandler}) {
                     console.log("Incoming connection from charger with ID: " + chargerSerial)
                     console.log("Number of connected chargers: " + connectedChargers.length)
     
-                    messageHandler.handleMessage(newSocket)
-                    // TODO: Skicka "success" med charger ID etc. till laddaren
                 }
             }
         })
+        messageHandler.handleMessage(newSocket)
     }
     return exports
 }
