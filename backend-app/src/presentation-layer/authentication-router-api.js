@@ -26,22 +26,7 @@ module.exports = function () {
             });
     })
 
-    // router.post('/admin/sign-in', function (req, res) {
 
-    //     const { username, password } = req.body;
-
-    //     cognito.signInAdmin(username, password)
-    //         .then(result => {
-    //             if (result.statusCode === undefined) {
-    //                 res.status(200).json(result).end()
-    //             } else if (result.statusCode === 403) {
-    //                 res.status(403).json(result).end()
-    //             } else {
-    //                 res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
-    //             }
-    //         })
-
-    // })
 
     router.post('/sign-in', function (req, res) {
 
