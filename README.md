@@ -51,5 +51,6 @@ module.exports = function({ databaseInterfaceCharger}) {
 
 ## Database Interface Errorcodes and explanation
 - internalError: General internal error
-- databaseError: Error communicating with the database
- 
+- dbError: General database error
+- dbForeignKeyConstraintError: Specified foreign key doesn´t match a primary key
+- dbUniqueConstraintError: A unique constraint has been violated
