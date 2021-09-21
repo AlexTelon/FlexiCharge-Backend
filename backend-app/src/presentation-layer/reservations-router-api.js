@@ -5,9 +5,10 @@ module.exports = function ({ databaseInterfaceReservations }) {
     const router = express.Router()
 
     router.get('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
         const id = request.params.id
-        databaseInterfaceReservations.getReservation(id, function(error, reservation){
-            if(error.length == 0 && reservation.length == 0){
+        databaseInterfaceReservations.getReservation(id, function (errors, reservation) {
+            if (errors.length == 0 && reservation.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
                 response.status(200).json(reservation)
