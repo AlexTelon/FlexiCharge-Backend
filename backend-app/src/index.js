@@ -24,6 +24,8 @@ container.register({
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
 
+    ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
+
     app: awilix.asFunction(require('./presentation-layer/app'))
 })
 
