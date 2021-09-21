@@ -21,6 +21,7 @@ container.register({
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),
     reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
+    adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
 
     app: awilix.asFunction(require('./presentation-layer/app'))
 })
