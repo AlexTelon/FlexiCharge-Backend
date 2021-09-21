@@ -15,8 +15,15 @@ module.exports = function ({ databaseInterfaceReservations }) {
         })
     })
 
-    router.get('/:userId', function (req, res) {
-        res.send('Get all reservations for a specific user')
+    router.get('/userReservation/:userId', function (req, res) {
+        const userId = req.params.userID
+        databaseInterfaceReservations.getReservationForUser(userId,function(error,userReservation){
+            if(error.length==0){
+                res.status(200).json(userReservation)
+            }else{
+                res.status(404).end(error)
+            }
+        })
     })
 
     router.get('/chargerReservation/:chargerID', function (req, res) {
