@@ -24,10 +24,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     chargerID: 1,
                     location: [57.777726, 14.163085], //[57.777726, 14.163085]
                     chargePointID: 1,
+                    serialNumber: '##€43cstsdx6765',
                     status: 2
                 }
-
-
 
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
@@ -88,7 +87,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 const reservation = {
                     reservationID: 1,
                     userID: 1,
-                    chargerID: 2,
+                    chargerID: 1,
                     start: 1,
                     end: 4
                 }
@@ -99,11 +98,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
                 // })
 
-                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation){
-                //     console.log(errors)
-                //     console.log(userReservation)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
+                    console.log(errors)
+                    console.log(userReservation)
+                    response.redirect("/")
+                })
 
                 // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
                 //     console.log(errors)
