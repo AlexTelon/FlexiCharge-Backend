@@ -21,10 +21,12 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         const id = request.params.id
         databaseInterfaceCharger.getCharger(id, function (errors, charger) {
-            if (errors.length == 0) {
+            if(errors.length == 0 && charger.length == 0){
+                response.status(404).end()
+            } else if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {
-                response.status(200).end(charger)
+                response.status(500).json(errors)
             }
         })
     })
@@ -48,7 +50,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             if (errorCodes.length == 0) {
                 response.status(201).json(chargerId)
             } else {
-                if (errorCodes == "internalError") {
+                if (errorCodes.includes("internalError") || errorCodes.includes("dbError")) {
                     response.status(500).json(errorCodes)
                 } else {
                     response.status(404).json(errorCodes)
@@ -61,11 +63,13 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.delete('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         const id = request.params.id
-        databaseInterfaceCharger.removeCharger(id, function (errors) {
-            if (errors.length == 0) {
+        databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
+            if (errors.length == 0 && isChargerDeleted) {
                 response.status(204).json()
+            } else if(errors.length == 0 && !isChargerDeleted) {
+                response.status(404).json()
             } else {
-                response.status(404).json(erros)
+                response.status(500).json(errors)
             }
         })
     })
