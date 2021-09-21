@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-//     dialect: "postgres"
-// });
-const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+    dialect: "postgres"
+});
+// const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -31,6 +31,11 @@ const Chargers = sequelize.define('Chargers', {
     chargePointID: {
         type: DataTypes.INTEGER,
         unique: false,
+        allowNull: false
+    },
+    serialNumber: {
+        type: DataTypes.STRING,
+        unique: true,
         allowNull: false
     },
     status: {
@@ -101,16 +106,18 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync().then(function(){
-    Chargers.findAndCountAll().then(function({rows, count}){
-        if(count < 1) {
+sequelize.sync().then(function() {
+    Chargers.findAndCountAll().then(function({ rows, count }) {
+        if (count < 1) {
             Chargers.create({
                 location: [57.777714, 14.163010],
+                serialNumber: '€%&€6376776876',
                 chargePointID: 1,
                 status: 1
             });
             Chargers.create({
                 location: [57.777725, 14.163085],
+                serialNumber: '()79654564535""34',
                 chargePointID: 1,
                 status: 0
             });

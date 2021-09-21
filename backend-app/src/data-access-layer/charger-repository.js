@@ -20,6 +20,15 @@ module.exports = function({ databaseInit }) {
             })
     }
 
+    exports.getChargerBySerialNumber = function(serialNumber, callback) {
+        databaseInit.Chargers.findOne({ where: { serialNumber: serialNumber }, raw: true })
+            .then(charger => callback([], charger))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
+    }
+
     exports.getAvailableChargers = function(callback) {
         databaseInit.Chargers.findAll({ where: { status: 1 }, raw: true })
             .then(chargers => callback([], chargers))
@@ -29,10 +38,11 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function(chargePointId, location, callback) {
+    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
         const charger = {
             location: location,
             chargePointID: chargePointId,
+            serialNumber: serialNumber,
             status: 0
         }
 
