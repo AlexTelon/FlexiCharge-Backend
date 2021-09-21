@@ -42,10 +42,10 @@ module.exports = function({databaseInterfaceCharger}) {
                 } else {
                     if (charger == null) {
                         console.log("Charger with Charge Point ID " + chargerSerial + " was refused connection. Reason: Not found in system.")
-                        
+                        ws.close
                         // Släck anslutning och skicka till laddaren
                     } else {
-                        console.log("Charger with ID: " + charger.chargerID + " connected to the system.")
+                        console.log("Charger qwith ID: " + charger.chargerID + " connected to the system.")
                         
                         // Else, save the websocket with the charger's serial in array:
                         connectedChargers.push({

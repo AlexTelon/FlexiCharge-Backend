@@ -49,6 +49,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
         dataAccessLayerCharger.addCharger(chargePointId, location, function(error, chargerId) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
+                    console.log(errorCode)
                     callback(errorCode, [])
                 })
             } else {

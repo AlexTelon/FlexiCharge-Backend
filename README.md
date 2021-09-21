@@ -26,6 +26,11 @@ module.exports = function({ databaseInterfaceCharger}) {
 
 }
 ```
+# Connect to local database
+  - Host: 127.0.0.1
+  - Port: 5432
+  - Username: postgres
+  - Password: abc123
 ## Awilix variables and methods
 - databaseInterfaceCharger
   - addCharger(chargerPointId: int, location: [lat, long], function(errors, chargerId))
