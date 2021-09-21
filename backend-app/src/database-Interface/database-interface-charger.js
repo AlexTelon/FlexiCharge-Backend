@@ -1,6 +1,19 @@
-module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
+module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationConstants }) {
 
     const exports = {}
+
+    function getLocationValidationErrors(location){
+        const LocationValidationErrors = []
+ 
+        if(location[0] < validationConstants.LATITUDE_MIN_VALUE || location[0] > validationConstants.LATITUDE_MAX_VALUE){
+            LocationValidationErrors.push("invalidLatitude")
+        }
+        if(location[1] < validationConstants.LONGITUDE_MIN_VALUE || location[1] > validationConstants.LONGITUDE_MAX_VALUE){
+            LocationValidationErrors.push("invalidLongitude")
+        }
+
+        return LocationValidationErrors
+    }
 
 
     exports.getChargers = function(callback) {
@@ -46,15 +59,20 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
 
 
     exports.addCharger = function(chargePointId, location, callback) {
-        dataAccessLayerCharger.addCharger(chargePointId, location, function(error, chargerId) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargerId)
-            }
-        })
+        const locationValidation = getLocationValidationErrors(location)
+        if(locationValidation.length > 0){
+            callback(locationValidation, null)
+        }else{
+            dataAccessLayerCharger.addCharger(chargePointId, location, function(error, chargerId) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], chargerId)
+                }
+            })
+        }
     }
 
     exports.removeCharger = function(chargerId, callback) {
@@ -71,15 +89,20 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
 
 
     exports.updateChargerStatus = function(chargerId, status, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], charger)
-            }
-        })
+        if(status >= validationConstants.STATUS_MIN_VALUE && status <= validationConstants.STATUS_MAX_VALUE) {
+            dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], charger)
+                }
+            })
+        }else{
+            callback(["invalidStatus"], null)
+        }
+        
     }
 
     return exports

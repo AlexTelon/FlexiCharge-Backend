@@ -17,6 +17,7 @@ container.register({
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     dbErrorCheck: awilix.asFunction(require('./database-Interface/database-error-check')),
+    validationConstants: awilix.asFunction(require("./database-Interface/validationConstants")),
 
     //presentation layers
     databaseTestPresentation: awilix.asFunction(require('./presentation-layer/database-test')), //Remove before production
