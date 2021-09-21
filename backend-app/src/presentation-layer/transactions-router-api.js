@@ -18,16 +18,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.get('/userTransactions/:userID', function(request, response){
-        const userId = request.params.userID
-        databaseInterfaceTransactions.getTransactionsForUser(userId, function(errors, userTransaction){
-            if(errors.length == 0 && userTransaction.length == 0){
-                response.status(404).end()
-            }else if(errors.length == 0){
-                response.status(200).json(userTransaction)
-            }else{
-                response.status(500).json(errors)
-            }
-        })
+        
     })
 
     router.get('/chargerTransactions/:chargerID', function(request, response){
@@ -44,22 +35,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.post('/', function (req, res) {
-        router.post('/', function (request, response) {
-            const chargerID = request.body.chargerID
-            const userID = request.body.userID
-            const meterStartValue = request.body.MeterStartValue
-            databaseInterfaceTransactions.addTransaction(userID, chargerID, meterStartValue, function (errorCodes, transactionId) {
-                if (errorCodes.length == 0) {
-                    response.status(201).json(transactionId)
-                } else {
-                    if (errorCodes.includes("internalError") || errorCodes.includes("dbError")) {
-                        response.status(500).json(errorCodes)
-                    } else {
-                        response.status(404).json(errorCodes)
-                    }
-                }
-            })
-        })
+        
     })
 
     router.put(':id', function (req, res) {
