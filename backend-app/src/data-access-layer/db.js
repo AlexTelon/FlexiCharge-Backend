@@ -101,7 +101,7 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync().then(function(){
+sequelize.sync({force: true}).then(function(){
     Chargers.findAndCountAll().then(function({rows, count}){
         if(count < 1) {
             Chargers.create({
