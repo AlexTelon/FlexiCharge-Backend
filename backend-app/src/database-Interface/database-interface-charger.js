@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationErrors }) {
+module.exports = function({ dataAccessLayerCharger, dbErrorCheck, chargerValidation }) {
 
     const exports = {}
 
@@ -34,7 +34,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationErro
 
 
     exports.getChargerBySerialNumber = function(serialNumber, callback) {
-        const validationError = validationErrors.getChargerBySerialNumberValidation(serialNumber)
+        const validationError = chargerValidation.getChargerBySerialNumberValidation(serialNumber)
         if(validationError.length > 0){
             callback(validationError, null)
         }else{
@@ -69,7 +69,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationErro
     }
 
     exports.addCharger = function(chargePointId, serialNumber, location, callback) {
-        const ValidationError = validationErrors.getAddChargerValidation(location, serialNumber)
+        const ValidationError = chargerValidation.getAddChargerValidation(location, serialNumber)
         if(ValidationError.length > 0){
             callback(ValidationError, null)
         }else{
@@ -100,7 +100,7 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, validationErro
 
 
     exports.updateChargerStatus = function(chargerId, status, callback) {
-        const validationError = validationErrors.getUpdateChargerStatusValidation(status)
+        const validationError = chargerValidation.getUpdateChargerStatusValidation(status)
         if(validationError.length > 0){
             callback(validationError, null)
         }else{
