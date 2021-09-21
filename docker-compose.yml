@@ -12,7 +12,7 @@ services:
       - postgre_db
   postgre_db:
     build: ./postgres-db
-    image: dhb-platform_postgre_db
+    image: postgre_db
     container_name: postgre_db
     ports:
       - "5432:5432"
