@@ -15,8 +15,8 @@ container.register({
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
-    dbErrorCheck: awilix.asFunction(require('./database-Interface/database-error-check')),
-    validationConstants: awilix.asFunction(require("./database-Interface/validationConstants")),
+    dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
+    validationErrors: awilix.asFunction(require("./database-Interface/validation/validationErrors")),
 
     //presentation layers
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
