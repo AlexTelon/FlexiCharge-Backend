@@ -1,12 +1,13 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 
-sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+//sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
 try {
     sequelize.authenticate();
@@ -24,7 +25,7 @@ const Chargers = sequelize.define('Chargers', {
         allowNull: false
     },
     location: {
-        type: DataTypes.GEOMETRY('POINT'),
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
         unique: true,
         allowNull: false
     },
@@ -104,20 +105,18 @@ Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 sequelize.sync({ force: true }).then(function() {
 
     const chargerOneLocation = {
-        type: 'Point',
         coordinates: [57.777725, 14.163085]
     };
     const chargerTwoLocation = {
-        type: 'Point',
         coordinates: [57.777714, 14.163010]
     };
     Chargers.create({
-        location: chargerOneLocation,
+        location: [57.777714, 14.163010],
         chargePointID: 1,
         status: 1
     });
     Chargers.create({
-        location: chargerTwoLocation,
+        location: [57.777725, 14.163085],
         chargePointID: 1,
         status: 0
     });
