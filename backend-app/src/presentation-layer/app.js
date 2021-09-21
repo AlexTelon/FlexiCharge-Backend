@@ -1,6 +1,9 @@
 const express = require("express")
 const app = express()
 const bodyParser = require('body-parser')
+require('dotenv').config()
+
+
 
 module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, databaseTestRouter }) { //authenticationRouter
 

@@ -1,35 +1,12 @@
 const AWS = require('aws-sdk')
-// // const crypto = require('crypto-js')
-// const sha256 = require('crypto-js/sha256');
-// const hmac = require('crypto-js/hmac-sha256');
-
-AWS.config.getCredentials(function (err) {
-    console.log(1337);
-    if (err) console.log(err.stack);
-    // credentials not loaded
-    else {
-        console.log("Access key:", AWS.config.credentials.accessKeyId);
-    }
-});
-
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware();
-
-
-
-// const authError = {
-//     message: 'The user is not authorized for this content.',
-//     code: 'UserNotAuthorizedException',
-//     statusCode: '403'
-// }
 
 class CognitoService {
 
     config = {
         region: 'eu-west-1',
-        // accessKeyId: process.env.AWS_SECRET_KEY,
-        // secretAccessKey: process.env.AWS_SECRET_KEY,
     }
 
     cognitoIdentity;
@@ -154,47 +131,6 @@ class CognitoService {
             .update(username + this.clientId)
             .digest("base64");
     }
-
-
-    async createCognitoUser(username, password) {
-        let params = {
-            UserPoolId: this.userPoolId, // From Cognito dashboard 'Pool Id'
-            Username: username,
-            MessageAction: "SUPPRESS", // Do not send welcome email
-            TemporaryPassword: password,
-            UserAttributes: [
-                {
-                    Name: "email",
-                    Value: "filip.lundh11@gmail.com"
-                },
-                {
-                    // Don't verify email addresses
-                    Name: "email_verified",
-                    Value: "true"
-                }
-            ]
-        };
-
-        const res = await this.cognitoIdentity.adminCreateUser(params).promise()
-            .catch(err => console.log(err))
-
-        console.log(res);
-
-        // let params = {
-        //     AuthFlow: "ADMIN_NO_SRP_AUTH",
-        //     ClientId: USER_POOL_CLIENT_ID, // From Cognito dashboard, generated app client id
-        //     UserPoolId: USER_POOL_ID,
-        //     AuthParameters: {
-        //         USERNAME: userId,
-        //         PASSWORD: password
-        //     }
-        // };
-
-    }
-
-
-
-
 }
 
 module.exports = CognitoService

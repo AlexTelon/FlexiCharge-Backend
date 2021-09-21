@@ -33,6 +33,11 @@ const Chargers = sequelize.define('Chargers', {
         unique: false,
         allowNull: false
     },
+    serialNumber: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
     status: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -101,16 +106,18 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync({force: true}).then(function(){
-    Chargers.findAndCountAll().then(function({rows, count}){
-        if(count < 1) {
+sequelize.sync({ force: true }).then(function() {
+    Chargers.findAndCountAll().then(function({ rows, count }) {
+        if (count < 1) {
             Chargers.create({
                 location: [57.777714, 14.163010],
+                serialNumber: '€%&€6376776876',
                 chargePointID: 1,
                 status: 1
             });
             Chargers.create({
                 location: [57.777725, 14.163085],
+                serialNumber: '()79654564535""34',
                 chargePointID: 1,
                 status: 0
             });

@@ -6,125 +6,133 @@ const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware();
 
+const path = require('path')
+const dirPath = path.join(__dirname, '/config.json')
+
+AWS.config.loadFromPath(dirPath);
 AWS.config.getCredentials(function (err) {
     if (err) console.log(err.stack);
     // credentials not loaded
     else {
-        console.log("Access key:", AWS.config.credentials.accessKeyId);
+        // console.log("Access key:", AWS.config.credentials.accessKeyId);
     }
 });
 
-const authError = {
-    message: 'The user is not authorized for this content.',
-    code: 'UserNotAuthorizedException',
-    statusCode: '403'
-}
+// const authError = {
+//     message: 'The user is not authorized for this content.',
+//     code: 'UserNotAuthorizedException',
+//     statusCode: '403'
+// }
 
-class CognitoService {
+class AdminCognitoService {
 
     config = {
         region: 'eu-west-1'
     }
     cognitoIdentity;
-    secretHash = '17dlkm3vvufapqf8cv4p3252j3m4j4rd6t69bo5jc1kheqovcoui'
-    clientId = '2ng9ud2h1cd4het746tcldvlh2'
-    userPoolId = 'eu-west-1_aSUDsld3S';
+    secretHash = 'gbnne4qg7d44sdmom0ovoa3r9030qnguttq91j1aeandlven5r8'
+    clientId = '3hcnd5dm9a0cjiqnmuvcu0dbqa'
+    userPoolId = 'eu-west-1_1fWIOF9Yf';
 
     constructor() {
-        this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
+        this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
+        AWS.config.getCredentials(function (err) {
+            console.log(1337);
+            if (err) console.log(err.stack);
+            // credentials not loaded
+            else {
+                // console.log("Access key:", AWS.config.credentials.accessKeyId);
+            }
+        });
+    }
+
+    async setUserPassword(username, password) {
+
+        const params = {
+            "Password": password,
+            "Permanent": true,
+            "Username": username,
+            "UserPoolId": this.userPoolId
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminSetUserPassword(params).promise();
+            console.log(res);
+
+            return res;
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+
     }
 
     async adminSignIn(username, password) {
-
         const params = {
             "AuthFlow": "ADMIN_USER_PASSWORD_AUTH",
             "AuthParameters": {
                 "USERNAME": username,
-                "PASSWORD": password
+                "PASSWORD": password,
+                'SECRET_HASH': this.generateHash(username)
             },
             "ClientId": this.clientId,
             "UserPoolId": this.userPoolId
         }
+        try {
+            const tokens = await this.cognitoIdentity.adminInitiateAuth(params).promise();
+            const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
 
-        const tokens = await this.cognitoIdentity.adminInitiateAuth(params).promise();
-        console.log(tokens);
-
-        return tokens
-
+            const data = {
+                accessToken: tokens.AuthenticationResult.AccessToken,
+                email: userdata.email,
+                username: userdata['cognito:username'],
+                name: userdata.name,
+                family_name: userdata.family_name,
+                user_id: userdata.sub
+            }
+            return data
+        } catch (error) {
+            return error
+        }
     }
 
-    async createUser(username, password, userAttributes) {
+    generateHash(username) {
+        return createHmac('SHA256', this.secretHash)
+            .update(username + this.clientId)
+            .digest("base64");
+    }
 
-        // const params = {
-        //     UserPoolId: this.userPoolId,
-        //     TemporaryPassword: password,
-        //     Username: username,
-        //     UserAttributes: userAttributes,
-        //     MessageAction: "SUPRESS",
-        //     AuthFlow: "ADMIN_NO_SRP_AUTH",
-        // }
-
+    // userId - our user record index key
+    // email - the new user's email address
+    // password - the new user's password
+    async createCognitoUser(userId, password, userAttributes) {
         let params = {
-            UserPoolId: this.userPoolId,
-            Username: username,
+            UserPoolId: 'eu-west-1_aSUDsld3S', // From Cognito dashboard 'Pool Id'
+            Username: userId,
             MessageAction: "SUPPRESS", // Do not send welcome email
             TemporaryPassword: password,
             UserAttributes: userAttributes
+            // [
+            //     {
+            //         Name: "email",
+            //         Value: email
+            //     },
+            //     {
+            //         // Don't verify email addresses
+            //         Name: "email_verified",
+            //         Value: "true"
+            //     }
+            // ]
         };
 
-        const res = await this.cognitoIdentity.adminCreateUser(params).promise()
 
-        return res
 
     }
 
-
-    // async signInAdmin(username, password) {
-
-    //     const params = {
-    //         AuthFlow: 'USER_PASSWORD_AUTH',
-    //         ClientId: this.clientId,
-    //         UserPoolId: this.userPoolId,
-    //         AuthParameters: {
-    //             'USERNAME': username,
-    //             'PASSWORD': password,
-    //             'SECRET_HASH': this.generateHash(username)
-    //         }
-    //     }
-    //     try {
-
-    //         const tokens = await this.cognitoIdentity.initiateAuth(params).promise();
-    //         const payload = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
-
-    //         console.log('Hello');
-    //         console.log(tokens);
-    //         console.log(payload);
-
-    //         if (payload['cognito:groups'] === undefined) {
-    //             return authError
-    //         } else if (payload['cognito:groups'].includes('Admin')) {
-    //             const data = {
-    //                 accessToken: tokens.AuthenticationResult.AccessToken,
-    //                 email: payload.email,
-    //                 username: payload['cognito:username'],
-    //                 name: payload.name,
-    //                 family_name: payload.family_name,
-    //                 user_id: payload.sub
-    //             }
-    //             return data
-    //         } else {
-    //             return authError
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error);
-    //         return error
-    //     }
-    // }
 
 
 
 
 }
 
-module.exports = CognitoService
+module.exports = AdminCognitoService
