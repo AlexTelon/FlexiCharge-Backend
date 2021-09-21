@@ -46,7 +46,9 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         const chargerPointId = request.body.chargePointID
         const location = request.body.location
-        databaseInterfaceCharger.addCharger(chargerPointId, location, function (errorCodes, chargerId) {
+        const serialNumber = request.body.serialNumber;
+
+        databaseInterfaceCharger.addCharger(chargerPointId, serialNumber, location, function (errorCodes, chargerId) {
             if (errorCodes.length == 0) {
                 response.status(201).json(chargerId)
             } else {
@@ -74,8 +76,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.put('/:id', function(request,response){
-       // authMiddleware.verifyToken(request, response);
+    router.put('/:id', function (request, response) {
+        // authMiddleware.verifyToken(request, response);
         const chargerId = request.params.id
         const newStatus = request.body.status
         databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
