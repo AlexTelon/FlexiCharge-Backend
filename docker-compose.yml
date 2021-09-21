@@ -5,6 +5,7 @@ services:
     image: backend_app
     ports: 
       - 8080:8080
+      - 1337:1337
     volumes:
       - ./backend-app/src:/backend-app/src
     env_file: .env
