@@ -22,40 +22,30 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 };
                 const charger = {
                     chargerID: 1,
-                    location: [57.777726, 14.163085],
+                    location: [57.777726, 14.163085], //[57.777726, 14.163085]
                     chargePointID: 1,
                     serialNumber: '##€43cstsdx6765',
                     status: 2
                 }
 
-
-
-                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
-                    console.log(errors)
-                    console.log(chargerAdded)
-                    response.redirect("/")
-
-                })
-
-
-                // databaseInterfaceCharger.getChargerBySerialNumber(charger.serialNumber, function(errors, charger) {
-                //     console.log(errors)
-                //     console.log(charger)
-                //     response.redirect("/")
-                // })
-
-
-                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                //     console.log(errors)
-                //     console.log(chargers)
-                //     response.redirect("/")
-                // })
-
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
                 //     console.log(chargerAdded)
-                //     response.redirect("/")
+
+                //     databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                //         console.log(errors)
+                //         console.log(chargers)
+                //         response.redirect("/")
+                //     })
+
                 // })
+
+            
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+                    response.redirect("/")
+                })
 
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
