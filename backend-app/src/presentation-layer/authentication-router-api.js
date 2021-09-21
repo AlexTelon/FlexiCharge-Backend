@@ -26,8 +26,6 @@ module.exports = function () {
             });
     })
 
-
-
     router.post('/sign-in', function (req, res) {
 
         const { username, password } = req.body;

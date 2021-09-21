@@ -1,10 +1,7 @@
 const AWS = require('aws-sdk')
-// // const crypto = require('crypto-js')
-// const sha256 = require('crypto-js/sha256');
-// const hmac = require('crypto-js/hmac-sha256');
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
-const auth = new AuthMiddleware();
+const auth = new AuthMiddleware()
 
 const path = require('path')
 const dirPath = path.join(__dirname, '/config.json')
@@ -52,7 +49,7 @@ class AdminCognitoService {
             "Password": password,
             "Permanent": true,
             "Username": username,
-            "UserPoolId": this.userPoolId
+            UserPoolId: 'eu-west-1_aSUDsld3S', // not admin userpool
         }
 
         try {
@@ -64,7 +61,26 @@ class AdminCognitoService {
             console.log(error);
             return error
         }
+    }
 
+    async setAdminPassword(username, password) {
+
+        const params = {
+            "Password": password,
+            "Permanent": true,
+            "Username": username,
+            UserPoolId: this.userPoolId, // not admin userpool
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminSetUserPassword(params).promise();
+            console.log(res);
+
+            return res;
+        } catch (error) {
+            console.log(error);
+            return error
+        }
     }
 
     async adminSignIn(username, password) {
@@ -90,8 +106,10 @@ class AdminCognitoService {
                 family_name: userdata.family_name,
                 user_id: userdata.sub
             }
+            console.log(data);
             return data
         } catch (error) {
+            console.log(error);
             return error
         }
     }
@@ -102,31 +120,42 @@ class AdminCognitoService {
             .digest("base64");
     }
 
-    // userId - our user record index key
-    // email - the new user's email address
-    // password - the new user's password
-    async createCognitoUser(userId, password, userAttributes) {
+    async getUsers(limit) {
+        const params = {
+            Limit: limit,
+            UserPoolId: 'eu-west-1_aSUDsld3S', // not admin userpool
+        }
+        try {
+            const res = await this.cognitoIdentity.listUsers(params).promise();
+            console.log(res);
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async createUser(userId, password, userAttributes) {
+
         let params = {
-            UserPoolId: 'eu-west-1_aSUDsld3S', // From Cognito dashboard 'Pool Id'
+            UserPoolId: 'eu-west-1_aSUDsld3S', // not admin userpool
             Username: userId,
             MessageAction: "SUPPRESS", // Do not send welcome email
             TemporaryPassword: password,
             UserAttributes: userAttributes
-            // [
-            //     {
-            //         Name: "email",
-            //         Value: email
-            //     },
-            //     {
-            //         // Don't verify email addresses
-            //         Name: "email_verified",
-            //         Value: "true"
-            //     }
-            // ]
         };
+        try {
+            const res = await this.cognitoIdentity.adminCreateUser(params).promise();
+            return res
 
-
-
+        } catch (error) {
+            console.log(error);
+            return error
+        }
     }
 
 
