@@ -29,7 +29,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.get('chargers/available', function(request, response){ 
+    router.get('/chargers/available', function(request, response){ 
         //authMiddleware.verifyToken(request, respone);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
