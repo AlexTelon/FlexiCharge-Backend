@@ -26,6 +26,11 @@ module.exports = function({ databaseInterfaceCharger}) {
 
 }
 ```
+# Connect to local database
+  - Host: 127.0.0.1
+  - Port: 5432
+  - Username: postgres
+  - Password: abc123
 ## Awilix variables and methods
 - databaseInterfaceCharger
   - addCharger(chargerPointId: int, location: [lat, long], function(errors, chargerId))
@@ -51,5 +56,6 @@ module.exports = function({ databaseInterfaceCharger}) {
 
 ## Database Interface Errorcodes and explanation
 - internalError: General internal error
-- databaseError: Error communicating with the database
- 
+- dbError: General database error
+- dbForeignKeyConstraintError: Specified foreign key doesn´t match a primary key
+- dbUniqueConstraintError: A unique constraint has been violated

@@ -22,23 +22,29 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 };
                 const charger = {
                     chargerID: 1,
-                    location: [57.777726, 14.163085],
+                    location: [57.777726, 14.163085], //[57.777726, 14.163085]
                     chargePointID: 1,
+                    serialNumber: '##€43cstsdx6765',
                     status: 2
                 }
 
+                // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                //     console.log(errors)
+                //     console.log(chargerAdded)
 
+                //     databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                //         console.log(errors)
+                //         console.log(chargers)
+                //         response.redirect("/")
+                //     })
 
+                // })
+
+            
                 databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
-
-                    databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                        console.log(errors)
-                        console.log(chargers)
-                        response.redirect("/")
-                    })
-
+                    response.redirect("/")
                 })
 
 
@@ -103,11 +109,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     })
                 })
 
-                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation){
-                //     console.log(errors)
-                //     console.log(userReservation)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
+                    console.log(errors)
+                    console.log(userReservation)
+                    response.redirect("/")
+                })
 
                 // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
                 //     console.log(errors)
