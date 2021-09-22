@@ -1,21 +1,15 @@
 var express = require('express')
 const bodyParser = require('body-parser')
 
-const CognitoService = require('./cognito.config')
+const CognitoService = require('./services/cognito.config')
 
-module.exports = function ({ businessLogicDatabase }) {
-
+module.exports = function () {
     const router = express.Router()
-
-    router.get('/', (request, response) => {
-        response.send('AuthZzzzZZzzzzz')
-    })
+    const cognito = new CognitoService();
 
     router.post('/sign-up', function (req, res) {
 
-        // console.log(req.body);
         const { username, password, email, name, family_name } = req.body;
-        const cognito = new CognitoService();
 
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
@@ -24,25 +18,84 @@ module.exports = function ({ businessLogicDatabase }) {
 
         cognito.signUpUser(username, password, userAttributes)
             .then(result => {
-                if (result) {
-                    // console.log(result);
-                    console.log(200);
+                if (result === true) {
                     res.status(200).end()
                 } else {
-                    // console.log(result);
-                    console.log(500);
-                    res.status(500).end()
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
                 }
             });
     })
 
-    router.get('/sign-in', function (req, res) {
-        res.send('sign-in')
-    })
-    router.get('/verify', function (req, res) {
-        res.send('verify')
+    router.post('/forgot-password/:username', function (req, res) {
+        const username = req.params.username;
+
+        cognito.forgotPassword(username)
+            .then(result => {
+                res.status(200).json(result).end();
+            })
     })
 
+    router.post('/change-password', function (req, res) {
+
+        const { accessToken, previousPassword, newPassword } = req.body;
+
+        cognito.changePassword(accessToken, previousPassword, newPassword)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else if (result.statusCode === 400) {
+                    res.status(400).json(result).end();
+                } else {
+                    res.status(result.statusCode).json(result).end();
+                }
+            })
+    })
+
+    router.post('/confirm-forgot-password', function (req, res) {
+        const { username, password, confirmationCode } = req.body;
+
+        cognito.confirmForgotPassword(username, password, confirmationCode)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else if (result.statusCode === 400) {
+                    res.status(400).json(result).end();
+                } else {
+                    res.status(result.statusCode).json(result).end();
+
+                }
+            })
+
+    })
+
+    router.post('/sign-in', function (req, res) {
+
+        const { username, password } = req.body;
+
+        cognito.signInUser(username, password)
+            .then(result => {
+                if (result.statusCode == 400) {
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                } else if (result.statusCode == undefined) {
+                    res.status(200).json(result).end()
+                } else {
+                    res.status(500).json(result).end()
+                }
+            })
+    })
+
+    router.post('/verify', function (req, res) {
+        const { username, code } = req.body;
+
+        cognito.verifyAccount(username, code)
+            .then(result => {
+                if (result === true) {
+                    res.status(200).end()
+                } else {
+                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                }
+            })
+    })
 
     return router
 }

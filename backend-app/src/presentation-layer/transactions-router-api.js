@@ -4,24 +4,55 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     const router = express.Router()
 
-    router.get('/', function (req, res) {
-        const id = req.params.id
-        databaseInterfaceTransactions.getTransaction(id,
-            function(error, transaction){
-                if(errorTransaction.length > 0){
-                    res.status(500).json(error)
-                }else{
-                    res.status(200).json(transaction)
-                }
-            })
+    router.get('/:id', function (request, response) {
+        const transactionId = request.params.id
+        databaseInterfaceTransactions.getTransaction(transactionId, function (errors, transaction) {
+            if (errors.length == 0 && transaction.length == 0) {
+                response.status(404).end()
+            } else if (errors.length == 0) {
+                response.status(200).json(transaction)
+            } else {
+                response.status(500).json(errors)
+            }
+        })
+    })
+
+    router.get('/userTransactions/:userID', function(request, response){
+        const userId = request.params.userID
+        databaseInterfaceTransactions.getTransactionsForCharger(userId, function(errors, userTransaction){
+            if(errors.length == 0 && userTransaction.length == 0){
+                response.status(404).end()
+            }else if(errors.length == 0){
+                response.status(200).json(userTransaction)
+            }else{
+                response.status(500).json(errors)
+            }
+        })
+    })
+
+    router.get('/chargerTransactions/:chargerID', function(request, response){
+        const chargerId = request.params.chargerID
+        databaseInterfaceTransactions.getTransactionsForCharger(chargerId, function(errors, chargerTransaction){
+            if(errors.length == 0 && chargerTransaction.length == 0){
+                response.status(404).end()
+            }else if(errors.length == 0){
+                response.status(200).json(chargerTransaction)
+            }else{
+                response.status(500).json(errors)
+            }
+        })
     })
 
     router.post('/', function (req, res) {
-        res.send("add transactions")
+        
     })
 
     router.put(':id', function (req, res) {
-        res.send("update transaction with id")
+        res.send("update transaction with payment")
+    })
+
+    router.put(':id', function (req, res) {
+        res.send("update transaction with meter")
     })
 
     return router

@@ -9,62 +9,61 @@ module.exports = function({ databaseInit }) {
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(["internalError"], [])
             })
     }
 
-    exports.getReservationForCharger = function(chargerID, callback){
-        databaseInit.Reservations.findOne({ where: { chargerID: chargerID }, raw: true })
-        .then(chargerReservation => callback([], chargerReservation))
-        .catch(e=> {
-            console.log(e)
-            callback(["internallError"], [])
-        })
+    exports.getReservationForCharger = function(chargerID, callback) {
+        databaseInit.Reservations.findAll({ where: { chargerID: chargerID }, raw: true })
+            .then(chargerReservation => callback([], chargerReservation))
+            .catch(e => {
+                console.log(e)
+                callback(["internalError"], [])
+            })
     }
 
-    exports.getReservationForUser = function(userID, callback){
-        databaseInit.Reservations.findOne({ where: { userID: userID }, raw: true })
-        .then(userReservation => callback([], userReservation))
-        .catch(e => {
-            console.log(e)
-            callback(["internalError"], [])
-        })
+    exports.getReservationForUser = function(userID, callback) {
+        databaseInit.Reservations.findAll({ where: { userID: userID }, raw: true })
+            .then(userReservation => callback([], userReservation))
+            .catch(e => {
+                console.log(e)
+                callback(["internalError"], [])
+            })
     }
 
-    exports.addReservation = function(reservationID, chargerID, userID, start, end, callback){
+    exports.addReservation = function(chargerID, userID, start, end, callback) {
         const reservation = {
-            reservationID: reservationID,
             chargerID: chargerID,
             userID: userID,
             start: start,
             end: end
         }
         databaseInit.Reservations.create(reservation)
-        .then(a => callback([], true))
-        .catch(e => {
-            if (e) {
-                console.log(e)
-                callback("Can not create reservation", false)
-            } else {
-                console.log(e)
-                callback(e, null)
-            }
-        })
-        
+            .then(reservation => callback([], reservation.reservationID))
+            .catch(e => {
+                if (e) {
+                    console.log(e)
+                    callback("couldNotCreateReservation", false)
+                } else {
+                    console.log(e)
+                    callback(e, null)
+                }
+            })
+
     }
 
-    exports.removeReservation = function(reservationID, callback){
+    exports.removeReservation = function(reservationID, callback) {
         databaseInit.Reservations.destroy({
-            where: { reservationID: reservationID },
-            raw: true
-        })
-        .then(_ => {
-            callback([], true)
-        })
-        .catch(e => {
-            console.log(e)
-            callback(["internalError"], false)
-        })
+                where: { reservationID: reservationID },
+                raw: true
+            })
+            .then(_ => {
+                callback([], true)
+            })
+            .catch(e => {
+                console.log(e)
+                callback(["internalError"], false)
+            })
     }
 
 

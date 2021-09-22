@@ -1,5 +1,3 @@
-const { Client } = require('pg')
-
 module.exports = function({ databaseInit }) {
 
     const exports = {}
@@ -9,7 +7,7 @@ module.exports = function({ databaseInit }) {
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
-                callback(["internallError", []])
+                callback(e, [])
             })
     }
 
@@ -18,7 +16,16 @@ module.exports = function({ databaseInit }) {
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(e, [])
+            })
+    }
+
+    exports.getChargerBySerialNumber = function(serialNumber, callback) {
+        databaseInit.Chargers.findOne({ where: { serialNumber: serialNumber }, raw: true })
+            .then(charger => callback([], charger))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
             })
     }
 
@@ -27,26 +34,23 @@ module.exports = function({ databaseInit }) {
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
-                callback(["internallError"], [])
+                callback(e, [])
             })
     }
 
-    exports.addCharger = function(chargePointId, location, callback) {
-
+    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
         const charger = {
-            location: point = {
-                type: 'Point',
-                coordinates: location
-            },
+            location: location,
             chargePointID: chargePointId,
+            serialNumber: serialNumber,
             status: 0
         }
 
         databaseInit.Chargers.create(charger)
             .then(charger => callback([], charger.chargerID))
-            .catch(error => {
-                console.log(error)
-                callback(["internalError"], false)
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
             })
     }
 
@@ -55,14 +59,18 @@ module.exports = function({ databaseInit }) {
                 where: { chargerID: chargerId },
                 raw: true
             })
-            .then(_ => {
+            .then(numberDeletedOfChargers => {
 
-                callback([], true)
+                if (numberDeletedOfChargers == 0) {
+                    callback([], false)
+                } else {
+                    callback([], true)
+                }
 
             })
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], false)
+                callback(e, false)
             })
     }
 
@@ -74,10 +82,10 @@ module.exports = function({ databaseInit }) {
                 returning: true,
                 raw: true
             })
-            .then(charger => callback([], charger))
+            .then(charger => callback([], charger[1][0]))
             .catch(e => {
                 console.log(e)
-                callback(['internalError'], [])
+                callback(e, [])
             })
     }
 

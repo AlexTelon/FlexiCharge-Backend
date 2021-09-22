@@ -1,8 +1,11 @@
 const express = require("express")
 const app = express()
 const bodyParser = require('body-parser')
+require('dotenv').config()
 
-module.exports = function ({ databaseTestPresentation, chargersRouter, transactionsRouter, reservationsRouter }) { //authenticationRouter
+
+
+module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, databaseTestRouter, adminRouter }) { //authenticationRouter
 
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
@@ -24,9 +27,10 @@ module.exports = function ({ databaseTestPresentation, chargersRouter, transacti
     app.use('/chargers', chargersRouter)
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
-    //app.use('/auth', authenticationRouter)
+    app.use('/auth', authenticationRouter)
+    app.use('/auth/admin', adminRouter)
 
-    app.use('/database', databaseTestPresentation)
+    app.use('/database', databaseTestRouter)
 
     return app
 
