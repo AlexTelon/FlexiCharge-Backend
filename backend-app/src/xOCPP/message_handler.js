@@ -1,45 +1,58 @@
-module.exports = function({constants}) {
+module.exports = function({constants, clientHandler}) {
 
-    exports.handleMessage = function(clientSocket, connectedChargers, chargerID) {
-        
-        console.log(connectedChargers)
-        console.log(chargerID)
+    exports.handleMessage = function(clientSocket, chargerSerial) {
         
         clientSocket.on('message', function incoming(message) {
 
-            if(connectedChargers[chargerID]) {                
-            
-                let request = JSON.parse(message)
-                let messageTypeID = request[0]
-                let callID = request[1]
-                let action = request[2]
+            if(chargerSerial in constants.getConstants().chargerSerials) {                
                 
-                console.log("Incoming request call: " + action)
+                handleMessage2(message, clientSocket, null)
+                
+            } else {
+                clientHandler.isValidClient(clientSocket, chargerSerial, function(chargerID){
 
-                var response = ""
-
-                switch(messageTypeID) {
-                    case constants.getMessageTypeID().CALL:
-                        response = callSwitch(request)
-                        break
-
-                    case constants.getMessageTypeID().CALLRESULT:
-                        response = callResultSwitch(request)
-                        break
-
-                    case constants.getMessageTypeID().CALLERROR:
-                        response = callErrorSwitch(request)
-                        break
-
-                    default:
-                        response = JSON.stringify('[4, ' + callID + ',"GenericError","MessageTypeID is invalid",{}]')
-                        break
-                }
-                clientSocket.send(response)
-            }
+                    if (chargerID) {
+                        handleMessage2(message, clientSocket, chargerID)
+                    } else {
+                        clientSocket.terminate()
+                        console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
+            
+                    }
+                })
+            } 
         })
     }
     return exports
+}
+
+function handleMessage2(message, clientSocket, chargerID) {
+    let request = JSON.parse(message)
+        let messageTypeID = request[0]
+        let callID = request[1]
+        let action = request[2]
+        
+        console.log("Incoming request call: " + action)
+
+        var response = ""
+
+        switch(messageTypeID) {
+            case constants.getConstants().CALL:
+                response = callSwitch(request)
+                break
+
+            case constants.getConstants().CALLRESULT:
+                response = callResultSwitch(request)
+                break
+
+            case constants.getConstants().CALLERROR:
+                response = callErrorSwitch(request)
+                break
+
+            default:
+                response = JSON.stringify('[4, ' + callID + ',"GenericError","MessageTypeID is invalid",{}]')
+                break
+        }
+        clientSocket.send(response)
 }
 
 function callSwitch(request) {

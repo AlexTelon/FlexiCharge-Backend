@@ -1,14 +1,16 @@
 module.exports = function({}){
 
-    exports.getMessageTypeID = function() {
+    exports.getConstants = function() {
         
-        const messageTypeID = {
+        const constants = {
             CALL: 2,
             CALLRESULT: 3,
-            CALLERROR: 4
+            CALLERROR: 4,
+            connectedChargers: [],
+            chargerSerials: []
         }
 
-        return messageTypeID
+        return constants
     }
 
 

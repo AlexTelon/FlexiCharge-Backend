@@ -1,8 +1,7 @@
 const WebSocket = require('ws')
-const connectedChargers = []
 
-module.exports = function({clientHandler}) {
-
+module.exports = function({messageHandler, constants}) {
+    
     exports.startServer = function() {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
@@ -15,12 +14,12 @@ module.exports = function({clientHandler}) {
             let chargerSerial = originArray[originArray.length - 1]          
 
             // Validate and handle connecting charger:
-            clientHandler.handleConnection(ws, chargerSerial, connectedChargers)
+            messageHandler.handleMessage(ws, chargerSerial)
             
             ws.on('close', function disconnection(){
-                connectedChargers.splice(ws)
+                constants.getConstants().connectedChargers.splice(ws)
                 console.log("Disconnected from charger with ID: " + chargerSerial)
-                console.log("Number of connected chargers: " + connectedChargers.length)
+                console.log("Number of connected chargers: " + constants.getConstants().connectedChargers.length)
             })
         })
     }
