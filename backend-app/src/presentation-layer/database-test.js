@@ -38,6 +38,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //         response.redirect("/")
                 //     })
 
+
                 // })
 
             
@@ -46,7 +47,6 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     console.log(chargerAdded)
                     response.redirect("/")
                 })
-
 
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
@@ -146,11 +146,15 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     paymentID: 44
                 }
 
-                // databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
-                //     console.log(errors)
-                //     console.log(transactionId)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
+                    console.log(errors)
+                    console.log(transactionId)
+                    databaseInterfaceTransactions.updateTransactionMeter(transaction.transactionID, transaction.meterStop, function(errors, updatedTransaction) {
+                        console.log(errors)
+                        console.log(updatedTransaction)
+                        response.redirect("/")
+                    })
+                })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
                 //     console.log(errors)
