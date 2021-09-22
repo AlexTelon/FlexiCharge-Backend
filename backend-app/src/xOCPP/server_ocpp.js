@@ -12,17 +12,21 @@ module.exports = function({clientHandler}) {
             // Get the charger's serial number:
             let origin = req.url
             let originArray = origin.split("/")
-            let chargerSerial = originArray[originArray.length - 1]            
+            let chargerSerial = originArray[originArray.length - 1]          
 
-            // Check if charger exists in database:
+            // Validate and handle connecting charger:
             clientHandler.handleConnection(ws, chargerSerial, connectedChargers)
             
             ws.on('close', function disconnection(){
                 connectedChargers.splice(ws)
-                console.log("Disconnected connection from charger with ID: " + chargerSerial)
-                console.log("Number of connected chargers:" + connectedChargers.length)
+                console.log("Disconnected from charger with ID: " + chargerSerial)
+                console.log("Number of connected chargers: " + connectedChargers.length)
             })
         })
     }
     return exports
 }
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }

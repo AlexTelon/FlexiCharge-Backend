@@ -1,38 +1,42 @@
-const { NOW } = require("sequelize")
-
 module.exports = function({constants}) {
 
-    exports.handleMessage = function(clientSocket) {
+    exports.handleMessage = function(clientSocket, connectedChargers, chargerID) {
+        
+        console.log(connectedChargers)
+        console.log(chargerID)
         
         clientSocket.on('message', function incoming(message) {
-            let request = JSON.parse(message)
-            let messageTypeID = request[0]
-            let callID = request[1]
-            let action = request[2]
+
+            if(connectedChargers[chargerID]) {                
             
-            console.log("Incoming request call: " + action)
-            console.log("ROBIN: " + constants.getMessageTypeID().CALL)
-            var response = ""
+                let request = JSON.parse(message)
+                let messageTypeID = request[0]
+                let callID = request[1]
+                let action = request[2]
+                
+                console.log("Incoming request call: " + action)
 
-            switch(messageTypeID) {
-                case constants.getMessageTypeID().CALL:
-                    response = callSwitch(request)
-                    break
+                var response = ""
 
-                case constants.getMessageTypeID().CALLRESULT:
-                    response = callResultSwitch(request)
-                    break
+                switch(messageTypeID) {
+                    case constants.getMessageTypeID().CALL:
+                        response = callSwitch(request)
+                        break
 
-                case constants.getMessageTypeID().CALLERROR:
-                    response = callErrorSwitch(request)
-                    break
+                    case constants.getMessageTypeID().CALLRESULT:
+                        response = callResultSwitch(request)
+                        break
 
-                default:
-                    response = JSON.stringify('[4, ' + callID + ',"GenericError","MessageTypeID is invalid",{}]')
-                    break
+                    case constants.getMessageTypeID().CALLERROR:
+                        response = callErrorSwitch(request)
+                        break
+
+                    default:
+                        response = JSON.stringify('[4, ' + callID + ',"GenericError","MessageTypeID is invalid",{}]')
+                        break
+                }
+                clientSocket.send(response)
             }
-    
-            clientSocket.send(response)
         })
     }
     return exports
