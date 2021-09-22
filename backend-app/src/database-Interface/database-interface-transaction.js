@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerTransaction }) {
+module.exports = function({ dataAccessLayerTransaction, transactionValidation }) {
 
     const exports = {}
 
@@ -33,14 +33,19 @@ module.exports = function({ dataAccessLayerTransaction }) {
     }
 
     exports.addTransaction = function(userID, chargerID, MeterStartValue, callback) {
-        timestamp = (Date.now() / 1000 | 0)
-        dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(errorCodes, transactionId) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
-            } else {
-                callback([], transactionId)
-            }
-        })
+        const validationError = transactionValidation.getAddTransactionValidation(MeterStartValue)
+        if(validationError.length > 0){
+            callback(validationError, null)
+        }else{
+            timestamp = (Date.now() / 1000 | 0)
+            dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(errorCodes, transactionId) {
+                if (errorCodes.length > 0) {
+                    callback(errorCodes, [])
+                } else {
+                    callback([], transactionId)
+                }
+            })
+        }
     }
 
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
@@ -54,13 +59,18 @@ module.exports = function({ dataAccessLayerTransaction }) {
     }
 
     exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
-        dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(errorCodes, updatedTransaction) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
-            } else {
-                callback([], updatedTransaction)
-            }
-        })
+        const validationError = transactionValidation.getUpdateTransactionMeterValidation(meterValue)
+        if(validationError.length > 0){
+            callback(validationError, null)
+        }else{
+            dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(errorCodes, updatedTransaction) {
+                if (errorCodes.length > 0) {
+                    callback(errorCodes, [])
+                } else {
+                    callback([], updatedTransaction)
+                }
+            })
+        }
     }
 
     return exports
