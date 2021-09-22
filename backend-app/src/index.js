@@ -17,6 +17,7 @@ container.register({
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
     chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
+    transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
 
     //presentation layers
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),

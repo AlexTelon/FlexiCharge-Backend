@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerTransaction, dbErrorCheck }) {
+module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck }) {
 
     const exports = {}
 
@@ -43,16 +43,21 @@ module.exports = function({ dataAccessLayerTransaction, dbErrorCheck }) {
     }
 
     exports.addTransaction = function(userID, chargerID, MeterStartValue, callback) {
-        timestamp = (Date.now() / 1000 | 0)
-        dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(error, transactionId) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], transactionId)
-            }
-        })
+        const validationError = transactionValidation.getAddTransactionValidation(MeterStartValue)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            timestamp = (Date.now() / 1000 | 0)
+            dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(error, transactionId) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], transactionId)
+                }
+            })
+        }
     }
 
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
@@ -68,15 +73,20 @@ module.exports = function({ dataAccessLayerTransaction, dbErrorCheck }) {
     }
 
     exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
-        dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(error, updatedTransactionMeter) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], updatedTransactionMeter)
-            }
-        })
+        const validationError = transactionValidation.getUpdateTransactionMeterValidation(meterValue)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(error, updatedTransactionMeter) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], updatedTransactionMeter)
+                }
+            })
+        }
     }
 
     return exports
