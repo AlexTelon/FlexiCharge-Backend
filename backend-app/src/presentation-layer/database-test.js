@@ -41,7 +41,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
                 // })
 
-            
+
                 databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
@@ -109,11 +109,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     })
                 })
 
-                databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
-                    console.log(errors)
-                    console.log(userReservation)
-                    response.redirect("/")
-                })
+                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
+                //     console.log(errors)
+                //     console.log(userReservation)
+                //     response.redirect("/")
+                // })
 
                 // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
                 //     console.log(errors)

@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerTransaction }) {
+module.exports = function({ dataAccessLayerTransaction, dbErrorCheck }) {
 
     const exports = {}
 
