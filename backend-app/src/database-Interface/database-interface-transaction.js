@@ -35,7 +35,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation })
     exports.addTransaction = function(userID, chargerID, MeterStartValue, callback) {
         const validationError = transactionValidation.getAddTransactionValidation(MeterStartValue)
         if(validationError.length > 0){
-            callback(validationError, null)
+            callback(validationError, [])
         }else{
             timestamp = (Date.now() / 1000 | 0)
             dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(errorCodes, transactionId) {
@@ -61,7 +61,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation })
     exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
         const validationError = transactionValidation.getUpdateTransactionMeterValidation(meterValue)
         if(validationError.length > 0){
-            callback(validationError, null)
+            callback(validationError, [])
         }else{
             dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(errorCodes, updatedTransaction) {
                 if (errorCodes.length > 0) {
