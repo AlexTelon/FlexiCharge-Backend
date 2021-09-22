@@ -3,7 +3,7 @@ const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser')
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, databaseTestRouter }) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -15,12 +15,6 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use(bodyParser.json())
     app.use(function(request, response, next) {
         console.log(request.method, request.url);
-
-        // response.setHeader("Access-Control-Allow-Origin", "*") // "localhost:3000"
-        // response.setHeader("Access-Control-Allow-Methods", "*") // GET, POST, PUT, DELETE
-        // response.setHeader("Access-Control-Allow-Headers", "*")
-        // response.setHeader("Access-Control-Expose-Headers", "*")
-
         next()
     })
 
@@ -32,8 +26,6 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
     app.use('/auth', authenticationRouter)
-
-    app.use('/database', databaseTestRouter)
 
     return app
 
