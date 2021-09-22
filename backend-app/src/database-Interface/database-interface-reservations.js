@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerReservation, dbErrorCheck }) {
+module.exports = function({ dataAccessLayerReservation, reservationValidation, dbErrorCheck }) {
 
     const exports = {}
 
@@ -47,15 +47,20 @@ module.exports = function({ dataAccessLayerReservation, dbErrorCheck }) {
     }
 
     exports.addReservation = function(chargerID, userID, start, end, callback) {
-        dataAccessLayerReservation.addReservation(chargerID, userID, start, end, function(error, reservationId) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], reservationId)
-            }
-        })
+        const validationError = reservationValidation.getAddReservationValidation(start, end)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerReservation.addReservation(chargerID, userID, start, end, function(error, reservationId) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], reservationId)
+                }
+            })
+        }
     }
 
     exports.removeReservation = function(reservationID, callback) {
