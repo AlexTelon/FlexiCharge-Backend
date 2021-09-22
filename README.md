@@ -39,6 +39,7 @@ module.exports = function({ databaseInterfaceCharger}) {
   - updateChargerStatus(chargerId: int, status: int, function(errors, updatedCharger)) //status: 0: Occupied, 1: Available, 2: Reserved, 3: Faulty
   - getChargers(function(errors, chargers)) 
   - getAvailableChargers(function(errors, availableChargers))
+  - getChargerBySerialNumber(serialNumber:string,function(error, charger)) //OCPP Only
 - databaseInterfaceTransaction
   - addTransaction(userId: int, chargerId: int, MeterStartValue: int, function(errors, transactionId))
   - getTransaction(transactionId: int, function(errors, transaction))

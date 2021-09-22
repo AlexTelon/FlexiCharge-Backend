@@ -3,7 +3,7 @@ const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser')
 
-module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter }) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
