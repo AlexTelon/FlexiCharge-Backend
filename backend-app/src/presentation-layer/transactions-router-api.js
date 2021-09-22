@@ -18,7 +18,16 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.get('/userTransactions/:userID', function(request, response){
-        
+        const userId = request.params.userID
+        databaseInterfaceTransactions.getTransactionsForCharger(userId, function(errors, userTransaction){
+            if(errors.length == 0 && userTransaction.length == 0){
+                response.status(404).end()
+            }else if(errors.length == 0){
+                response.status(200).json(userTransaction)
+            }else{
+                response.status(500).json(errors)
+            }
+        })
     })
 
     router.get('/chargerTransactions/:chargerID', function(request, response){

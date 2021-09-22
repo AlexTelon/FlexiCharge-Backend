@@ -19,7 +19,16 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
-          
+        const userId = request.params.userID
+        databaseInterfaceReservations.getReservationForCharger(userId, function(error, userReservation){
+            if(error.length == 0 && userReservation.length == 0){
+                response.status(404).end()
+            }else if(error.length == 0){
+                response.status(200).json(userReservation)
+            }else{
+                response.status(500).json(error)
+            }
+        })
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
