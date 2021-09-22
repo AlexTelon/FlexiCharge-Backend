@@ -1,4 +1,6 @@
 const express = require('express')
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceReservations }) {
 
@@ -19,10 +21,11 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
-          
+   
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
         const chargerId = request.params.chargerID
         databaseInterfaceReservations.getReservationForCharger(chargerId, function(error, chargerReservation){
             if(error.length == 0 && chargerReservation.length == 0){
@@ -37,10 +40,10 @@ module.exports = function ({ databaseInterfaceReservations }) {
 
     router.post('/', function (request, response) {
         
-        
     })
 
     router.delete('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
         const reservationId = request.params.id
         databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
             if (errors.length == 0 && isReservationDeleted) {

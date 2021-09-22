@@ -1,4 +1,6 @@
 var express = require('express')
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceTransactions }) {
 
@@ -34,9 +36,11 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.post('/', function (req, res) {
+    
+    router.post('/', function (request, response) {
         
     })
+    
 
     router.put(':id', function (req, res) {
         res.send("update transaction with payment")
