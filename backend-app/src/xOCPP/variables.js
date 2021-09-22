@@ -1,5 +1,6 @@
 const connectedChargers = {}
 const chargerSerials = []
+const chargerIDs = {}
 
 module.exports = function ({ }) {
 
@@ -34,6 +35,20 @@ module.exports = function ({ }) {
     }
     exports.getLengthConnectedCharges = function () {
         return Object.keys(connectedChargers).length
+    }
+
+
+    exports.getChargerIDs = function () {
+        return chargerIDs
+    }
+    exports.addChargerIDs = function (serial, id) {
+        chargerIDs[serial] = id
+    }
+    exports.removeChargerIDs = function (serial) {
+        delete chargerIDs[serial]
+    }
+    exports.getLengthChargerIDs = function () {
+        return Object.keys(chargerIDs).length
     }
 
     return exports

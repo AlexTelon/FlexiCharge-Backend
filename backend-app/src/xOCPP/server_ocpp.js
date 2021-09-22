@@ -29,8 +29,9 @@ module.exports = function ({ clientHandler, variables, databaseInterfaceCharger 
 
                                 variables.removeConnectedChargers(chargerID)
                                 variables.removeChargerSerials(chargerSerial)
+                                variables.removeChargerIDs(chargerSerial)
                                 console.log("Disconnected from charger with ID: " + chargerSerial)
-                                console.log("Number of connected chargers: " + variables.getLengthConnectedCharges() + " (" + variables.getLengthChargerSerials() + ")")
+                                console.log("Number of connected chargers: " + variables.getLengthConnectedCharges() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
 
                             }
                         }

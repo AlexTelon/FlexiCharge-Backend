@@ -12,7 +12,7 @@ module.exports = function({constants}) {
 
             switch(messageTypeID) {
                 case constants.getConstants().CALL:
-                    response = callSwitch(request)
+                    response = callSwitch(request, chargerID)
                     break
 
                 case constants.getConstants().CALLRESULT:
@@ -34,14 +34,19 @@ module.exports = function({constants}) {
 
 
 
-function callSwitch(request) {
+function callSwitch(request, chargerID) {
     let callID = request[1]
     let action = request[2]
 
     var callResult = ""
     switch(action) {
         case "BootNotification":
-            callResult = JSON.stringify('[3,' + callID + ',{"status":"Accepted","currentTime":' + new Date().toISOString() + ',"interval":86400}]')
+            if(chargerID != null){
+               callResult = JSON.stringify('[3,' + callID + ',{"status":"Accepted","currentTime":' + new Date().toISOString() + ',"interval":86400,"chargerID":'+chargerID+'}]') 
+            }else{
+                callResult = JSON.stringify('[4, ' + callID + ',"InternalError","Contact OCPP gang :)",{}]')
+            }
+            
             break
         default:
             callResult = JSON.stringify('[4, ' + callID + ',"NotImplemented","This function is not implemented.",{}]')
