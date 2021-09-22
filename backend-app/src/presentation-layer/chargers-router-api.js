@@ -46,7 +46,9 @@ module.exports = function ({ databaseInterfaceCharger }) {
         //authMiddleware.verifyToken(request, response);
         const chargerPointId = request.body.chargePointID
         const location = request.body.location
-        databaseInterfaceCharger.addCharger(chargerPointId, location, function (errorCodes, chargerId) {
+        const serialNumber = request.body.serialNumber;
+
+        databaseInterfaceCharger.addCharger(chargerPointId, serialNumber, location, function (errorCodes, chargerId) {
             if (errorCodes.length == 0) {
                 response.status(201).json(chargerId)
             } else {
