@@ -108,6 +108,7 @@ class CognitoService {
 
             const tokens = await this.cognitoIdentity.initiateAuth(params).promise();
             const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
+            console.log(userdata);
 
             const data = {
                 accessToken: tokens.AuthenticationResult.AccessToken,
