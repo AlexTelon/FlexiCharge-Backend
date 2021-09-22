@@ -50,50 +50,6 @@ class CognitoService {
         }
     }
 
-
-    // async signInAdmin(username, password) {
-
-    //     const params = {
-    //         AuthFlow: 'USER_PASSWORD_AUTH',
-    //         ClientId: this.clientId,
-    //         UserPoolId: this.userPoolId,
-    //         AuthParameters: {
-    //             'USERNAME': username,
-    //             'PASSWORD': password,
-    //             'SECRET_HASH': this.generateHash(username)
-    //         }
-    //     }
-    //     try {
-
-    //         const tokens = await this.cognitoIdentity.initiateAuth(params).promise();
-    //         const payload = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
-
-    //         console.log('Hello');
-    //         console.log(tokens);
-    //         console.log(payload);
-
-    //         if (payload['cognito:groups'] === undefined) {
-    //             return authError
-    //         } else if (payload['cognito:groups'].includes('Admin')) {
-    //             const data = {
-    //                 accessToken: tokens.AuthenticationResult.AccessToken,
-    //                 email: payload.email,
-    //                 username: payload['cognito:username'],
-    //                 name: payload.name,
-    //                 family_name: payload.family_name,
-    //                 user_id: payload.sub
-    //             }
-    //             return data
-    //         } else {
-    //             return authError
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error);
-    //         return error
-    //     }
-    // }
-
     async signInUser(username, password) {
         const params = {
             AuthFlow: 'USER_PASSWORD_AUTH',
@@ -124,6 +80,74 @@ class CognitoService {
         } catch (error) {
             console.log(error);
             return error
+        }
+    }
+
+    async changePassword(accessToken, previousPassword, newPassword) {
+        const params = {
+            "AccessToken": accessToken,
+            "PreviousPassword": previousPassword,
+            "ProposedPassword": newPassword
+        }
+
+        try {
+            const res = await this.cognitoIdentity.changePassword(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data;
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+
+    }
+
+    async confirmForgotPassword(username, password, confirmationCode) {
+        const params = {
+            "Username": username,
+            "Password": password,
+            "ClientId": this.clientId,
+            "ConfirmationCode": confirmationCode,
+            "SecretHash": this.generateHash(username)
+        }
+
+        try {
+            const res = await this.cognitoIdentity.confirmForgotPassword(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data;
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+
+    }
+
+    async forgotPassword(username) {
+
+        const params = {
+            "ClientId": this.clientId,
+            "Username": username,
+            "SecretHash": this.generateHash(username)
+        }
+
+        try {
+            const res = await this.cognitoIdentity.forgotPassword(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data;
+
+        } catch (error) {
+            console.log(error);
+            return error;
         }
     }
 
