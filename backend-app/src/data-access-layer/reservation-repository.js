@@ -9,25 +9,25 @@ module.exports = function({ databaseInit }) {
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
     exports.getReservationForCharger = function(chargerID, callback) {
-        databaseInit.Reservations.findOne({ where: { chargerID: chargerID }, raw: true })
+        databaseInit.Reservations.findAll({ where: { chargerID: chargerID }, raw: true })
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
     exports.getReservationForUser = function(userID, callback) {
-        databaseInit.Reservations.findOne({ where: { userID: userID }, raw: true })
+        databaseInit.Reservations.findAll({ where: { userID: userID }, raw: true })
             .then(userReservation => callback([], userReservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
@@ -41,13 +41,8 @@ module.exports = function({ databaseInit }) {
         databaseInit.Reservations.create(reservation)
             .then(reservation => callback([], reservation.reservationID))
             .catch(e => {
-                if (e) {
-                    console.log(e)
-                    callback("couldNotCreateReservation", false)
-                } else {
-                    console.log(e)
-                    callback(e, null)
-                }
+                console.log(e)
+                callback(e, [])
             })
 
     }
@@ -57,12 +52,16 @@ module.exports = function({ databaseInit }) {
                 where: { reservationID: reservationID },
                 raw: true
             })
-            .then(_ => {
-                callback([], true)
+            .then(numberOfDeletedReservations => {
+                if (numberOfDeletedReservations == 0) {
+                    callback([], false)
+                } else {
+                    callback([], true)
+                }
             })
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], false)
+                callback(e, [])
             })
     }
 

@@ -1,6 +1,6 @@
 FROM node:16-alpine3.11
 
-EXPOSE 8080
+EXPOSE 8080 1337
 
 WORKDIR /backend-app
 

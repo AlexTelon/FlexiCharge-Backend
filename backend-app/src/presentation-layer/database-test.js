@@ -13,7 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('transaction') {
+        switch ('reservation') {
             case 'charger':
 
                 const point = {
@@ -22,12 +22,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 };
                 const charger = {
                     chargerID: 1,
-                    location: [57.777726, 14.163085],
+                    location: [57.777726, 14.163085], //[57.777726, 14.163085]
                     chargePointID: 1,
+                    serialNumber: '##€43cstsdx6765',
                     status: 2
                 }
-
-
 
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
@@ -39,8 +38,15 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //         response.redirect("/")
                 //     })
 
+
                 // })
 
+            
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+                    response.redirect("/")
+                })
 
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
@@ -88,22 +94,26 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 const reservation = {
                     reservationID: 1,
                     userID: 1,
-                    chargerID: 2,
+                    chargerID: 1,
                     start: 1,
                     end: 4
                 }
 
-                // databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation){
-                //     console.log(errors)
-                //     console.log(chargerReservation)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation) {
+                    console.log(errors)
+                    console.log(chargerReservation)
+                    databaseInterfaceReservations.removeReservation(55, function(errors, reservation) {
+                        console.log(errors)
+                        console.log(reservation)
+                        response.redirect("/")
+                    })
+                })
 
-                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation){
-                //     console.log(errors)
-                //     console.log(userReservation)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
+                    console.log(errors)
+                    console.log(userReservation)
+                    response.redirect("/")
+                })
 
                 // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
                 //     console.log(errors)
