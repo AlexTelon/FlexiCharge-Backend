@@ -14,7 +14,7 @@ module.exports = function ({ clientHandler, variables, databaseInterfaceCharger 
             let chargerSerial = (originArray[originArray.length - 1]).toString()
 
             // Validate and handle connecting charger:
-            clientHandler.handelClient(ws, chargerSerial)
+            clientHandler.handleClient(ws, chargerSerial)
 
             ws.on('close', function disconnection() {
                 if (variables.isInChargerSerials(chargerSerial)) {
@@ -30,8 +30,8 @@ module.exports = function ({ clientHandler, variables, databaseInterfaceCharger 
                                 variables.removeConnectedChargers(chargerID)
                                 variables.removeChargerSerials(chargerSerial)
                                 variables.removeChargerIDs(chargerSerial)
-                                console.log("Disconnected from charger with ID: " + chargerSerial)
-                                console.log("Number of connected chargers: " + variables.getLengthConnectedCharges() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
+                                console.log("Disconnected from charger with ID: " + chargerID)
+                                console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
 
                             }
                         }

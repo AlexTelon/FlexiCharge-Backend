@@ -1,13 +1,13 @@
 module.exports = function ({ databaseInterfaceCharger, constants, messageHandler, variables }) {
 
-    exports.handelClient = function (clientSocket, chargerSerial) {
+    exports.handleClient = function (clientSocket, chargerSerial) {
 
         var messageChache = ""
 
         isValidClient(clientSocket, chargerSerial, function (chargerID) {
             if (chargerID) {
                 console.log("Charger with ID: " + chargerID + " connected to the system.")
-                console.log("Number of connected chargers: " + variables.getLengthConnectedCharges() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
+                console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
                 if (messageChache != "") {
                     messageHandler.handleMessage(messageChache, clientSocket, chargerID)
                 }
@@ -44,7 +44,6 @@ module.exports = function ({ databaseInterfaceCharger, constants, messageHandler
                     variables.addConnectedChargers(chargerID, newSocket)
                     variables.addChargerSerials(chargerSerial)
                     variables.addChargerIDs(chargerSerial, chargerID)
-                    //console.log("Number of connected chargers: " + connectedChargers.length)
 
                     callback(chargerID)
                 } else {

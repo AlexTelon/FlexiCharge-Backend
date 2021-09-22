@@ -4,8 +4,7 @@ const chargerIDs = {}
 
 module.exports = function ({ }) {
 
-
-
+    // CHARGER SERIALS
     exports.getChargerSerials = function () {
         return chargerSerials
     }
@@ -23,7 +22,7 @@ module.exports = function ({ }) {
         return chargerSerials.includes(serial)
     }
 
-
+    // CONNECTED CHARGERS
     exports.getConnectedChargers = function () {
         return connectedChargers
     }
@@ -33,11 +32,11 @@ module.exports = function ({ }) {
     exports.removeConnectedChargers = function (id) {
         delete connectedChargers[id]
     }
-    exports.getLengthConnectedCharges = function () {
+    exports.getLengthConnectedChargers = function () {
         return Object.keys(connectedChargers).length
     }
 
-
+    // CHARGER IDS
     exports.getChargerIDs = function () {
         return chargerIDs
     }
