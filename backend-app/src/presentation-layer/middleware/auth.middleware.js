@@ -18,7 +18,6 @@ class AuthMiddleware {
 
     verifyToken(req, res, next) {
         const token = req.header('Auth');
-
         if (!token) res.status(401).end();
 
         let decodeJwt = jwt.decode(token, { complete: true })
@@ -35,6 +34,9 @@ class AuthMiddleware {
         jwt.verify(token, pem, (error, payload) => {
             if (error) {
                 res.status(401).end()
+            } else {
+                console.log("Payload:");
+                console.log(payload);
             }
             // next()
         })
@@ -79,7 +81,6 @@ class AuthMiddleware {
 
         try {
             const response = await fetch(URL);
-            // console.log(response);
 
             if (response.status !== 200) {
                 throw 'request not successfull'

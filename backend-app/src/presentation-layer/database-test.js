@@ -13,7 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('charger') {
+        switch ('reservation') {
             case 'charger':
 
                 const point = {
@@ -22,34 +22,31 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 };
                 const charger = {
                     chargerID: 1,
-                    location: [57.777726, 14.163085],
+                    location: [57.777726, 14.163085], //[57.777726, 14.163085]
                     chargePointID: 1,
                     serialNumber: '##€43cstsdx6765',
                     status: 2
                 }
 
+                // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                //     console.log(errors)
+                //     console.log(chargerAdded)
+
+                //     databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                //         console.log(errors)
+                //         console.log(chargers)
+                //         response.redirect("/")
+                //     })
 
 
-                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
+                // })
+
+
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
                     response.redirect("/")
-
                 })
-
-
-                // databaseInterfaceCharger.getChargerBySerialNumber(charger.serialNumber, function(errors, charger) {
-                //     console.log(errors)
-                //     console.log(charger)
-                //     response.redirect("/")
-                // })
-
-
-                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                //     console.log(errors)
-                //     console.log(chargers)
-                //     response.redirect("/")
-                // })
 
                 // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
                 //     console.log(errors)
@@ -102,17 +99,21 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     end: 4
                 }
 
-                // databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation){
+                databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation) {
+                    console.log(errors)
+                    console.log(chargerReservation)
+                    databaseInterfaceReservations.removeReservation(55, function(errors, reservation) {
+                        console.log(errors)
+                        console.log(reservation)
+                        response.redirect("/")
+                    })
+                })
+
+                // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
                 //     console.log(errors)
-                //     console.log(chargerReservation)
+                //     console.log(userReservation)
                 //     response.redirect("/")
                 // })
-
-                databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
-                    console.log(errors)
-                    console.log(userReservation)
-                    response.redirect("/")
-                })
 
                 // databaseInterfaceReservations.removeReservation(reservation.reservationID, function(errors, reservation){
                 //     console.log(errors)
@@ -145,11 +146,15 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     paymentID: 44
                 }
 
-                // databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
-                //     console.log(errors)
-                //     console.log(transactionId)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
+                    console.log(errors)
+                    console.log(transactionId)
+                    databaseInterfaceTransactions.updateTransactionMeter(transaction.transactionID, transaction.meterStop, function(errors, updatedTransaction) {
+                        console.log(errors)
+                        console.log(updatedTransaction)
+                        response.redirect("/")
+                    })
+                })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
                 //     console.log(errors)
