@@ -7,7 +7,7 @@ module.exports = function ({ databaseInterfaceCharger, constants, messageHandler
         isValidClient(clientSocket, chargerSerial, function (chargerID) {
             if (chargerID) {
                 console.log("Charger with ID: " + chargerID + " connected to the system.")
-                console.log("Number of connected chargers: " + variables.getLengthChargerSerials())
+                console.log("Number of connected chargers: " + variables.getLengthConnectedCharges() + " (" + variables.getLengthChargerSerials() + ")")
                 if (messageChache != "") {
                     messageHandler.handleMessage(messageChache, clientSocket, chargerID)
                 }
