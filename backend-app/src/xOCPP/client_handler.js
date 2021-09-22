@@ -14,10 +14,13 @@ module.exports = function({databaseInterfaceCharger, constants}) {
                     console.log("Charger with ID: " + chargerID + " connected to the system.")
                     
                     // Save the websocket with the charger's serial in array:
-                    connectedChargers.push({
+                    constants.getConstants().connectedChargers.push({
                         [chargerID]: newSocket
                     })
-                    console.log("Number of connected chargers: " + connectedChargers.length)
+                    constants.getConstants().chargerSerials.push({
+                        chargerSerial
+                    })
+                    //console.log("Number of connected chargers: " + connectedChargers.length)
                     
                     callback(chargerID)
                 } else {
