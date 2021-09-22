@@ -17,6 +17,18 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
+    router.get('/serial/:serialNumber', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const serialNumber = request.params.serialNumber
+        databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
+            if (error.length > 0) {
+                response.status(500).json(error)
+            } else {
+                response.status(200).json(charger)
+            }
+        })
+    })
+
     router.get('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         const id = request.params.id
@@ -31,13 +43,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-<<<<<<< HEAD
-    router.get('/chargers/available', function(request, response){ 
-        //authMiddleware.verifyToken(request, respone);
-=======
     router.get('/chargers/available', function (request, response) {
         //authMiddleware.verifyToken(request, response);
->>>>>>> 99a27e404ba90c9f5f2a3c4f0235c689f5519e78
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
                 response.status(404).json(errors)
