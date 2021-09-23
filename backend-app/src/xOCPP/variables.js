@@ -4,8 +4,8 @@ const chargerIDs = {}
 
 module.exports = function ({ }) {
 
-
-
+    // CHARGER SERIALS
+    // Array with all the serial numbers
     exports.getChargerSerials = function () {
         return chargerSerials
     }
@@ -23,7 +23,9 @@ module.exports = function ({ }) {
         return chargerSerials.includes(serial)
     }
 
-
+    // CONNECTED CHARGERS
+    // Get socket with charger IDs
+    //change to ConnectedSocket
     exports.getConnectedChargers = function () {
         return connectedChargers
     }
@@ -33,11 +35,12 @@ module.exports = function ({ }) {
     exports.removeConnectedChargers = function (id) {
         delete connectedChargers[id]
     }
-    exports.getLengthConnectedCharges = function () {
+    exports.getLengthConnectedChargers = function () {
         return Object.keys(connectedChargers).length
     }
 
-
+    // CHARGER IDS
+    // get charger IDs with serial number
     exports.getChargerIDs = function () {
         return chargerIDs
     }
