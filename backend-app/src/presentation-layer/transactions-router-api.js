@@ -1,4 +1,6 @@
 var express = require('express')
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceTransactions }) {
 
@@ -19,7 +21,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.get('/userTransactions/:userID', function(request, response){
         const userId = request.params.userID
-        databaseInterfaceTransactions.getTransactionsForCharger(userId, function(errors, userTransaction){
+        databaseInterfaceTransactions.getTransactionsForUser(userId, function(errors, userTransaction){
             if(errors.length == 0 && userTransaction.length == 0){
                 response.status(404).end()
             }else if(errors.length == 0){
@@ -43,16 +45,32 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.post('/', function (req, res) {
+    
+    router.post('/', function (request, response) {
+    
+    })
+    
+
+    router.put('/payment/:transactionID', function (request, response) {
         
     })
 
-    router.put(':id', function (req, res) {
-        res.send("update transaction with payment")
-    })
 
-    router.put(':id', function (req, res) {
-        res.send("update transaction with meter")
+
+    router.put('/meter/:transactionID', function (request, response) {
+        const transactionId = request.params.transactionID
+        const meterValue = request.body.meterStop
+        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function(error, updateTransactionMeter){
+            if (error.length == 0) {
+                response.status(201).json(updateTransactionMeter)
+            } else {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error)
+                } else {
+                    response.status(404).json(error)
+                }
+            }
+        })
     })
 
     return router
