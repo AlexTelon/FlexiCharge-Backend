@@ -21,8 +21,9 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
         const userId = request.params.userID
-        databaseInterfaceReservations.getReservationForCharger(userId, function(error, userReservation){
+        databaseInterfaceReservations.getReservationForUser(userId, function(error, userReservation){
             if(error.length == 0 && userReservation.length == 0){
                 response.status(404).end()
             }else if(error.length == 0){
@@ -30,7 +31,7 @@ module.exports = function ({ databaseInterfaceReservations }) {
             }else{
                 response.status(500).json(error)
             }
-        })
+        })    
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
@@ -48,7 +49,22 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.post('/', function (request, response) {
-        
+        //authMiddleware.verifyToken(request, response);
+        const chargerID = request.body.chargerID
+        const userID = request.body.userID
+        const start = request.body.start
+        const end = request.body.end
+        databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errorCodes, reservationId) {
+            if (errorCodes.length == 0) {
+                response.status(201).json(reservationId)
+            } else {
+                if (errorCodes.includes("internalError") || errorCodes.includes("dbError")) {
+                    response.status(500).json(errorCodes)
+                } else {
+                    response.status(404).json(errorCodes)
+                }
+            }
+        })
     })
 
     router.delete('/:id', function (request, response) {
