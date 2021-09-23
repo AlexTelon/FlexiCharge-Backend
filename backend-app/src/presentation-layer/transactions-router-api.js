@@ -47,30 +47,28 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     
     router.post('/', function (request, response) {
-    
+        
     })
     
 
     router.put('/payment/:transactionID', function (request, response) {
-        
-    })
-
-
-
-    router.put('/meter/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
-        const meterValue = request.body.meterStop
-        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function(error, updateTransactionMeter){
-            if (error.length == 0) {
-                response.status(201).json(updateTransactionMeter)
-            } else {
-                if (error.includes("internalError") || error.includes("dbError")) {
-                    response.status(500).json(error)
-                } else {
-                    response.status(404).json(error)
+        const paymentId = request.body.paymentID
+        dataAccessLayerTransaction.updateTransactionPayment(transactionId, paymentId, function(error, updatedTransactionPayment) {
+            if(error.length == 0){
+                response.status(201).json(updatedTransactionPayment)
+            }else{
+                if(error.includes("internalError") || error.includes("dbError")){
+                    response.status(500).json(error) 
+                }else{
+                    response.status(404).json(error) 
                 }
             }
         })
+    })
+
+    router.put('/meter/:transactionID', function (request, response) {
+       
     })
 
     return router

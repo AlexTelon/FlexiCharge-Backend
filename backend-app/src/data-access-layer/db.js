@@ -111,13 +111,13 @@ sequelize.sync({ force: true }).then(function() {
         if (count < 1) {
             Chargers.create({
                 location: [57.777714, 14.163010],
-                serialNumber: '€%&€6376776876',
+                serialNumber: 'abc123',
                 chargePointID: 1,
                 status: 1
             });
             Chargers.create({
                 location: [57.777725, 14.163085],
-                serialNumber: '()79654564535""34',
+                serialNumber: '123abc',
                 chargePointID: 1,
                 status: 0
             });
