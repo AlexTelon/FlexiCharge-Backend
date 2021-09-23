@@ -18,31 +18,17 @@ module.exports = function ({ clientHandler, variables, databaseInterfaceCharger 
 
             ws.on('close', function disconnection() {
                 if (variables.isInChargerSerials(chargerSerial)) {
-                    databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
 
-                        if (errorCodes.length) {
-                            console.log(errorCodes)
-                        } else {
+                    const chargerID = variables.getChargerIDs()[chargerSerial]
 
-                            if (charger.length != 0) {
-                                let chargerID = charger.chargerID
-
-                                variables.removeConnectedChargers(chargerID)
-                                variables.removeChargerSerials(chargerSerial)
-                                variables.removeChargerIDs(chargerSerial)
-                                console.log("Disconnected from charger with ID: " + chargerID)
-                                console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
-
-                            }
-                        }
-                    })
+                    variables.removeConnectedChargers(chargerID)
+                    variables.removeChargerSerials(chargerSerial)
+                    variables.removeChargerIDs(chargerSerial)
+                    console.log("Disconnected from charger with ID: " + chargerID)
+                    console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
                 }
             })
         })
     }
     return exports
-}
-
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
 }
