@@ -31,13 +31,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-<<<<<<< HEAD
-    router.get('/chargers/available', function(request, response){ 
-        //authMiddleware.verifyToken(request, respone);
-=======
     router.get('/chargers/available', function (request, response) {
         //authMiddleware.verifyToken(request, response);
->>>>>>> 99a27e404ba90c9f5f2a3c4f0235c689f5519e78
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
                 response.status(404).json(errors)
