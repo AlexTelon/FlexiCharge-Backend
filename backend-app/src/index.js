@@ -8,11 +8,14 @@ container.register({
     dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
     dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
 
+
+
     //business logic layers
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
+    dbErrorCheck: awilix.asFunction(require('./database-Interface/database-error-check')),
 
     //presentation layers
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
@@ -23,6 +26,10 @@ container.register({
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
     ocppInterface: awilix.asFunction(require('./xOCPP//interface')),
+    clientHandler: awilix.asFunction(require('./xOCPP/client_handler')),
+    messageHandler: awilix.asFunction(require('./xOCPP/message_handler')),
+    constants: awilix.asFunction(require('./xOCPP/constants')),
+    variables: awilix.asFunction(require('./xOCPP/variables')),
 
 
     app: awilix.asFunction(require('./presentation-layer/app'))

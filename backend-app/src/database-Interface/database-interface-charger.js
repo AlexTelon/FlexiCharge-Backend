@@ -1,12 +1,14 @@
-module.exports = function({ dataAccessLayerCharger }) {
+module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
 
     const exports = {}
 
 
     exports.getChargers = function(callback) {
-        dataAccessLayerCharger.getChargers(function(errorCodes, chargers) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
+        dataAccessLayerCharger.getChargers(function(error, chargers) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
             } else {
                 callback([], chargers)
             }
@@ -14,19 +16,47 @@ module.exports = function({ dataAccessLayerCharger }) {
     }
 
     exports.getCharger = function(chargerID, callback) {
-        dataAccessLayerCharger.getCharger(chargerID, function(errorCodes, charger) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
+        dataAccessLayerCharger.getCharger(chargerID, function(error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
             } else {
-                callback([], charger)
+                if (charger == null) {
+                    callback([], [])
+                } else {
+                    callback([], charger)
+                }
+
             }
         })
     }
 
+
+    exports.getChargerBySerialNumber = function(serialNumber, callback) {
+        dataAccessLayerCharger.getChargerBySerialNumber(serialNumber, function(error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                if (charger == null) {
+                    callback([], [])
+                } else {
+                    callback([], charger)
+                }
+
+            }
+        })
+    }
+
+
     exports.getAvailableChargers = function(callback) {
-        dataAccessLayerCharger.getAvailableChargers(function(errorCodes, chargers) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
+        dataAccessLayerCharger.getAvailableChargers(function(error, chargers) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
             } else {
                 callback([], chargers)
             }
@@ -34,10 +64,13 @@ module.exports = function({ dataAccessLayerCharger }) {
     }
 
 
-    exports.addCharger = function(chargePointId, location, callback) {
-        dataAccessLayerCharger.addCharger(chargePointId, location, function(errorCodes, chargerId) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
+    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
+        dataAccessLayerCharger.addCharger(chargePointId, serialNumber, location, function(error, chargerId) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    console.log(errorCode)
+                    callback(errorCode, [])
+                })
             } else {
                 callback([], chargerId)
             }
@@ -45,9 +78,11 @@ module.exports = function({ dataAccessLayerCharger }) {
     }
 
     exports.removeCharger = function(chargerId, callback) {
-        dataAccessLayerCharger.removeCharger(chargerId, function(errorCodes, chargerRemoved) { //chargerRemoved = bool
-            if (errorCodes.length > 0) {
-                callback(errorCodes, chargerRemoved)
+        dataAccessLayerCharger.removeCharger(chargerId, function(error, chargerRemoved) { //chargerRemoved = bool
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, chargerRemoved)
+                })
             } else {
                 callback([], chargerRemoved)
             }
@@ -56,9 +91,11 @@ module.exports = function({ dataAccessLayerCharger }) {
 
 
     exports.updateChargerStatus = function(chargerId, status, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(errorCodes, charger) {
-            if (errorCodes.length > 0) {
-                callback(errorCodes, [])
+        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
             } else {
                 callback([], charger)
             }
