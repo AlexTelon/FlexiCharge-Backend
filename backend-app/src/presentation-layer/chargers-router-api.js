@@ -6,11 +6,21 @@ module.exports = function ({ databaseInterfaceCharger }) {
 
     const router = express.Router()
 
-    router.get('/', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+    router.get('/', async function (request, response) {
+
         databaseInterfaceCharger.getChargers(function (error, chargers) {
             if (error.length > 0) {
                 response.status(500).json(error)
+            } else {
+                response.status(200).json(chargers)
+            }
+        })
+    })
+    router.get('/available', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
+            if (errors.length > 0) {
+                response.status(404).json(errors)
             } else {
                 response.status(200).json(chargers)
             }
@@ -31,16 +41,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.get('/chargers/available', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
-        databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
-            if (errors.length > 0) {
-                response.status(404).json(errors)
-            } else {
-                response.status(200).json(chargers)
-            }
-        })
-    })
+
 
     router.post('/', function (request, response) {
         //authMiddleware.verifyToken(request, response);
