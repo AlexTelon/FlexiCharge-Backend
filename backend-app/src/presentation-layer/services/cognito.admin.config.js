@@ -67,7 +67,7 @@ class AdminCognitoService {
             "Password": password,
             "Permanent": true,
             "Username": username,
-            UserPoolId: this.adminUserPoolId, // not admin userpool
+            "UserPoolId": this.adminUserPool
         }
 
         try {
