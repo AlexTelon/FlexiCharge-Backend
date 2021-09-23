@@ -27,6 +27,18 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
+    router.get('/serial/:serialNumber', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const serialNumber = request.params.serialNumber
+        databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
+            if (error.length > 0) {
+                response.status(500).json(error)
+            } else {
+                response.status(200).json(charger)
+            }
+        })
+    })
+
     router.get('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         const id = request.params.id

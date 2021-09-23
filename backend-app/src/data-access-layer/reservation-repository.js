@@ -9,7 +9,7 @@ module.exports = function({ databaseInit }) {
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
@@ -18,7 +18,7 @@ module.exports = function({ databaseInit }) {
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
@@ -27,7 +27,7 @@ module.exports = function({ databaseInit }) {
             .then(userReservation => callback([], userReservation))
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], [])
+                callback(e, [])
             })
     }
 
@@ -41,13 +41,8 @@ module.exports = function({ databaseInit }) {
         databaseInit.Reservations.create(reservation)
             .then(reservation => callback([], reservation.reservationID))
             .catch(e => {
-                if (e) {
-                    console.log(e)
-                    callback("couldNotCreateReservation", false)
-                } else {
-                    console.log(e)
-                    callback(e, null)
-                }
+                console.log(e)
+                callback(e, [])
             })
 
     }
@@ -57,12 +52,16 @@ module.exports = function({ databaseInit }) {
                 where: { reservationID: reservationID },
                 raw: true
             })
-            .then(_ => {
-                callback([], true)
+            .then(numberOfDeletedReservations => {
+                if (numberOfDeletedReservations == 0) {
+                    callback([], false)
+                } else {
+                    callback([], true)
+                }
             })
             .catch(e => {
                 console.log(e)
-                callback(["internalError"], false)
+                callback(e, [])
             })
     }
 
