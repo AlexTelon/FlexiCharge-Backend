@@ -16,7 +16,18 @@ class AuthMiddleware {
         this.setUpAdmin();
     }
 
-    verifyToken(req, res, next) {
+    verifyRole(token, role) {
+        if (token == undefined) {
+            return false;
+        } else if (token['cognito:groups'].includes(role)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async verifyToken(req, res, next) {
+
         const token = req.header('Auth');
         if (!token) res.status(401).end();
 
@@ -68,7 +79,7 @@ class AuthMiddleware {
                 const pem = jwkToPem(jwk);
                 pems[key_id] = pem
             });
-            console.log('Got all pems.');
+            // console.log('Got all pems.');
 
         } catch (error) {
             console.log(error);
@@ -96,7 +107,7 @@ class AuthMiddleware {
                 const pem = jwkToPem(jwk);
                 pems[key_id] = pem
             });
-            console.log('Got all admin pems.');
+            // console.log('Got all admin pems.');
 
         } catch (error) {
             console.log(error);

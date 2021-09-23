@@ -26,9 +26,9 @@ module.exports = function ({ databaseInterfaceReservations }) {
         databaseInterfaceReservations.getReservationForUser(userId, function(error, userReservation){
             if(error.length == 0 && userReservation.length == 0){
                 response.status(404).end()
-            }else if(error.length == 0){
+            } else if (error.length == 0) {
                 response.status(200).json(userReservation)
-            }else{
+            } else {
                 response.status(500).json(error)
             }
         })    
@@ -37,34 +37,29 @@ module.exports = function ({ databaseInterfaceReservations }) {
     router.get('/chargerReservation/:chargerID', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         const chargerId = request.params.chargerID
-        databaseInterfaceReservations.getReservationForCharger(chargerId, function(error, chargerReservation){
-            if(error.length == 0 && chargerReservation.length == 0){
+        databaseInterfaceReservations.getReservationForCharger(chargerId, function (error, chargerReservation) {
+            if (error.length == 0 && chargerReservation.length == 0) {
                 response.status(404).end()
-            }else if(error.length == 0){
+            } else if (error.length == 0) {
                 response.status(200).json(chargerReservation)
-            }else{
+            } else {
                 response.status(500).json(error)
             }
         })
     })
 
     router.post('/', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
-        const chargerID = request.body.chargerID
-        const userID = request.body.userID
-        const start = request.body.start
-        const end = request.body.end
-        databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errorCodes, reservationId) {
-            if (errorCodes.length == 0) {
-                response.status(201).json(reservationId)
+        const { chargerID, userID, start, end } = request.body;
+        databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errors, reservation) {
+            if (errors.length > 0) {
+                response.status(400).json(errors)
+            } else if (reservation) {
+                response.status(201).json(reservation)
             } else {
-                if (errorCodes.includes("internalError") || errorCodes.includes("dbError")) {
-                    response.status(500).json(errorCodes)
-                } else {
-                    response.status(404).json(errorCodes)
-                }
+                response.status(500).json(errors)
             }
         })
+
     })
 
     router.delete('/:id', function (request, response) {
@@ -73,9 +68,9 @@ module.exports = function ({ databaseInterfaceReservations }) {
         databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
             if (errors.length == 0 && isReservationDeleted) {
                 response.status(204).json()
-            } else if(errors.length == 0 && !isReservationDeleted){
+            } else if (errors.length == 0 && !isReservationDeleted) {
                 response.status(404).json()
-            }else{
+            } else {
                 response.status(500).json(errors)
             }
         })

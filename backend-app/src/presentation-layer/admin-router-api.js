@@ -73,8 +73,9 @@ module.exports = function () {
             })
     })
 
-    router.post('/create-user', function (req, res) {
-        // authMiddleware.verifyToken(req, res);
+    router.post('/create-user', async function (req, res) {
+        const token = await (authMiddleware.verifyToken(req, res));
+        console.log(token);
 
         const { username, password, email, name, family_name } = req.body;
         let userAttributes = [];
@@ -89,7 +90,7 @@ module.exports = function () {
                     res.status(201).json(result.data).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -149,8 +150,6 @@ module.exports = function () {
     })
 
     router.post('/set-admin-password', function (req, res) {
-        // authMiddleware.verifyToken(req, res);
-
         const { username, password } = req.body;
 
         cognito.setAdminPassword(username, password)
