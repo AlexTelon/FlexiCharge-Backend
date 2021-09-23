@@ -29,7 +29,8 @@ container.register({
     clientHandler: awilix.asFunction(require('./xOCPP/client_handler')),
     messageHandler: awilix.asFunction(require('./xOCPP/message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
-    variables: awilix.asFunction(require('./xOCPP/variables')),
+    //v is for variables
+    v: awilix.asFunction(require('./xOCPP/variables')),
 
 
     app: awilix.asFunction(require('./presentation-layer/app'))

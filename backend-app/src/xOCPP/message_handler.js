@@ -1,134 +1,137 @@
-module.exports = function({constants}) {
+module.exports = function ({ constants }) {
+    const c = constants.get()
 
-    exports.handleMessage = function(message, clientSocket, chargerID) {
+    exports.handleMessage = function (message, clientSocket, chargerID) {
         let request = JSON.parse(message)
-            let messageTypeID = request[0]
-            let callID = request[1]
-            let action = request[2]
-            
-            console.log("Incoming request call: " + action)
+        let messageTypeID = request[0]
+        let uniqueID = request[1]
 
-            var response = ""
-            let tmpResponse = new Array()
+        var response = ""
 
-            switch(messageTypeID) {
-                case constants.getConstants().CALL:
-                    response = callSwitch(request, chargerID)
-                    break
+        switch (messageTypeID) {
+            case c.CALL:
+                
+                response = callSwitch(uniqueID, request, chargerID)
+                break
 
-                case constants.getConstants().CALLRESULT:
-                    response = callResultSwitch(request)
-                    break
+            case c.CALL_RESULT:
 
-                case constants.getConstants().CALLERROR:
-                    response = callErrorSwitch(request)
-                    break
+                response = callResultSwitch(uniqueID, request)
+                break
 
-                default:
-                    tmpResponse.push(4)
-                    tmpResponse.push(callID)
-                    tmpResponse.push("GenericError")
-                    tmpResponse.push("MessageTypeID is invalid")
-                    tmpResponse.push(new Object())
-                    response = JSON.stringify(tmpResponse)
-                    break
-            }
-            clientSocket.send(response)
+            case c.CALL_ERROR:
+
+                response = callErrorSwitch(uniqueID, request)
+                break
+
+            default:
+
+                response = getGenericError(uniqueID, "MessageTypeID is invalid")
+                break
+        }
+        clientSocket.send(response)
     }
+
+    exports.interfaceStartCall = function (action, transactionID, socket) {
+        //to do
+        interfaceStartCallSwitch()
+    }
+
+    function interfaceStartCallSwitch() {
+        //todo
+    }
+    
+    
+    
+    function callSwitch(uniqueID, request, chargerID) {
+    
+        let action = request[2]
+        console.log("Incoming request call: " + action)
+        let callResult = ""
+    
+        switch (action) {
+            case c.BOOT_NOTIFICATION:
+                if (chargerID != null) {
+                    callResult = buildJSONMessage([c.CALL_RESULT, uniqueID, 
+                        {status:"Accepted",
+                        currentTime: new Date().toISOString(),
+                        interval: c.HEART_BEAT_INTERVALL,
+                        chargerId: chargerID}])
+    
+                } else {
+                    callResult = buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
+                        "Tell OCPP gang that error *no chargerID in callSwitch -> BOOT_NOTIFICATION* occured :)", {}])
+                }
+                break
+    
+            case c.START_TRANSACTION:
+                //todo
+                callResult = getCallResultNotImplemeted(uniqueID, action)
+                break
+    
+            case c.STOP_TRANSACTION:
+                //todo
+                callResult = getCallResultNotImplemeted(uniqueID, action)
+                break
+    
+            default:
+                callResult = getCallResultNotImplemeted(uniqueID, action)
+                break
+        }
+    
+        return callResult
+    }
+    
+    function callResultSwitch(response) {
+        let uniqueID = response[1]
+        let callCode = uniqueID.substring(0,3)
+        let chargerID = uniqueID.substring(4,9)
+    
+        var callResult = ""
+    
+    
+        switch(callCode) {
+            default:
+                callResult = getGenericError(uniqueID, "Could not interpret the response for the callcode: "+callCode)
+                break
+        }
+        return callResult
+    }
+    
+    function callErrorSwitch(response) {
+        let uniqueID = response[1]
+        let errorCode = response[2]
+        let callCode = uniqueID.substring(0,3)
+        let chargerID = uniqueID.substring(4,9)
+    
+        var callResult = new String()
+    
+        switch(callCode) {
+            default:
+            console.log("Ops, the charger responded with an error: "+errorCode)
+            break
+        }
+    
+        return callResult
+    }
+    
+    function getCallResultNotImplemeted(uniqueID, operation) {
+        return buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *"+operation+"* function is not implemented yet.", {}])
+    }
+    
+    function getGenericError(uniqueID, errorDescription) {
+        return buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
+    }
+    
+    function buildJSONMessage(messageArray) {
+        const message = []
+        messageArray.forEach(i => {
+            message.push(i)
+        })
+        
+        return JSON.stringify(message)
+    }
+
     return exports
 }
 
-
-
-function callSwitch(request, chargerID) {
-    let callID = request[1]
-    let action = request[2]
-
-    var callResult = new String()
-    let response = new Array()
-    let resultBody = new Object()
-
-    switch(action) {
-        case "BootNotification":
-            if(chargerID != null){
-                response.push(3)
-                response.push(callID)
-                resultBody.status = "Accepted"
-                resultBody.currentTime = new Date().toISOString()
-                resultBody.interval = 86400
-                resultBody.chargerID = chargerID
-                response.push(resultBody)
-               
-                callResult = JSON.stringify(response)
-            
-            } else {
-                response.push(4)
-                response.push(callID)
-                response.push("InternalError")
-                response.push("Contact OCPP gang :)")
-                response.push(new Object())
-
-                callResult = JSON.stringify(response)
-            }
-            break
-
-        default:
-            response.push(4)
-            response.push(callID)
-            response.push("NotImplemented")
-            response.push("This function is not implemented.")
-            response.push(new Object())
-
-            callResult = JSON.stringify(response)
-            break
-        }
-
-    return callResult
-}
-
-function callResultSwitch(response) {
-    let callID = response[1]
-    let callCode = callID.substring(0,3)
-    let chargerID = callID.substring(4,9)
-
-    var callResult = new String()
-    let reply = new Array()
-    let resultBody = new Object()
-
-    switch(callCode) {
-        default:
-            reply.push(4)
-            reply.push(callID)
-            reply.push("NotImplemented")
-            reply.push("This function is not implemented.")
-            reply.push(new Object())
-
-            callResult = JSON.stringify(reply)
-            break
-    }
-    return callResult
-}
-
-function callErrorSwitch(response) {
-    let callID = response[1]
-    let callCode = callID.substring(0,3)
-    let chargerID = callID.substring(4,9)
-
-    var callResult = new String()
-    let reply = new Array()
-    let resultBody = new Object()
-
-    switch(callCode) {
-        default:
-            reply.push(4)
-            reply.push(callID)
-            reply.push("NotImplemented")
-            reply.push("This function is not implemented.")
-            reply.push(new Object())
-
-            callResult = JSON.stringify(reply)
-        break
-    }
-
-    return callResult
-}

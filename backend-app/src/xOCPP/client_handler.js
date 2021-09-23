@@ -1,4 +1,4 @@
-module.exports = function ({ databaseInterfaceCharger, constants, messageHandler, variables }) {
+module.exports = function ({ databaseInterfaceCharger, messageHandler, v }) {
 
     exports.handleClient = function (clientSocket, chargerSerial) {
 
@@ -7,7 +7,7 @@ module.exports = function ({ databaseInterfaceCharger, constants, messageHandler
         isValidClient(clientSocket, chargerSerial, function (chargerID) {
             if (chargerID) {
                 console.log("Charger with ID: " + chargerID + " connected to the system.")
-                console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
+                console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                 if (messageChache != "") {
                     messageHandler.handleMessage(messageChache, clientSocket, chargerID)
                 }
@@ -20,9 +20,9 @@ module.exports = function ({ databaseInterfaceCharger, constants, messageHandler
 
         clientSocket.on('message', function incoming(message) {
 
-            if (variables.isInChargerSerials(chargerSerial)) {
+            if (v.isInChargerSerials(chargerSerial)) {
 
-                messageHandler.handleMessage(message, clientSocket,variables.getChargerIDs()[chargerSerial])
+                messageHandler.handleMessage(message, clientSocket,v.getChargerID(chargerSerial))
 
             } else {
                 messageChache = message
@@ -41,9 +41,9 @@ module.exports = function ({ databaseInterfaceCharger, constants, messageHandler
                     let chargerID = charger.chargerID
                     
                     // Save the websocket with the charger's serial in array:
-                    variables.addConnectedChargers(chargerID, newSocket)
-                    variables.addChargerSerials(chargerSerial)
-                    variables.addChargerIDs(chargerSerial, chargerID)
+                    v.addConnectedSockets(chargerID, newSocket)
+                    v.addChargerSerials(chargerSerial)
+                    v.addChargerIDs(chargerSerial, chargerID)
 
                     callback(chargerID)
                 } else {
