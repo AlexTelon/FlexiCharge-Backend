@@ -1,10 +1,35 @@
 var express = require('express')
 const bodyParser = require('body-parser')
+const jwtAuthz = require('express-jwt-authz');
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+
 const AuthMiddleware = require('./middleware/auth.middleware')
 const authMiddleware = new AuthMiddleware()
 
 const AdminCognitoService = require('./services/cognito.admin.config')
+const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
 
+const region = 'eu-west-1';
+const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
+
+const checkJwt = jwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and 
+    // the signing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://cognito-idp.${region}.amazonaws.com/${adminUserPoolId}/.well-known/jwks.json`,
+        // jwksUri: `https://dev-t3vri3ge.us.auth0.com/.well-known/jwks.json`
+    }),
+
+    // Validate the audience and the issuer.
+    // audience: 'flexicharge.app',
+    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1fWIOF9Yf'],
+    algorithms: ['RS256']
+});
 
 module.exports = function () {
     const router = express.Router()
@@ -27,8 +52,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/set-user-password', function (req, res) {
-        // authMiddleware.verifyToken(req, res);
+    router.post('/set-user-password', checkJwt, checkIfAdmin, function (req, res) {
 
         const { username, password } = req.body;
 
@@ -43,7 +67,7 @@ module.exports = function () {
             })
     })
 
-    router.get('/user/:username', function (req, res) {
+    router.get('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username
         cognito.getUser(username)
             .then(result => {
@@ -57,27 +81,24 @@ module.exports = function () {
             })
     })
 
-    router.get('/users/:limit', function (req, res) {
+    router.get('/users/:limit', checkJwt, checkIfAdmin, function (req, res) {
         const limit = req.params.limit
 
         cognito.getUsers(limit)
             .then(result => {
                 if (result.statusCode === 200) {
                     console.log(result);
-                    res.status(200).json(result.data).end();
+                    res.status(200).json(result.data.Users).end();
                 } else {
                     console.log(result);
                     res.status(result.statusCode).json(result).end();
                 }
-
             })
     })
 
-    router.post('/create-user', async function (req, res) {
-        const token = await (authMiddleware.verifyToken(req, res));
-        console.log(token);
-
+    router.post('/create-user', checkJwt, checkIfAdmin, async function (req, res) {
         const { username, password, email, name, family_name } = req.body;
+
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
         userAttributes.push({ Name: 'name', Value: name });
@@ -95,7 +116,7 @@ module.exports = function () {
             })
     })
 
-    router.delete('/user/:username', function (req, res) {
+    router.delete('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
         cognito.deleteUser(username)
@@ -113,7 +134,7 @@ module.exports = function () {
             })
     })
 
-    router.patch('/user/:username', function (req, res) {
+    router.patch('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
 
         const username = req.params.username;
         const { userAttributes } = req.body;
@@ -133,7 +154,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/reset-user-password/:username', function (req, res) {
+    router.post('/reset-user-password/:username', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
         cognito.resetUserPassword(username)
@@ -149,7 +170,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/set-admin-password', function (req, res) {
+    router.post('/set-admin-password', checkJwt, checkIfAdmin, function (req, res) {
         const { username, password } = req.body;
 
         cognito.setAdminPassword(username, password)

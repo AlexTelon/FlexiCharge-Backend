@@ -5,7 +5,7 @@ const auth = new AuthMiddleware()
 
 const path = require('path')
 const dirPath = path.join(__dirname, '/config.json')
-/*
+
 AWS.config.loadFromPath(dirPath);
 AWS.config.getCredentials(function (err) {
     if (err) console.log(err.stack);
@@ -14,11 +14,7 @@ AWS.config.getCredentials(function (err) {
         // console.log("Access key:", AWS.config.credentials.accessKeyId);
     }
 });
-<<<<<<< HEAD
 
-=======
->>>>>>> 18e2e1081941291ccb53dda91b4b9b1305c6f8f6
-*/
 class AdminCognitoService {
 
     config = {
@@ -33,7 +29,6 @@ class AdminCognitoService {
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
         AWS.config.getCredentials(function (err) {
-            console.log(1337);
             if (err) console.log(err.stack);
             // credentials not loaded
             else {
