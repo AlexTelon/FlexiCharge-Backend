@@ -14,6 +14,10 @@ AWS.config.getCredentials(function (err) {
         // console.log("Access key:", AWS.config.credentials.accessKeyId);
     }
 });
+<<<<<<< HEAD
+
+=======
+>>>>>>> 18e2e1081941291ccb53dda91b4b9b1305c6f8f6
 */
 class AdminCognitoService {
 

@@ -79,10 +79,12 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
+
+
     router.put('/meter/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
         const meterValue = request.body.meterStop
-        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function (error, updateTransactionMeter) {
+        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function(error, updateTransactionMeter){
             if (error.length == 0) {
                 response.status(201).json(updateTransactionMeter)
             } else {

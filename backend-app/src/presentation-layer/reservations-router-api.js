@@ -21,16 +21,17 @@ module.exports = function ({ databaseInterfaceReservations }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
         const userId = request.params.userID
-        databaseInterfaceReservations.getReservationForCharger(userId, function (error, userReservation) {
-            if (error.length == 0 && userReservation.length == 0) {
+        databaseInterfaceReservations.getReservationForUser(userId, function(error, userReservation){
+            if(error.length == 0 && userReservation.length == 0){
                 response.status(404).end()
             } else if (error.length == 0) {
                 response.status(200).json(userReservation)
             } else {
                 response.status(500).json(error)
             }
-        })
+        })    
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
@@ -49,7 +50,6 @@ module.exports = function ({ databaseInterfaceReservations }) {
 
     router.post('/', function (request, response) {
         const { chargerID, userID, start, end } = request.body;
-
         databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errors, reservation) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
