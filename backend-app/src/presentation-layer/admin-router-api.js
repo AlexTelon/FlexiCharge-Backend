@@ -41,6 +41,7 @@ module.exports = function () {
 
         cognito.adminSignIn(username, password)
             .then(result => {
+                console.log(result);
                 if (!result.statusCode) {
                     res.status(200).json(result).end();
                 } else if (result.statusCode === 400) {
@@ -67,7 +68,7 @@ module.exports = function () {
             })
     })
 
-    router.get('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
+    router.get('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username
         cognito.getUser(username)
             .then(result => {
@@ -81,10 +82,9 @@ module.exports = function () {
             })
     })
 
-    router.get('/users/:limit', checkJwt, checkIfAdmin, function (req, res) {
-        const limit = req.params.limit
+    router.get('/users', checkJwt, checkIfAdmin, function (req, res) {
 
-        cognito.getUsers(limit)
+        cognito.getUsers()
             .then(result => {
                 if (result.statusCode === 200) {
                     console.log(result);
@@ -96,7 +96,34 @@ module.exports = function () {
             })
     })
 
-    router.post('/create-user', checkJwt, checkIfAdmin, async function (req, res) {
+    router.get('/:username', checkJwt, checkIfAdmin, function (req, res) {
+        const username = req.params.username
+        cognito.getAdmin(username)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    console.log(result);
+                    res.status(200).json(result.data).end();
+                } else {
+                    console.log(result);
+                    res.status(result.statusCode).json(result).end();
+                }
+            })
+    })
+    router.get('/', checkJwt, checkIfAdmin, function (req, res) {
+
+        cognito.getAdmins()
+            .then(result => {
+                if (result.statusCode === 200) {
+                    console.log(result);
+                    res.status(200).json(result.data.Users).end();
+                } else {
+                    console.log(result);
+                    res.status(result.statusCode).json(result).end();
+                }
+            })
+    })
+
+    router.post('/users', checkJwt, checkIfAdmin, async function (req, res) {
         const { username, password, email, name, family_name } = req.body;
 
         let userAttributes = [];
@@ -115,8 +142,27 @@ module.exports = function () {
                 }
             })
     })
+    router.post('/', checkJwt, checkIfAdmin, function (req, res) {
+        const { username, password, email, name, family_name } = req.body;
 
-    router.delete('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
+        let userAttributes = [];
+        userAttributes.push({ Name: 'email', Value: email });
+        userAttributes.push({ Name: 'name', Value: name });
+        userAttributes.push({ Name: 'family_name', Value: family_name });
+
+        cognito.createAdmin(username, password, userAttributes)
+            .then(result => {
+                if (result.statusCode === 201) {
+                    console.log(result);
+                    res.status(201).json(result.data).end();
+                } else {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                }
+            })
+    })
+
+    router.delete('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
         cognito.deleteUser(username)
@@ -134,12 +180,33 @@ module.exports = function () {
             })
     })
 
-    router.patch('/user/:username', checkJwt, checkIfAdmin, function (req, res) {
+    router.patch('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
 
         const username = req.params.username;
         const { userAttributes } = req.body;
 
-        cognito.updateUser(username, userAttributes)
+        cognito.updateUserAttributes(username, userAttributes)
+            .then(result => {
+                if (result.statusCode === 201) {
+                    res.status(200).json(result.data).end();
+
+                } else if (result.statusCode === 400) {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                } else {
+                    console.log(result);
+                    res.status(500).json(result).end();
+                }
+            })
+    })
+
+    router.patch('/:username', checkJwt, checkIfAdmin, function (req, res) {
+
+        console.log("ADMIN");
+        const username = req.params.username;
+        const { userAttributes } = req.body;
+
+        cognito.updateAdminAttributes(username, userAttributes)
             .then(result => {
                 if (result.statusCode === 201) {
                     res.status(200).json(result.data).end();

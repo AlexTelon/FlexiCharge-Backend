@@ -44,7 +44,7 @@ class AdminCognitoService {
             "Password": password,
             "Permanent": true,
             "Username": username,
-            UserPoolId: this.userPool, // not admin userpool
+            UserPoolId: this.userPool
         }
 
         try {
@@ -93,7 +93,14 @@ class AdminCognitoService {
         }
         try {
             const tokens = await this.cognitoIdentity.adminInitiateAuth(params).promise();
+            console.log("token");
+            console.log(tokens);
+            if (tokens.ChallengeName) {
+                return tokens
+            }
             const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
+
+            console.log("data");
             console.log(userdata);
 
             const data = {
@@ -133,10 +140,32 @@ class AdminCognitoService {
         }
     }
 
-    async updateUser(username, userAttributes) {
+    async updateUserAttributes(username, userAttributes) {
         const params = {
             "Username": username,
             "UserPoolId": this.userPool,
+            "UserAttributes": userAttributes
+        }
+        console.log(params);
+        try {
+            const res = await this.cognitoIdentity.adminUpdateUserAttributes(params).promise();
+            console.log(res);
+            const data = {
+                data: res,
+                statusCode: 201
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async updateAdminAttributes(username, userAttributes) {
+        const params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool,
             "UserAttributes": userAttributes
         }
         console.log(params);
@@ -179,7 +208,7 @@ class AdminCognitoService {
     async getUser(username) {
         const params = {
             "Username": username,
-            "UserPoolId": this.userPool, // not admin userpool
+            "UserPoolId": this.userPool,
         }
         try {
 
@@ -197,10 +226,10 @@ class AdminCognitoService {
     }
 
 
-    async getUsers(limit) {
+    async getUsers() {
         const params = {
-            Limit: limit,
-            UserPoolId: this.userPool, // not admin userpool
+            Limit: 0,
+            UserPoolId: this.userPool
         }
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
@@ -216,11 +245,73 @@ class AdminCognitoService {
         }
     }
 
-    async createUser(userId, password, userAttributes) {
+    async getAdmin(username) {
+        const params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool,
+        }
+        try {
+
+            const res = await this.cognitoIdentity.adminGetUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    async getAdmins(limit) {
+        const params = {
+            Limit: limit,
+            UserPoolId: this.adminUserPool
+        }
+        try {
+            const res = await this.cognitoIdentity.listUsers(params).promise();
+            console.log(res);
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async createUser(username, password, userAttributes) {
 
         let params = {
-            UserPoolId: this.userPool, // not admin userpool
-            Username: userId,
+            UserPoolId: this.userPool,
+            Username: username,
+            MessageAction: "SUPPRESS", // Do not send welcome email
+            TemporaryPassword: password,
+            UserAttributes: userAttributes
+        };
+        try {
+            const res = await this.cognitoIdentity.adminCreateUser(params).promise();
+            console.log(res);
+            const data = {
+                data: res,
+                statusCode: 201
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+    async createAdmin(username, password, userAttributes) {
+
+        let params = {
+            UserPoolId: this.adminUserPool,
+            Username: username,
             MessageAction: "SUPPRESS", // Do not send welcome email
             TemporaryPassword: password,
             UserAttributes: userAttributes
