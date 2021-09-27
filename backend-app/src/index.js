@@ -22,6 +22,7 @@ container.register({
     chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
     transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
+    chargerPointValidation: awilix.asFunction(require("./database-Interface/validation/chargerPointValidation")),
 
     //Presentation layers
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
