@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerChargerPoint, dbErrorCheck, chargerValidation }) {
+module.exports = function({ dataAccessLayerChargerPoint, dbErrorCheck, chargerPointValidation }) {
 
     const exports = {}
 
@@ -32,18 +32,23 @@ module.exports = function({ dataAccessLayerChargerPoint, dbErrorCheck, chargerVa
     }
 
     exports.addChargerPoint = function(chargePointId, name, address, location, price, callback) {
-        dataAccessLayerChargerPoint.addChargerPoint(chargePointId, name, address, location, price, function(error, chargerPointId) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    console.log(errorCode)
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargerPointId)
-            }
-        })
+        const validationError = chargerPointValidation.chargerPointValidation(name, address, location, price)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerChargerPoint.addChargerPoint(chargePointId, name, address, location, price, function(error, chargerPointId) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        console.log(errorCode)
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], chargerPointId)
+                }
+            })
+        }
     }
-    
+
     exports.removeChargerPoint = function(chargerPointId, callback) {
         dataAccessLayerChargerPoint.removeChargerPoint(chargerPointId, function(error, chargerPointRemoved) { //chargerPointRemoved = bool
             if (Object.keys(error).length > 0) {
@@ -57,15 +62,20 @@ module.exports = function({ dataAccessLayerChargerPoint, dbErrorCheck, chargerVa
     }
 
     exports.updateChargerPoint = function(chargePointId, name, address, location, price, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargePointId, name, address, location, price, function(error, chargerPoint) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargerPoint)
-            }
-        })
+        const validationError = chargerPointValidation.chargerPointValidation(name, address, location, price)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerCharger.updateChargerStatus(chargePointId, name, address, location, price, function(error, chargerPoint) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], chargerPoint)
+                }
+            })
+        }
     }
 
 
