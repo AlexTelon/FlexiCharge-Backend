@@ -1,69 +1,69 @@
-module.exports = function({ dataAccessLayerChargerPoint, dbErrorCheck, chargerValidation }) {
+module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck }) {
 
     const exports = {}
 
-    exports.getChargerPoint = function(chargerPointId, callback){
-        dataAccessLayerChargerPoint.getChargerPoint(chargerPointId, function(error, chargerPoint) {
+    exports.getChargePoint = function(chargePointId, callback) {
+        dataAccessLayerChargePoint.getChargePoint(chargePointId, function(error, chargePoint) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                if (chargerPoint == null) {
+                if (chargePoint == null) {
                     callback([], [])
                 } else {
-                    callback([], chargerPoint)
+                    callback([], chargePoint)
                 }
 
             }
         })
     }
 
-    exports.getChargerPoints = function(callback) {
-        dataAccessLayerChargerPoint.getChargerPoints(function(error, chargerpoints) {
+    exports.getChargePoints = function(callback) {
+        dataAccessLayerChargePoint.getChargePoints(function(error, chargePoints) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                callback([], chargerpoints)
+                callback([], chargePoints)
             }
         })
     }
 
-    exports.addChargerPoint = function(chargePointId, name, address, location, price, callback) {
-        dataAccessLayerChargerPoint.addChargerPoint(chargePointId, name, address, location, price, function(error, chargerPointId) {
+    exports.addChargePoint = function(chargePointId, name, address, location, price, callback) {
+        dataAccessLayerChargePoint.addChargePoint(chargePointId, name, address, location, price, function(error, chargePointId) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     console.log(errorCode)
                     callback(errorCode, [])
                 })
             } else {
-                callback([], chargerPointId)
-            }
-        })
-    }
-    
-    exports.removeChargerPoint = function(chargerPointId, callback) {
-        dataAccessLayerChargerPoint.removeChargerPoint(chargerPointId, function(error, chargerPointRemoved) { //chargerPointRemoved = bool
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, chargerPointRemoved)
-                })
-            } else {
-                callback([], chargerPointRemoved)
+                callback([], chargePointId)
             }
         })
     }
 
-    exports.updateChargerPoint = function(chargePointId, name, address, location, price, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargePointId, name, address, location, price, function(error, chargerPoint) {
+    exports.removeChargePoint = function(chargePointId, callback) {
+        dataAccessLayerChargePoint.removeChargePoint(chargePointId, function(error, chargePointRemoved) { //chargePointRemoved = bool
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, chargePointRemoved)
+                })
+            } else {
+                callback([], chargePointRemoved)
+            }
+        })
+    }
+
+    exports.updateChargePoint = function(chargePointId, name, address, location, price, callback) {
+        dataAccessLayerChargePoint.updateChargeStatus(chargePointId, name, address, location, price, function(error, chargePoint) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                callback([], chargerPoint)
+                callback([], chargePoint)
             }
         })
     }

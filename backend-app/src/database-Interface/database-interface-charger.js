@@ -68,8 +68,8 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, chargerValidat
         })
     }
 
-    exports.addCharger = function(chargePointId, serialNumber, callback) {
-        const ValidationError = chargerValidation.getAddChargerValidation(serialNumber)
+    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
+        const ValidationError = chargerValidation.getAddChargerValidation(location, serialNumber)
         if (ValidationError.length > 0) {
             callback(ValidationError, [])
         } else {

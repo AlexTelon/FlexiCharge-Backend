@@ -23,6 +23,11 @@ const Chargers = sequelize.define('Chargers', {
         autoIncrement: true,
         allowNull: false
     },
+    location: {
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
+        unique: false,
+        allowNull: false
+    },
     serialNumber: {
         type: DataTypes.STRING,
         unique: true,
@@ -102,7 +107,7 @@ const ChargePoints = sequelize.define('ChargePoints', {
         unique: true,
         allowNull: false
     },
-    adress: {
+    address: {
         type: DataTypes.STRING,
         unique: false,
         allowNull: false
@@ -135,16 +140,18 @@ sequelize.sync({ force: true }).then(function() {
         if (count < 1) {
             ChargePoints.create({
                 name: 'Jönköping University',
-                adress: 'Gjuterigatan 5, 55318, Jönköping',
+                address: 'Gjuterigatan 5, 55318, Jönköping',
                 location: [57.777714, 14.163010],
                 price: 44.52,
             });
             Chargers.create({
+                location: [57.777714, 14.163012],
                 serialNumber: 'abc123',
                 chargePointID: 1,
                 status: 1
             });
             Chargers.create({
+                location: [57.777714, 14.163016],
                 serialNumber: '123abc',
                 chargePointID: 1,
                 status: 0
