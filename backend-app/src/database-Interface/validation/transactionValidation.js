@@ -1,27 +1,38 @@
 module.exports = function({}) {
 
-    //Validation for Meterstart
-    METERSTART_MIN_VALUE = 0
-    //Validation for Meterstop
-    METERSTOP_MIN_VALUE = 0
+    //Validation for Charge Precentage
+    MAX_CHARGE_PRECENTAGE = 100
+    MIN_CHARGE_PRECENTAGE = 0
+
+    //Validation for Kwh Price
+    MIN_KWH_PRICE = 0
+
+    //Validation for Transfered Kwh
+    MIN_TRANSFERED_KWH = 0
 
     const exports = {}
 
-    exports.getAddTransactionValidation = function(MeterStartValue){
+    exports.getAddTransactionValidation = function(currentChargePercentage, pricePerKwh) {
         const validationErrors = []
 
-        if(MeterStartValue < METERSTART_MIN_VALUE){
-            validationErrors.push("invalidMeterStartValue")
+        if (currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
+            validationErrors.push("invalidChargePrecentage")
+        }
+        if (currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
+            validationErrors.push("invalidChargePrecentage")
+        }
+        if (pricePerKwh < MIN_KWH_PRICE) {
+            validationErrors.push("invalidKwhPrice")
         }
 
         return validationErrors
     }
 
-    exports.getUpdateTransactionMeterValidation = function(meterValue){
+    exports.getUpdateTransactionTransferedKwhValidation = function(kwhTransfered) {
         const validationErrors = []
 
-        if(meterValue < METERSTOP_MIN_VALUE){
-            validationErrors.push("invalidMeterStopValue")
+        if (kwhTransfered < MIN_TRANSFERED_KWH) {
+            validationErrors.push("invalidTransferedKwh")
         }
 
         return validationErrors
