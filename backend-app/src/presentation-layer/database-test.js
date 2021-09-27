@@ -21,14 +21,16 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     location: [57.78016419007881, 14.182610301538203],
                     name: "Kunskapsfabriken",
                     address: 'Odengatan 27',
-                    price: 0.55
+                    price: 0.55,
+
+
                 }
 
-                // databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.address, chargePoint.location, chargePoint.price, function(errors, chargePointAdded) {
-                //     console.log(errors)
-                //     console.log(chargePointAdded)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.address, chargePoint.location, chargePoint.price, chargePoint.klarnaReservationAmount, function(errors, chargePointAdded) {
+                    console.log(errors)
+                    console.log(chargePointAdded)
+                    response.redirect("/")
+                })
 
 
                 // databaseInterfaceChargePoint.getChargePoints(function(errors, chargePoints) {

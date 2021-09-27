@@ -31,12 +31,15 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         })
     }
 
-    exports.addChargePoint = function(name, address, location, price, callback) {
-        const validationError = chargePointValidation.chargePointValidation(name, address, location, price)
+    exports.addChargePoint = function(name, address, location, price, klarnaReservationAmount, callback) {
+        const validationError = chargePointValidation.chargePointValidation(name, address, location, price, klarnaReservationAmount)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerChargePoint.addChargePoint(name, address, location, price, function(error, chargePointId) {
+            if ((klarnaReservationAmount == null) || (klarnaReservationAmount == undefined)) {
+                klarnaReservationAmount = DEFAULT_RESERVATION_PRICE
+            }
+            dataAccessLayerChargePoint.addChargePoint(name, address, location, price, klarnaReservationAmount, function(error, chargePointId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         console.log(errorCode)

@@ -122,6 +122,11 @@ const ChargePoints = sequelize.define('ChargePoints', {
         unique: false,
         allowNull: false
     },
+    klarnaReservationAmount: {
+        type: DataTypes.INTEGER,
+        unique: false,
+        allowNull: false
+    },
 }, {
     timestamps: false
 });
@@ -143,6 +148,7 @@ sequelize.sync({ force: true }).then(function() {
                 address: 'Gjuterigatan 5, 55318, Jönköping',
                 location: [57.777714, 14.163010],
                 price: 44.52,
+                klarnaReservationAmount: 300
             });
             Chargers.create({
                 location: [57.777714, 14.163012],

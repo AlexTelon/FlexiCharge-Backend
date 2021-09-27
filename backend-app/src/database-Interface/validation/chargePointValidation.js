@@ -16,12 +16,14 @@ module.exports = function({}) {
 
     //Validation for price
     PRICE_MIN_VALUE = 0
+    DEFAULT_RESERVATION_PRICE = 300
 
     const exports = {}
 
-    exports.chargePointValidation = function(name, address, location, price) {
+    exports.chargePointValidation = function(name, address, location, price, klarnaReservationAmount) {
 
         const validationErrors = []
+
 
         if (name.length < NAME_MIN_VALUE || name.length > NAME_MAX_VALUE) {
             validationErrors.push("invalidName")
