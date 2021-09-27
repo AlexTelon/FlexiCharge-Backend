@@ -28,11 +28,6 @@ const Chargers = sequelize.define('Chargers', {
         unique: false,
         allowNull: false
     },
-    chargePointID: {
-        type: DataTypes.INTEGER,
-        unique: false,
-        allowNull: false
-    },
     serialNumber: {
         type: DataTypes.STRING,
         unique: true,
@@ -100,23 +95,63 @@ const Transactions = sequelize.define('Transactions', {
     timestamps: false
 });
 
+const ChargePoints = sequelize.define('ChargePoints', {
+    chargePointID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
+    location: {
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
+        unique: false,
+        allowNull: false
+    },
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        unique: false,
+        allowNull: false
+    },
+    klarnaReservationAmount: {
+        type: DataTypes.INTEGER,
+        unique: false,
+        allowNull: false
+    },
+}, {
+    timestamps: false
+});
+
 Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
+Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+
 sequelize.sync({ force: true }).then(function() {
     Chargers.findAndCountAll().then(function({ rows, count }) {
         if (count < 1) {
-            Chargers.create({
+            ChargePoints.create({
+                name: 'Jönköping University',
                 location: [57.777714, 14.163010],
+                price: 44.52,
+                klarnaReservationAmount: 300
+            });
+            Chargers.create({
+                location: [57.777714, 14.163012],
                 serialNumber: 'abc123',
                 chargePointID: 1,
                 status: 1
             });
             Chargers.create({
-                location: [57.777725, 14.163085],
+                location: [57.777714, 14.163016],
                 serialNumber: '123abc',
                 chargePointID: 1,
                 status: 0
@@ -140,6 +175,6 @@ sequelize.sync({ force: true }).then(function() {
 })
 
 module.exports = function({}) {
-    const exports = { Chargers, Transactions, Reservations }
+    const exports = { Chargers, Transactions, Reservations, ChargePoints }
     return exports
 }
