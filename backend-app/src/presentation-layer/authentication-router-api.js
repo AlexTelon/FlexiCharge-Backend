@@ -74,12 +74,10 @@ module.exports = function () {
 
         cognito.signInUser(username, password)
             .then(result => {
-                if (result.statusCode == 400) {
-                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
-                } else if (result.statusCode == undefined) {
-                    res.status(200).json(result).end()
+                if (result.statusCode == 200) {
+                    res.status(200).json(result.data).end()
                 } else {
-                    res.status(500).json(result).end()
+                    res.status(400).json(result).end();
                 }
             })
     })
