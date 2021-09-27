@@ -201,7 +201,7 @@ module.exports = function () {
             })
     })
 
-    router.put('/users/:username/enable', function (req, res) {
+    router.put('/users/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
         console.log("active");
@@ -221,7 +221,7 @@ module.exports = function () {
 
     })
 
-    router.put('/users/:username/disable', function (req, res) {
+    router.put('/users/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
         console.log("active");
