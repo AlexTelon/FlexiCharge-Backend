@@ -2,8 +2,9 @@ const express = require("express")
 const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser')
+require('dotenv').config()
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter }) { //authenticationRouter
+module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -13,7 +14,7 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     }))
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(bodyParser.json())
-    app.use(function(request, response, next) {
+    app.use(function (request, response, next) {
         console.log(request.method, request.url);
       
         response.setHeader("Access-Control-Allow-Origin", "*") // "localhost:3000"
@@ -27,11 +28,11 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.get('/', (req, res) => {
         res.render('index.hbs')
     })
-
     app.use('/chargers', chargersRouter)
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
     app.use('/auth', authenticationRouter)
+    app.use('/auth/admin', adminRouter)
 
     return app
 

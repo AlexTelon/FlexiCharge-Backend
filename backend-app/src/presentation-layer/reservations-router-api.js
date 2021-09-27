@@ -1,46 +1,80 @@
 const express = require('express')
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceReservations }) {
 
     const router = express.Router()
 
-    router.get('/:id', function (req, res) {
-        res.send('Get reservation by id')
-        // const id = req.params.id
-        // databaseInterfaceReservations.getReservation(id, function(error, reservation){
-        //     if(error.length == 0){
-        //         es.status(200).json(reservation)
-        //     }else{
-        //         res.status(404).end(error)
-        //     }
-        // })
+    router.get('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const reservationId = request.params.id
+        databaseInterfaceReservations.getReservation(reservationId, function (errors, reservation) {
+            if (errors.length == 0 && reservation.length == 0) {
+                response.status(404).end()
+            } else if (errors.length == 0) {
+                response.status(200).json(reservation)
+            } else {
+                response.status(500).json(errors)
+            }
+        })
     })
 
-    router.get('/:userId', function (req, res) {
-        res.send('Get all reservations for a specific user')
+    router.get('/userReservation/:userID', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const userId = request.params.userID
+        databaseInterfaceReservations.getReservationForUser(userId, function(error, userReservation){
+            if(error.length == 0 && userReservation.length == 0){
+                response.status(404).end()
+            } else if (error.length == 0) {
+                response.status(200).json(userReservation)
+            } else {
+                response.status(500).json(error)
+            }
+        })    
     })
 
-    router.get('/:chargerId', function (req, res) {
-        res.send('Get specific reservation för a specific charger')
+    router.get('/chargerReservation/:chargerID', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const chargerId = request.params.chargerID
+        databaseInterfaceReservations.getReservationForCharger(chargerId, function (error, chargerReservation) {
+            if (error.length == 0 && chargerReservation.length == 0) {
+                response.status(404).end()
+            } else if (error.length == 0) {
+                response.status(200).json(chargerReservation)
+            } else {
+                response.status(500).json(error)
+            }
+        })
     })
 
-    router.post('/', function (req, res) {
-        res.send('add reservations')
+    router.post('/', function (request, response) {
+        const { chargerID, userID, start, end } = request.body;
+        databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errors, reservation) {
+            if (errors.length > 0) {
+                response.status(400).json(errors)
+            } else if (reservation) {
+                response.status(201).json(reservation)
+            } else {
+                response.status(500).json(errors)
+            }
+        })
+
     })
 
-    router.delete('/:id', function (req, res) {
-        res.send('delete reservation')
-        // const id = request.params.id
-        // databaseInterfaceCharger.removeReservation(id, function (errors) {
-        //     if (errors.length == 0) {
-        //         response.status(204).json()
-        //     } else {
-        //         response.status(404).end()
-        //     }
-        // })
+    router.delete('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const reservationId = request.params.id
+        databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
+            if (errors.length == 0 && isReservationDeleted) {
+                response.status(204).json()
+            } else if (errors.length == 0 && !isReservationDeleted) {
+                response.status(404).json()
+            } else {
+                response.status(500).json(errors)
+            }
+        })
     })
-
-
 
     return router
 }
