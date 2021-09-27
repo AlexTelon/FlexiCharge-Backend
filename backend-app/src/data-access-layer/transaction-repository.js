@@ -30,12 +30,14 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
-    exports.addTransaction = function(userID, chargerID, MeterStartValue, timestamp, callback) {
+    exports.addTransaction = function(userID, chargerID, isKlarnaPayment, currentChargePercentage, pricePerKwh, timestamp, callback) {
 
         const transaction = {
             userID: userID,
             chargerID: chargerID,
-            meterStart: MeterStartValue,
+            isKlarnaPayment: isKlarnaPayment,
+            currentChargePercentage: currentChargePercentage,
+            pricePerKwh: pricePerKwh,
             timestamp: timestamp
         }
 
@@ -62,9 +64,9 @@ module.exports = function({ databaseInit }) {
 
 
     }
-    exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
+    exports.updateTransactionKwhTransfered = function(transactionID, kwhTransfered, callback) {
         databaseInit.Transactions.update({
-                meterStop: meterValue
+                kwhTransfered: kwhTransfered
             }, {
                 where: { transactionID: transactionID },
                 returning: true,

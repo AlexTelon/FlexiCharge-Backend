@@ -13,7 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('chargePoints') {
+        switch ('transaction') {
             case 'chargePoints':
 
                 const chargePoint = {
@@ -175,16 +175,18 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     transactionID: 1,
                     userID: 1,
                     chargerID: 1,
-                    meterStart: 22,
-                    meterStop: 44,
-                    timestamp: 12,
+                    isKlarnaPayment: true,
+                    kwhTransfered: 4,
+                    currentChargePercentage: 43,
+                    pricePerKwh: 45.66,
+                    timestamp: 12102021,
                     paymentID: 44
                 }
 
-                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.currentChargePercentage, transaction.pricePerKwh, function(errors, transactionId) {
                     console.log(errors)
                     console.log(transactionId)
-                    databaseInterfaceTransactions.updateTransactionMeter(transaction.transactionID, transaction.meterStop, function(errors, updatedTransaction) {
+                    databaseInterfaceTransactions.updateTransactionKwhTransfered(transaction.transactionID, transaction.kwhTransfered, function(errors, updatedTransaction) {
                         console.log(errors)
                         console.log(updatedTransaction)
                         response.redirect("/")
