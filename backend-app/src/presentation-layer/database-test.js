@@ -17,14 +17,14 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'chargePoints':
 
                 const chargePoint = {
-                    chargePointId: 2,
+                    chargePointId: 1,
                     location: [57.78016419007881, 14.182610301538203],
                     name: "Kunskapsfabriken",
                     address: 'Odengatan 27',
                     price: 0.55
                 }
 
-                // databaseInterfaceChargePoint.addChargePoint(chargePoint.chargePointId, chargePoint.name, chargePoint.address, chargePoint.location, chargePoint.price, function(errors, chargePointAdded) {
+                // databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.address, chargePoint.location, chargePoint.price, function(errors, chargePointAdded) {
                 //     console.log(errors)
                 //     console.log(chargePointAdded)
                 //     response.redirect("/")
@@ -37,21 +37,21 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
                 // })
 
-                databaseInterfaceChargePoint.getChargePoint(chargePoint.chargePointId, function(errors, chargePoint) {
-                    console.log(errors)
-                    console.log(chargePoint)
-                    response.redirect("/")
-                })
+                // databaseInterfaceChargePoint.getChargePoint(chargePoint.chargePointId, function(errors, chargePoint) {
+                //     console.log(errors)
+                //     console.log(chargePoint)
+                //     response.redirect("/")
+                // })
 
-                // databaseInterfaceChargePoint.updateChargePoint(chargePoint.chargePointId, chargePoint.name, chargePoint.address, chargePoint.location, chargePoint.price, function(errors, updatedChargePoint) {
+                // databaseInterfaceChargePoint.updateChargePoint(chargePoint.chargePointId, 'haj', chargePoint.address, chargePoint.location, chargePoint.price, function(errors, updatedChargePoint) {
                 //     console.log(errors)
                 //     console.log(updatedChargePoint)
                 //     response.redirect("/")
                 // })
 
-                // databaseInterfaceChargePoint.removeChargePoint(function(errors, chargePoint) {
+                // databaseInterfaceChargePoint.removeChargePoint(chargePoint.chargePointId, function(errors, chargePointRemoved) {
                 //     console.log(errors)
-                //     console.log(chargePoint)
+                //     console.log(chargePointRemoved)
                 //     response.redirect("/")
                 // })
 

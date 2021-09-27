@@ -22,10 +22,9 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.addChargePoint = function(chargePointId, name, address, location, price, callback) {
+    exports.addChargePoint = function(name, address, location, price, callback) {
 
         const chargePoint = {
-            chargePointID: chargePointId,
             name: name,
             address: address,
             location: location,

@@ -31,12 +31,12 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         })
     }
 
-    exports.addChargePoint = function(chargePointId, name, address, location, price, callback) {
+    exports.addChargePoint = function(name, address, location, price, callback) {
         const validationError = chargePointValidation.chargePointValidation(name, address, location, price)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerChargePoint.addChargePoint(chargePointId, name, address, location, price, function(error, chargePointId) {
+            dataAccessLayerChargePoint.addChargePoint(name, address, location, price, function(error, chargePointId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         console.log(errorCode)
@@ -66,7 +66,7 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerCharge.updateChargeStatus(chargePointId, name, address, location, price, function(error, chargePoint) {
+            dataAccessLayerChargePoint.updateChargePoint(chargePointId, name, address, location, price, function(error, chargePoint) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])

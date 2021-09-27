@@ -15,11 +15,11 @@ module.exports = function({}) {
     LATITUDE_MAX_VALUE = 90
 
     //Validation for price
-    PRICE_MIN_VALUE = 1
+    PRICE_MIN_VALUE = 0
 
     const exports = {}
 
-    exports.chargerPointValidation = function(name, address, location, price) {
+    exports.chargePointValidation = function(name, address, location, price) {
 
         const validationErrors = []
 
@@ -29,10 +29,10 @@ module.exports = function({}) {
         if (address.length < ADDRESS_MIN_VALUE || address.length > ADDRESS_MAX_VALUE) {
             validationErrors.push("invalidAddress")
         }
-        if(location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE){
+        if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
             validationErrors.push("invalidLatitude")
         }
-        if(location[1] < LONGITUDE_MIN_VALUE || location[1] > LONGITUDE_MAX_VALUE){
+        if (location[1] < LONGITUDE_MIN_VALUE || location[1] > LONGITUDE_MAX_VALUE) {
             validationErrors.push("invalidLongitude")
         }
         if (price < PRICE_MIN_VALUE) {
