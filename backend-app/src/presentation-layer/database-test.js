@@ -3,7 +3,7 @@
  */
 const express = require('express')
 
-module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservations, databaseInterfaceTransactions }) {
+module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservations, databaseInterfaceTransactions, databaseInterfaceChargerPoint }) {
 
     const router = express.Router()
 
@@ -13,7 +13,49 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('reservation') {
+        switch ('chargerPoints') {
+            case 'chargerPoints':
+
+                const chargerPoint = {
+                    chargerPointId: 2,
+                    location: [57.78016419007881, 14.182610301538203],
+                    name: "Kunskapsfabriken",
+                    address: 'Odengatan 27',
+                    price: 0.55
+                }
+
+                databaseInterfaceChargerPoint.addChargerPoint(chargerPoint.chargerPointId, chargerPoint.name, chargerPoint.address, chargerPoint.location, chargerPoint.price, function(errors, chargerPointAdded) {
+                    console.log(errors)
+                    console.log(chargerPointAdded)
+                    response.redirect("/")
+                })
+
+
+                databaseInterfaceChargerPoint.getChargerPoints(function(errors, chargerPoints) {
+                    console.log(errors)
+                    console.log(chargerPoints)
+                    response.redirect("/")
+                })
+
+                databaseInterfaceChargerPoint.getChargerPoint(chargerPoint.chargerPointId, function(errors, chargerPoint) {
+                    console.log(errors)
+                    console.log(chargerPoint)
+                    response.redirect("/")
+                })
+
+                databaseInterfaceChargerPoint.updateChargerPoint(chargerPoint.chargerPointId, chargerPoint.name, chargerPoint.address, chargerPoint.location, chargerPoint.price, function(errors, updatedChargerPoint) {
+                    console.log(errors)
+                    console.log(updatedChargerPoint)
+                    response.redirect("/")
+                })
+
+                databaseInterfaceChargerPoint.removeChargerPoint(function(errors, chargerPoint) {
+                    console.log(errors)
+                    console.log(chargerPoint)
+                    response.redirect("/")
+                })
+
+                break;
             case 'charger':
 
                 const point = {
