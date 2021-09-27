@@ -63,8 +63,11 @@ class CognitoService {
         try {
 
             const tokens = await this.cognitoIdentity.initiateAuth(params).promise();
+            console.log(tokens);
+            if (tokens.ChallengeName) {
+                return tokens
+            }
             const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
-            console.log(userdata);
 
             const data = {
                 accessToken: tokens.AuthenticationResult.AccessToken,
@@ -75,7 +78,12 @@ class CognitoService {
                 user_id: userdata.sub
             }
 
-            return data
+            const res = {
+                data: data,
+                statusCode: 200
+            }
+
+            return res
 
         } catch (error) {
             console.log(error);
