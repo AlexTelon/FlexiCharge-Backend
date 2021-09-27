@@ -1,4 +1,4 @@
-module.exports = function ({ constants }) {
+module.exports = function ({ constants, func }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -52,14 +52,14 @@ module.exports = function ({ constants }) {
         switch (action) {
             case c.BOOT_NOTIFICATION:
                 if (chargerID != null) {
-                    callResult = buildJSONMessage([c.CALL_RESULT, uniqueID, 
+                    callResult = func.buildJSONMessage([c.CALL_RESULT, uniqueID, 
                         {status:"Accepted",
                         currentTime: new Date().toISOString(),
                         interval: c.HEART_BEAT_INTERVALL,
                         chargerId: chargerID}])
     
                 } else {
-                    callResult = buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
+                    callResult = func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
                         "Tell OCPP gang that error *no chargerID in callSwitch -> BOOT_NOTIFICATION* occured :)", {}])
                 }
                 break
@@ -116,20 +116,11 @@ module.exports = function ({ constants }) {
     }
     
     function getCallResultNotImplemeted(uniqueID, operation) {
-        return buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *"+operation+"* function is not implemented yet.", {}])
+        return func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *"+operation+"* function is not implemented yet.", {}])
     }
     
     function getGenericError(uniqueID, errorDescription) {
-        return buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
-    }
-    
-    function buildJSONMessage(messageArray) {
-        const message = []
-        messageArray.forEach(i => {
-            message.push(i)
-        })
-        
-        return JSON.stringify(message)
+        return func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
     }
 
     return exports

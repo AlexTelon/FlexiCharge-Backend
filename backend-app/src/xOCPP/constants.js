@@ -12,7 +12,8 @@ module.exports = function({}){
             HEART_BEAT_INTERVALL: 86400,
             INTERNAL_ERROR: "InternalError",
             NOT_IMPLEMENTED: "NotImplemented",
-            GENERIC_ERROR: "GenericError"
+            GENERIC_ERROR: "GenericError",
+            SECURITY_ERROR: "SecurityError"
         }
 
         return constants

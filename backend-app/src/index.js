@@ -31,6 +31,7 @@ container.register({
     constants: awilix.asFunction(require('./xOCPP/constants')),
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
+    func: awilix.asFunction(require('./xOCPP/const_functions')),
 
 
     app: awilix.asFunction(require('./presentation-layer/app'))
