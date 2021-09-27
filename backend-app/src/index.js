@@ -13,7 +13,7 @@ container.register({
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
-    databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-chargerpoint')),
+    databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
@@ -22,7 +22,7 @@ container.register({
     chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
     transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
-    chargerPointValidation: awilix.asFunction(require("./database-Interface/validation/chargerPointValidation")),
+    chargePointValidation: awilix.asFunction(require("./database-Interface/validation/chargePointValidation")),
 
     //Presentation layers
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
