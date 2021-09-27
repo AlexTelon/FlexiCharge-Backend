@@ -31,15 +31,15 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         })
     }
 
-    exports.addChargePoint = function(name, address, location, price, klarnaReservationAmount, callback) {
-        const validationError = chargePointValidation.chargePointValidation(name, address, location, price, klarnaReservationAmount)
+    exports.addChargePoint = function(name, location, price, klarnaReservationAmount, callback) {
+        const validationError = chargePointValidation.chargePointValidation(name, location, price, klarnaReservationAmount)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
             if ((klarnaReservationAmount == null) || (klarnaReservationAmount == undefined)) {
                 klarnaReservationAmount = DEFAULT_RESERVATION_PRICE
             }
-            dataAccessLayerChargePoint.addChargePoint(name, address, location, price, klarnaReservationAmount, function(error, chargePointId) {
+            dataAccessLayerChargePoint.addChargePoint(name, location, price, klarnaReservationAmount, function(error, chargePointId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         console.log(errorCode)
@@ -64,12 +64,12 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         })
     }
 
-    exports.updateChargePoint = function(chargePointId, name, address, location, price, callback) {
-        const validationError = chargePointValidation.chargePointValidation(name, address, location, price)
+    exports.updateChargePoint = function(chargePointId, name, location, price, callback) {
+        const validationError = chargePointValidation.chargePointValidation(name, location, price)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerChargePoint.updateChargePoint(chargePointId, name, address, location, price, function(error, chargePoint) {
+            dataAccessLayerChargePoint.updateChargePoint(chargePointId, name, location, price, function(error, chargePoint) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])

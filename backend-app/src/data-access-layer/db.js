@@ -107,11 +107,6 @@ const ChargePoints = sequelize.define('ChargePoints', {
         unique: true,
         allowNull: false
     },
-    address: {
-        type: DataTypes.STRING,
-        unique: false,
-        allowNull: false
-    },
     location: {
         type: DataTypes.ARRAY(DataTypes.FLOAT),
         unique: false,
@@ -145,7 +140,6 @@ sequelize.sync({ force: true }).then(function() {
         if (count < 1) {
             ChargePoints.create({
                 name: 'Jönköping University',
-                address: 'Gjuterigatan 5, 55318, Jönköping',
                 location: [57.777714, 14.163010],
                 price: 44.52,
                 klarnaReservationAmount: 300

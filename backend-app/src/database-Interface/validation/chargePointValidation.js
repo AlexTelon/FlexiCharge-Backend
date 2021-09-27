@@ -4,10 +4,6 @@ module.exports = function({}) {
     NAME_MIN_VALUE = 1
     NAME_MAX_VALUE = 30
 
-    //Validation for address
-    ADDRESS_MIN_VALUE = 1
-    ADDRESS_MAX_VALUE = 30
-
     //Validation for location
     LONGITUDE_MIN_VALUE = -180
     LONGITUDE_MAX_VALUE = 180
@@ -20,16 +16,13 @@ module.exports = function({}) {
 
     const exports = {}
 
-    exports.chargePointValidation = function(name, address, location, price, klarnaReservationAmount) {
+    exports.chargePointValidation = function(name, location, price, klarnaReservationAmount) {
 
         const validationErrors = []
 
 
         if (name.length < NAME_MIN_VALUE || name.length > NAME_MAX_VALUE) {
             validationErrors.push("invalidName")
-        }
-        if (address.length < ADDRESS_MIN_VALUE || address.length > ADDRESS_MAX_VALUE) {
-            validationErrors.push("invalidAddress")
         }
         if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
             validationErrors.push("invalidLatitude")
