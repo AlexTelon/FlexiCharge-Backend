@@ -1,4 +1,4 @@
-module.exports = function ({ constants, func, messageHandler }) {
+module.exports = function ({ constants, func }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
