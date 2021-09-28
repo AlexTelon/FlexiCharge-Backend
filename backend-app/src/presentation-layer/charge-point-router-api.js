@@ -34,19 +34,52 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
 
     router.post('/', function (request, response) {
         //authMiddleware.verifyToken(request, response);
-        
+        const name = request.body.name
+        const location = request.body.location
+        const price = request.body.price
+        const klarnaReservationAmount = request.body.klarnaReservationAmount
+        databaseInterfaceChargePoint.addChargePoint(name, location, price, klarnaReservationAmount, function(errors, chargePointId){
+            if(errors.length > 0 ){
+                response.status(400).json(errors)
+            }else if(chargePointId){
+                response.status(201).json(chargePointId)
+            }else{
+                response.status(500).json(errors)
+            }
+        })
     })
 
     router.delete('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
-        
+        const chargePointId = request.params.id
+        databaseInterfaceChargePoint.removeChargePoint(chargePointId, function (error, isChargePointDeleted) {
+            if (error.length == 0 && isChargePointDeleted) {
+                response.status(204).json()
+            } else if (error.length == 0 && !isChargePointDeleted) {
+                response.status(404).json()
+            } else {
+                response.status(500).json(error)
+            }
+        })
     })
 
     router.put('/:id', function (request, response) {
         // authMiddleware.verifyToken(request, response);
-        
+        const chargePointId = request.params.id
+        const name = request.body.name
+        const location = request.body.location
+        const price = request.body.price
+        databaseInterfaceChargePoint.updateChargePoint(chargePointId, name, location, price, function(error, updatedChargePoint){
+            if (error.length == 0) {
+                response.status(201).json(updatedChargePoint)
+            } else {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error)
+                } else {
+                    response.status(404).json(error)
+                }
+            }
+        })
     })
-
-
     return router
 }
