@@ -1,6 +1,7 @@
 const connectedSockets = {}
 const chargerSerials = []
 const chargerIDs = {}
+const callbacks = {}
 
 module.exports = function ({ }) {
     
@@ -53,6 +54,18 @@ module.exports = function ({ }) {
     }
     exports.getLengthChargerIDs = function () {
         return Object.keys(chargerIDs).length
+    }
+
+    //CALLBACKS
+    //get callback with unique ids
+    exports.getCallback = function (id) {
+        return callbacks[id]
+    }
+    exports.addCallback = function (id, callback) {
+        callbacks[id] = callback
+    }
+    exports.removeCallback = function (id) {
+        delete callbacks[id]
     }
 
     return exports

@@ -1,4 +1,4 @@
-module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func }) {
+module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
     const c = constants.get()
     exports.handleClient = function (clientSocket, chargerSerial) {
 
@@ -25,7 +25,19 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
 
             if (v.isInChargerSerials(chargerSerial)) {
 
-                messageHandler.handleMessage(message, clientSocket,v.getChargerID(chargerSerial))
+                /*****************************************
+                 used for internal testing, remove before production
+                *****************************************/
+                let data = JSON.parse(message)
+                let messageTypeID = data[0]
+                if (messageTypeID == c.TEST) {
+                    test.test()
+                }
+                /*****************************************/
+                
+                else {
+                    messageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
+                }
 
             } else {
                 messageChache = message
@@ -42,7 +54,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
 
                 if (charger.length != 0) {
                     let chargerID = charger.chargerID
-                    
+
                     // Save the websocket with the charger's serial in array:
                     v.addConnectedSockets(chargerID, newSocket)
                     v.addChargerSerials(chargerSerial)

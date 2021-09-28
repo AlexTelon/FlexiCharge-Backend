@@ -9,5 +9,9 @@ module.exports = function ({ }) {
         return JSON.stringify(message)
     }
 
+    exports.getUniqueId = function (chargerID, action) {
+        
+        return chargerID.toString() + action.toString() + Date.now().toString()
+    }
     return exports
 }
