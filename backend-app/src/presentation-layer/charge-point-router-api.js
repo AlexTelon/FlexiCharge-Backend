@@ -34,11 +34,27 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
 
     router.post('/', function (request, response) {
         //authMiddleware.verifyToken(request, response);
+        const name = request.body.name
+        const location = request.body.location
+        const price = request.body.price
+        const klarnaReservationAmount = request.body.klarnaReservationAmount
+        databaseInterfaceChargePoint.addChargePoint(name,location,price,klarnaReservationAmount, function   (errors, chargePointId){
+          if(errors.length>0 ){
+              response.status(400).json(errors)
+          }else if(chargePointId){
+             response.status(201).json(chargePointId)
+          }else{
+              response.status(500).json(errors)
+          }
+            
+       
+        })
         
     })
 
     router.delete('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
+        
         
     })
 
