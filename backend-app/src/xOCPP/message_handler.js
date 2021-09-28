@@ -1,4 +1,4 @@
-module.exports = function ({ constants, func }) {
+module.exports = function ({ constants, func, messageHandler }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -37,6 +37,16 @@ module.exports = function ({ constants, func }) {
         interfaceStartCallSwitch()
     }
 
+    exports.buildJSONMessage = function (messageArray) {
+        const message = []
+        messageArray.forEach(i => {
+            message.push(i)
+        })
+        
+        return JSON.stringify(message)
+    }
+
+
     function interfaceStartCallSwitch() {
         //todo
     }
@@ -52,14 +62,14 @@ module.exports = function ({ constants, func }) {
         switch (action) {
             case c.BOOT_NOTIFICATION:
                 if (chargerID != null) {
-                    callResult = func.buildJSONMessage([c.CALL_RESULT, uniqueID, 
+                    callResult = messageHandler.buildJSONMessage([c.CALL_RESULT, uniqueID, 
                         {status:"Accepted",
                         currentTime: new Date().toISOString(),
                         interval: c.HEART_BEAT_INTERVALL,
                         chargerId: chargerID}])
     
                 } else {
-                    callResult = func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
+                    callResult = messageHandler.buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
                         "Tell OCPP gang that error *no chargerID in callSwitch -> BOOT_NOTIFICATION* occured :)", {}])
                 }
                 break
@@ -116,11 +126,11 @@ module.exports = function ({ constants, func }) {
     }
     
     function getCallResultNotImplemeted(uniqueID, operation) {
-        return func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *"+operation+"* function is not implemented yet.", {}])
+        return messageHandler.buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *"+operation+"* function is not implemented yet.", {}])
     }
     
     function getGenericError(uniqueID, errorDescription) {
-        return func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
+        return messageHandler.buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
     }
 
     return exports
