@@ -1,4 +1,4 @@
-module.exports = function ({ constants, func, v, dataAccessLayerCharger }) {
+module.exports = function ({ constants, func, v, databaseInterfaceCharger }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -127,12 +127,12 @@ module.exports = function ({ constants, func, v, dataAccessLayerCharger }) {
                     dbNewStatus = 1
                 }
                 
-                dataAccessLayerCharger.updateChargerStatus(chargerID, dbNewStatus, function(error, charger){
+                databaseInterfaceCharger.updateChargerStatus(chargerID, dbNewStatus, function(error, charger){
                     if (error.length > 0){
                         console.log("Error updating charger status in DB:\n" + error)
                         callback(c.INTERNAL_ERROR, null)  
                     }else{
-                        console.log("Charger updated in DB:\n" + charger[0] + charger[1])
+                        console.log("Charger updated in DB:\n" + charger)
                         callback(null, status)  
                     }
                     
