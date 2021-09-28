@@ -51,35 +51,12 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
 
     router.delete('/:id', function (request, response) {
         //authMiddleware.verifyToken(request, response);
-        const chargePointId = request.params.id
-        databaseInterfaceChargePoint.removeChargePoint(chargePointId, function (error, isChargePointDeleted) {
-            if (error.length == 0 && isChargePointDeleted) {
-                response.status(204).json()
-            } else if (error.length == 0 && !isChargePointDeleted) {
-                response.status(404).json()
-            } else {
-                response.status(500).json(error)
-            }
-        })
+        
     })
 
     router.put('/:id', function (request, response) {
         // authMiddleware.verifyToken(request, response);
-        const chargePointId = request.params.id
-        const name = request.body.name
-        const location = request.body.location
-        const price = request.body.price
-        databaseInterfaceChargePoint.updateChargePoint(chargePointId, name, location, price, function(error, updatedChargePoint){
-            if (error.length == 0) {
-                response.status(201).json(updatedChargePoint)
-            } else {
-                if (error.includes("internalError") || error.includes("dbError")) {
-                    response.status(500).json(error)
-                } else {
-                    response.status(404).json(error)
-                }
-            }
-        })
+        
     })
     return router
 }
