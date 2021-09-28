@@ -31,7 +31,11 @@ module.exports = function () {
 
         cognito.forgotPassword(username)
             .then(result => {
-                res.status(200).json(result).end();
+                if (result.statusCode === 200) {
+                    res.status(200).json(result).end();
+                } else {
+                    res.status(400).json(result).end();
+                }
             })
     })
 
@@ -91,6 +95,19 @@ module.exports = function () {
                     res.status(200).end()
                 } else {
                     res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                }
+            })
+    })
+
+    router.post('/force-change-password', function (req, res) {
+        const { username, password, session } = req.body;
+
+        cognito.respondToAuthChallenge(username, password, session)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
                 }
             })
     })
