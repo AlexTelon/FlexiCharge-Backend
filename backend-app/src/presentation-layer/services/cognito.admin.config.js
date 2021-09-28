@@ -71,7 +71,6 @@ class AdminCognitoService {
 
         try {
             const res = await this.cognitoIdentity.adminSetUserPassword(params).promise();
-            console.log(res);
 
             return res;
         } catch (error) {
@@ -93,15 +92,10 @@ class AdminCognitoService {
         }
         try {
             const tokens = await this.cognitoIdentity.adminInitiateAuth(params).promise();
-            console.log("token");
-            console.log(tokens);
             if (tokens.ChallengeName) {
                 return tokens
             }
             const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
-
-            console.log("data");
-            console.log(userdata);
 
             const data = {
                 accessToken: tokens.AuthenticationResult.AccessToken,
@@ -111,7 +105,6 @@ class AdminCognitoService {
                 family_name: userdata.family_name,
                 user_id: userdata.sub
             }
-            console.log(data);
             return data
         } catch (error) {
             console.log(error);
@@ -146,13 +139,11 @@ class AdminCognitoService {
             "UserPoolId": this.userPool,
             "UserAttributes": userAttributes
         }
-        console.log(params);
         try {
             const res = await this.cognitoIdentity.adminUpdateUserAttributes(params).promise();
-            console.log(res);
             const data = {
                 data: res,
-                statusCode: 201
+                statusCode: 204
             }
             return data
 
@@ -168,13 +159,11 @@ class AdminCognitoService {
             "UserPoolId": this.adminUserPool,
             "UserAttributes": userAttributes
         }
-        console.log(params);
         try {
             const res = await this.cognitoIdentity.adminUpdateUserAttributes(params).promise();
-            console.log(res);
             const data = {
                 data: res,
-                statusCode: 201
+                statusCode: 204
             }
             return data
 
@@ -202,7 +191,6 @@ class AdminCognitoService {
             console.log(error);
             return error
         }
-
     }
 
     async getUser(username) {
@@ -233,7 +221,6 @@ class AdminCognitoService {
         }
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
-            console.log(res);
             const data = {
                 data: res,
                 statusCode: 200
@@ -272,7 +259,6 @@ class AdminCognitoService {
         }
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
-            console.log(res);
             const data = {
                 data: res,
                 statusCode: 200
@@ -287,15 +273,15 @@ class AdminCognitoService {
     async createUser(username, password, userAttributes) {
 
         let params = {
-            UserPoolId: this.userPool,
-            Username: username,
-            MessageAction: "SUPPRESS", // Do not send welcome email
-            TemporaryPassword: password,
-            UserAttributes: userAttributes
+            "UserPoolId": this.userPool,
+            "Username": username,
+            // "MessageAction": "SUPPRESS", // Do not send welcome email
+            "TemporaryPassword": password,
+            "UserAttributes": userAttributes,
         };
         try {
             const res = await this.cognitoIdentity.adminCreateUser(params).promise();
-            console.log(res);
+
             const data = {
                 data: res,
                 statusCode: 201
@@ -312,18 +298,145 @@ class AdminCognitoService {
         let params = {
             UserPoolId: this.adminUserPool,
             Username: username,
-            MessageAction: "SUPPRESS", // Do not send welcome email
+            // MessageAction: "SUPPRESS", // Do not send welcome email
             TemporaryPassword: password,
             UserAttributes: userAttributes
         };
         try {
-            const res = await this.cognitoIdentity.adminCreateUser(params).promise();
-            console.log(res);
+            const res = await this.cognitoIdentity.adminCreateUser(params).promise()
+                .then(result => {
+                    const paramsGroup = {
+                        "GroupName": "Admins",
+                        "Username": result.User.Username,
+                        "UserPoolId": this.adminUserPool
+                    }
+                    this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
+                })
+
             const data = {
                 data: res,
                 statusCode: 201
             }
             return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async enableUser(username) {
+        let params = {
+            "Username": username,
+            "UserPoolId": this.userPool
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminEnableUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async disableUser(username) {
+        let params = {
+            "Username": username,
+            "UserPoolId": this.userPool
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminDisableUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+    async enableAdmin(username) {
+        let params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminEnableUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+    async disableAdmin(username) {
+        let params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool
+        }
+
+        try {
+            const res = await this.cognitoIdentity.adminDisableUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
+
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async respondToAuthChallenge(username, password, session) {
+
+        const params = {
+            "ChallengeName": "NEW_PASSWORD_REQUIRED",
+            "ChallengeResponses": {
+                "USERNAME": username,
+                "NEW_PASSWORD": password,
+                "SECRET_HASH": this.generateHash(username)
+            },
+            "ClientId": this.clientId,
+            "Session": session,
+        }
+
+        try {
+            const tokens = await this.cognitoIdentity.respondToAuthChallenge(params).promise();
+            if (tokens.ChallengeName) {
+                return tokens
+            }
+            const userdata = await auth.decodeToken(tokens.AuthenticationResult.IdToken);
+
+            const data = {
+                accessToken: tokens.AuthenticationResult.AccessToken,
+                email: userdata.email,
+                username: userdata['cognito:username'],
+                name: userdata.name,
+                family_name: userdata.family_name,
+                user_id: userdata.sub
+            }
+
+            const res = {
+                data: data,
+                statusCode: 200
+            }
+            return res
 
         } catch (error) {
             console.log(error);

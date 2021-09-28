@@ -40,9 +40,9 @@ module.exports = function({ databaseInit }) {
 
     exports.addCharger = function(chargePointId, serialNumber, location, callback) {
         const charger = {
-            location: location,
             chargePointID: chargePointId,
             serialNumber: serialNumber,
+            location: location,
             status: 0
         }
 

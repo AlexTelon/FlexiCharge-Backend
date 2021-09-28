@@ -46,6 +46,8 @@ module.exports = function () {
                     res.status(200).json(result).end();
                 } else if (result.statusCode === 400) {
                     res.status(400).json(result).end();
+                } else if (result.statusCode === 429) {
+                    res.status(429).json(result).end();
                 } else {
                     console.log(result);
                     res.status(500).json(result).end();
@@ -130,6 +132,7 @@ module.exports = function () {
         userAttributes.push({ Name: 'email', Value: email });
         userAttributes.push({ Name: 'name', Value: name });
         userAttributes.push({ Name: 'family_name', Value: family_name });
+        userAttributes.push({ Name: 'email_verified', Value: "true" });
 
         cognito.createUser(username, password, userAttributes)
             .then(result => {
@@ -149,6 +152,7 @@ module.exports = function () {
         userAttributes.push({ Name: 'email', Value: email });
         userAttributes.push({ Name: 'name', Value: name });
         userAttributes.push({ Name: 'family_name', Value: family_name });
+        userAttributes.push({ Name: 'email_verified', Value: "true" });
 
         cognito.createAdmin(username, password, userAttributes)
             .then(result => {
@@ -180,15 +184,15 @@ module.exports = function () {
             })
     })
 
-    router.patch('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
+    router.put('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
 
         const username = req.params.username;
         const { userAttributes } = req.body;
 
         cognito.updateUserAttributes(username, userAttributes)
             .then(result => {
-                if (result.statusCode === 201) {
-                    res.status(200).json(result.data).end();
+                if (result.statusCode === 204) {
+                    res.status(204).json(result.data).end();
 
                 } else if (result.statusCode === 400) {
                     console.log(result);
@@ -200,7 +204,47 @@ module.exports = function () {
             })
     })
 
-    router.patch('/:username', checkJwt, checkIfAdmin, function (req, res) {
+    router.put('/users/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
+        const username = req.params.username;
+
+        console.log("active");
+        cognito.enableUser(username)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+
+                } else if (result.statusCode === 400) {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                } else {
+                    console.log(result);
+                    res.status(500).json(result).end();
+                }
+            })
+
+    })
+
+    router.put('/users/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
+        const username = req.params.username;
+
+        console.log("active");
+        cognito.disableUser(username)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+
+                } else if (result.statusCode === 400) {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                } else {
+                    console.log(result);
+                    res.status(500).json(result).end();
+                }
+            })
+
+    })
+
+    router.put('/:username', checkJwt, checkIfAdmin, function (req, res) {
 
         console.log("ADMIN");
         const username = req.params.username;
@@ -208,7 +252,43 @@ module.exports = function () {
 
         cognito.updateAdminAttributes(username, userAttributes)
             .then(result => {
-                if (result.statusCode === 201) {
+                if (result.statusCode === 204) {
+                    res.status(204).json(result.data).end();
+
+                } else if (result.statusCode === 400) {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                } else {
+                    console.log(result);
+                    res.status(500).json(result).end();
+                }
+            })
+    })
+
+    router.put('/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
+
+        const username = req.params.username;
+
+        cognito.enableAdmin(username)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+
+                } else if (result.statusCode === 400) {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                } else {
+                    console.log(result);
+                    res.status(500).json(result).end();
+                }
+            })
+    })
+    router.put('/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
+        const username = req.params.username;
+
+        cognito.disableAdmin(username)
+            .then(result => {
+                if (result.statusCode === 200) {
                     res.status(200).json(result.data).end();
 
                 } else if (result.statusCode === 400) {
@@ -226,7 +306,6 @@ module.exports = function () {
 
         cognito.resetUserPassword(username)
             .then(result => {
-                console.log(result);
                 if (result.statusCode === 200) {
                     res.status(200).json(result.data).end();
                 } else if (result.statusCode === 400) {
@@ -244,6 +323,21 @@ module.exports = function () {
             .then(result => {
                 res.status(200).json(result).end();
             })
+    })
+
+    router.post('/force-change-password', function (req, res) {
+
+        const { username, password, session } = req.body;
+
+        cognito.respondToAuthChallenge(username, password, session)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
+                }
+            })
+
     })
 
     return router

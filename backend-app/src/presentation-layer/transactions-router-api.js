@@ -47,9 +47,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.post('/', function (request, response) {
-
         const { userID, chargerID, meterStartValue } = request.body;
-
         databaseInterfaceTransactions.addTransaction(userID, chargerID, meterStartValue, function (errors, transaction) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
