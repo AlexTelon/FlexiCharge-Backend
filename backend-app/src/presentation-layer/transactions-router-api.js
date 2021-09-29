@@ -77,8 +77,6 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-
-
     router.put('/meter/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
         const meterValue = request.body.meterStop
