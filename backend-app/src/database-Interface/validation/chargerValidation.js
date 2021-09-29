@@ -23,16 +23,25 @@ module.exports = function({}) {
 
         const validationErrors = []
 
-        if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
-            validationErrors.push("invalidLatitude")
+        if (location === undefined) {
+            validationErrors.push("invalidLocation")
+        } else {
+            if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
+                validationErrors.push("invalidLatitude")
+            }
+            if (location[1] < LONGITUDE_MIN_VALUE || location[1] > LONGITUDE_MAX_VALUE) {
+                validationErrors.push("invalidLongitude")
+            }
         }
-        if (location[1] < LONGITUDE_MIN_VALUE || location[1] > LONGITUDE_MAX_VALUE) {
-            validationErrors.push("invalidLongitude")
-        }
-        if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
-
+        if (serialNumber === undefined) {
             validationErrors.push("invalidSerialNumber")
+        } else {
+            if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
+
+                validationErrors.push("invalidSerialNumber")
+            }
         }
+
 
         return validationErrors
     }
@@ -40,9 +49,15 @@ module.exports = function({}) {
     exports.getChargerBySerialNumberValidation = function(serialNumber) {
         const validationErrors = []
 
-        if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
+        if (serialNumber === undefined) {
             validationErrors.push("invalidSerialNumber")
+        } else {
+
+            if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
+                validationErrors.push("invalidSerialNumber")
+            }
         }
+
 
         return validationErrors
     }
@@ -50,8 +65,13 @@ module.exports = function({}) {
     exports.getUpdateChargerStatusValidation = function(status) {
         const ValidationErrors = []
 
-        if (status < STATUS_MIN_VALUE || status > STATUS_MAX_VALUE) {
+        if (status === undefined) {
             ValidationErrors.push("invalidStatus")
+        } else {
+
+            if (status < STATUS_MIN_VALUE || status > STATUS_MAX_VALUE) {
+                ValidationErrors.push("invalidStatus")
+            }
         }
 
         return ValidationErrors

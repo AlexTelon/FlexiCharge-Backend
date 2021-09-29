@@ -20,7 +20,6 @@ const Chargers = sequelize.define('Chargers', {
     chargerID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
         allowNull: false
     },
     location: {
@@ -140,11 +139,11 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+// Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
 sequelize.sync({ force: true }).then(function() {
-    Chargers.findAndCountAll().then(function({ rows, count }) {
+    ChargePoints.findAndCountAll().then(function({ rows, count }) {
         if (count < 1) {
             ChargePoints.create({
                 name: 'Jönköping University',
@@ -152,18 +151,20 @@ sequelize.sync({ force: true }).then(function() {
                 price: 44.52,
                 klarnaReservationAmount: 300
             });
-            Chargers.create({
-                location: [57.777714, 14.163012],
-                serialNumber: 'abc123',
-                chargePointID: 1,
-                status: 1
-            });
-            Chargers.create({
-                location: [57.777714, 14.163016],
-                serialNumber: '123abc',
-                chargePointID: 1,
-                status: 0
-            });
+            // Chargers.create({
+            //     chargerID: 100000,
+            //     location: [57.777714, 14.163012],
+            //     serialNumber: 'abc123',
+            //     status: 1,
+            //     chargePointID: 1
+            // });
+            // Chargers.create({
+            //     chargerID: 100001,
+            //     location: [57.777714, 14.163016],
+            //     serialNumber: '123abc',
+            //     status: 0,
+            //     chargePointID: 1
+            // });
             Transactions.create({
                 chargerID: 1,
                 paymentID: 1,

@@ -13,6 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
+
         switch ('transaction') {
             case 'chargePoints':
 
@@ -58,8 +59,16 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'charger':
 
                 const charger = {
-                    chargePointID: 55,
+                    chargePointID: 1,
+                    location: [57.78016419007881, 14.182610301538203],
                     serialNumber: '##€43cstsdx6765',
+                    status: 2
+                }
+
+                const charger2 = {
+                    chargePointID: 1,
+                    location: [57.78016419007881, 14.182610301538203],
+                    serialNumber: '##€43cstsdx676',
                     status: 2
                 }
 
@@ -77,17 +86,17 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 // })
 
 
-                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, function(errors, chargerAdded) {
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+                    
+                })
+
+                databaseInterfaceCharger.addCharger(charger2.chargePointID, charger2.serialNumber, charger2.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
                     response.redirect("/")
                 })
-
-                // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
-                //     console.log(errors)
-                //     console.log(chargerAdded)
-                //     response.redirect("/")
-                // })
 
 
                 // databaseInterfaceCharger.getChargers(function(errors, chargers) {
