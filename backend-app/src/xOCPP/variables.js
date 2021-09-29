@@ -1,9 +1,26 @@
-const connectedChargers = {}
+const connectedSockets = {}
 const chargerSerials = []
 const chargerIDs = {}
+const callbacks = {}
 
 module.exports = function ({ }) {
+    
+    // CONNECTED SOCKETS
+    // Get socket with charger IDs
+    exports.getConnectedSocket = function (id) {
+        return connectedSockets[id]
+    }
+    exports.addConnectedSockets = function (id, socket) {
+        connectedSockets[id] = socket
+    }
+    exports.removeConnectedSockets = function (id) {
+        delete connectedSockets[id]
+    }
+    exports.getLengthConnectedSockets = function () {
+        return Object.keys(connectedSockets).length
+    }
 
+    
     // CHARGER SERIALS
     // Array with all the serial numbers
     exports.getChargerSerials = function () {
@@ -23,26 +40,11 @@ module.exports = function ({ }) {
         return chargerSerials.includes(serial)
     }
 
-    // CONNECTED CHARGERS
-    // Get socket with charger IDs
-    //change to ConnectedSocket
-    exports.getConnectedChargers = function () {
-        return connectedChargers
-    }
-    exports.addConnectedChargers = function (id, socket) {
-        connectedChargers[id] = socket
-    }
-    exports.removeConnectedChargers = function (id) {
-        delete connectedChargers[id]
-    }
-    exports.getLengthConnectedChargers = function () {
-        return Object.keys(connectedChargers).length
-    }
 
     // CHARGER IDS
-    // get charger IDs with serial number
-    exports.getChargerIDs = function () {
-        return chargerIDs
+    // get charger ID with serial number
+    exports.getChargerID = function (serial) {
+        return chargerIDs[serial]
     }
     exports.addChargerIDs = function (serial, id) {
         chargerIDs[serial] = id
@@ -52,6 +54,18 @@ module.exports = function ({ }) {
     }
     exports.getLengthChargerIDs = function () {
         return Object.keys(chargerIDs).length
+    }
+
+    //CALLBACKS
+    //get callback with unique ids
+    exports.getCallback = function (id) {
+        return callbacks[id]
+    }
+    exports.addCallback = function (id, callback) {
+        callbacks[id] = callback
+    }
+    exports.removeCallback = function (id) {
+        delete callbacks[id]
     }
 
     return exports

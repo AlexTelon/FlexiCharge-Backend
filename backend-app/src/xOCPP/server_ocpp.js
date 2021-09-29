@@ -1,6 +1,6 @@
 const WebSocket = require('ws')
 
-module.exports = function ({ clientHandler, variables, databaseInterfaceCharger }) {
+module.exports = function ({ clientHandler, v, databaseInterfaceCharger }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
@@ -17,15 +17,15 @@ module.exports = function ({ clientHandler, variables, databaseInterfaceCharger 
             clientHandler.handleClient(ws, chargerSerial)
 
             ws.on('close', function disconnection() {
-                if (variables.isInChargerSerials(chargerSerial)) {
+                if (v.isInChargerSerials(chargerSerial)) {
 
-                    const chargerID = variables.getChargerIDs()[chargerSerial]
+                    const chargerID = v.getChargerID(chargerSerial)
 
-                    variables.removeConnectedChargers(chargerID)
-                    variables.removeChargerSerials(chargerSerial)
-                    variables.removeChargerIDs(chargerSerial)
+                    v.removeConnectedSockets(chargerID)
+                    v.removeChargerSerials(chargerSerial)
+                    v.removeChargerIDs(chargerSerial)
                     console.log("Disconnected from charger with ID: " + chargerID)
-                    console.log("Number of connected chargers: " + variables.getLengthConnectedChargers() + " (" + variables.getLengthChargerSerials() + ")" + " (" + variables.getLengthChargerIDs() + ")")
+                    console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                 }
             })
         })
