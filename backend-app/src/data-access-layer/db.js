@@ -96,7 +96,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     userID: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 }, {
     timestamps: false
