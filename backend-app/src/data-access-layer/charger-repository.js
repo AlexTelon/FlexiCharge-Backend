@@ -82,7 +82,13 @@ module.exports = function({ databaseInit }) {
                 returning: true,
                 raw: true
             })
-            .then(charger => callback([], charger[1][0]))
+            .then(charger => {
+                if (charger[1][0] === undefined || charger == null) {
+                    callback([], false)
+                } else {
+                    callback([], charger[1][0])
+                }
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
