@@ -30,6 +30,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                 *****************************************/
                 let data = JSON.parse(message)
                 let messageTypeID = data[0]
+                
                 if (messageTypeID == c.TEST) {
                     test.test()
                 }

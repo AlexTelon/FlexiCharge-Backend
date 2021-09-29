@@ -1,9 +1,10 @@
-module.exports = function ({ ocppInterface }) {
+module.exports = function ({ ocppInterface, databaseInterfaceCharger }) {
 
 
     exports.test = function () {
+
         console.log("Got test :)")
-        ocppInterface.reserveNow(111111, 1, Date.now(), 123, 321, null, function (error, response) {
+        ocppInterface.reserveNow(100000, 1, 123, 321, null, function (error, response) {
 
             console.log("Test result response:" + response)
             console.log("Test result error:" + error)

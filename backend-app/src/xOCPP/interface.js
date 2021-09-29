@@ -16,19 +16,18 @@ module.exports = function({ v, constants, messageHandler }) {
         messageHandler.sendMessage(c.STOP_TRANSACTION, transactionID, v.getConnectedSocket(chargerID))
     }
 
-    exports.reserveNow = function(chargerID, connectorID, expiryDate, idTag, reservationID, parentIdTag, callback){
+
+    //Need a callback function with the parameters "response" and "error", it will callback when the server got a response from the charger. 
+    //The response have 1 error as of now, "InvalidId". if error occur the response will be null. If no errors occours the erro will be null.
+    //If the chareger accepts the reservation the response will be "Accepted" if the reservation went through
+    //othervise it will be one of this responses: "Faulted", "Occupied", "Rejected" or "Unavailable".
+    exports.reserveNow = function(chargerID, connectorID, idTag, reservationID, parentIdTag, callback){
 
         //to do, not working
-        console.log("Incoming request from API: changeAvailability -> chargerId;"+chargerID+
-        " connectorID;"+connectorID+
-        " expiryDate;"+expiryDate+
-        " idTag;"+idTag+
-        " reservationID;"+reservationID+
-        " parentIdTag;"+parentIdTag)
+        console.log("Incoming request from API: reserveNow -> chargerId;"+chargerID)
 
         const dataObject = {
             connectorID: connectorID,
-            expiryDate: expiryDate,
             idTag: idTag,
             reservationID: reservationID,
             parentIdTag: parentIdTag
@@ -37,6 +36,8 @@ module.exports = function({ v, constants, messageHandler }) {
             callback(response, error)
         })
     }
+
+    
 
 
     return exports
