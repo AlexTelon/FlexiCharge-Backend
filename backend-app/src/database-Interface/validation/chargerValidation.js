@@ -26,6 +26,9 @@ module.exports = function({}) {
         if (location === undefined) {
             validationErrors.push("invalidLocation")
         } else {
+            if ((location instanceof Array) == false || (typeof location[0] !== 'number') || (typeof location[1] !== 'number')) {
+                validationErrors.push("invalidDataType")
+            }
             if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
                 validationErrors.push("invalidLatitude")
             }
@@ -36,6 +39,9 @@ module.exports = function({}) {
         if (serialNumber === undefined) {
             validationErrors.push("invalidSerialNumber")
         } else {
+            if (typeof serialNumber !== 'string') {
+                validationErrors.push("invalidDataType")
+            }
             if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
 
                 validationErrors.push("invalidSerialNumber")
@@ -52,7 +58,9 @@ module.exports = function({}) {
         if (serialNumber === undefined) {
             validationErrors.push("invalidSerialNumber")
         } else {
-
+            if (typeof serialNumber !== 'string') {
+                validationErrors.push("invalidDataType")
+            }
             if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
                 validationErrors.push("invalidSerialNumber")
             }
@@ -68,7 +76,9 @@ module.exports = function({}) {
         if (status === undefined) {
             ValidationErrors.push("invalidStatus")
         } else {
-
+            if (typeof status !== 'number') {
+                validationErrors.push("invalidDataType")
+            }
             if (status < STATUS_MIN_VALUE || status > STATUS_MAX_VALUE) {
                 ValidationErrors.push("invalidStatus")
             }
