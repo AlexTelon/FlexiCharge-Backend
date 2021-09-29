@@ -3,6 +3,7 @@ module.exports = function({}) {
 
     //Validation for status
     STATUS_MIN_VALUE = 0
+    STATUS_MAX_VALUE = 3
 
     //Validation for location
     LONGITUDE_MIN_VALUE = -180
