@@ -20,7 +20,6 @@ const Chargers = sequelize.define('Chargers', {
     chargerID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
         allowNull: false
     },
     location: {
@@ -71,13 +70,21 @@ const Transactions = sequelize.define('Transactions', {
         autoIncrement: true,
         allowNull: false
     },
-    meterStart: {
-        type: DataTypes.INTEGER,
+    isKlarnaPayment: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    meterStop: {
-        type: DataTypes.INTEGER,
+    kwhTransfered: {
+        type: DataTypes.FLOAT,
         allowNull: true
+    },
+    currentChargePercentage: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    pricePerKwh: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -89,7 +96,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     userID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
 }, {
     timestamps: false
@@ -132,7 +139,7 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+// Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
 sequelize.sync().then(function() {
@@ -144,25 +151,29 @@ sequelize.sync().then(function() {
                 price: 44.52,
                 klarnaReservationAmount: 300
             });
-            Chargers.create({
-                location: [57.777714, 14.163012],
-                serialNumber: 'abc123',
-                chargePointID: 1,
-                status: 1
-            });
-            Chargers.create({
-                location: [57.777714, 14.163016],
-                serialNumber: '123abc',
-                chargePointID: 1,
-                status: 0
-            });
+            // Chargers.create({
+            //     chargerID: 100000,
+            //     location: [57.777714, 14.163012],
+            //     serialNumber: 'abc123',
+            //     status: 1,
+            //     chargePointID: 1
+            // });
+            // Chargers.create({
+            //     chargerID: 100001,
+            //     location: [57.777714, 14.163016],
+            //     serialNumber: '123abc',
+            //     status: 0,
+            //     chargePointID: 1
+            // });
             Transactions.create({
                 chargerID: 1,
-                meterStart: 1631521252,
-                meterStop: 1631522000,
                 paymentID: 1,
                 userID: 1,
-                timestamp: 1631522252
+                timestamp: 1631522252,
+                isKlarnaPayment: true,
+                kwhTransfered: 5,
+                currentChargePercentage: 20,
+                pricePerKwh: 44.66
             });
             Reservations.create({
                 chargerID: 1,
