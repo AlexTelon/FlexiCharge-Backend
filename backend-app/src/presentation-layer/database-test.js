@@ -13,7 +13,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     router.get("/check", async function(request, response) {
 
-        switch ('chargePoints') {
+        switch ('transaction') {
             case 'chargePoints':
 
                 const chargePoint = {
@@ -172,23 +172,36 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'transaction':
 
                 const transaction = {
-                    transactionID: 1,
-                    userID: 1,
+                    transactionID: 2,
                     chargerID: 1,
-                    meterStart: 22,
-                    meterStop: 44,
-                    timestamp: 12,
-                    paymentID: 44
+                    isKlarnaPayment: true,
+                    pricePerKwh: 45.66,
+                    kwhTransfered: 10.5,
+                    currentChargePercentage: 59.3,
+                    paymentID: 44,
+                    userID: null
                 }
 
-                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.meterStart, function(errors, transactionId) {
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
                     console.log(errors)
                     console.log(transactionId)
-                    databaseInterfaceTransactions.updateTransactionMeter(transaction.transactionID, transaction.meterStop, function(errors, updatedTransaction) {
+
+                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction){
                         console.log(errors)
-                        console.log(updatedTransaction)
-                        response.redirect("/")
+                        console.log(createdTransaction)
+
+                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                            console.log(errors)
+                            console.log(updatedTransaction)
+
+                            databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
+                                console.log(errors)
+                                console.log(updatedTransaction)
+                                response.redirect("/")
+                            })
+                        })
                     })
+                    
                 })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
