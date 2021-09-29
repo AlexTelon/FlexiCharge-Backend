@@ -70,13 +70,21 @@ const Transactions = sequelize.define('Transactions', {
         autoIncrement: true,
         allowNull: false
     },
-    meterStart: {
-        type: DataTypes.INTEGER,
+    isKlarnaPayment: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    meterStop: {
-        type: DataTypes.INTEGER,
+    kwhTransfered: {
+        type: DataTypes.FLOAT,
         allowNull: true
+    },
+    currentChargePercentage: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    pricePerKwh: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -88,7 +96,7 @@ const Transactions = sequelize.define('Transactions', {
     },
     userID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
 }, {
     timestamps: false
@@ -159,11 +167,13 @@ sequelize.sync({ force: true }).then(function() {
             // });
             Transactions.create({
                 chargerID: 1,
-                meterStart: 1631521252,
-                meterStop: 1631522000,
                 paymentID: 1,
                 userID: 1,
-                timestamp: 1631522252
+                timestamp: 1631522252,
+                isKlarnaPayment: true,
+                kwhTransfered: 5,
+                currentChargePercentage: 20,
+                pricePerKwh: 44.66
             });
             Reservations.create({
                 chargerID: 1,
