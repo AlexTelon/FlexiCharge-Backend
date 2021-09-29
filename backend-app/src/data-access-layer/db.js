@@ -57,7 +57,7 @@ const Reservations = sequelize.define('Reservations', {
         allowNull: false
     },
     userID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     }
 }, {
@@ -88,7 +88,7 @@ const Transactions = sequelize.define('Transactions', {
         allowNull: true
     },
     userID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     }
 }, {
