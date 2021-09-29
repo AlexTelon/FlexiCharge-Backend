@@ -76,26 +76,6 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         })
     })
 
-    router.put('/', function (request, response) {
-        const chargerId = request.body.chargerID
-        const connectorId = request.body.connectorID
-        const idTag = request.body
-        chargerID, connectorID, idTag, reservationID, parentIdTag
-        const transactionId = request.params.transactionID
-        const meterValue = request.body.meterStop
-        ocppInterface.reservNow(transactionId, meterValue, function(error, updateTransactionMeter){
-            if (error.length == 0) {
-                response.status(201).json(updateTransactionMeter)
-            } else {
-                if (error.includes("internalError") || error.includes("dbError")) {
-                    response.status(500).json(error)
-                } else {
-                    response.status(404).json(error)
-                }
-            }
-        })
-    })
-
     router.put('/:chargerID', function (request, response) {
         const chargerId = request.params.chargerID
         const connectorId = request.body.connectorID
