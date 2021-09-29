@@ -2,7 +2,7 @@ const express = require('express')
 const AuthMiddleware = require('./middleware/auth.middleware')
 const authMiddleware = new AuthMiddleware()
 
-module.exports = function ({ databaseInterfaceReservations }) {
+module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
 
     const router = express.Router()
 
@@ -72,6 +72,45 @@ module.exports = function ({ databaseInterfaceReservations }) {
                 response.status(404).json()
             } else {
                 response.status(500).json(errors)
+            }
+        })
+    })
+
+    router.put('/', function (request, response) {
+        const chargerId = request.body.chargerID
+        const connectorId = request.body.connectorID
+        const idTag = request.body
+        chargerID, connectorID, idTag, reservationID, parentIdTag
+        const transactionId = request.params.transactionID
+        const meterValue = request.body.meterStop
+        ocppInterface.reservNow(transactionId, meterValue, function(error, updateTransactionMeter){
+            if (error.length == 0) {
+                response.status(201).json(updateTransactionMeter)
+            } else {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error)
+                } else {
+                    response.status(404).json(error)
+                }
+            }
+        })
+    })
+
+    router.put('/:chargerID', function (request, response) {
+        const chargerId = request.params.chargerID
+        const connectorId = request.body.connectorID
+        const idTag = request.body.idTag
+        const reservationId = request.body.reservationID
+        const parentIdTag = request.body.parentIdTag
+        ocppInterface.reservNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function(error, updateResev){
+            if (error.length == 0) {
+                response.status(201).json(updateResev)
+            } else {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error)
+                } else {
+                    response.status(404).json(error)
+                }
             }
         })
     })

@@ -4,7 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
-module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter }) { //authenticationRouter
+module.exports = function ({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, ocppInterface }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -30,11 +30,10 @@ module.exports = function ({ chargersRouter, transactionsRouter, reservationsRou
     })
     app.use('/chargers', chargersRouter)
     app.use('/transactions', transactionsRouter)
-    app.use('/reservations', reservationsRouter)
+    app.use('/reservations', reservationsRouter, ocppInterface)
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
     app.use('/auth/admin', adminRouter)
-
     return app
 
 }
