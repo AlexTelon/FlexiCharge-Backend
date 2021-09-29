@@ -14,7 +14,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
     router.get("/check", async function(request, response) {
 
 
+
         switch ('transaction') {
+
             case 'chargePoints':
 
                 const chargePoint = {
@@ -27,7 +29,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.location, chargePoint.price, chargePoint.klarnaReservationAmount, function(errors, chargePointAdded) {
                     console.log(errors)
                     console.log(chargePointAdded)
-                    response.redirect("/")
+                    databaseInterfaceChargePoint.updateChargePoint(chargePoint.chargePointId, 'haj', chargePoint.location, chargePoint.price, function(errors, updatedChargePoint) {
+                        console.log(errors)
+                        console.log(updatedChargePoint)
+                        response.redirect("/")
+                    })
                 })
 
 
@@ -62,8 +68,13 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     chargePointID: 1,
                     location: [57.78016419007881, 14.182610301538203],
                     serialNumber: '##€43cstsdx6765',
-                    status: 2
+                    status: 1
                 }
+
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
+                    response.redirect("/")
 
                 const charger2 = {
                     chargePointID: 1,
@@ -83,6 +94,12 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     })
 
 
+                })
+
+                // databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                //     console.log(errors)
+                //     console.log(chargers)
+                //     response.redirect("/")
                 // })
 
 
@@ -116,7 +133,6 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     console.log(chargers)
                 //     response.redirect("/")
                 // })
-
 
 
                 // databaseInterfaceCharger.updateChargerStatus(charger.chargerID, charger.status, function(errors, updatedCharger) {
