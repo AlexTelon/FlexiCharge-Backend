@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-// const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -20,16 +20,10 @@ const Chargers = sequelize.define('Chargers', {
     chargerID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
         allowNull: false
     },
     location: {
         type: DataTypes.ARRAY(DataTypes.FLOAT),
-        unique: false,
-        allowNull: false
-    },
-    chargePointID: {
-        type: DataTypes.INTEGER,
         unique: false,
         allowNull: false
     },
@@ -76,13 +70,21 @@ const Transactions = sequelize.define('Transactions', {
         autoIncrement: true,
         allowNull: false
     },
-    meterStart: {
-        type: DataTypes.INTEGER,
+    isKlarnaPayment: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
-    meterStop: {
-        type: DataTypes.INTEGER,
+    kwhTransfered: {
+        type: DataTypes.FLOAT,
         allowNull: true
+    },
+    currentChargePercentage: {
+        type: DataTypes.FLOAT,
+        allowNull: true
+    },
+    pricePerKwh: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     },
     timestamp: {
         type: DataTypes.INTEGER,
@@ -94,8 +96,39 @@ const Transactions = sequelize.define('Transactions', {
     },
     userID: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
+}, {
+    timestamps: false
+});
+
+const ChargePoints = sequelize.define('ChargePoints', {
+    chargePointID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
+    location: {
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
+        unique: false,
+        allowNull: false
+    },
+    price: {
+        type: DataTypes.DECIMAL(10, 2),
+        unique: false,
+        allowNull: false
+    },
+    klarnaReservationAmount: {
+        type: DataTypes.INTEGER,
+        unique: false,
+        allowNull: false
+    },
 }, {
     timestamps: false
 });
@@ -106,28 +139,41 @@ Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-sequelize.sync().then(function() {
-    Chargers.findAndCountAll().then(function({ rows, count }) {
+// Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+
+sequelize.sync({ force: true }).then(function() {
+    ChargePoints.findAndCountAll().then(function({ rows, count }) {
         if (count < 1) {
-            Chargers.create({
+            ChargePoints.create({
+                name: 'Jönköping University',
                 location: [57.777714, 14.163010],
-                serialNumber: '€%&€6376776876',
-                chargePointID: 1,
-                status: 1
+                price: 44.52,
+                klarnaReservationAmount: 300
             });
-            Chargers.create({
-                location: [57.777725, 14.163085],
-                serialNumber: '()79654564535""34',
-                chargePointID: 1,
-                status: 0
-            });
+            // Chargers.create({
+            //     chargerID: 100000,
+            //     location: [57.777714, 14.163012],
+            //     serialNumber: 'abc123',
+            //     status: 1,
+            //     chargePointID: 1
+            // });
+            // Chargers.create({
+            //     chargerID: 100001,
+            //     location: [57.777714, 14.163016],
+            //     serialNumber: '123abc',
+            //     status: 0,
+            //     chargePointID: 1
+            // });
             Transactions.create({
                 chargerID: 1,
-                meterStart: 1631521252,
-                meterStop: 1631522000,
                 paymentID: 1,
                 userID: 1,
-                timestamp: 1631522252
+                timestamp: 1631522252,
+                isKlarnaPayment: true,
+                kwhTransfered: 5,
+                currentChargePercentage: 20,
+                pricePerKwh: 44.66
             });
             Reservations.create({
                 chargerID: 1,
@@ -140,6 +186,6 @@ sequelize.sync().then(function() {
 })
 
 module.exports = function({}) {
-    const exports = { Chargers, Transactions, Reservations }
+    const exports = { Chargers, Transactions, Reservations, ChargePoints }
     return exports
 }

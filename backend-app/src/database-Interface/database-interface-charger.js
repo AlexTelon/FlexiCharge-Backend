@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
+module.exports = function({ dataAccessLayerCharger, dbErrorCheck, chargerValidation }) {
 
     const exports = {}
 
@@ -34,20 +34,25 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
 
 
     exports.getChargerBySerialNumber = function(serialNumber, callback) {
-        dataAccessLayerCharger.getChargerBySerialNumber(serialNumber, function(error, charger) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                if (charger == null) {
-                    callback([], [])
+        const validationError = chargerValidation.getChargerBySerialNumberValidation(serialNumber)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerCharger.getChargerBySerialNumber(serialNumber, function(error, charger) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
                 } else {
-                    callback([], charger)
-                }
+                    if (charger == null) {
+                        callback([], [])
+                    } else {
+                        callback([], charger)
+                    }
 
-            }
-        })
+                }
+            })
+        }
     }
 
 
@@ -63,18 +68,22 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
         })
     }
 
-
     exports.addCharger = function(chargePointId, serialNumber, location, callback) {
-        dataAccessLayerCharger.addCharger(chargePointId, serialNumber, location, function(error, chargerId) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    console.log(errorCode)
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargerId)
-            }
-        })
+        const ValidationError = chargerValidation.getAddChargerValidation(location, serialNumber)
+        if (ValidationError.length > 0) {
+            callback(ValidationError, [])
+        } else {
+            dataAccessLayerCharger.addCharger(chargePointId, serialNumber, location, function(error, chargerId) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        console.log(errorCode)
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], chargerId)
+                }
+            })
+        }
     }
 
     exports.removeCharger = function(chargerId, callback) {
@@ -91,15 +100,20 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck }) {
 
 
     exports.updateChargerStatus = function(chargerId, status, callback) {
-        dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], charger)
-            }
-        })
+        const validationError = chargerValidation.getUpdateChargerStatusValidation(status)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], charger)
+                }
+            })
+        }
     }
 
     return exports
