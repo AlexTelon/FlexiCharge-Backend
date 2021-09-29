@@ -42,13 +42,13 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
-    exports.addTransaction = function(userID, chargerID, MeterStartValue, callback) {
-        const validationError = transactionValidation.getAddTransactionValidation(MeterStartValue)
+    exports.addTransaction = function(userID, chargerID, isKlarnaPayment, pricePerKwh, callback) {
+        const validationError = transactionValidation.getAddTransactionValidation(pricePerKwh)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
             timestamp = (Date.now() / 1000 | 0)
-            dataAccessLayerTransaction.addTransaction(userID, chargerID, MeterStartValue, timestamp, function(error, transactionId) {
+            dataAccessLayerTransaction.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, function(error, transactionId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])
@@ -61,29 +61,29 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
     }
 
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
-        dataAccessLayerTransaction.updateTransactionPayment(transactionID, paymentID, function(error, updatedTransactionPayment) {
+        dataAccessLayerTransaction.updateTransactionPayment(transactionID, paymentID, function(error, updatedTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                callback([], updatedTransactionPayment)
+                callback([], updatedTransaction)
             }
         })
     }
 
-    exports.updateTransactionMeter = function(transactionID, meterValue, callback) {
-        const validationError = transactionValidation.getUpdateTransactionMeterValidation(meterValue)
+    exports.updateTransactionChargingStatus = function(transactionID, kwhTransfered, currentChargePercentage, callback) {
+        const validationError = transactionValidation.getUpdateTransactionChargingStatus(kwhTransfered, currentChargePercentage)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerTransaction.updateTransactionMeter(transactionID, meterValue, function(error, updatedTransactionMeter) {
+            dataAccessLayerTransaction.updateTransactionChargingStatus(transactionID, kwhTransfered, currentChargePercentage, function(error, updatedTransaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
-                    callback([], updatedTransactionMeter)
+                    callback([], updatedTransaction)
                 }
             })
         }

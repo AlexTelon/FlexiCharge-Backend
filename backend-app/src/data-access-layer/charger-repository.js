@@ -46,12 +46,37 @@ module.exports = function({ databaseInit }) {
             status: 0
         }
 
-        databaseInit.Chargers.create(charger)
-            .then(charger => callback([], charger.chargerID))
+        databaseInit.Chargers.max("chargerID")
+            .then(function(biggestChargerID){
+                if(biggestChargerID != undefined && biggestChargerID != null && biggestChargerID != NaN && biggestChargerID >= 100000) {
+                    charger.chargerID = biggestChargerID + 1;
+                } else {
+                    charger.chargerID = 100000;
+                }
+
+                console.log(charger);
+
+                databaseInit.Chargers.create(charger)
+                    .then(createdCharger => callback([], createdCharger.chargerID))
+                    .catch(e => {
+                        if(e.errors[0].message == "chargerID must be unique") {
+                            charger.chargerID = parseInt(e.errors[0].value) + 1;
+                            databaseInit.Chargers.create(charger)
+                                .then(createdCharger => callback([], createdCharger.chargerID))
+                                .catch(e => {
+                                    console.log(e)
+                                    callback(["dbError"], [])
+                                });
+                        } else {
+                            console.log(e)
+                            callback(e, [])
+                        }
+                    })
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
-            })
+            })        
     }
 
     exports.removeCharger = function(chargerId, callback) {
@@ -82,7 +107,13 @@ module.exports = function({ databaseInit }) {
                 returning: true,
                 raw: true
             })
-            .then(charger => callback([], charger[1][0]))
+            .then(charger => {
+                if (charger[1][0] === undefined || charger == null) {
+                    callback([], false)
+                } else {
+                    callback([], charger[1][0])
+                }
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
