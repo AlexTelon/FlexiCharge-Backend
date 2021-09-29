@@ -16,10 +16,21 @@ module.exports = function ({ clientHandler, v, databaseInterfaceCharger }) {
             // Validate and handle connecting charger:
             clientHandler.handleClient(ws, chargerSerial)
 
-            ws.on('close', function disconnection() {
-                if (v.isInChargerSerials(chargerSerial)) {
+            console.log("Incoming connection from charger with ID: " + chargerSerial)
+            console.log("Number of connected chargers: " + connectedChargers.length)
+            
+            if(!validateCharger(chargerSerial)){
+                ws.close();
+            }
 
-                    const chargerID = v.getChargerID(chargerSerial)
+            ws.on('message', function incoming(message) {
+                var request = JSON.parse(message)
+                var requestType = request[2]
+                
+                console.log("Incoming request call: " + requestType)
+    
+                ws.send(JSON.stringify('[3,"call-id",{"status":"Accepted","currentTime":"2019-03-17T05:36:37.760Z","interval":60}]'))
+            })
 
                     v.removeConnectedSockets(chargerID)
                     v.removeChargerSerials(chargerSerial)
