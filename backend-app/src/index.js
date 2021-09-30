@@ -32,10 +32,16 @@ container.register({
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
 
-    databaseTestRouter: awilix.asFunction(require('./presentation-layer/database-test')), //Remove for production
-
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
+    ocppInterface: awilix.asFunction(require('./xOCPP//interface')),
+    clientHandler: awilix.asFunction(require('./xOCPP/client_handler')),
+    messageHandler: awilix.asFunction(require('./xOCPP/message_handler')),
+    constants: awilix.asFunction(require('./xOCPP/constants')),
+    //v is for variables
+    v: awilix.asFunction(require('./xOCPP/variables')),
+    func: awilix.asFunction(require('./xOCPP/global_functions')),
+    test: awilix.asFunction(require('./xOCPP/test')),
 
 
     app: awilix.asFunction(require('./presentation-layer/app'))
@@ -45,5 +51,6 @@ const app = container.resolve("app")
 const ocpp = container.resolve("ocpp")
 
 ocpp.startServer()
+
 
 app.listen(8080)
