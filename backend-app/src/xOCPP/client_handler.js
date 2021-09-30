@@ -13,7 +13,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                     /*****************************************
                     used for internal testing, remove before production
                     *****************************************/
-                    let data = JSON.parse(message)
+                    let data = JSON.parse(messageCache)
                     let messageTypeID = data[0]
 
                     if (messageTypeID == c.SSB) {
