@@ -15,6 +15,7 @@
         "crypto-js": "^4.1.1",
         "express": "^4.17.1",
         "express-handlebars": "^5.3.3",
+        "https": "^1.0.0",
         "jsonwebtoken": "^8.5.1",
         "jwk-to-pem": "^2.0.5",
         "node": "^16.6.1",

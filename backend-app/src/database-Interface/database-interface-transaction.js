@@ -1,5 +1,8 @@
-module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck }) {
+const https = require('https')
 
+module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint }) {
+
+    const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
     exports.getTransaction = function(transactionID, callback) {
@@ -87,6 +90,124 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                 }
             })
         }
+    }
+
+    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, order_lines, callback) {
+        dataAccessLayerCharger.getCharger(chargerID, async function(error, charger){
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                dataAccessLayerChargePoint.getChargePoint(1, async function(error, chargePoint){ //TODO: Change hardcoded 1 to charger.chargePointID
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function(errorCode) {
+                            callback(errorCode, [])
+                        })
+                    } else {
+                        if(chargePoint.klarnaReservationAmount > 0) {
+                            const data = new TextEncoder().encode(
+                                JSON.stringify({
+                                    "purchase_country": "SE",
+                                    "purchase_currency": "SEK",
+                                    "locale": "sv-SE",
+                                    "order_amount": chargePoint.klarnaReservationAmount,
+                                    "order_tax_amount": 0,
+                                    "order_lines": order_lines
+                                })
+                            )
+                            console.log(Buffer.from(data).toString());
+
+                            const options = {
+                                hostname: KLARNA_URI,
+                                port: 443,
+                                path: "/payments/v1/sessions",
+                                method: "POST",
+                                headers: {
+                                    "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52"+":"+"AcYW9rvNuy2YpZgX").toString("base64"),
+                                    "Content-Type": "application/json"
+                                }
+                            }
+                            
+                            const request = https.request(options, result => {
+                                if(result.statusCode == 200) {
+                                    result.on('data', responseData => {
+                                        //TODO: Hook this up to work with the real function when it is implemented
+                                        addNewKlarnaTransaction(userID, chargerID, chargePoint.price, responseData.session_id, responseData.client_token, responseData.payment_method_categories, function(error, transaction){
+                                            if(error.length > 0) {
+                                                callback(error, [])
+                                            } else {
+                                                callback([], transaction)
+                                            }
+                                        })
+                                        process.stdout.write(d)
+                                    })
+                                } else {
+                                    callback(["klarnaError"], [])
+                                }
+                            })
+
+                            request.on('error', error => {
+                                console.log(error)
+                                callback(["klarnaError"], [])
+                            })
+
+                            request.write(data)
+                            request.end()
+                        } else {
+                            callback(["dbError"], [])
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    exports.createKlarnaOrder = function(transactionId, authorization_token, order_lines, billing_address, shipping_address) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+        const data = new TextEncoder().encode(
+            JSON.stringify({
+                "purchase_country": "SE",
+                "purchase_currency": "SEK",
+                "status": "CHECKOUT_INCOMPLETE",
+                "order_amount": chargePoint.klarnaReservationAmount,
+                "order_tax_amount": 0,
+                "order_lines": order_lines,
+                "billing_address": billing_address,
+                "shipping_address": shipping_address,
+            })
+        )
+        console.log(Buffer.from(data).toString());
+
+        const options = {
+            hostname: KLARNA_URI,
+            port: 443,
+            path: `/payments/v1/authorizations/${authorization_token}/order`,
+            method: "POST",
+            headers: {
+                "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52"+":"+"AcYW9rvNuy2YpZgX").toString("base64"),
+                "Content-Type": "application/json"
+            }
+        }
+        
+        const request = https.request(options, result => {
+            if(result.statusCode == 200) {
+                result.on('data', responseData => {
+                    //TODO: Send back that order was created succesfully
+                    
+                    process.stdout.write(d)
+                })
+            } else {
+                callback(["klarnaError"], [])
+            }
+        })
+
+        request.on('error', error => {
+            console.log(error)
+            callback(["klarnaError"], [])
+        })
+
+        request.write(data)
+        request.end()
     }
 
     return exports
