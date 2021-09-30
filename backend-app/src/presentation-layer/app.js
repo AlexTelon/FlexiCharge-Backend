@@ -25,15 +25,6 @@ module.exports = function ({ chargersRouter, transactionsRouter, reservationsRou
         next()
     })
 
-    app.get('/', (req, res) => {
-        res.send('Hello')
-    })
-
-    app.use('/chargers', chargersRouter)
-    app.use('/transactions', transactionsRouter)
-    app.use('/reservations', reservationsRouter)
-    app.use('/auth', authenticationRouter)
-    app.use('/protected', verifyTokenExample)
 
     app.get('/', (req, res) => {
         res.render('index.hbs')
