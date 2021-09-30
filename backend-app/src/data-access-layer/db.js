@@ -107,7 +107,7 @@ const Transactions = sequelize.define('Transactions', {
         allowNull: true
     },
     client_token: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
     }
 }, {

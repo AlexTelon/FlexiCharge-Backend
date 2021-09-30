@@ -304,7 +304,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     "product_url": "https://www.estore.com/products/f2a8d7e34"
                   }]
 
-                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(){
+                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction){
+                    console.log(error)
+                    console.log(transaction)
                     response.redirect("/")
                 });
                     

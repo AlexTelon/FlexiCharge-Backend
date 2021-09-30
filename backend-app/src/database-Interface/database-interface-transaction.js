@@ -63,8 +63,12 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         }
     }
 
-    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, callback){
-        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, function(error, klarnaTransaction){
+    function addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, callback){
+        const paymentConfirmed = false
+        const isKlarnaPayment = true
+        const timestamp = (Date.now() / 1000 | 0)
+
+        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction){
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -143,16 +147,16 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                             
                             const request = https.request(options, result => {
                                 if(result.statusCode == 200) {
-                                    result.on('data', responseData => {
-                                        //TODO: Hook this up to work with the real function when it is implemented
-                                        addNewKlarnaTransaction(userID, chargerID, chargePoint.price, responseData.session_id, responseData.client_token, responseData.payment_method_categories, function(error, transaction){
+                                    result.on('data', jsonResponse => {
+                                        responseData = JSON.parse(jsonResponse);
+
+                                        addKlarnaTransaction(userID, chargerID, chargePoint.price, responseData.session_id, responseData.client_token, responseData.payment_method_categories, function(error, transaction){
                                             if(error.length > 0) {
                                                 callback(error, [])
                                             } else {
-                                                callback([], transaction)
+                                                callback([], transaction.dataValues)
                                             }
                                         })
-                                        process.stdout.write(d)
                                     })
                                 } else {
                                     callback(["klarnaError"], [])
