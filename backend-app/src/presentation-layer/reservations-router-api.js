@@ -23,15 +23,15 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     router.get('/userReservation/:userID', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         const userId = request.params.userID
-        databaseInterfaceReservations.getReservationForUser(userId, function(error, userReservation){
-            if(error.length == 0 && userReservation.length == 0){
+        databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
+            if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
                 response.status(200).json(userReservation)
             } else {
                 response.status(500).json(error)
             }
-        })    
+        })
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
@@ -76,15 +76,17 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         })
     })
 
-    router.put('/:chargerID', function (request, response) {
-        const chargerId = request.params.chargerID
-        const connectorId = request.body.connectorID
+    router.put('/:chargerId', function (request, response) {
+        const chargerId = request.params.chargerId
+        const connectorId = request.body.connectorId
         const idTag = request.body.idTag
-        const reservationId = request.body.reservationID
+        const reservationId = request.body.reservationId
         const parentIdTag = request.body.parentIdTag
-        ocppInterface.reservNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function(error, updateResev){
-            if (error.length == 0) {
-                response.status(201).json(updateResev)
+        ocppInterface.reserveNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function (resp, error) {
+            console.log(resp);
+            console.log(error);
+            if (error === null && resp != null) {
+                response.status(201).json(resp)
             } else {
                 if (error.includes("internalError") || error.includes("dbError")) {
                     response.status(500).json(error)
