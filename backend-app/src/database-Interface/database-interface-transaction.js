@@ -60,6 +60,18 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         }
     }
 
+    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, callback){
+        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, function(error, klarnaTransaction){
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                callback([], klarnaTransaction)
+            }
+        })
+    }
+
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
         dataAccessLayerTransaction.updateTransactionPayment(transactionID, paymentID, function(error, updatedTransaction) {
             if (Object.keys(error).length > 0) {

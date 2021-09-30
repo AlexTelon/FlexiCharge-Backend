@@ -47,6 +47,24 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
+
+    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, callback){
+        
+        const klarnaTransaction = {
+            userID: userID,
+            chargerID: chargerID,
+            pricePerKwh: pricePerKwh,
+            session_id: session_id,
+            client_token: client_token,
+            payment_method_categories: payment_method_categories
+        }
+        databaseInit.Transactions.create(klarnaTransaction)
+            .then(klarnaTransaction => callback([], klarnaTransaction))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
+    }
     exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
         databaseInit.Transactions.update({
                 paymentID: paymentID

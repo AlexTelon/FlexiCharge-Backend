@@ -196,38 +196,58 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 break;
             case 'transaction':
 
-                const transaction = {
-                    transactionID: 2,
-                    chargerID: 1,
-                    isKlarnaPayment: true,
-                    pricePerKwh: 45.66,
-                    kwhTransfered: 10.5,
-                    currentChargePercentage: 59.3,
-                    paymentID: 44,
-                    userID: null
+                // const transaction = {
+                //     transactionID: 2,
+                //     chargerID: 1,
+                //     isKlarnaPayment: true,
+                //     pricePerKwh: 45.66,
+                //     kwhTransfered: 10.5,
+                //     currentChargePercentage: 59.3,
+                //     paymentID: 44,
+                //     userID: null
+                // }
+
+                const klarnaTransaction = {
+                    userID: "hv71", 
+                    chargerID: 1, 
+                    pricePerKwh: 32.87, 
+                    session_id: "068df369-13a7-4d47-a564-62f8408bb760", 
+                    client_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwMDAtMDAwMDAtMDAwMC0wMDAwMDAwMC0wMDAwIiwidXJsIjoiaHR0cHM6Ly9jcmVkaXQtZXUua2xhcm5hLmNvbSJ9.A_rHWMSXQN2NRNGYTREBTkGwYwtm-sulkSDMvlJL87M", 
+                    payment_method_categories: [{
+                        "identifier": "pay_later",
+                        "name" : "Buy now, pay later",
+                        "asset_urls" : {
+                          "descriptive" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
+                          "standard" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+                        }
+                    }]
                 }
 
-                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
-                    console.log(errors)
-                    console.log(transactionId)
-
-                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction){
+                databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, klarnaTransaction.payment_method_categories, function(errors, klarnaTransaction) {
                         console.log(errors)
-                        console.log(createdTransaction)
-
-                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
-                            console.log(errors)
-                            console.log(updatedTransaction)
-
-                            databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
-                                console.log(errors)
-                                console.log(updatedTransaction)
-                                response.redirect("/")
-                            })
-                        })
-                    })
-                    
+                        console.log(klarnaTransaction)
                 })
+                // databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
+                //     console.log(errors)
+                //     console.log(transactionId)
+
+                //     databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction){
+                //         console.log(errors)
+                //         console.log(createdTransaction)
+
+                //         databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                //             console.log(errors)
+                //             console.log(updatedTransaction)
+
+                //             databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
+                //                 console.log(errors)
+                //                 console.log(updatedTransaction)
+                //                 response.redirect("/")
+                //             })
+                //         })
+                //     })
+                    
+                // })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
                 //     console.log(errors)
