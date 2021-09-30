@@ -102,7 +102,28 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                         callback(errorCode, [])
                     })
                 } else {
-                    callback([], updatedTransaction)
+                    dataAccessLayerCharger.getCharger(updatedTransaction.chargerID, function(error, charger){
+                        if (Object.keys(error).length > 0) {
+                            dbErrorCheck.checkError(error, function(errorCode) {
+                                callback(errorCode, [])
+                            })
+                        } else {
+                            dataAccessLayerChargePoint.getChargePoint(charger.chargePointID, function(error, chargePoint){
+                                if (Object.keys(error).length > 0) {
+                                    dbErrorCheck.checkError(error, function(errorCode) {
+                                        callback(errorCode, [])
+                                    })
+                                } else {
+                                    if(updatedTransaction.pricePerKwh * kwhTransfered >= chargePoint.klarnaReservationAmount) {
+                                        //TODO: STOP CHARGING HERE
+                                    } else {
+                                        callback([], updatedTransaction)
+                                    }
+                                }
+                            })
+                        }
+                    })
+                    
                 }
             })
         }
@@ -224,6 +245,18 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
 
         request.write(data)
         request.end()
+    }
+
+    exports.finalizeKlarnaOrder = function(transactionId, callback) {
+        dataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction){
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                // TODO: Update the klarna order with the correct amount and capture it.
+            }
+        })
     }
 
     return exports
