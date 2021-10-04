@@ -92,5 +92,31 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
+    router.post('/order', function(request, response){
+    })
+
+    router.post('/session', function(request, response){
+        const userID = request.body.userID
+        const chargerID = request.body.chargerID
+        const order_lines = request.body.order_lines
+        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, order_lines, function(error, klarnaSessionTransaction){
+            if (error.length > 0) {
+                response.status(400).json(error)
+            } else if (klarnaSessionTransaction) {
+                response.status(201).json(klarnaSessionTransaction)
+            } else {
+                response.status(500).json(error)
+            }
+        })
+    })
+
+    router.put('/start/:transactionID', function(request, response){
+        
+    })
+
+    router.put('/stop/:transactionID', function(request, response){
+        
+    })
+
     return router
 }
