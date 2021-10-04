@@ -43,7 +43,6 @@ container.register({
     func: awilix.asFunction(require('./xOCPP/global_functions')),
     test: awilix.asFunction(require('./xOCPP/test')),
 
-
     app: awilix.asFunction(require('./presentation-layer/app'))
 })
 

@@ -77,9 +77,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.put('/chargingStatus/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
-        const kwhTransfered = request.body.kwhTransfered
-        const currentChargePercentage = request.body.currentChargePercentage
-        databaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, currentChargePercentage, function(error, updatedTransaction){
+        const meterValue = request.body.meterStop
+        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function (error, updateTransactionMeter) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransaction)
             } else {
