@@ -79,7 +79,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         const transactionId = request.params.transactionID
         const kwhTransfered = request.body.kwhTransfered
         const currentChargePercentage = request.body.currentChargePercentage
-        databaseInterfaceTransactions.updateTransactionMeter(transactionId, kwhTransfered, currentChargePercentage, function (error, updatedTransaction) {
+        databaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, currentChargePercentage, function (error, updatedTransaction) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransaction)
             } else {
