@@ -6,8 +6,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
 
     const router = express.Router()
 
-    router.get('/', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+    router.get('/', async function (request, response) {
+
         databaseInterfaceCharger.getChargers(function (error, chargers) {
             if (error.length > 0) {
                 response.status(500).json(error)
@@ -16,22 +16,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
             }
         })
     })
-
-    router.get('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
-        const id = request.params.id
-        databaseInterfaceCharger.getCharger(id, function (errors, charger) {
-            if(errors.length == 0 && charger.length == 0){
-                response.status(404).end()
-            } else if (errors.length == 0) {
-                response.status(200).json(charger)
-            } else {
-                response.status(500).json(errors)
-            }
-        })
-    })
-
-    router.get('/chargers/available', function (request, response) {
+    router.get('/available', function (request, response) {
         //authMiddleware.verifyToken(request, response);
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
@@ -41,6 +26,34 @@ module.exports = function ({ databaseInterfaceCharger }) {
             }
         })
     })
+
+    router.get('/serial/:serialNumber', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const serialNumber = request.params.serialNumber
+        databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
+            if (error.length > 0) {
+                response.status(500).json(error)
+            } else {
+                response.status(200).json(charger)
+            }
+        })
+    })
+
+    router.get('/:id', function (request, response) {
+        //authMiddleware.verifyToken(request, response);
+        const id = request.params.id
+        databaseInterfaceCharger.getCharger(id, function (errors, charger) {
+            if (errors.length == 0 && charger.length == 0) {
+                response.status(404).end()
+            } else if (errors.length == 0) {
+                response.status(200).json(charger)
+            } else {
+                response.status(500).json(errors)
+            }
+        })
+    })
+
+
 
     router.post('/', function (request, response) {
         //authMiddleware.verifyToken(request, response);
@@ -68,7 +81,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
             if (errors.length == 0 && isChargerDeleted) {
                 response.status(204).json()
-            } else if(errors.length == 0 && !isChargerDeleted) {
+            } else if (errors.length == 0 && !isChargerDeleted) {
                 response.status(404).json()
             } else {
                 response.status(500).json(errors)
@@ -77,7 +90,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.put('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+        // authMiddleware.verifyToken(request, response);
         const chargerId = request.params.id
         const newStatus = request.body.status
         databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {

@@ -5,11 +5,16 @@ const CognitoService = require('./services/cognito.config')
 
 module.exports = function () {
     const router = express.Router()
+    const cognito = new CognitoService();
 
     router.post('/sign-up', function (req, res) {
 
-        const { username, password, email, name, family_name } = req.body;
-        const cognito = new CognitoService();
+        let { username, password, email, name, family_name } = req.body;
+
+        // This might cause issues
+        // If username is not sent with the request sets the username of the email as username
+        // apparently mobile doesnt want username as a field and I cant change it in cognito
+        username = username == undefined ? email.split('@')[0] : username
 
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
@@ -26,19 +31,47 @@ module.exports = function () {
             });
     })
 
-    router.post('/admin/sign-in', function (req, res) {
-        const cognito = new CognitoService();
+    router.post('/forgot-password/:username', function (req, res) {
+        const username = req.params.username;
 
-        const { username, password } = req.body;
-
-        cognito.signInAdmin(username, password)
+        cognito.forgotPassword(username)
             .then(result => {
-                if (result.statusCode === undefined) {
-                    res.status(200).json(result).end()
-                } else if (result.statusCode === 403) {
-                    res.status(403).json(result).end()
+                if (result.statusCode === 200) {
+                    res.status(200).json(result).end();
                 } else {
-                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                    res.status(400).json(result).end();
+                }
+            })
+    })
+
+    router.post('/change-password', function (req, res) {
+
+        const { accessToken, previousPassword, newPassword } = req.body;
+
+        cognito.changePassword(accessToken, previousPassword, newPassword)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else if (result.statusCode === 400) {
+                    res.status(400).json(result).end();
+                } else {
+                    res.status(result.statusCode).json(result).end();
+                }
+            })
+    })
+
+    router.post('/confirm-forgot-password', function (req, res) {
+        const { username, password, confirmationCode } = req.body;
+
+        cognito.confirmForgotPassword(username, password, confirmationCode)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else if (result.statusCode === 400) {
+                    res.status(400).json(result).end();
+                } else {
+                    res.status(result.statusCode).json(result).end();
+
                 }
             })
 
@@ -46,24 +79,20 @@ module.exports = function () {
 
     router.post('/sign-in', function (req, res) {
 
-        const cognito = new CognitoService();
         const { username, password } = req.body;
 
         cognito.signInUser(username, password)
             .then(result => {
-                if (result.statusCode == 400) {
-                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
-                } else if (result.statusCode == undefined) {
-                    res.status(200).json(result).end()
+                if (result.statusCode == 200) {
+                    res.status(200).json(result.data).end()
                 } else {
-                    res.status(500).json(result).end()
+                    res.status(400).json(result).end();
                 }
             })
     })
 
     router.post('/verify', function (req, res) {
         const { username, code } = req.body;
-        const cognito = new CognitoService();
 
         cognito.verifyAccount(username, code)
             .then(result => {
@@ -71,6 +100,19 @@ module.exports = function () {
                     res.status(200).end()
                 } else {
                     res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                }
+            })
+    })
+
+    router.post('/force-change-password', function (req, res) {
+        const { username, password, session } = req.body;
+
+        cognito.respondToAuthChallenge(username, password, session)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
                 }
             })
     })
