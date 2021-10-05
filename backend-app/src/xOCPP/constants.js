@@ -6,7 +6,9 @@ module.exports = function({}){
             INVALID_ID: "InvalidId",
             SSB: 0,
             CHARGER_PLUS: 1,
-            TEST: 999,
+            TEST1: 001,
+            TEST2: 002,
+            TEST3: 003,
 
             HEART_BEAT_INTERVALL: 86400, //24h
             RESERVATION_TIME: 15, //15sec
