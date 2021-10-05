@@ -21,6 +21,8 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                     }
                     else if (messageTypeID == c.CHARGER_PLUS) {
                         test.testChargerPlus()
+                    }else if (messageTypeID == c.TEST) {
+                        test.testFreeCharger()
                     }
                     /*****************************************/
 
@@ -54,6 +56,8 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                 }
                 else if (messageTypeID == c.CHARGER_PLUS) {
                     test.testChargerPlus()
+                }else if (messageTypeID == c.TEST) {
+                    test.testFreeCharger()
                 }
                 /*****************************************/
 
