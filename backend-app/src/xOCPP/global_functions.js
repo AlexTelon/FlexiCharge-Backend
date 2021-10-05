@@ -15,17 +15,19 @@ module.exports = function ({ v, constants }) {
         return chargerID.toString() + action.toString() + Date.now().toString()
     }
 
-
+    exports.getReservationID = function (chargerID, idTag, connectorID) {
+        return chargerID.toString() + Date.now().toString() + idTag.toString() + connectorID.toString()
+    }
 
     exports.checkIfValidUniqueID = function (uniqueID) {
         return v.getCallback(uniqueID) != null ? true : false
     }
 
-    exports.getCallResultNotImplemeted = function getCallResultNotImplemeted(uniqueID, operation) {
+    exports.getCallResultNotImplemeted = function (uniqueID, operation) {
         return buildJSONMessage([c.CALL_ERROR, uniqueID, c.NOT_IMPLEMENTED, "The *" + operation + "* function is not implemented yet.", {}])
     }
 
-    exports.getGenericError = function getGenericError(uniqueID, errorDescription) {
+    exports.getGenericError = function (uniqueID, errorDescription) {
         return buildJSONMessage([c.CALL_ERROR, uniqueID, c.GENERIC_ERROR, errorDescription, {}])
     }
 

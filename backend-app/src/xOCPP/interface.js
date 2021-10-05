@@ -1,5 +1,5 @@
 
-module.exports = function({ v, constants, messageHandler, interfaceHandler }) {
+module.exports = function({ v, constants, messageHandler, interfaceHandler, func }) {
     const c = constants.get()
     
     exports.startTransaction = function(transactionID, chargerID){
@@ -28,7 +28,7 @@ module.exports = function({ v, constants, messageHandler, interfaceHandler }) {
         const dataObject = {
             connectorID: connectorID,
             idTag: idTag,
-            reservationID: reservationID,
+            reservationID: v.getReservationID(),
             parentIdTag: parentIdTag
         }
         interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, dataObject, callback)
