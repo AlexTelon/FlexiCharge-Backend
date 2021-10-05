@@ -2,7 +2,7 @@
 module.exports = function({ v, constants, messageHandler, interfaceHandler, func }) {
     const c = constants.get()
     
-    exports.remoteStartTransaction = function(connectorID, chargerID, idTag, callback){
+    exports.remoteStartTransaction = function(chargerID, connectorID, idTag, callback){
         
         console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
 

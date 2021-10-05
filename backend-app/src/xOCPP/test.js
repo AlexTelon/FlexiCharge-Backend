@@ -21,7 +21,7 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
         })
     }
 
-    
+    //test 1
     exports.testFreeCharger = function () {
 
         console.log("Got test FreeCharger :)")
@@ -41,6 +41,17 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
                 })
             
             }
+        })
+    }
+
+    //test 2
+    exports.testRemoteStart = function () {
+
+        console.log("Got test RemoteStart :)")
+        ocppInterface.remoteStartTransaction(100004, 1, 123, function (error, response) {
+
+            console.log("Test result response:" + response)
+            console.log("Test result error:" + error)
         })
     }
 

@@ -79,7 +79,7 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
      * REMOTE START FUNCTIONS
     **************************************************************/
     function sendRemoteStartCall(chargerID, action, dataObject, callback) {
-        let uniqueID = getUniqueId(chargerID, action)
+        let uniqueID = func.getUniqueId(chargerID, action)
         let message = func.buildJSONMessage([
             c.CALL,
             uniqueID,

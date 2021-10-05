@@ -2,36 +2,43 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
-        let data = JSON.parse(message)
-        let messageTypeID = data[c.MESSAGE_TYPE_INDEX]
-        let uniqueID = data[c.UNIQUE_ID_INDEX]
+        try {
 
-        var response = ""
-
-        switch (messageTypeID) {
-            case c.CALL:
-
-                response = callSwitch(uniqueID, data, chargerID)
-                break
-
-            case c.CALL_RESULT:
-
-                callResultSwitch(uniqueID, data, chargerID)
-                break
-
-            case c.CALL_ERROR:
-
-                response = callErrorSwitch(uniqueID, data)
-                break
-
-            default:
-
-                response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
-                break
+            let data = JSON.parse(message)
+            let messageTypeID = data[c.MESSAGE_TYPE_INDEX]
+            let uniqueID = data[c.UNIQUE_ID_INDEX]
+            
+            var response = ""
+    
+            switch (messageTypeID) {
+                case c.CALL:
+    
+                    response = callSwitch(uniqueID, data, chargerID)
+                    break
+    
+                case c.CALL_RESULT:
+    
+                    callResultSwitch(uniqueID, data, chargerID)
+                    break
+    
+                case c.CALL_ERROR:
+    
+                    response = callErrorSwitch(uniqueID, data)
+                    break
+    
+                default:
+    
+                    response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
+                    break
+            }
+            if (response != "") {
+                clientSocket.send(response)
+            }
+        } catch (error) {
+            console.log(error)
+            clientSocket.send(func.getGenericError(c.INTERNAL_ERROR, error.toString()))
         }
-        if (response != "") {
-            clientSocket.send(response)
-        }
+        
     }
 
 
