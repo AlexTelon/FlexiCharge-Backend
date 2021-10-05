@@ -33,7 +33,7 @@ module.exports = function({ v, constants, messageHandler, interfaceHandler, func
         const dataObject = {
             connectorID: connectorID,
             idTag: idTag,
-            reservationID: v.getReservationID(),
+            reservationID: func.getReservationID(chargerID, idTag, connectorID),
             parentIdTag: parentIdTag
         }
         interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, dataObject, callback)
