@@ -2,14 +2,19 @@
 module.exports = function({ v, constants, messageHandler, interfaceHandler, func }) {
     const c = constants.get()
     
-    exports.startTransaction = function(transactionID, chargerID){
+    exports.remoteStartTransaction = function(connectorID, chargerID, idTag, callback){
         
-        //to do, not working
-        console.log("Incoming request from API: startTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
-        messageHandler.sendMessage(c.START_TRANSACTION, transactionID, v.getConnectedSocket(chargerID))
+        console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
+
+        const dataObject = {
+            connectorID: connectorID,
+            idTag: idTag,
+        }
+
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, dataObject, callback)
     }
 
-    exports.stopTransaction = function(transactionID, chargerID){
+    exports.remoteStopTransaction = function(transactionID, chargerID){
 
         //to do, not working
         console.log("Incoming request from API: stopTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)

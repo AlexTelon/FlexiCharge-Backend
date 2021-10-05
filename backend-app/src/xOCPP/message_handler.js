@@ -88,6 +88,10 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
                 case c.RESERVE_NOW:
                     interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
                     break
+                
+                case c.REMOTE_START_TRANSACTION:
+                    interfaceHandler.handleRemoteStartResponse(chargerID, uniqueID, response)
+                    break
     
                 default:
                     let socket = v.getConnectedSocket(chargerID)

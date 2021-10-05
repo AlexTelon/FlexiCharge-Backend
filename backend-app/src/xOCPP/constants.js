@@ -22,8 +22,8 @@ module.exports = function({}){
             PAYLOAD_INDEX: 3,
 
             BOOT_NOTIFICATION: "BootNotification",
-            START_TRANSACTION: "startTransaction",
-            STOP_TRANSACTION: "stopTransaction",
+            REMOTE_START_TRANSACTION: "RemoteStartTransaction",
+            REMOTE_STOP_TRANSACTION: "RemoteStopTransaction",
             INTERNAL_ERROR: "InternalError",
             NOT_IMPLEMENTED: "NotImplemented",
             GENERIC_ERROR: "GenericError",
