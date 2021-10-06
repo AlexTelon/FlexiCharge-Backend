@@ -95,7 +95,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.post('/order', function(request, response){
     })
 
-    router.post('/session', function(request, response){
+    router.post('/session', function(request, response){ //start transaction
         const userID = request.body.userID
         const chargerID = request.body.chargerID
         const order_lines = request.body.order_lines
@@ -108,10 +108,6 @@ module.exports = function ({ databaseInterfaceTransactions }) {
                 response.status(500).json(error)
             }
         })
-    })
-
-    router.put('/start/:transactionID', function(request, response){
-        
     })
 
     router.put('/stop/:transactionID', function(request, response){
