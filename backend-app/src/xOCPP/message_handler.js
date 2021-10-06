@@ -99,6 +99,9 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
                 case c.REMOTE_START_TRANSACTION:
                     interfaceHandler.handleRemoteStartResponse(chargerID, uniqueID, response)
                     break
+                
+                case c.REMOTE_STOP_TRANSACTION:
+                    interfaceHandler.handleRemoteStopResponse(chargerID, uniqueID, response)
     
                 default:
                     let socket = v.getConnectedSocket(chargerID)
@@ -124,7 +127,7 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
 
         switch (callCode) {
             default:
-                console.log("Ops, the charger (" + chargerID + ") responded with an error: " + errorCode)
+                console.log("Oops, the charger (" + chargerID + ") responded with an error: " + errorCode)
                 break
         }
 

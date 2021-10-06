@@ -99,6 +99,10 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                     test.testRemoteStart()
                     return true
 
+                case c.TEST3:
+                    test.testRemoteStop()
+                    return true
+
                 default:
                     return false
 

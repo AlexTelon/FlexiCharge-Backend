@@ -29,3 +29,10 @@ To get to test function
   { 
     "status": "Accepted"
     } ]
+
+[ 3,
+  "uniqueID",
+  "RemoteStopTransaction",
+  { 
+    "status": "Accepted"
+    } ]

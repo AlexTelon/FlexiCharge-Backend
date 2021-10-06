@@ -55,5 +55,16 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
         })
     }
 
+    //test 3
+    exports.testRemoteStop = function () {
+
+        console.log("Got test RemoteStop :)")
+        ocppInterface.remoteStopTransaction(100004, 45698, function (error, response) {
+
+            console.log("Test result response:" + response)
+            console.log("Test result error:" + error)
+        })
+    }
+
     return exports
 }

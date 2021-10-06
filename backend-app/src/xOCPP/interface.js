@@ -6,19 +6,22 @@ module.exports = function({ v, constants, messageHandler, interfaceHandler, func
         
         console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
 
-        const dataObject = {
+        const payload = {
             connectorID: connectorID,
             idTag: idTag,
         }
-
-        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, dataObject, callback)
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, payload, callback)
     }
 
-    exports.remoteStopTransaction = function(transactionID, chargerID){
+    exports.remoteStopTransaction = function(chargerID, transactionID, callback){
 
         //to do, not working
         console.log("Incoming request from API: stopTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
-        messageHandler.sendMessage(c.STOP_TRANSACTION, transactionID, v.getConnectedSocket(chargerID))
+        
+        const payload = {
+            transactionID: transactionID
+        }
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_STOP_TRANSACTION, payload, callback)
     }
 
 
@@ -30,13 +33,13 @@ module.exports = function({ v, constants, messageHandler, interfaceHandler, func
 
         console.log("Incoming request from API: reserveNow -> chargerId:"+chargerID)
 
-        const dataObject = {
+        const payload = {
             connectorID: connectorID,
             idTag: idTag,
             reservationID: func.getReservationID(chargerID, idTag, connectorID),
             parentIdTag: parentIdTag
         }
-        interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, dataObject, callback)
+        interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
     }
 
     
