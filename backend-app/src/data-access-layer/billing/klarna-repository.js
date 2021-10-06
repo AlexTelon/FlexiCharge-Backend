@@ -161,7 +161,7 @@ module.exports = function({}) {
                 "locale": "sv-SE",
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
-                "order_amount": math.round(transaction.pricePerKwh * transaction.kwhTransfered)
+                "order_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
         console.log(Buffer.from(data).toString());
