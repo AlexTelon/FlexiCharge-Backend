@@ -1,7 +1,5 @@
 const { response } = require('express')
 var express = require('express')
-const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceTransactions }) {
 
