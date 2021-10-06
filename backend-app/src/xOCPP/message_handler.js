@@ -102,6 +102,7 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
                 
                 case c.REMOTE_STOP_TRANSACTION:
                     interfaceHandler.handleRemoteStopResponse(chargerID, uniqueID, response)
+                    break
     
                 default:
                     let socket = v.getConnectedSocket(chargerID)
