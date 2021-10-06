@@ -1,4 +1,4 @@
-module.exports = function ({ func, v, constants, interfaceHandler }) {
+module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -51,13 +51,17 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
         switch (action) {
             case c.BOOT_NOTIFICATION:
                 if (chargerID != null) {
-                    callResult = func.buildJSONMessage([c.CALL_RESULT, uniqueID,
-                    {
-                        status: c.ACCEPTED,
-                        currentTime: new Date().toISOString(),
-                        interval: c.HEART_BEAT_INTERVALL,
-                        chargerId: chargerID
-                    }])
+                    callResult = func.buildJSONMessage([
+                        c.CALL_RESULT,
+                        uniqueID,
+                        c.BOOT_NOTIFICATION,
+                        {
+                            status: c.ACCEPTED,
+                            currentTime: new Date().toISOString(),
+                            interval: c.HEART_BEAT_INTERVALL,
+                            chargerId: chargerID
+                        }
+                    ])
 
                 } else {
                     callResult = func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
@@ -65,14 +69,31 @@ module.exports = function ({ func, v, constants, interfaceHandler }) {
                 }
                 break
 
-            case c.START_TRANSACTION:
-                //todo
-                callResult = func.getCallResultNotImplemeted(uniqueID, action)
-                break
+            case c.STATUS_NOTIFICATION:
+                if (chargerID != null) {
+                    let errorCode = request[c.PAYLOAD_INDEX].errorCode
+                    let status = request[c.PAYLOAD_INDEX].status
 
-            case c.STOP_TRANSACTION:
-                //todo
-                callResult = func.getCallResultNotImplemeted(uniqueID, action)
+                    if (errorCode != c.NO_ERROR) {
+                        console.log("\nCharger "+chargerID+" has sent the following error code: "+errorCode)
+                    }
+                    
+                    callResult = func.buildJSONMessage([
+                        c.CALL_RESULT,
+                        uniqueID,
+                        c.STATUS_NOTIFICATION,
+                        {} // A response to a StatusNotification can be empty (not defined in protocol)
+                    ])
+
+                    databaseInterfaceCharger.updateChargerStatus(chargerID, status, function (error, charger) {
+                        if (error.length > 0) {
+                            console.log("Error updating charger status in DB: " + error)
+                        } else {
+                            console.log("Charger updated in DB: " + charger.status)
+                        }
+                    })
+                }
+
                 break
 
             default:

@@ -24,6 +24,7 @@ module.exports = function({}){
             PAYLOAD_INDEX: 3,
 
             BOOT_NOTIFICATION: "BootNotification",
+            STATUS_NOTIFICATION: "StatusNotification",
             REMOTE_START_TRANSACTION: "RemoteStartTransaction",
             REMOTE_STOP_TRANSACTION: "RemoteStopTransaction",
             INTERNAL_ERROR: "InternalError",
@@ -43,12 +44,30 @@ module.exports = function({}){
             UNAVAILBLE: "Unavailable",
             FAULTED: "Faulted",
 
-            //Possible answers for ReservNow response
+            //Possible answers for ReserveNow response
             ACCEPTED: "Accepted",
             FAULTED: "Faulted",
             OCCUPIED: "Occupied",
             REJECTED: "Rejected",
-            UNAVAILABLE: "Unavailable"
+            UNAVAILABLE: "Unavailable",
+
+            //Charger error codes:
+            CONNECTOR_LOCK_FAILURE: "ConnectorLockFailure",
+            EV_COMMUNIATION_FAILURE: "EVCommunicationError",
+            GROUND_FAILURE: "GroundFailure",
+            HIGH_TEMP: "HighTemperature",
+            INTERNAL_ERROR: "InternalError",
+            LOCAL_LIST_CONFLICT: "LocalListConflict",
+            NO_ERROR: "NoError",
+            OTHER_ERROR: "OtherError",
+            OVERCURRENT_FAILURE: "OverCurrentFailure",
+            POWER_METER_FAILURE: "PowerMeterFailure",
+            POWER_SWITCH_FAILURE: "PowerSwitchFailure",
+            READER_FAILURE: "ReaderFailure",
+            RESET_FAILURE: "ResetFailure",
+            UNDERVOLTAGE: "UnderVoltage",
+            OVERVOLTAGE: "OverVoltage",
+            WEAK_SIGNAL: "WeakSignal"
 
             
         }
