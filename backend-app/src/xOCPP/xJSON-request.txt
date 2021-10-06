@@ -38,10 +38,10 @@ To get to test function
     } ]
 
 
-[ 3,
+[ 2,
   "uniqueID",
   "StatusNotification",
   { 
-    "errorCode: "NoError"
+    "errorCode": "NoError",
     "status": "Accepted"
     } ]

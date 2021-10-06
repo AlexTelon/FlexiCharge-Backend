@@ -6,9 +6,16 @@ module.exports = function({}){
             INVALID_ID: "InvalidId",
             SSB: 0,
             CHARGER_PLUS: 1,
-            TEST1: 10,
-            TEST2: 20,
-            TEST3: 30,
+            TEST1: "testFreeCharger",
+            TEST2: "testRemoteStart",
+            TEST3: "testRemoteStop",
+            TEST4: "testReserveNow",
+
+            ID_TAG: 1,
+            CONNECTOR_ID: 1,
+            TRANSACTION_ID: 78934,
+            RESERVATION_ID: 34932,
+            PARENT_ID_TAG: 89347,
 
             HEART_BEAT_INTERVALL: 86400, //24h
             RESERVATION_TIME: 15, //15sec
