@@ -326,27 +326,33 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     "product_url": "https://www.estore.com/products/f2a8d7e34"
                 }]
 
-                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
-                    console.log(error)
-                    console.log(transaction)
+                // databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
+                //     console.log(error)
+                //     console.log(transaction)
 
-                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
-                        console.log(errors)
-                        console.log(createdTransaction)
+                //     databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                //         console.log(errors)
+                //         console.log(createdTransaction)
 
-                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
-                            console.log(errors)
-                            console.log(updatedTransaction)
+                //         databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                //             console.log(errors)
+                //             console.log(updatedTransaction)
 
-                            databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
-                                console.log(errors)
-                                console.log(updatedTransaction)
-                                response.redirect("/")
-                            })
+                //             databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                //                 console.log(errors)
+                //                 console.log(updatedTransaction)
+                //                 response.redirect("/")
+                //             })
 
-                        })
-                    })
-                });
+                //         })
+                //     })
+                // });
+
+                databaseInterfaceTransactions.finalizeKlarnaOrder(1, order_lines, function(errors, updatedTransaction) {
+                    console.log(errors)
+                    console.log(updatedTransaction)
+                    response.redirect("/")
+                })
 
                 // databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order){
                 //     console.log(error)

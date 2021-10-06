@@ -1,3 +1,4 @@
+const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
 // const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
@@ -91,7 +92,7 @@ const Transactions = sequelize.define('Transactions', {
         allowNull: false
     },
     paymentID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true
     },
     userID: {

@@ -110,10 +110,14 @@ module.exports = function({ dataAccessLayerTransaction }) {
 
 
     exports.finalizeKlarnaOrder = async function(transaction, transactionId, order_lines, callback) {
+        const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
 
         // TODO: Update the klarna order with the correct amount and capture it.
+        order_lines[0].total_amount = newOrderAmount;
+        order_lines[0].unit_price = newOrderAmount;
+        console.log(order_lines)
 
-        updateOrder(transaction, function(error, responseData) {
+        updateOrder(transaction, order_lines, function(error, responseData) {
 
             if (error.length == 0) {
                 callback([], responseData)
@@ -131,16 +135,16 @@ module.exports = function({ dataAccessLayerTransaction }) {
 
     }
 
-    function updateOrder(transaction, callback) {
+    function updateOrder(transaction, order_lines, callback) {
 
         const data = new TextEncoder().encode(
             JSON.stringify({
-                //"purchase_country": "SE",
-                //"purchase_currency": "SEK",
-                //"locale": "sv-SE",
-                //"order_tax_amount": 0,
-                //"order_lines": order_lines,
-                "order_amount": (transaction.pricePerKwh * transaction.kwhTransfered)
+                "purchase_country": "SE",
+                "purchase_currency": "SEK",
+                "locale": "sv-SE",
+                "order_tax_amount": 0,
+                "order_lines": order_lines,
+                "order_amount": math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
         console.log(Buffer.from(data).toString());
@@ -148,8 +152,8 @@ module.exports = function({ dataAccessLayerTransaction }) {
         const options = {
             hostname: KLARNA_URI,
             port: 443,
-            path: "/checkout/v3/orders/" + transaction.paymentID,
-            method: "POST",
+            path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/authorization",
+            method: "PATCH",
             headers: {
                 "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
                 "Content-Type": "application/json"
