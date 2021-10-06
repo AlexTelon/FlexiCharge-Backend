@@ -152,10 +152,10 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
 
     exports.createKlarnaOrder = async function(transactionId, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
 
-        dataAccessLayerKlarna.createKlarnaOrder(transactionId, authorization_token, order_lines, billing_address, shipping_address, function(error, klarnaOrderCreated) {
+        dataAccessLayerKlarna.createKlarnaOrder(transactionId, authorization_token, order_lines, billing_address, shipping_address, function(error, klarnaOrder) {
 
             if (error.length == 0) {
-                callback([], klarnaOrderCreated)
+                callback([], klarnaOrder)
             } else {
                 callback(error, [])
             }
