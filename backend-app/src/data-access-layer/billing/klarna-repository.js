@@ -64,13 +64,13 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
                 "status": "CHECKOUT_INCOMPLETE",
-                "order_amount": 300, //chargePoint.klarnaReservationAmount,
+                "order_amount": klarnaReservationAmount,
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
                 "billing_address": billing_address,

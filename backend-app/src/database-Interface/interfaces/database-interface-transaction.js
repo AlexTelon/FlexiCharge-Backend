@@ -155,14 +155,36 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
 
     exports.createKlarnaOrder = async function(transactionId, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
 
-        dataAccessLayerKlarna.createKlarnaOrder(transactionId, authorization_token, order_lines, billing_address, shipping_address, function(error, klarnaOrder) {
-
-            if (error.length == 0) {
-                callback([], klarnaOrder)
-            } else {
-                callback(error, [])
+        dataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else { //Mock transaction data with a charger id cant be created in development
+                dataAccessLayerCharger.getCharger( /*transaction.chargerID*/ 100000, function(error, charger) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function(errorCode) {
+                            callback(errorCode, [])
+                        })
+                    } else {
+                        dataAccessLayerChargePoint.getChargePoint(charger.chargePointID, async function(error, chargePoint) {
+                            if (Object.keys(error).length > 0) {
+                                dbErrorCheck.checkError(error, function(errorCode) {
+                                    callback(errorCode, [])
+                                })
+                            } else {
+                                dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, order_lines, billing_address, shipping_address, function(error, klarnaOrder) {
+                                    if (error.length == 0) {
+                                        callback([], klarnaOrder)
+                                    } else {
+                                        callback(error, [])
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
             }
-
         })
     }
 
