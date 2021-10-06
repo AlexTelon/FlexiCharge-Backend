@@ -126,7 +126,20 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
 
                         dataAccessLayerKlarna.getNewKlarnaPaymentSession(userID, chargerID, chargePoint, order_lines, async function(error, transactionData) {
                             if (error.length == 0) {
-                                callback([], transactionData)
+                                const paymentConfirmed = false
+                                const isKlarnaPayment = true
+                                const timestamp = (Date.now() / 1000 | 0)
+
+                                //Validation here
+                                dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, transactionData.payment_method_categories, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
+                                    if (Object.keys(error).length > 0) {
+                                        dbErrorCheck.checkError(error, function(error) {
+                                            callback(error, [])
+                                        })
+                                    } else {
+                                        callback([], klarnaTransaction)
+                                    }
+                                })
                             } else {
                                 callback(error, [])
                             }

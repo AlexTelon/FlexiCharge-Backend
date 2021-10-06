@@ -1,6 +1,6 @@
 const https = require('https')
 
-module.exports = function({ dataAccessLayerTransaction }) {
+module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
@@ -34,13 +34,8 @@ module.exports = function({ dataAccessLayerTransaction }) {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
                         responseData = JSON.parse(jsonResponse);
-                        addKlarnaTransaction(userID, chargerID, chargePoint.price, responseData.session_id, responseData.client_token, responseData.payment_method_categories, function(error, transaction) {
-                            if (error.length > 0) {
-                                callback(error, [])
-                            } else {
-                                callback([], transaction.dataValues)
-                            }
-                        })
+
+                        callback([], jsonResponse)
                     })
                 } else {
                     callback(["klarnaError"], [])
@@ -116,10 +111,9 @@ module.exports = function({ dataAccessLayerTransaction }) {
         updateOrder(transaction, function(error, responseData) {
 
             if (error.length == 0) {
-                callback([], responseData)
-                captureOrder(transaction, function(error, capturedData) {
+                captureOrder(transaction, function(error) {
                     if (error.length == 0) {
-                        callback([], capturedData)
+                        callback([], responseData) //capture does not response with anything so we callback the response data from the update.
                     } else {
                         callback(error, [])
                     }
@@ -202,7 +196,7 @@ module.exports = function({ dataAccessLayerTransaction }) {
         const captureOptions = {
             hostname: KLARNA_URI,
             port: 443,
-            path: "/ordermanagement/v1/orders/{order_id}/captures",
+            path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/captures",
             method: "POST",
             headers: {
                 "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
@@ -214,7 +208,7 @@ module.exports = function({ dataAccessLayerTransaction }) {
             if (result.statusCode == 200) {
                 result.on('data', jsonResponse => {
                     responseData = JSON.parse(jsonResponse);
-                    callback([], [responseData])
+                    callback([])
                 })
             } else {
                 switch (result.statusCode) {
@@ -241,24 +235,6 @@ module.exports = function({ dataAccessLayerTransaction }) {
 
         request.write(captureData)
         request.end()
-    }
-
-
-
-    function addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, callback) {
-        const paymentConfirmed = false
-        const isKlarnaPayment = true
-        const timestamp = (Date.now() / 1000 | 0)
-
-        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(error) {
-                    callback(error, [])
-                })
-            } else {
-                callback([], klarnaTransaction)
-            }
-        })
     }
 
 
