@@ -121,12 +121,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.put('/start/:transactionID', function (request, response) {
-
-    })
-
-    router.put('/stop/:transactionID', function (request, response) {
-
+    router.put('/stop/:transactionID', function(request, response){
+        
     })
 
     return router
