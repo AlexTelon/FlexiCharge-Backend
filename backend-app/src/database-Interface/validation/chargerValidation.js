@@ -1,17 +1,9 @@
 module.exports = function({}) {
-    /*
-        "Available",
-        "Preparing",
-        "Charging",
-        "SuspendedEVSE",
-        "SuspendedEV",
-        "Finishing",
-        "Reserved",
-        "Unavailable",
-        "Faulted"
-    */
-    //Status codes 
-    const statusCodes = ["Available", "Preparing", "Charging", "SuspendedEVSE", "SuspendedEV", "Finishing", "Reserved", "Unavailable", "Faulted"]
+
+
+    //Validation for status
+    STATUS_MIN_VALUE = 0
+    STATUS_MAX_VALUE = 3
 
     //Validation for location
     LONGITUDE_MIN_VALUE = -180
@@ -84,10 +76,10 @@ module.exports = function({}) {
         if (status === undefined) {
             ValidationErrors.push("invalidStatus")
         } else {
-            if (typeof status !== 'string') {
+            if (typeof status !== 'number') {
                 validationErrors.push("invalidDataType")
             }
-            if (!statusCodes.includes(status)) {
+            if (status < STATUS_MIN_VALUE || status > STATUS_MAX_VALUE) {
                 ValidationErrors.push("invalidStatus")
             }
         }

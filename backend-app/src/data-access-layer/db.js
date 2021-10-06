@@ -1,4 +1,3 @@
-const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
 // const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
@@ -34,7 +33,7 @@ const Chargers = sequelize.define('Chargers', {
         allowNull: false
     },
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
@@ -57,7 +56,7 @@ const Reservations = sequelize.define('Reservations', {
         allowNull: false
     },
     userID: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 }, {
@@ -92,23 +91,11 @@ const Transactions = sequelize.define('Transactions', {
         allowNull: false
     },
     paymentID: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true
     },
     userID: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    payment_method_categories: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        allowNull: true
-    },
-    session_id: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    client_token: {
-        type: DataTypes.TEXT,
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 }, {
@@ -168,17 +155,18 @@ sequelize.sync().then(function() {
             //     chargerID: 100000,
             //     location: [57.777714, 14.163012],
             //     serialNumber: 'abc123',
-            //     status: '1',
+            //     status: 1,
             //     chargePointID: 1
             // });
             // Chargers.create({
             //     chargerID: 100001,
             //     location: [57.777714, 14.163016],
             //     serialNumber: '123abc',
-            //     status: '0',
+            //     status: 0,
             //     chargePointID: 1
             // });
             Transactions.create({
+                chargerID: 1,
                 paymentID: 1,
                 userID: 1,
                 timestamp: 1631522252,
