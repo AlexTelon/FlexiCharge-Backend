@@ -192,7 +192,7 @@ module.exports = function({}) {
 
         const captureData = new TextEncoder().encode(
             JSON.stringify({
-                "captured_amount": (transaction.pricePerKwh * transaction.kwhTransfered)
+                "captured_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
         console.log(Buffer.from(captureData).toString());
