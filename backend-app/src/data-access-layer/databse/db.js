@@ -178,7 +178,6 @@ sequelize.sync({ force: true }).then(function() {
             //     chargePointID: 1
             // });
             Transactions.create({
-                chargerID: 1,
                 paymentID: 1,
                 userID: 1,
                 timestamp: 1631522252,

@@ -73,22 +73,22 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     console.log(chargerAdded)
                     response.redirect("/")
 
-                const charger2 = {
-                    chargePointID: 1,
-                    location: [57.78016419007881, 14.182610301538203],
-                    serialNumber: '##€43cstsdx676',
-                    status: 2
-                }
+                    const charger2 = {
+                        chargePointID: 1,
+                        location: [57.78016419007881, 14.182610301538203],
+                        serialNumber: '##€43cstsdx676',
+                        status: 2
+                    }
 
-                // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
-                //     console.log(errors)
-                //     console.log(chargerAdded)
+                    // databaseInterfaceCharger.addCharger(charger.chargePointID, charger.location, function(errors, chargerAdded) {
+                    //     console.log(errors)
+                    //     console.log(chargerAdded)
 
-                //     databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
-                //         console.log(errors)
-                //         console.log(chargers)
-                //         response.redirect("/")
-                //     })
+                    //     databaseInterfaceCharger.removeCharger(charger.chargerID, function(errors, chargers) {
+                    //         console.log(errors)
+                    //         console.log(chargers)
+                    //         response.redirect("/")
+                    //     })
 
 
                 })
@@ -103,7 +103,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
-                    
+
                 })
 
                 databaseInterfaceCharger.addCharger(charger2.chargePointID, charger2.serialNumber, charger2.location, function(errors, chargerAdded) {
@@ -194,68 +194,90 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'transaction':
 
                 const transaction = {
-                    transactionID: 2,
-                    userID: "vemedu",
-                    chargerID: 1,
-                    isKlarnaPayment: true,
-                    pricePerKwh: 45.66,
-                    kwhTransfered: 10.5,
-                    currentChargePercentage: 59.3,
-                    paymentID: 44,
-                    userID: null
-                }
-                // const transaction = {
-                //     transactionID: 2,
-                //     chargerID: 1,
-                //     isKlarnaPayment: true,
-                //     pricePerKwh: 45.66,
-                //     kwhTransfered: 10.5,
-                //     currentChargePercentage: 59.3,
-                //     paymentID: 44,
-                //     userID: null
-                // }
+                        transactionID: 2,
+                        userID: "vemedu",
+                        chargerID: 1,
+                        isKlarnaPayment: true,
+                        pricePerKwh: 45.66,
+                        kwhTransfered: 10.5,
+                        currentChargePercentage: 59.3,
+                        paymentID: 44,
+                        userID: null
+                    }
+                    // const transaction = {
+                    //     transactionID: 2,
+                    //     chargerID: 1,
+                    //     isKlarnaPayment: true,
+                    //     pricePerKwh: 45.66,
+                    //     kwhTransfered: 10.5,
+                    //     currentChargePercentage: 59.3,
+                    //     paymentID: 44,
+                    //     userID: null
+                    // }
 
                 const klarnaTransaction = {
-                    userID: "hv71", 
-                    chargerID: 1, 
-                    pricePerKwh: 32.87, 
-                    session_id: "068df369-13a7-4d47-a564-62f8408bb760", 
-                    client_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwMDAtMDAwMDAtMDAwMC0wMDAwMDAwMC0wMDAwIiwidXJsIjoiaHR0cHM6Ly9jcmVkaXQtZXUua2xhcm5hLmNvbSJ9.A_rHWMSXQN2NRNGYTREBTkGwYwtm-sulkSDMvlJL87M", 
+                    userID: "hv71",
+                    chargerID: 1,
+                    pricePerKwh: 32.87,
+                    session_id: "068df369-13a7-4d47-a564-62f8408bb760",
+                    client_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwMDAtMDAwMDAtMDAwMC0wMDAwMDAwMC0wMDAwIiwidXJsIjoiaHR0cHM6Ly9jcmVkaXQtZXUua2xhcm5hLmNvbSJ9.A_rHWMSXQN2NRNGYTREBTkGwYwtm-sulkSDMvlJL87M",
                     payment_method_categories: [{
                         "identifier": "pay_later",
-                        "name" : "Buy now, pay later",
-                        "asset_urls" : {
-                          "descriptive" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
-                          "standard" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+                        "name": "Buy now, pay later",
+                        "asset_urls": {
+                            "descriptive": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
+                            "standard": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
                         }
                     }]
                 }
 
-                databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, klarnaTransaction.payment_method_categories, function(errors, klarnaTransaction) {
-                        console.log(errors)
-                        console.log(klarnaTransaction)
-                })
-                // databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
+                // databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, klarnaTransaction.payment_method_categories, function(errors, klarnaTransaction) {
                 //     console.log(errors)
-                //     console.log(transactionId)
+                //     console.log(klarnaTransaction)
 
-                //     databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction){
-                //         console.log(errors)
-                //         console.log(createdTransaction)
-
-                //         databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
-                //             console.log(errors)
-                //             console.log(updatedTransaction)
-
-                //             databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
-                //                 console.log(errors)
-                //                 console.log(updatedTransaction)
-                //                 response.redirect("/")
-                //             })
-                //         })
-                //     })
-                    
                 // })
+
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
+                    console.log(errors)
+                    console.log(addedTransaction)
+
+                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                        console.log(errors)
+                        console.log(createdTransaction)
+
+                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                            console.log(errors)
+                            console.log(updatedTransaction)
+
+                            databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
+                                console.log(errors)
+                                console.log(updatedTransaction)
+
+
+                                const order_lines = [{
+                                    "type": "physical",
+                                    "reference": "19-402",
+                                    "name": "Battery Power Pack",
+                                    "quantity": 1,
+                                    "unit_price": 300,
+                                    "tax_rate": 0,
+                                    "total_amount": 300,
+                                    "total_discount_amount": 0,
+                                    "total_tax_amount": 0,
+                                    "image_url": "https://www.exampleobjects.com/logo.png",
+                                    "product_url": "https://www.estore.com/products/f2a8d7e34"
+                                }]
+
+
+                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                                    console.log(errors)
+                                    console.log(updatedTransaction)
+                                    response.redirect("/")
+                                })
+                            })
+                        })
+                    })
+                })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
                 //     console.log(errors)
@@ -302,14 +324,30 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     "total_tax_amount": 0,
                     "image_url": "https://www.exampleobjects.com/logo.png",
                     "product_url": "https://www.estore.com/products/f2a8d7e34"
-                  }]
+                }]
 
-                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction){
+                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
                     console.log(error)
                     console.log(transaction)
-                    response.redirect("/")
+
+                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                        console.log(errors)
+                        console.log(createdTransaction)
+
+                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                            console.log(errors)
+                            console.log(updatedTransaction)
+
+                            databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                                console.log(errors)
+                                console.log(updatedTransaction)
+                                response.redirect("/")
+                            })
+
+                        })
+                    })
                 });
-                    
+
 
                 break;
 
