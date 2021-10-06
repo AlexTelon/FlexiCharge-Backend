@@ -53,7 +53,6 @@ module.exports = function ({ databaseInterfaceTransactions }) {
                 response.status(500).json(errors)
             }
         })
-
     })
 
 
@@ -91,6 +90,20 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.post('/order', function (request, response) {
+
+        const { transactionID, authorization_token, order_lines, billing_address, shipping_address } = request.body;
+
+        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, order_lines, billing_address, shipping_address, function (error, klarnaOrder) {
+            console.log(error);
+            console.log(klarnaOrder);
+            if (error.length === 0) {
+                response.status(201).json(klarnaOrder)
+            } else if (error.includes("internalError") || error.includes("dbError")) {
+                response.status(500).json(error)
+            } else {
+                response.status(400).json(error);
+            }
+        })
     })
 
     router.post('/session', function (request, response) {
