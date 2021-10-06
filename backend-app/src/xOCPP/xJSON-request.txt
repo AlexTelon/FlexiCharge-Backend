@@ -36,3 +36,12 @@ To get to test function
   { 
     "status": "Accepted"
     } ]
+
+
+[ 3,
+  "uniqueID",
+  "StatusNotification",
+  { 
+    "errorCode: "NoError"
+    "status": "Accepted"
+    } ]

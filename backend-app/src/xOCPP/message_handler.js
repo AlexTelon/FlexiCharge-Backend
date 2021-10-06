@@ -78,18 +78,19 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                         console.log("\nCharger "+chargerID+" has sent the following error code: "+errorCode)
                     }
                     
-                    callResult = func.buildJSONMessage([
-                        c.CALL_RESULT,
-                        uniqueID,
-                        c.STATUS_NOTIFICATION,
-                        {} // A response to a StatusNotification can be empty (not defined in protocol)
-                    ])
-
+                    
                     databaseInterfaceCharger.updateChargerStatus(chargerID, status, function (error, charger) {
                         if (error.length > 0) {
                             console.log("Error updating charger status in DB: " + error)
+                            callResult = func.getGenericError(uniqueID, error.toString())
                         } else {
                             console.log("Charger updated in DB: " + charger.status)
+                            callResult = func.buildJSONMessage([
+                                c.CALL_RESULT,
+                                uniqueID,
+                                c.STATUS_NOTIFICATION,
+                                {} // A response to a StatusNotification can be empty (not defined in protocol)
+                            ])
                         }
                     })
                 }
