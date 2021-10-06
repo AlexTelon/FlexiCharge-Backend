@@ -100,7 +100,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                 
                 case c.TEST4:
                     test.testReserveNow(chargerID)
-
+                    return true
                 default:
                     return false
 
