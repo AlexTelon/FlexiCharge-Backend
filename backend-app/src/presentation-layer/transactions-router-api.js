@@ -1,7 +1,5 @@
-const { response } = require('express')
 var express = require('express')
-const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
+
 module.exports = function ({ databaseInterfaceTransactions }) {
 
     const router = express.Router()
@@ -62,7 +60,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.put('/payment/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
         const paymentId = request.body.paymentID
-        dataAccessLayerTransaction.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {
+        databaseInterfaceTransactions.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransactionPayment)
             } else {
@@ -92,14 +90,14 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.post('/order', function(request, response){
+    router.post('/order', function (request, response) {
     })
 
-    router.post('/session', function(request, response){ //start transaction
+    router.post('/session', function (request, response) {
         const userID = request.body.userID
         const chargerID = request.body.chargerID
         const order_lines = request.body.order_lines
-        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, order_lines, function(error, klarnaSessionTransaction){
+        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, order_lines, function (error, klarnaSessionTransaction) {
             if (error.length > 0) {
                 response.status(400).json(error)
             } else if (klarnaSessionTransaction) {
