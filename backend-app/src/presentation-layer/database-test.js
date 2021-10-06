@@ -309,6 +309,12 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     console.log(transaction)
                     response.redirect("/")
                 });
+
+                // databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order){
+                //     console.log(error)
+                //     console.log(order)
+                //     response.redirect("/")
+                // })
                     
 
                 break;

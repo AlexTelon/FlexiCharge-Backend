@@ -206,11 +206,11 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
                 "status": "CHECKOUT_INCOMPLETE",
-                "order_amount": chargePoint.klarnaReservationAmount,
+                "order_amount": 300,
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
-                "billing_address": billing_address,
-                "shipping_address": shipping_address,
+                // "billing_address": billing_address,
+                // "shipping_address": shipping_address,
             })
         )
         console.log(Buffer.from(data).toString());
@@ -231,7 +231,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                 result.on('data', responseData => {
                     //TODO: Send back that order was created succesfully
                     
-                    process.stdout.write(d)
+                    process.stdout.write(responseData)
                 })
             } else {
                 callback(["klarnaError"], [])
