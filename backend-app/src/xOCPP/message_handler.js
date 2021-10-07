@@ -50,51 +50,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
         switch (action) {
             case c.BOOT_NOTIFICATION:
-                if (chargerID != null) {
-                    callResult = func.buildJSONMessage([
-                        c.CALL_RESULT,
-                        uniqueID,
-                        c.BOOT_NOTIFICATION,
-                        {
-                            status: c.ACCEPTED,
-                            currentTime: new Date().toISOString(),
-                            interval: c.HEART_BEAT_INTERVALL,
-                            chargerId: chargerID
-                        }
-                    ])
-
-                } else {
-                    callResult = func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.INTERNAL_ERROR,
-                        "Tell OCPP gang that error *no chargerID in callSwitch -> BOOT_NOTIFICATION* occured :)", {}])
-                }
+                sendBootNotificationResponse(chargerID ,uniqueID, c.ACCEPTED)
+                callResult = func.getDataTransferMessage(func.getUniqueId(chargerID, c.DATA_TRANSFER), {vendorId: "com.flexicharge", messageId: "ChargerId" ,chargerId: chargerID}, isCall = true)
+                
                 break
 
             case c.STATUS_NOTIFICATION:
-                if (chargerID != null) {
-                    let errorCode = request[c.PAYLOAD_INDEX].errorCode
-                    let status = request[c.PAYLOAD_INDEX].status
-
-                    if (errorCode != c.NO_ERROR) {
-                        console.log("\nCharger "+chargerID+" has sent the following error code: "+errorCode)
-                    }
-                    
-                    
-                    databaseInterfaceCharger.updateChargerStatus(chargerID, status, function (error, charger) {
-                        if (error.length > 0) {
-                            console.log("Error updating charger status in DB: " + error)
-                            callResult = func.getGenericError(uniqueID, error.toString())
-                        } else {
-                            console.log("Charger updated in DB: " + charger.status)
-                            callResult = func.buildJSONMessage([
-                                c.CALL_RESULT,
-                                uniqueID,
-                                c.STATUS_NOTIFICATION,
-                                {} // A response to a StatusNotification can be empty (not defined in protocol)
-                            ])
-                        }
-                    })
-                }
-
+                sendStatusNotificationResponse(chargerID, uniqueID, request)
                 break
 
             default:
@@ -104,6 +66,50 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
         return callResult
     }
+    
+    function sendBootNotificationResponse(chargerID ,uniqueID, status) {
+        socket = v.getConnectedSocket(chargerID)
+
+        callResult = func.buildJSONMessage([
+            c.CALL_RESULT,
+            uniqueID,
+            c.BOOT_NOTIFICATION,
+            {
+                status: status,
+                currentTime: new Date().getTime(),
+                interval: c.HEART_BEAT_INTERVALL,
+            }
+        ])
+        socket.send(callResult)
+    }
+
+    function sendStatusNotificationResponse(chargerID, uniqueID, request) {
+        let errorCode = request[c.PAYLOAD_INDEX].errorCode
+        let status = request[c.PAYLOAD_INDEX].status
+        if (errorCode != c.NO_ERROR) {
+            console.log("\nCharger "+chargerID+" has sent the following error code: "+errorCode)
+        }
+        
+        
+        databaseInterfaceCharger.updateChargerStatus(chargerID, status, function (error, charger) {
+            if (error.length > 0) {
+                console.log("Error updating charger status in DB: " + error)
+                v.getConnectedSocket(chargerID).send(
+                    func.getGenericError(uniqueID, error.toString()))
+            } else {
+                console.log("Charger updated in DB: " + charger.status)
+                v.getConnectedSocket(chargerID).send(
+                    func.buildJSONMessage([
+                    c.CALL_RESULT,
+                    uniqueID,
+                    c.STATUS_NOTIFICATION,
+                    {} // A response to a StatusNotification can be empty (not defined in protocol)
+                ]))
+            }
+        })
+    }
+
+    
 
     function callResultSwitch(uniqueID, response, chargerID) {
 

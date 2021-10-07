@@ -1,5 +1,6 @@
 module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
     const c = constants.get()
+    
     exports.handleClient = function (clientSocket, chargerSerial) {
 
         var messageCache = ""
@@ -26,7 +27,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
             } else {
                 console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
                 let message = func.buildJSONMessage([c.CALL_ERROR, 1337, c.SECURITY_ERROR,
-                    "Serial number was not found in database GTFO", {}])
+                    "Serial number was not found in database.", {}])
                 clientSocket.send(message)
                 clientSocket.terminate()
             }

@@ -39,6 +39,7 @@ module.exports = function({}){
             GENERIC_ERROR: "GenericError",
             SECURITY_ERROR: "SecurityError",
             RESERVE_NOW: "ReserveNow",
+            DATA_TRANSFER: "DataTransfer",
 
             //Possible status states a charger can have
             AVAILABLE: "Available",
