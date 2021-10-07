@@ -162,12 +162,12 @@ Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'casca
 sequelize.sync().then(function () {
     Chargers.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
-            ChargePoints.create({
-                name: 'Jönköping University',
-                location: [57.777714, 14.163010],
-                price: 44.52,
-                klarnaReservationAmount: 30000
-            });
+            // ChargePoints.create({
+            //     name: 'Jönköping University',
+            //     location: [57.777714, 14.163010],
+            //     price: 44.52,
+            //     klarnaReservationAmount: 30000
+            // });
             // Chargers.create({
             //     chargerID: 100000,
             //     location: [57.777714, 14.163012],
@@ -182,21 +182,21 @@ sequelize.sync().then(function () {
             //     status: '0',
             //     chargePointID: 1
             // });
-            Transactions.create({
-                paymentID: null,
-                userID: "1",
-                timestamp: 1631522252,
-                isKlarnaPayment: true,
-                kwhTransfered: 5,
-                currentChargePercentage: 20,
-                pricePerKwh: 44.66
-            });
-            Reservations.create({
-                chargerID: 1,
-                userID: 1,
-                start: 164966755,
-                end: 164968555
-            });
+            // Transactions.create({
+            //     paymentID: null,
+            //     userID: "1",
+            //     timestamp: 1631522252,
+            //     isKlarnaPayment: true,
+            //     kwhTransfered: 5,
+            //     currentChargePercentage: 20,
+            //     pricePerKwh: 44.66
+            // });
+            // Reservations.create({
+            //     chargerID: 1,
+            //     userID: 1,
+            //     start: 164966755,
+            //     end: 164968555
+            // });
         }
     })
 })
