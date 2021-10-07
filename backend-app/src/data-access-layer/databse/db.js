@@ -149,7 +149,7 @@ const ChargePoints = sequelize.define('ChargePoints', {
 Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
+// Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
 // Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
@@ -164,20 +164,20 @@ sequelize.sync({ force: true }).then(function() {
                 price: 44.52,
                 klarnaReservationAmount: 30000
             });
-            // Chargers.create({
-            //     chargerID: 100000,
-            //     location: [57.777714, 14.163012],
-            //     serialNumber: 'abc123',
-            //     status: '1',
-            //     chargePointID: 1
-            // });
-            // Chargers.create({
-            //     chargerID: 100001,
-            //     location: [57.777714, 14.163016],
-            //     serialNumber: '123abc',
-            //     status: '0',
-            //     chargePointID: 1
-            // });
+            Chargers.create({
+                chargerID: 100000,
+                location: [57.777714, 14.163012],
+                serialNumber: 'abc123',
+                status: '1',
+                chargePointID: 1
+            });
+            Chargers.create({
+                chargerID: 100001,
+                location: [57.777714, 14.163016],
+                serialNumber: '123abc',
+                status: '0',
+                chargePointID: 1
+            });
             Transactions.create({
                 paymentID: 1,
                 userID: 1,
