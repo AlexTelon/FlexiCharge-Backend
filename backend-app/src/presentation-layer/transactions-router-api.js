@@ -109,8 +109,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.post('/session', function (request, response) {
         const userID = request.body.userID
         const chargerID = request.body.chargerID
-        const order_lines = request.body.order_lines
-        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, order_lines, function (error, klarnaSessionTransaction) {
+        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, function (error, klarnaSessionTransaction) {
             if (error.length > 0) {
                 response.status(400).json(error)
             } else if (klarnaSessionTransaction) {
