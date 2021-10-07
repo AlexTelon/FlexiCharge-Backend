@@ -312,20 +312,6 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 break;
             case 'klarna':
 
-                const order_lines = [{
-                    "type": "physical",
-                    "reference": "19-402",
-                    "name": "Battery Power Pack",
-                    "quantity": 1,
-                    "unit_price": 300,
-                    "tax_rate": 0,
-                    "total_amount": 300,
-                    "total_discount_amount": 0,
-                    "total_tax_amount": 0,
-                    "image_url": "https://www.exampleobjects.com/logo.png",
-                    "product_url": "https://www.estore.com/products/f2a8d7e34"
-                }]
-
                 // databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
                 //     console.log(error)
                 //     console.log(transaction)
@@ -358,11 +344,34 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     console.log(errors)
                     console.log(chargerAdded)
 
-                    databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order) {
+                    // databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b",  null, null, function(error, order) {
+                    //     console.log(error)
+                    //     console.log(order)
+                    //     response.redirect("/")
+                    // })
+
+
+                    databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 100000, function(error, transaction) {
                         console.log(error)
-                        console.log(order)
-                        response.redirect("/")
-                    })
+                        console.log(transaction)
+
+                        databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                            console.log(errors)
+                            console.log(createdTransaction)
+
+                            databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                                console.log(errors)
+                                console.log(updatedTransaction)
+
+                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, function(errors, updatedTransaction) {
+                                    console.log(errors)
+                                    console.log(updatedTransaction)
+                                    response.redirect("/")
+                                })
+
+                            })
+                        })
+                    });
                 })
 
 

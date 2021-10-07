@@ -4,7 +4,7 @@ module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, order_lines, callback) {
+    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, callback) {
 
         if (chargePoint.klarnaReservationAmount > 0) {
             const data = new TextEncoder().encode(
@@ -14,7 +14,7 @@ module.exports = function({}) {
                     "locale": "sv-SE",
                     "order_amount": chargePoint.klarnaReservationAmount,
                     "order_tax_amount": 0,
-                    "order_lines": order_lines
+                    "order_lines": getOrderLines(chargePoint.klarnaReservationAmount)
                 })
             )
             console.log(Buffer.from(data).toString());
@@ -34,8 +34,7 @@ module.exports = function({}) {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
                         responseData = JSON.parse(jsonResponse);
-
-                        callback([], jsonResponse)
+                        callback([], responseData)
                     })
                 } else {
                     switch (result.statusCode) {
@@ -64,7 +63,7 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -72,7 +71,7 @@ module.exports = function({}) {
                 "status": "CHECKOUT_INCOMPLETE",
                 "order_amount": klarnaReservationAmount,
                 "order_tax_amount": 0,
-                "order_lines": order_lines,
+                "order_lines": getOrderLines(klarnaReservationAmount),
                 "billing_address": billing_address,
                 "shipping_address": shipping_address,
             })
@@ -127,13 +126,13 @@ module.exports = function({}) {
     }
 
 
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, order_lines, callback) {
+    exports.finalizeKlarnaOrder = async function(transaction, transactionId, klarnaReservationAmount, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
+        const order_lines = getOrderLines(klarnaReservationAmount)
 
-        // TODO: Update the klarna order with the correct amount and capture it.
         order_lines[0].total_amount = newOrderAmount;
         order_lines[0].unit_price = newOrderAmount;
-        console.log(order_lines)
+
 
         updateOrder(transaction, order_lines, function(error, responseData) {
 
@@ -149,8 +148,8 @@ module.exports = function({}) {
                 callback(error, [])
             }
         })
-
     }
+
 
     function updateOrder(transaction, order_lines, callback) {
 
@@ -263,6 +262,22 @@ module.exports = function({}) {
         request.end()
     }
 
+
+    function getOrderLines(klarnaReservationAmount) {
+        const order_lines = [{
+            "type": "digital",
+            "name": "Electrical Vehicle Charging",
+            "quantity": 1,
+            "unit_price": klarnaReservationAmount,
+            "tax_rate": 0,
+            "total_amount": klarnaReservationAmount,
+            "total_discount_amount": 0,
+            "total_tax_amount": 0
+        }]
+
+        return order_lines
+
+    }
 
 
 
