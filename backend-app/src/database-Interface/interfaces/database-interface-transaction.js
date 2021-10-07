@@ -175,7 +175,15 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                             } else {
                                 dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, order_lines, billing_address, shipping_address, function(error, klarnaOrder) {
                                     if (error.length == 0) {
-                                        callback([], klarnaOrder)
+                                        dataAccessLayerTransaction.updateTransactionPayment(transactionId, klarnaOrder.order_id, function(error, updatedTransaction){
+                                            if (Object.keys(error).length > 0) {
+                                                dbErrorCheck.checkError(error, function(errorCode) {
+                                                    callback(errorCode, [])
+                                                })
+                                            } else {
+                                                callback([], updatedTransaction)
+                                            }
+                                        })
                                     } else {
                                         callback(error, [])
                                     }
@@ -197,15 +205,21 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                     callback(errorCode, [])
                 })
             } else {
-
                 dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, order_lines, function(error, responseData) {
-
                     if (error.length == 0) {
-                        callback([], responseData)
+                        console.log(responseData)
+                        dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction){
+                            if (Object.keys(error).length > 0) {
+                                dbErrorCheck.checkError(error, function(errorCode) {
+                                    callback(errorCode, [])
+                                })
+                            } else {
+                                callback([], transaction)
+                            }
+                        })
                     } else {
                         callback(error, [])
                     }
-
                 })
             }
         })

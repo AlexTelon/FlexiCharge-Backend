@@ -365,7 +365,11 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     })
                 })
 
-
+                // databaseInterfaceTransactions.finalizeKlarnaOrder(1, order_lines, function(error, transaction){
+                //     console.log(error)
+                //     console.log(transaction)
+                //     response.redirect("/")
+                // })
 
 
                 break;

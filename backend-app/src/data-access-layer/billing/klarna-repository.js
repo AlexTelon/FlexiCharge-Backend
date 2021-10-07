@@ -33,8 +33,7 @@ module.exports = function({}) {
             const request = https.request(options, result => {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
-                        responseData = JSON.parse(jsonResponse);
-                        console.log(responseData)
+                        const responseData = JSON.parse(jsonResponse);
                         callback([], responseData)
                     })
                 } else {
@@ -77,7 +76,6 @@ module.exports = function({}) {
                 "shipping_address": shipping_address,
             })
         )
-        console.log(Buffer.from(data).toString());
 
         const options = {
             hostname: KLARNA_URI,
@@ -92,7 +90,8 @@ module.exports = function({}) {
 
         const request = https.request(options, result => {
             if (result.statusCode == 200) {
-                result.on('data', klarnaOrder => {
+                result.on('data', jsonKlarnaOrder => {
+                    const klarnaOrder = JSON.parse(jsonKlarnaOrder);
                     callback([], klarnaOrder)
                 })
             } else {
@@ -122,8 +121,6 @@ module.exports = function({}) {
 
         request.write(data)
         request.end()
-
-
     }
 
 
@@ -136,7 +133,6 @@ module.exports = function({}) {
         console.log(order_lines)
 
         updateOrder(transaction, order_lines, function(error, responseData) {
-
             if (error.length == 0) {
                 captureOrder(transaction, function(error) {
                     if (error.length == 0) {
@@ -153,7 +149,6 @@ module.exports = function({}) {
     }
 
     function updateOrder(transaction, order_lines, callback) {
-
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -164,7 +159,6 @@ module.exports = function({}) {
                 "order_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
-        console.log(Buffer.from(data).toString());
 
         const options = {
             hostname: KLARNA_URI,
@@ -178,11 +172,8 @@ module.exports = function({}) {
         }
 
         const request = https.request(options, result => {
-            if (result.statusCode == 200) {
-                result.on('data', jsonResponse => {
-                    responseData = JSON.parse(jsonResponse);
-                    callback([], [responseData])
-                })
+            if (result.statusCode == 204) {
+                callback([], [])
             } else {
                 switch (result.statusCode) {
                     case 400: //We were unable to update an order with the provided data. Some field constraint was violated.
@@ -210,17 +201,14 @@ module.exports = function({}) {
 
         request.write(data)
         request.end()
-
     }
 
     function captureOrder(transaction, callback) {
-
         const captureData = new TextEncoder().encode(
             JSON.stringify({
                 "captured_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
-        console.log(Buffer.from(captureData).toString());
 
         const captureOptions = {
             hostname: KLARNA_URI,
@@ -262,10 +250,6 @@ module.exports = function({}) {
         request.write(captureData)
         request.end()
     }
-
-
-
-
 
     return exports
 }
