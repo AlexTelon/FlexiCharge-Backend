@@ -162,7 +162,7 @@ sequelize.sync({ force: true }).then(function() {
                 name: 'Jönköping University',
                 location: [57.777714, 14.163010],
                 price: 44.52,
-                klarnaReservationAmount: 300
+                klarnaReservationAmount: 30000
             });
             // Chargers.create({
             //     chargerID: 100000,

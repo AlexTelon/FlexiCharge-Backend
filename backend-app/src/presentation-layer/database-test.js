@@ -259,9 +259,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                                     "reference": "19-402",
                                     "name": "Battery Power Pack",
                                     "quantity": 1,
-                                    "unit_price": 300,
+                                    "unit_price": 30000,
                                     "tax_rate": 0,
-                                    "total_amount": 300,
+                                    "total_amount": 30000,
                                     "total_discount_amount": 0,
                                     "total_tax_amount": 0,
                                     "image_url": "https://www.exampleobjects.com/logo.png",
@@ -313,46 +313,44 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'klarna':
 
                 const order_lines = [{
-                    "type": "physical",
-                    "reference": "19-402",
-                    "name": "Battery Power Pack",
+                    "type": "digital",
+                    "name": "Electrical Vehicle Charging",
                     "quantity": 1,
-                    "unit_price": 300,
+                    "unit_price": 30000,
                     "tax_rate": 0,
-                    "total_amount": 300,
+                    "total_amount": 30000,
                     "total_discount_amount": 0,
-                    "total_tax_amount": 0,
-                    "image_url": "https://www.exampleobjects.com/logo.png",
-                    "product_url": "https://www.estore.com/products/f2a8d7e34"
-                }]
+                    "total_tax_amount": 0
+                    }]
 
-                // databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
-                //     console.log(error)
-                //     console.log(transaction)
-
-                //     databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
-                //         console.log(errors)
-                //         console.log(createdTransaction)
-
-                //         databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
-                //             console.log(errors)
-                //             console.log(updatedTransaction)
-
-                //             databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
-                //                 console.log(errors)
-                //                 console.log(updatedTransaction)
-                //                 response.redirect("/")
-                //             })
-
-                //         })
-                //     })
-                // });
-
-                databaseInterfaceTransactions.finalizeKlarnaOrder(1, order_lines, function(errors, updatedTransaction) {
-                    console.log(errors)
-                    console.log(updatedTransaction)
+                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
+                    console.log(error)
+                    console.log(transaction)
                     response.redirect("/")
-                })
+
+                    // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                    //     console.log(errors)
+                    //     console.log(createdTransaction)
+
+                    //     databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                    //         console.log(errors)
+                    //         console.log(updatedTransaction)
+
+                    //         databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                    //             console.log(errors)
+                    //             console.log(updatedTransaction)
+                    //             response.redirect("/")
+                    //         })
+
+                    //     })
+                    // })
+                });
+
+                // databaseInterfaceTransactions.finalizeKlarnaOrder(1, order_lines, function(errors, updatedTransaction) {
+                //     console.log(errors)
+                //     console.log(updatedTransaction)
+                //     response.redirect("/")
+                // })
 
                 // databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order){
                 //     console.log(error)

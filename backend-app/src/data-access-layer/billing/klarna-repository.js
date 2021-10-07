@@ -34,8 +34,8 @@ module.exports = function({}) {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
                         responseData = JSON.parse(jsonResponse);
-
-                        callback([], jsonResponse)
+                        console.log(responseData)
+                        callback([], responseData)
                     })
                 } else {
                     callback(["klarnaError"], [])
