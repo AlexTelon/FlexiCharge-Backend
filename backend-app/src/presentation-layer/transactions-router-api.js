@@ -91,9 +91,9 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.post('/order', function (request, response) {
 
-        const { transactionID, authorization_token, billing_address, shipping_address } = request.body;
+        const { transactionID, authorization_token } = request.body;
 
-        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, billing_address, shipping_address, function (error, klarnaOrder) {
+        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
             console.log(error);
             console.log(klarnaOrder);
             if (error.length === 0) {
@@ -109,6 +109,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.post('/session', function (request, response) {
         const userID = request.body.userID
         const chargerID = request.body.chargerID
+
         databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, function (error, klarnaSessionTransaction) {
             if (error.length > 0) {
                 response.status(400).json(error)
@@ -123,12 +124,12 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.put('/stop/:transactionID', function (request, response) {
         const transactionID = request.params.transactionID
         const chargerID = request.body.chargerID
-        ocppInterface.remoteStopTransaction(transactionID, chargerID, function(error, stoppedTransaction){
-            if (error.length > 0 ){
+        ocppInterface.remoteStopTransaction(transactionID, chargerID, function (error, stoppedTransaction) {
+            if (error.length > 0) {
                 response.status(400).json(error)
-            } else if (stoppedTransaction){
+            } else if (stoppedTransaction) {
                 response.status(200).json(stoppedTransaction)
-            } else{
+            } else {
                 response.status(500).json(error)
             }
         })
