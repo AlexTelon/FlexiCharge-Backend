@@ -91,9 +91,9 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.post('/order', function (request, response) {
 
-        const { transactionID, authorization_token, order_lines, billing_address, shipping_address } = request.body;
+        const { transactionID, authorization_token, billing_address, shipping_address } = request.body;
 
-        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, order_lines, billing_address, shipping_address, function (error, klarnaOrder) {
+        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, billing_address, shipping_address, function (error, klarnaOrder) {
             console.log(error);
             console.log(klarnaOrder);
             if (error.length === 0) {
@@ -121,8 +121,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.put('/stop/:transactionID', function(request, response){
-        
+    router.put('/stop/:transactionID', function (request, response) {
+
     })
 
     return router
