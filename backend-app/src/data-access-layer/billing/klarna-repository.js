@@ -251,9 +251,6 @@ module.exports = function({}) {
         request.end()
     }
 
-    <<
-    << << < HEAD
-
     function getOrderLines(klarnaReservationAmount) {
         const order_lines = [{
             "type": "digital",
@@ -269,12 +266,5 @@ module.exports = function({}) {
         return order_lines
 
     }
-
-
-
-
-    ===
-    === = >>>
-    >>> > f125196f524a7e332bcdb06669c415efdab2bc3d
     return exports
 }
