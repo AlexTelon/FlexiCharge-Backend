@@ -110,6 +110,10 @@ const Transactions = sequelize.define('Transactions', {
     client_token: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    paymentConfirmed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
     }
 }, {
     timestamps: false
@@ -149,7 +153,7 @@ const ChargePoints = sequelize.define('ChargePoints', {
 Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
-//Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
+// Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
 // Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
@@ -162,7 +166,7 @@ sequelize.sync({ force: true }).then(function() {
                 name: 'Jönköping University',
                 location: [57.777714, 14.163010],
                 price: 44.52,
-                klarnaReservationAmount: 300
+                klarnaReservationAmount: 30000
             });
             // Chargers.create({
             //     chargerID: 100000,
@@ -179,8 +183,8 @@ sequelize.sync({ force: true }).then(function() {
             //     chargePointID: 1
             // });
             Transactions.create({
-                paymentID: 1,
-                userID: 1,
+                paymentID: null,
+                userID: "1",
                 timestamp: 1631522252,
                 isKlarnaPayment: true,
                 kwhTransfered: 5,
