@@ -8,7 +8,7 @@ container.register({
     dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
     dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
     dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/charge-point-repository')),
-
+    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/klarna-repository')),
     //Business logic layers
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
@@ -42,7 +42,6 @@ container.register({
     v: awilix.asFunction(require('./xOCPP/variables')),
     func: awilix.asFunction(require('./xOCPP/global_functions')),
     test: awilix.asFunction(require('./xOCPP/test')),
-
 
     app: awilix.asFunction(require('./presentation-layer/app'))
 })

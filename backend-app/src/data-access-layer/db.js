@@ -1,10 +1,11 @@
+const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-// const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -33,7 +34,7 @@ const Chargers = sequelize.define('Chargers', {
         allowNull: false
     },
     status: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     }
 }, {
@@ -56,7 +57,7 @@ const Reservations = sequelize.define('Reservations', {
         allowNull: false
     },
     userID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     }
 }, {
@@ -91,11 +92,23 @@ const Transactions = sequelize.define('Transactions', {
         allowNull: false
     },
     paymentID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true
     },
     userID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    payment_method_categories: {
+        type: DataTypes.ARRAY(DataTypes.JSON),
+        allowNull: true
+    },
+    session_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    client_token: {
+        type: DataTypes.TEXT,
         allowNull: true
     }
 }, {
@@ -142,31 +155,30 @@ Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 // Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
-sequelize.sync().then(function() {
-    Chargers.findAndCountAll().then(function({ rows, count }) {
+sequelize.sync().then(function () {
+    Chargers.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
-            ChargePoints.create({
-                name: 'Jönköping University',
-                location: [57.777714, 14.163010],
-                price: 44.52,
-                klarnaReservationAmount: 300
-            });
+            // ChargePoints.create({
+            //     name: 'Jönköping University',
+            //     location: [57.777714, 14.163010],
+            //     price: 44.52,
+            //     klarnaReservationAmount: 300
+            // });
             // Chargers.create({
             //     chargerID: 100000,
             //     location: [57.777714, 14.163012],
             //     serialNumber: 'abc123',
-            //     status: 1,
+            //     status: '1',
             //     chargePointID: 1
             // });
             // Chargers.create({
             //     chargerID: 100001,
             //     location: [57.777714, 14.163016],
             //     serialNumber: '123abc',
-            //     status: 0,
+            //     status: '0',
             //     chargePointID: 1
             // });
             Transactions.create({
-                chargerID: 1,
                 paymentID: 1,
                 userID: 1,
                 timestamp: 1631522252,
@@ -185,7 +197,7 @@ sequelize.sync().then(function() {
     })
 })
 
-module.exports = function({}) {
+module.exports = function ({ }) {
     const exports = { Chargers, Transactions, Reservations, ChargePoints }
     return exports
 }

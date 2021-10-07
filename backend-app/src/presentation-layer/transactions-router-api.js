@@ -1,12 +1,8 @@
-const { response } = require('express')
 var express = require('express')
-const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
 
 module.exports = function ({ databaseInterfaceTransactions }) {
 
     const router = express.Router()
-
     router.get('/:id', function (request, response) {
         const transactionId = request.params.id
         databaseInterfaceTransactions.getTransaction(transactionId, function (errors, transaction) {
@@ -47,8 +43,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     })
 
     router.post('/', function (request, response) {
-        const { userID, chargerID, meterStartValue } = request.body;
-        databaseInterfaceTransactions.addTransaction(userID, chargerID, meterStartValue, function (errors, transaction) {
+        const { userID, chargerID, isKlarnaPayment, pricePerKwh } = request.body;
+        databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transaction) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (transaction) {
@@ -57,14 +53,13 @@ module.exports = function ({ databaseInterfaceTransactions }) {
                 response.status(500).json(errors)
             }
         })
-
     })
 
 
     router.put('/payment/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
         const paymentId = request.body.paymentID
-        dataAccessLayerTransaction.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {
+        databaseInterfaceTransactions.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransactionPayment)
             } else {
@@ -77,18 +72,64 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.put('/meter/:transactionID', function (request, response) {
+    router.put('/chargingStatus/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
-        const meterValue = request.body.meterStop
-        databaseInterfaceTransactions.updateTransactionMeter(transactionId, meterValue, function(error, updateTransactionMeter){
+        const kwhTransfered = request.body.kwhTransfered
+        const currentChargePercentage = request.body.currentChargePercentage
+        databaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, currentChargePercentage, function (error, updatedTransaction) {
             if (error.length == 0) {
-                response.status(201).json(updateTransactionMeter)
+                response.status(201).json(updatedTransaction)
             } else {
                 if (error.includes("internalError") || error.includes("dbError")) {
                     response.status(500).json(error)
                 } else {
                     response.status(404).json(error)
                 }
+            }
+        })
+    })
+
+    router.post('/order', function (request, response) {
+
+        const { transactionID, authorization_token, billing_address, shipping_address } = request.body;
+
+        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, billing_address, shipping_address, function (error, klarnaOrder) {
+            console.log(error);
+            console.log(klarnaOrder);
+            if (error.length === 0) {
+                response.status(201).json(klarnaOrder)
+            } else if (error.includes("internalError") || error.includes("dbError")) {
+                response.status(500).json(error)
+            } else {
+                response.status(400).json(error);
+            }
+        })
+    })
+
+    router.post('/session', function (request, response) {
+        const userID = request.body.userID
+        const chargerID = request.body.chargerID
+        databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, chargerID, function (error, klarnaSessionTransaction) {
+            if (error.length > 0) {
+                response.status(400).json(error)
+            } else if (klarnaSessionTransaction) {
+                response.status(201).json(klarnaSessionTransaction)
+            } else {
+                response.status(500).json(error)
+            }
+        })
+    })
+
+    router.put('/stop/:transactionID', function (request, response) {
+        const transactionID = request.params.transactionID
+        const chargerID = request.body.chargerID
+        ocppInterface.remoteStopTransaction(transactionID, chargerID, function(error, stoppedTransaction){
+            if (error.length > 0 ){
+                response.status(400).json(error)
+            } else if (stoppedTransaction){
+                response.status(200).json(stoppedTransaction)
+            } else{
+                response.status(500).json(error)
             }
         })
     })

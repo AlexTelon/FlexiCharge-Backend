@@ -25,6 +25,7 @@ module.exports = function ({ chargersRouter, transactionsRouter, reservationsRou
         next()
     })
 
+
     app.get('/', (req, res) => {
         res.render('index.hbs')
     })
