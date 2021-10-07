@@ -122,6 +122,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.put('/stop/:transactionID', function (request, response) {
 
+        
     })
 
     return router
