@@ -1,9 +1,17 @@
 module.exports = function({}) {
-
-
-    //Validation for status
-    STATUS_MIN_VALUE = 0
-    STATUS_MAX_VALUE = 3
+    /*
+        "Available",
+        "Preparing",
+        "Charging",
+        "SuspendedEVSE",
+        "SuspendedEV",
+        "Finishing",
+        "Reserved",
+        "Unavailable",
+        "Faulted"
+    */
+    //Status codes 
+    const statusCodes = ["Available", "Preparing", "Charging", "SuspendedEVSE", "SuspendedEV", "Finishing", "Reserved", "Unavailable", "Faulted"]
 
     //Validation for location
     LONGITUDE_MIN_VALUE = -180
@@ -71,20 +79,20 @@ module.exports = function({}) {
     }
 
     exports.getUpdateChargerStatusValidation = function(status) {
-        const ValidationErrors = []
+        const validationErrors = []
 
         if (status === undefined) {
-            ValidationErrors.push("invalidStatus")
+            validationErrors.push("invalidStatus")
         } else {
-            if (typeof status !== 'number') {
+            if (typeof status !== 'string') {
                 validationErrors.push("invalidDataType")
             }
-            if (status < STATUS_MIN_VALUE || status > STATUS_MAX_VALUE) {
-                ValidationErrors.push("invalidStatus")
+            if (!statusCodes.includes(status)) {
+                validationErrors.push("invalidStatus")
             }
         }
 
-        return ValidationErrors
+        return validationErrors
     }
 
     return exports
