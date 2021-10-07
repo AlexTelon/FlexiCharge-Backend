@@ -91,7 +91,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.post('/order', function (request, response) {
 
-        const { transactionID, authorization_token, billing_address, shipping_address } = request.body;
+        const { transactionID, authorization_token } = request.body;
 
         databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, billing_address, shipping_address, function (error, klarnaOrder) {
             console.log(error);
