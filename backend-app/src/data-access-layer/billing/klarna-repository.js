@@ -63,7 +63,7 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -71,9 +71,7 @@ module.exports = function({}) {
                 "status": "CHECKOUT_INCOMPLETE",
                 "order_amount": klarnaReservationAmount,
                 "order_tax_amount": 0,
-                "order_lines": getOrderLines(klarnaReservationAmount),
-                "billing_address": billing_address,
-                "shipping_address": shipping_address,
+                "order_lines": getOrderLines(klarnaReservationAmount)
             })
         )
 

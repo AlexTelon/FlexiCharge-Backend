@@ -323,10 +323,10 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     "total_tax_amount": 0
                 }]
 
-                databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
-                    console.log(error)
-                    console.log(transaction)
-                    response.redirect("/")
+                // databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 1, order_lines, function(error, transaction) {
+                //     console.log(error)
+                //     console.log(transaction)
+                //     response.redirect("/")
 
 
                     // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
@@ -345,7 +345,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
                     //         })
                     //     })
-                });
+                // });
 
                 const charger1 = {
                     chargePointID: 1,
