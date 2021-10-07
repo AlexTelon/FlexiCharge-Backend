@@ -327,6 +327,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     console.log(error)
                     console.log(transaction)
                     response.redirect("/")
+                
 
                     // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
                     //     console.log(errors)
@@ -342,21 +343,29 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     //             response.redirect("/")
                     //         })
 
-                    //     })
-                    // })
+                //         })
+                //     })
                 });
+                
+                const charger1 = {
+                    chargePointID: 1,
+                    location: [57.78016419007881, 14.182610301538203],
+                    serialNumber: '##€43cstsdx6765',
+                    status: 1
+                }
 
-                // databaseInterfaceTransactions.finalizeKlarnaOrder(1, order_lines, function(errors, updatedTransaction) {
-                //     console.log(errors)
-                //     console.log(updatedTransaction)
-                //     response.redirect("/")
-                // })
+                databaseInterfaceCharger.addCharger(charger1.chargePointID, charger1.serialNumber, charger1.location, function(errors, chargerAdded) {
+                    console.log(errors)
+                    console.log(chargerAdded)
 
-                // databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order){
-                //     console.log(error)
-                //     console.log(order)
-                //     response.redirect("/")
-                // })
+                    databaseInterfaceTransactions.createKlarnaOrder(1, "c2a8a213-5833-1f02-a6a3-56a1626ff76b", order_lines, null, null, function(error, order) {
+                        console.log(error)
+                        console.log(order)
+                        response.redirect("/")
+                    })
+                })
+
+
 
 
                 break;

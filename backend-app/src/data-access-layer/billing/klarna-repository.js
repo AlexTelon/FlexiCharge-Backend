@@ -38,7 +38,16 @@ module.exports = function({}) {
                         callback([], responseData)
                     })
                 } else {
-                    callback(["klarnaError"], [])
+                    switch (result.statusCode) {
+                        case 400: // 	We were unable to create a session with the provided data. Some field constraint was violated.
+                            callback(["klarnaError403"], [])
+                            break;
+                        case 403: // 	You were not authorized to execute this operation.
+                            callback(["klarnaError404"], [])
+                            break;
+                        default:
+                            callback(["klarnaError"], [])
+                    }
                 }
             })
 
@@ -55,13 +64,13 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
                 "status": "CHECKOUT_INCOMPLETE",
-                "order_amount": chargePoint.klarnaReservationAmount,
+                "order_amount": klarnaReservationAmount,
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
                 "billing_address": billing_address,
@@ -83,12 +92,26 @@ module.exports = function({}) {
 
         const request = https.request(options, result => {
             if (result.statusCode == 200) {
-                result.on('data', responseData => {
-                    //TODO: Send back that order was created succesfully
-                    process.stdout.write(d)
+                result.on('data', klarnaOrder => {
+                    callback([], klarnaOrder)
                 })
             } else {
-                callback(["klarnaError"], [])
+                switch (result.statusCode) {
+                    case 400: //	We were unable to create an order with the provided data. Some field constraint was violated.
+                        callback(["klarnaError400"], [])
+                        break
+                    case 401: //	You were not authorized to execute this operation.
+                        callback(["klarnaError401"], [])
+                        break
+                    case 404: // The authorization does not exist.
+                        callback(["klarnaError404"], [])
+                        break
+                    case 409: // The data in the request does not match the session for the authorization.
+                        callback(["klarnaError404"], [])
+                        break
+                    default:
+                        callback(["klarnaError"], [])
+                }
             }
         })
 
@@ -138,7 +161,7 @@ module.exports = function({}) {
                 "locale": "sv-SE",
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
-                "order_amount": math.round(transaction.pricePerKwh * transaction.kwhTransfered)
+                "order_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
         console.log(Buffer.from(data).toString());
@@ -174,6 +197,8 @@ module.exports = function({}) {
                     case 404: //We did not find any order with given ID. You need to create a new order.
                         callback(["klarnaError404"], [])
                         break;
+                    default:
+                        callback(["klarnaError"], [])
                 }
             }
         })
@@ -216,18 +241,15 @@ module.exports = function({}) {
                 })
             } else {
                 switch (result.statusCode) {
-                    case 400: //We were unable to update an order with the provided data. Some field constraint was violated.
-                        callback(["klarnaError400"], [])
-                        break
-                    case 401: //You were not authorized to execute this operation.
-                        callback(["klarnaError401"], [])
-                        break
-                    case 403: //You tried to modify a read only resource.
+                    case 403: // Capture not allowed.
                         callback(["klarnaError403"], [])
                         break;
-                    case 404: //We did not find any order with given ID. You need to create a new order.
+                    case 404: // 	Order not found.
                         callback(["klarnaError404"], [])
                         break;
+                    default:
+                        callback(["klarnaError"], [])
+
                 }
             }
         })
