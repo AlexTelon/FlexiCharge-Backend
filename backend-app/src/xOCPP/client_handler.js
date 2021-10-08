@@ -1,5 +1,6 @@
 module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
     const c = constants.get()
+    
     exports.handleClient = function (clientSocket, chargerSerial) {
 
         var messageCache = ""
@@ -26,7 +27,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
             } else {
                 console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
                 let message = func.buildJSONMessage([c.CALL_ERROR, 1337, c.SECURITY_ERROR,
-                    "Serial number was not found in database GTFO", {}])
+                    "Serial number was not found in database.", {}])
                 clientSocket.send(message)
                 clientSocket.terminate()
             }
@@ -79,30 +80,28 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
     function testSwitch(message, clientSocket) {
         try {
             let data = JSON.parse(message)
-            let messageTypeID = data[0]
+            let chargerSerial = data[0]
+            let chargerID = v.getChargerID(chargerSerial)
+            
+            let testFunction = data[1]
 
-            switch (messageTypeID) {
-
-                case c.SSB:
-                    test.testSSB()
-                    return true
-
-                case c.CHARGER_PLUS:
-                    test.testSSB()
-                    return true
+            switch (testFunction) {
 
                 case c.TEST1:
-                    test.testFreeCharger()
+                    test.testFreeCharger(chargerID)
                     return true
 
                 case c.TEST2:
-                    test.testRemoteStart()
+                    test.testRemoteStart(chargerID)
                     return true
 
                 case c.TEST3:
-                    test.testRemoteStop()
+                    test.testRemoteStop(chargerID)
                     return true
-
+                
+                case c.TEST4:
+                    test.testReserveNow(chargerID)
+                    return true
                 default:
                     return false
 
