@@ -1,6 +1,6 @@
 const { checkPrime } = require("crypto")
 
-module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna }) {
+module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
 
     const exports = {}
 
@@ -119,7 +119,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                     callback(errorCode, [])
                 })
             } else {
-                if(charger != null) {
+                if (charger != null) {
                     dataAccessLayerChargePoint.getChargePoint(charger.chargePointID, async function(error, chargePoint) {
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function(errorCode) {
@@ -187,7 +187,11 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                     callback(errorCode, [])
                                                 })
                                             } else {
-                                                callback([], updatedTransaction)
+                                                if (remoteStartTransaction(transaction)) {
+                                                    callback([], updatedTransaction)
+                                                } else {
+                                                    callback(['couldNotStartCharging'], false)
+                                                }
                                             }
                                         })
                                     } else {
@@ -200,6 +204,18 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                 })
             }
         })
+    }
+
+    function remoteStartTransaction(transaction) {
+        if (!transaction.paymentID == null) {
+            ocppInterface.remoteStartTransaction(transaction.chargerID, 1, 1, function(error, transactionStarted) {
+                if (error.length == 0) {
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
     }
 
     exports.finalizeKlarnaOrder = async function(transactionId, callback) {
