@@ -10,6 +10,15 @@ module.exports = function({}) {
     //Validation for Transfered Kwh
     MIN_TRANSFERED_KWH = 0
 
+    //Validation for payment_method_categories
+    MIN_PAYMENT_METHOD_CATEGORIES = 1
+
+    //Validation for session_id
+    MIN_SESSION_ID = 1
+
+    //Validation for client_token
+    MIN_CLIENT_TOKEN = 1
+
     const exports = {}
 
     exports.getAddTransactionValidation = function(currentChargePercentage, pricePerKwh) {
@@ -33,6 +42,46 @@ module.exports = function({}) {
         }
         if (kwhTransfered < MIN_TRANSFERED_KWH) {
             validationErrors.push("invalidTransferedKwh")
+        }
+
+        return validationErrors
+    }
+
+    exports.addKlarnaTransactionValidation = function(session_id, client_token, payment_method_categories) {
+
+        const validationErrors = []
+
+        if (session_id === undefined) {
+            validationErrors.push("klarnaError")
+        } else {
+            if (typeof session_id !== 'string') {
+                validationErrors.push("klarnaError")
+            }
+            if (session_id.length < MIN_SESSION_ID) {
+                validationErrors.push("klarnaError")
+            }
+        }
+
+        if (client_token === undefined) {
+            validationErrors.push("klarnaError")
+        } else {
+            if (typeof client_token !== 'string') {
+                validationErrors.push("klarnaError")
+            }
+            if (client_token.length < MIN_CLIENT_TOKEN) {
+                validationErrors.push("klarnaError")
+            }
+        }
+
+        if (payment_method_categories === undefined) {
+            validationErrors.push("klarnaError")
+        } else {
+            if ((payment_method_categories instanceof Array) == false) {
+                validationErrors.push("klarnaError")
+            }
+            if (payment_method_categories < MIN_PAYMENT_METHOD_CATEGORIES) {
+                validationErrors.push("klarnaError")
+            }
         }
 
         return validationErrors
