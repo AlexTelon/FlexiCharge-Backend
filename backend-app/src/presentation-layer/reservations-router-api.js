@@ -1,4 +1,6 @@
 const express = require('express')
+const AuthMiddleware = require('./middleware/auth.middleware')
+const authenticate = new AuthMiddleware().verifyToken;
 
 module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
 
@@ -19,7 +21,12 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
 
     router.get('/userReservation/:userID', function (request, response) {
         const userId = request.params.userID
-        databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
+
+        ////////////////////////////////////////////////
+        // A user can only view its own reservations? //
+        ////////////////////////////////////////////////
+
+        databaseInterfaceReservations.getReservationForUser(userId, authenticate, function (error, userReservation) {
             if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -44,6 +51,8 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.post('/', function (request, response) {
+
+        // Skicka access token istället för userID?
         const { chargerID, userID, start, end } = request.body;
         databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errors, reservation) {
             if (errors.length > 0) {
@@ -54,10 +63,13 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
                 response.status(500).json(errors)
             }
         })
-
     })
 
     router.delete('/:id', function (request, response) {
+
+        //////////////////////////////////////////////////
+        // A user can only remove its own reservations? //
+        //////////////////////////////////////////////////
         const reservationId = request.params.id
         databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
             if (errors.length == 0 && isReservationDeleted) {

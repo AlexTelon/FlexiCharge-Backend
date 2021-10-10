@@ -4,8 +4,9 @@ const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 
 const AdminCognitoService = require('./services/cognito.admin.config')
-const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
 
+// Put in .env variable?
+const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
 const region = 'eu-west-1';
 const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
 

@@ -1,4 +1,23 @@
 var express = require('express')
+const jwtAuthz = require('express-jwt-authz');
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+
+// Put in .env variable?
+const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
+const region = 'eu-west-1';
+const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
+
+const checkJwt = jwt({
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://cognito-idp.${region}.amazonaws.com/${adminUserPoolId}/.well-known/jwks.json`,
+    }),
+    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1fWIOF9Yf'],
+    algorithms: ['RS256']
+});
 
 module.exports = function ({ databaseInterfaceChargePoint }) {
 
@@ -29,7 +48,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
         })
     })
 
-    router.post('/', function (request, response) {
+    router.post('/', checkJwt, checkIfAdmin, function (request, response) {
         const name = request.body.name
         const location = request.body.location
         const price = request.body.price
@@ -44,7 +63,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
             }
         })
     })
-    router.delete('/:id', function (request, response) {
+    router.delete('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargePointId = request.params.id;
         databaseInterfaceChargePoint.removeChargePoint(chargePointId, function (error, chargePointRemoved) {
             if (error.length == 0 && chargePointRemoved) {
@@ -57,7 +76,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
         })
     })
 
-    router.put('/:id', function (request, response) {
+    router.put('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargePointId = request.params.id;
         const { name, location, price } = request.body;
         databaseInterfaceChargePoint.updateChargePoint(chargePointId, name, location, price, function (error, chargePoint) {
