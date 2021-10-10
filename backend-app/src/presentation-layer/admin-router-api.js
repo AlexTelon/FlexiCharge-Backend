@@ -37,14 +37,11 @@ module.exports = function () {
 
         cognito.adminSignIn(username, password)
             .then(result => {
-                console.log(result);
-                if (!result.statusCode) {
-                    res.status(200).json(result).end();
-                } else if (result.statusCode === 400) {
-                    res.status(400).json(result).end();
+                if (result.statusCode === 200) {
+                    res.status(200).json(result.data).end();
                 } else {
                     console.log(result);
-                    res.status(500).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -59,7 +56,7 @@ module.exports = function () {
                     res.status(200).json(result).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -73,7 +70,7 @@ module.exports = function () {
                     res.status(200).json(result.data).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -87,7 +84,7 @@ module.exports = function () {
                     res.status(200).json(result.data.Users).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -101,7 +98,7 @@ module.exports = function () {
                     res.status(200).json(result.data).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -114,7 +111,7 @@ module.exports = function () {
                     res.status(200).json(result.data.Users).end();
                 } else {
                     console.log(result);
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -215,7 +212,6 @@ module.exports = function () {
                     res.status(500).json(result).end();
                 }
             })
-
     })
 
     router.put('/users/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
@@ -235,12 +231,10 @@ module.exports = function () {
                     res.status(500).json(result).end();
                 }
             })
-
     })
 
     router.put('/:username', checkJwt, checkIfAdmin, function (req, res) {
 
-        console.log("ADMIN");
         const username = req.params.username;
         const { userAttributes } = req.body;
 

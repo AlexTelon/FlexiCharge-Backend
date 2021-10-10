@@ -11,8 +11,8 @@ module.exports = function () {
         let { username, password, email, name, family_name } = req.body;
 
         // This might cause issues
-        // If username is not sent with the request sets the username of the email as username
-        username = username == undefined ? email.split('@')[0] : username
+        // If username is not sent with the request sets the username of the email + random numbers as username
+        username = username == undefined ? email.split('@')[0] + (Math.random() + 1).toString(10).substring(7) : username
 
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
@@ -50,10 +50,8 @@ module.exports = function () {
             .then(result => {
                 if (result.statusCode === 200) {
                     res.status(200).json(result.data).end();
-                } else if (result.statusCode === 400) {
-                    res.status(400).json(result).end();
                 } else {
-                    res.status(result.statusCode).json(result).end();
+                    res.status(400).json(result).end();
                 }
             })
     })
@@ -65,11 +63,8 @@ module.exports = function () {
             .then(result => {
                 if (result.statusCode === 200) {
                     res.status(200).json(result.data).end();
-                } else if (result.statusCode === 400) {
-                    res.status(400).json(result).end();
                 } else {
-                    res.status(result.statusCode).json(result).end();
-
+                    res.status(400).json(result).end();
                 }
             })
 
@@ -97,7 +92,7 @@ module.exports = function () {
                 if (result === true) {
                     res.status(200).end()
                 } else {
-                    res.status(400).json({ message: result.message, code: result.code, statusCode: result.statusCode }).end()
+                    res.status(400).json(result).end()
                 }
             })
     })

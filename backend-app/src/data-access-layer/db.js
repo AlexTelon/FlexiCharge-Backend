@@ -159,7 +159,7 @@ Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 // Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
-sequelize.sync().then(function () {
+sequelize.sync({ force: true }).then(function () {
     Chargers.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
             // ChargePoints.create({
@@ -182,21 +182,21 @@ sequelize.sync().then(function () {
             //     status: '0',
             //     chargePointID: 1
             // });
-            // Transactions.create({
-            //     paymentID: null,
-            //     userID: "1",
-            //     timestamp: 1631522252,
-            //     isKlarnaPayment: true,
-            //     kwhTransfered: 5,
-            //     currentChargePercentage: 20,
-            //     pricePerKwh: 44.66
-            // });
-            // Reservations.create({
-            //     chargerID: 1,
-            //     userID: 1,
-            //     start: 164966755,
-            //     end: 164968555
-            // });
+            Transactions.create({
+                paymentID: null,
+                userID: "1",
+                timestamp: 1631522252,
+                isKlarnaPayment: true,
+                kwhTransfered: 5,
+                currentChargePercentage: 20,
+                pricePerKwh: 44.66
+            });
+            Reservations.create({
+                chargerID: 1,
+                userID: 1,
+                start: 164966755,
+                end: 164968555
+            });
         }
     })
 })

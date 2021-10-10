@@ -69,7 +69,7 @@ class AuthMiddleware {
                 const pem = jwkToPem(jwk);
                 pems[key_id] = pem
             });
-            console.log('Got all pems.');
+            // console.log('Got all pems.');
 
         } catch (error) {
             console.log(error);
@@ -97,12 +97,11 @@ class AuthMiddleware {
                 const pem = jwkToPem(jwk);
                 pems[key_id] = pem
             });
-            console.log('Got all admin pems.');
+            // console.log('Got all admin pems.');
 
         } catch (error) {
             console.log(error);
-            console.log('Could not fetch admin jwks.');
-
+            // console.log('Could not fetch admin jwks.');
         }
     }
 
