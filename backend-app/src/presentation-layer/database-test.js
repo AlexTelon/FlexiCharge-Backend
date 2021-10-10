@@ -7,10 +7,6 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
 
     const router = express.Router()
 
-    router.use('/', function(request, response, next) {
-        next()
-    })
-
     router.get("/check", async function(request, response) {
 
         switch ('klarna') {
@@ -329,22 +325,22 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 //     response.redirect("/")
 
 
-                    // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
-                    //     console.log(errors)
-                    //     console.log(createdTransaction)
+                // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                //     console.log(errors)
+                //     console.log(createdTransaction)
 
-                    //     databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
-                    //         console.log(errors)
-                    //         console.log(updatedTransaction)
+                //     databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                //         console.log(errors)
+                //         console.log(updatedTransaction)
 
-                    //         databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
-                    //             console.log(errors)
-                    //             console.log(updatedTransaction)
-                    //             response.redirect("/")
-                    //         })
+                //         databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                //             console.log(errors)
+                //             console.log(updatedTransaction)
+                //             response.redirect("/")
+                //         })
 
-                    //         })
-                    //     })
+                //         })
+                //     })
                 // });
 
                 const charger1 = {
