@@ -92,6 +92,29 @@ class CognitoService {
         }
     }
 
+    async updateUserAttributes(accessToken, userAttributes) {
+        const params = {
+            "AccessToken": accessToken,
+            "UserAttributes": userAttributes
+        };
+
+        try {
+
+            const res = await this.cognitoIdentity.updateUserAttributes(params).promise();
+            const data = {
+                data: res,
+                statusCode: 204
+            };
+
+            return data;
+
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+
+    }
+
     async changePassword(accessToken, previousPassword, newPassword) {
         const params = {
             "AccessToken": accessToken,

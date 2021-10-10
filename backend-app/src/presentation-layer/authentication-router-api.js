@@ -56,13 +56,31 @@ module.exports = function () {
             })
     })
 
+    router.put('/update-user', function (req, res) {
+
+        const { accessToken, name, family_name } = req.body;
+        let userAttributes = [];
+        userAttributes.push({ Name: 'name', Value: name });
+        userAttributes.push({ Name: 'family_name', Value: family_name });
+
+        cognito.updateUserAttributes(accessToken, userAttributes)
+            .then(result => {
+                if (result.statusCode === 204) {
+                    res.status(204).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
+                }
+            })
+
+    })
+
     router.post('/confirm-forgot-password', function (req, res) {
         const { username, password, confirmationCode } = req.body;
 
         cognito.confirmForgotPassword(username, password, confirmationCode)
             .then(result => {
                 if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
+                    res.status(200).json(result).end();
                 } else {
                     res.status(400).json(result).end();
                 }
