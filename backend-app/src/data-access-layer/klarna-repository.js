@@ -4,7 +4,7 @@ module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, order_lines, callback) {
+    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, callback) {
 
         if (chargePoint.klarnaReservationAmount > 0) {
             const data = new TextEncoder().encode(
@@ -14,7 +14,7 @@ module.exports = function({}) {
                     "locale": "sv-SE",
                     "order_amount": chargePoint.klarnaReservationAmount,
                     "order_tax_amount": 0,
-                    "order_lines": order_lines
+                    "order_lines": getOrderLines(chargePoint.klarnaReservationAmount)
                 })
             )
             console.log(Buffer.from(data).toString());
@@ -33,17 +33,16 @@ module.exports = function({}) {
             const request = https.request(options, result => {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
-                        responseData = JSON.parse(jsonResponse);
-
+                        const responseData = JSON.parse(jsonResponse);
                         callback([], responseData)
                     })
                 } else {
                     switch (result.statusCode) {
                         case 400: // 	We were unable to create a session with the provided data. Some field constraint was violated.
-                            callback(["klarnaError403"], [])
+                            callback(["klarnaUnableToCreateSession"], [])
                             break;
                         case 403: // 	You were not authorized to execute this operation.
-                            callback(["klarnaError404"], [])
+                            callback(["klarnaNotAuthorized"], [])
                             break;
                         default:
                             callback(["klarnaError"], [])
@@ -64,20 +63,17 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, authorization_token, order_lines, billing_address, shipping_address, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
                 "status": "CHECKOUT_INCOMPLETE",
-                "order_amount": 300, //chargePoint.klarnaReservationAmount,
+                "order_amount": klarnaReservationAmount,
                 "order_tax_amount": 0,
-                "order_lines": order_lines,
-                "billing_address": billing_address,
-                "shipping_address": shipping_address,
+                "order_lines": getOrderLines(klarnaReservationAmount)
             })
         )
-        console.log(Buffer.from(data).toString());
 
         const options = {
             hostname: KLARNA_URI,
@@ -92,22 +88,23 @@ module.exports = function({}) {
 
         const request = https.request(options, result => {
             if (result.statusCode == 200) {
-                result.on('data', klarnaOrder => {
+                result.on('data', jsonKlarnaOrder => {
+                    const klarnaOrder = JSON.parse(jsonKlarnaOrder);
                     callback([], klarnaOrder)
                 })
             } else {
                 switch (result.statusCode) {
                     case 400: //	We were unable to create an order with the provided data. Some field constraint was violated.
-                        callback(["klarnaError400"], [])
+                        callback(["klarnaUnableToCreateOrder"], [])
                         break
                     case 401: //	You were not authorized to execute this operation.
-                        callback(["klarnaError401"], [])
+                        callback(["klarnaNotAuthorized"], [])
                         break
                     case 404: // The authorization does not exist.
-                        callback(["klarnaError404"], [])
+                        callback(["klarnaNotAuthorized"], [])
                         break
                     case 409: // The data in the request does not match the session for the authorization.
-                        callback(["klarnaError404"], [])
+                        callback(["klarnaInvalidDataInRequest"], [])
                         break
                     default:
                         callback(["klarnaError"], [])
@@ -122,21 +119,13 @@ module.exports = function({}) {
 
         request.write(data)
         request.end()
-
-
     }
 
-
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, order_lines, callback) {
+    exports.finalizeKlarnaOrder = async function(transaction, transactionId, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
-
-        // TODO: Update the klarna order with the correct amount and capture it.
-        order_lines[0].total_amount = newOrderAmount;
-        order_lines[0].unit_price = newOrderAmount;
-        console.log(order_lines)
+        const order_lines = getOrderLines(newOrderAmount)
 
         updateOrder(transaction, order_lines, function(error, responseData) {
-
             if (error.length == 0) {
                 captureOrder(transaction, function(error) {
                     if (error.length == 0) {
@@ -149,11 +138,9 @@ module.exports = function({}) {
                 callback(error, [])
             }
         })
-
     }
 
     function updateOrder(transaction, order_lines, callback) {
-
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -164,7 +151,6 @@ module.exports = function({}) {
                 "order_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
-        console.log(Buffer.from(data).toString());
 
         const options = {
             hostname: KLARNA_URI,
@@ -178,24 +164,21 @@ module.exports = function({}) {
         }
 
         const request = https.request(options, result => {
-            if (result.statusCode == 200) {
-                result.on('data', jsonResponse => {
-                    responseData = JSON.parse(jsonResponse);
-                    callback([], [responseData])
-                })
+            if (result.statusCode == 204) {
+                callback([], [])
             } else {
                 switch (result.statusCode) {
                     case 400: //We were unable to update an order with the provided data. Some field constraint was violated.
-                        callback(["klarnaError400"], [])
+                        callback(["klarnaUnableToUpdateOrder"], [])
                         break
                     case 401: //You were not authorized to execute this operation.
-                        callback(["klarnaError401"], [])
+                        callback(["klarnaNotAuthorized"], [])
                         break
                     case 403: //You tried to modify a read only resource.
-                        callback(["klarnaError403"], [])
+                        callback(["klarnaNotAuthorized"], [])
                         break;
                     case 404: //We did not find any order with given ID. You need to create a new order.
-                        callback(["klarnaError404"], [])
+                        callback(["klarnaOrderNotFound"], [])
                         break;
                     default:
                         callback(["klarnaError"], [])
@@ -210,17 +193,14 @@ module.exports = function({}) {
 
         request.write(data)
         request.end()
-
     }
 
     function captureOrder(transaction, callback) {
-
         const captureData = new TextEncoder().encode(
             JSON.stringify({
                 "captured_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
             })
         )
-        console.log(Buffer.from(captureData).toString());
 
         const captureOptions = {
             hostname: KLARNA_URI,
@@ -234,22 +214,18 @@ module.exports = function({}) {
         }
 
         const request = https.request(captureOptions, result => {
-            if (result.statusCode == 200) {
-                result.on('data', jsonResponse => {
-                    responseData = JSON.parse(jsonResponse);
-                    callback([])
-                })
+            if (result.statusCode == 201) {
+                callback([])
             } else {
                 switch (result.statusCode) {
                     case 403: // Capture not allowed.
-                        callback(["klarnaError403"], [])
+                        callback(["klarnaCaptureNotAllowed"], [])
                         break;
                     case 404: // 	Order not found.
-                        callback(["klarnaError404"], [])
+                        callback(["klarnaOrderNotFound"], [])
                         break;
                     default:
                         callback(["klarnaError"], [])
-
                 }
             }
         })
@@ -263,9 +239,20 @@ module.exports = function({}) {
         request.end()
     }
 
+    function getOrderLines(klarnaReservationAmount) {
+        const order_lines = [{
+            "type": "digital",
+            "name": "Electrical Vehicle Charging",
+            "quantity": 1,
+            "unit_price": klarnaReservationAmount,
+            "tax_rate": 0,
+            "total_amount": klarnaReservationAmount,
+            "total_discount_amount": 0,
+            "total_tax_amount": 0
+        }]
 
+        return order_lines
 
-
-
+    }
     return exports
 }
