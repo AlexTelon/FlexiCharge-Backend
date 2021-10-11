@@ -23,7 +23,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         })
     })
 
-    router.get('/userTransactions/:userID', authenticate, function (request, response) {
+    router.get('/userTransactions/:userID', /*authenticate,*/ function (request, response) {
 
         ////////////////////////////////////////////////
         // A user can only view its own transactions? //

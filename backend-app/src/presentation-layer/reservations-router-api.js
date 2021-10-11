@@ -19,14 +19,14 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         })
     })
 
-    router.get('/userReservation/:userID', function (request, response) {
+    router.get('/userReservation/:userID', /*authenticate,*/ function (request, response) {
         const userId = request.params.userID
 
         ////////////////////////////////////////////////
         // A user can only view its own reservations? //
         ////////////////////////////////////////////////
 
-        databaseInterfaceReservations.getReservationForUser(userId, authenticate, function (error, userReservation) {
+        databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
             if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
