@@ -46,7 +46,7 @@
   "DataTransfer",
   { 
     messageId: "ChargeLevelUpdate",
-    data: "{\"kWhTransferred\":\"6.9\",\"CurrentChargePercentage\":\"69\"}"
+    data: "{\"latestMeterValue\":\"6969\",\"CurrentChargePercentage\":\"69\"}"
     } ]
 
 [ 2,
@@ -61,3 +61,15 @@
 
     } ]
 
+[ 2,
+  "uniqueID",
+  "StopTransaction",
+  { 
+    "connectorId": 1,
+    "idTag": 1,
+    "meterStop": 1,
+    "reservationId": 1,
+    "transactionId": 1,
+    "timestamp":1234512345124123
+
+    } ]

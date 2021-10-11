@@ -14,7 +14,7 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
             //we don't have useres so allwasy set to 1
             idTag: 1,
         }
-        interfaceHandler.interfaceHandler(chargerID, transactionID, c.REMOTE_START_TRANSACTION, payload, callback)
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, payload, callback)
     }
 
     exports.remoteStopTransaction = function(chargerID, transactionID, callback){

@@ -1,7 +1,7 @@
 module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     const c = constants.get()
 
-    exports.interfaceHandler = function (chargerID, transactionID, action, payload, callback) {
+    exports.interfaceHandler = function (chargerID, action, payload, callback) {
 
         try {
             const socket = v.getConnectedSocket(chargerID)
@@ -18,11 +18,11 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     
                     case c.REMOTE_START_TRANSACTION:
                         message = getMessageRemoteStartCall(chargerID, action, payload, callback)
-                        break;
+                        break
                     
                     case c.REMOTE_STOP_TRANSACTION:
                         message = getMessageRemoteStopCall(chargerID, action, payload, callback)
-                        break;  
+                        break
                 }
     
                 socket.send(message)
@@ -97,7 +97,6 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
             payload
         ])
         v.addCallback(chargerID, callback)
-        v.addCallback
         return message
     }
 

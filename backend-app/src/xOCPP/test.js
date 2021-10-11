@@ -32,11 +32,11 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
     exports.testRemoteStop = function (chargerID) {
 
         console.log("Got test RemoteStop :)")
-        ocppInterface.remoteStopTransaction(chargerID, c.TRANSACTION_ID, function (error, response) {
+        ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
             if (error != null) {
                 console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp, +", meterStop: "+response.meterStop)
             }
         })
     }

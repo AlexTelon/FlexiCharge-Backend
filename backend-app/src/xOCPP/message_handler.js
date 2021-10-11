@@ -70,7 +70,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 break
 
             case c.STOP_TRANSACTION:
-                handleStopTrasaction(chargerID, uniqueID, request)
+                handleStopTransaction(chargerID, uniqueID, request)
                 break
 
             default:
@@ -81,7 +81,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         return callResult
     }
 
-    function handleStopTrasaction(chargerID, uniqueID, request) {
+    function handleStopTransaction(chargerID, uniqueID, request) {
 
         callback = v.getCallback(chargerID)
         v.removeCallback(chargerID)
@@ -99,11 +99,9 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     payload = request[c.PAYLOAD_INDEX]
                     callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp, meterStop: payload.meterStop})
 
-                    transactionID = v.getTransactionID(chargerID)
-
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
-                      // as we have no accounts idTagInfo is 1 as standard
-                    { idTagInfo: 1, transactionId: transactionID }]))
+                    // as we have no accounts idTagInfo is 1 as standard
+                    { idTagInfo: 1 }]))
                 }
             })
             
@@ -174,7 +172,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             transactionID = v.getTransactionID(chargerID)
             if (transactionID != null) {
                 databaseInterfaceTransactions.updateTransactionChargingStatus(
-                    transactionID, data.kWhTransferred, data.CurrentChargePercentage,
+                    transactionID, data.latestMeterValue, data.CurrentChargePercentage,
                     function (error, _) {
                         if (error.length > 0) {
                             console.log("Error updating charger level in DB: " + error)
