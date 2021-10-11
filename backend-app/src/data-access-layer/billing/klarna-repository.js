@@ -121,14 +121,9 @@ module.exports = function({}) {
         request.end()
     }
 
-
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, klarnaReservationAmount, callback) {
+    exports.finalizeKlarnaOrder = async function(transaction, transactionId, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
-        const order_lines = getOrderLines(klarnaReservationAmount)
-
-        order_lines[0].total_amount = newOrderAmount;
-        order_lines[0].unit_price = newOrderAmount;
-
+        const order_lines = getOrderLines(newOrderAmount)
 
         updateOrder(transaction, order_lines, function(error, responseData) {
             if (error.length == 0) {
@@ -144,7 +139,6 @@ module.exports = function({}) {
             }
         })
     }
-
 
     function updateOrder(transaction, order_lines, callback) {
         const data = new TextEncoder().encode(
@@ -220,11 +214,8 @@ module.exports = function({}) {
         }
 
         const request = https.request(captureOptions, result => {
-            if (result.statusCode == 200) {
-                result.on('data', jsonResponse => {
-                    responseData = JSON.parse(jsonResponse);
-                    callback([])
-                })
+            if (result.statusCode == 201) {
+                callback([])
             } else {
                 switch (result.statusCode) {
                     case 403: // Capture not allowed.
@@ -235,7 +226,6 @@ module.exports = function({}) {
                         break;
                     default:
                         callback(["klarnaError"], [])
-
                 }
             }
         })

@@ -1,11 +1,11 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-//const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -165,7 +165,7 @@ sequelize.sync().then(function() {
             ChargePoints.create({
                 name: 'Jönköping University',
                 location: [57.777714, 14.163010],
-                price: 44.52,
+                price: 450,
                 klarnaReservationAmount: 30000
             });
             // Chargers.create({
