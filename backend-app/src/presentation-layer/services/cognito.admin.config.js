@@ -237,18 +237,35 @@ class AdminCognitoService {
         }
     }
 
+    async getUsers(paginationToken, limit = 60, filterAttribute = "username", filterValue = "") {
 
-    async getUsers() {
-        const params = {
-            Limit: 0,
-            UserPoolId: this.userPool
+        const value = filterValue
+        const attribute = filterAttribute
+
+        let params = {
+            Limit: limit,
+            UserPoolId: this.userPool,
+            Filter: `${attribute} ^= \"${value}\"`
         }
+
+        if (paginationToken !== undefined) {
+            params = {
+                PaginationToken: paginationToken,
+                Limit: limit,
+                UserPoolId: this.userPool,
+                Filter: `${attribute} ^= \"${value}\"`
+            }
+        }
+
+
+
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
             const data = {
                 data: res,
                 statusCode: 200
             }
+            console.log(data.data.Users.length);
             return data
         } catch (error) {
             console.log(error);

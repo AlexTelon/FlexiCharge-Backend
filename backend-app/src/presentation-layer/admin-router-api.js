@@ -78,11 +78,23 @@ module.exports = function () {
 
     router.get('/users', checkJwt, checkIfAdmin, function (req, res) {
 
-        cognito.getUsers()
+        // req.query.token replaces the + with a space, making the token incorrect
+        const token = req.query.pagination_token
+        const limit = req.query.limit
+        const filterAttribute = req.query.filter_attribute
+        const filterValue = req.query.filter_value
+
+        let paginationToken = undefined
+        if (token) {
+            // re adds the + which makes the token correct again
+            paginationToken = token.replace(/\ /g, '+')
+        }
+
+        cognito.getUsers(paginationToken, limit, filterAttribute, filterValue)
             .then(result => {
                 if (result.statusCode === 200) {
                     console.log(result);
-                    res.status(200).json(result.data.Users).end();
+                    res.status(200).json(result.data).end();
                 } else {
                     console.log(result);
                     res.status(400).json(result).end();
