@@ -54,7 +54,7 @@ module.exports = function({}) {
 
         const validationErrors = []
 
-        if (session_id === undefined) {
+        if (session_id === undefined || session_id === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof session_id !== 'string') {
@@ -65,7 +65,7 @@ module.exports = function({}) {
             }
         }
 
-        if (client_token === undefined) {
+        if (client_token === undefined || client_token === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof client_token !== 'string') {
@@ -76,7 +76,7 @@ module.exports = function({}) {
             }
         }
 
-        if (payment_method_categories === undefined) {
+        if (payment_method_categories === undefined || payment_method_categories === null) {
             validationErrors.push("klarnaError")
         } else {
             if ((payment_method_categories instanceof Array) == false) {
