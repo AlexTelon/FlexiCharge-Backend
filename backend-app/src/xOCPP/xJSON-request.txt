@@ -45,8 +45,8 @@
   "uniqueID",
   "DataTransfer",
   { 
-    messageId: "ChargeLevelUpdate",
-    data: "{\"latestMeterValue\":\"6969\",\"CurrentChargePercentage\":\"69\"}"
+    "messageId": "ChargeLevelUpdate",
+    "data": "{\"latestMeterValue\":\"6969\",\"CurrentChargePercentage\":\"69\"}"
     } ]
 
 [ 2,
