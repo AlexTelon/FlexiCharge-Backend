@@ -238,29 +238,45 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                     callback(errorCode, [])
                                 })
                             } else {
-                                dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, chargePoint.klarnaReservationAmount, function(error, responseData) {
-                                    if (error.length == 0) {
-                                        callback([], responseData)
-                                        dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
-                                            if (Object.keys(error).length > 0) {
-                                                dbErrorCheck.checkError(error, function(errorCode) {
-                                                    callback(errorCode, [])
-                                                })
-                                            } else {
-                                                callback([], transaction)
-                                            }
-                                        })
-                                    } else {
-                                        callback(error, [])
-                                    }
+                                if (remoteStopTransaction(transaction)) {
+                                    dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, chargePoint.klarnaReservationAmount, function(error, responseData) {
+                                        if (error.length == 0) {
+                                            callback([], responseData)
+                                            dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
+                                                if (Object.keys(error).length > 0) {
+                                                    dbErrorCheck.checkError(error, function(errorCode) {
+                                                        callback(errorCode, [])
+                                                    })
+                                                } else {
+                                                    callback([], transaction)
+                                                }
+                                            })
+                                        } else {
+                                            callback(error, [])
+                                        }
 
-                                })
+                                    })
+                                } else {
+                                    callback(['unableToStopTransaction'], [])
+                                }
                             }
                         })
                     }
                 })
             }
         })
+    }
+
+    function remoteStopTransaction(transaction) {
+        if (!transaction.paymentID == null) {
+            ocppInterface.remoteStopTransaction(transaction.chargerID, transactrion.transactionID, function(error, transactionStatus) {
+                if (error.length == 0 && transactionStatus == 'AVAILABLE') {
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
     }
 
     return exports
