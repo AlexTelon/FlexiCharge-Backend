@@ -1,4 +1,5 @@
 module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePointValidation }) {
+    const DEFAULT_RESERVATION_PRICE = 30000
 
     const exports = {}
 
