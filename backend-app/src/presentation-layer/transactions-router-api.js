@@ -148,8 +148,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.put('/stop/:transactionID', function (request, response) {
         const transactionID = request.params.transactionID
-        const chargerID = request.body.chargerID
-        ocppInterface.remoteStopTransaction(transactionID, chargerID, function (error, stoppedTransaction) {
+        databaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
             if (error.length > 0) {
                 response.status(400).json(error)
             } else if (stoppedTransaction) {
