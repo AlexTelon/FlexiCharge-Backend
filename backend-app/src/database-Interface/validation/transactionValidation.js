@@ -10,9 +10,6 @@ module.exports = function({}) {
     //Validation for Transfered Kwh
     MIN_TRANSFERED_KWH = 0
 
-    //Validation for payment_method_categories
-    MIN_PAYMENT_METHOD_CATEGORIES = 1
-
     //Validation for session_id
     MIN_SESSION_ID = 1
 
@@ -50,7 +47,7 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.addKlarnaTransactionValidation = function(session_id, client_token, payment_method_categories) {
+    exports.addKlarnaTransactionValidation = function(session_id, client_token) {
 
         const validationErrors = []
 
@@ -72,17 +69,6 @@ module.exports = function({}) {
                 validationErrors.push("klarnaError")
             }
             if (client_token.length < MIN_CLIENT_TOKEN) {
-                validationErrors.push("klarnaError")
-            }
-        }
-
-        if (payment_method_categories === undefined || payment_method_categories === null) {
-            validationErrors.push("klarnaError")
-        } else {
-            if ((payment_method_categories instanceof Array) == false) {
-                validationErrors.push("klarnaError")
-            }
-            if (payment_method_categories < MIN_PAYMENT_METHOD_CATEGORIES) {
                 validationErrors.push("klarnaError")
             }
         }

@@ -113,6 +113,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
     }
 
     exports.getNewKlarnaPaymentSession = async function(userID, chargerID, callback) {
+
         dataAccessLayerCharger.getCharger(chargerID, async function(error, charger) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
@@ -128,7 +129,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                         } else {
                             dataAccessLayerKlarna.getNewKlarnaPaymentSession(userID, chargerID, chargePoint, async function(error, transactionData) {
                                 if (error.length == 0) {
-                                    const validationError = transactionValidation.addKlarnaTransactionValidation(transactionData.session_id, transactionData.client_token, transactionData.payment_method_categories)
+                                    const validationError = transactionValidation.addKlarnaTransactionValidation(transactionData.session_id, transactionData.client_token)
                                     if (validationError.length > 0) {
                                         callback(validationError, [])
                                     } else {
@@ -136,7 +137,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                         const isKlarnaPayment = true
                                         const timestamp = (Date.now() / 1000 | 0)
 
-                                        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, transactionData.payment_method_categories, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
+                                        dataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
                                             if (Object.keys(error).length > 0) {
                                                 dbErrorCheck.checkError(error, function(error) {
                                                     callback(error, [])
