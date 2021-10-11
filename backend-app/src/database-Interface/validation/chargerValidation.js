@@ -1,15 +1,4 @@
 module.exports = function({}) {
-    /*
-        "Available",
-        "Preparing",
-        "Charging",
-        "SuspendedEVSE",
-        "SuspendedEV",
-        "Finishing",
-        "Reserved",
-        "Unavailable",
-        "Faulted"
-    */
     //Status codes 
     const statusCodes = ["Available", "Preparing", "Charging", "SuspendedEVSE", "SuspendedEV", "Finishing", "Reserved", "Unavailable", "Faulted"]
 
@@ -23,15 +12,13 @@ module.exports = function({}) {
     SERIAL_NUMBER_MIN_VALUE = 1
     SERIAL_NUMBER_MAX_VALUE = 36
 
-
-
     const exports = {}
 
     exports.getAddChargerValidation = function(location, serialNumber) {
 
         const validationErrors = []
 
-        if (location === undefined) {
+        if (location === undefined || location === null) {
             validationErrors.push("invalidLocation")
         } else {
             if ((location instanceof Array) == false || (typeof location[0] !== 'number') || (typeof location[1] !== 'number')) {
@@ -44,7 +31,7 @@ module.exports = function({}) {
                 validationErrors.push("invalidLongitude")
             }
         }
-        if (serialNumber === undefined) {
+        if (serialNumber === undefined || serialNumber === null) {
             validationErrors.push("invalidSerialNumber")
         } else {
             if (typeof serialNumber !== 'string') {
@@ -55,7 +42,6 @@ module.exports = function({}) {
                 validationErrors.push("invalidSerialNumber")
             }
         }
-
 
         return validationErrors
     }
@@ -63,7 +49,7 @@ module.exports = function({}) {
     exports.getChargerBySerialNumberValidation = function(serialNumber) {
         const validationErrors = []
 
-        if (serialNumber === undefined) {
+        if (serialNumber === undefined || serialNumber === null) {
             validationErrors.push("invalidSerialNumber")
         } else {
             if (typeof serialNumber !== 'string') {
@@ -74,14 +60,13 @@ module.exports = function({}) {
             }
         }
 
-
         return validationErrors
     }
 
     exports.getUpdateChargerStatusValidation = function(status) {
         const validationErrors = []
 
-        if (status === undefined) {
+        if (status === undefined || status === null) {
             validationErrors.push("invalidStatus")
         } else {
             if (typeof status !== 'string') {
