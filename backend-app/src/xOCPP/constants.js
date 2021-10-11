@@ -4,6 +4,8 @@ module.exports = function({}){
         
         const constants = {
             INVALID_ID: "InvalidId",
+            INVALID_CHARGE_POINT: "InvalidChargePoint",
+
             SSB: 0,
             CHARGER_PLUS: 1,
             TEST1: "FreeCharger",
