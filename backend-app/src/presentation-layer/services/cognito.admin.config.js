@@ -257,15 +257,12 @@ class AdminCognitoService {
             }
         }
 
-
-
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
             const data = {
                 data: res,
                 statusCode: 200
             }
-            console.log(data.data.Users.length);
             return data
         } catch (error) {
             console.log(error);
@@ -293,11 +290,25 @@ class AdminCognitoService {
         }
     }
 
-    async getAdmins(limit) {
-        const params = {
+    async getAdmins(paginationToken, limit = 60, filterAttribute = "username", filterValue = "") {
+        const value = filterValue
+        const attribute = filterAttribute
+
+        let params = {
             Limit: limit,
-            UserPoolId: this.adminUserPool
+            UserPoolId: this.adminUserPool,
+            Filter: `${attribute} ^= \"${value}\"`
         }
+
+        if (paginationToken !== undefined) {
+            params = {
+                PaginationToken: paginationToken,
+                Limit: limit,
+                UserPoolId: this.adminUserPool,
+                Filter: `${attribute} ^= \"${value}\"`
+            }
+        }
+
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
             const data = {
