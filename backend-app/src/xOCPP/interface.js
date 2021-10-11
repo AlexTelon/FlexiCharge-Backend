@@ -1,5 +1,5 @@
 
-module.exports = function({ v, constants, messageHandler, interfaceHandler, func }) {
+module.exports = function({ v, constants, interfaceHandler, func }) {
     const c = constants.get()
     
     exports.remoteStartTransaction = function(chargerID, transactionID, callback){

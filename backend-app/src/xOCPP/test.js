@@ -23,7 +23,7 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
             if (error != null) {
                 console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp+", meterStart: "+response.meterStart)
             }
         })
     }
@@ -34,9 +34,9 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
         console.log("Got test RemoteStop :)")
         ocppInterface.remoteStopTransaction(chargerID, c.TRANSACTION_ID, function (error, response) {
             if (error != null) {
-                console.log("\nError updating charger status in DB: " + error)
+                console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp)
             }
         })
     }

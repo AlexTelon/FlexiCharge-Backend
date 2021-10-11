@@ -69,12 +69,52 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 handleStartTrasaction(chargerID, uniqueID, request)
                 break
 
+            case c.STOP_TRANSACTION:
+                handleStopTrasaction(chargerID, uniqueID, request)
+                break
+
             default:
                 callResult = func.getCallResultNotImplemeted(uniqueID, action)
                 break
         }
 
         return callResult
+    }
+
+    function handleStopTrasaction(chargerID, uniqueID, request) {
+
+        callback = v.getCallback(chargerID)
+        v.removeCallback(chargerID)
+        socket = v.getConnectedSocket(chargerID)
+
+        if (callback != null && socket != null) {
+            
+            databaseInterfaceCharger.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
+                if (error.length > 0) {
+                    console.log("\nError updating charger status in DB: " + error)
+                    callback(c.INTERNAL_ERROR, null)
+                    socket.send(func.getGenericError(uniqueID, error.toString()))
+                } else {
+                    console.log("\nCharger updated in DB: " + charger.status)
+                    payload = request[c.PAYLOAD_INDEX]
+                    callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp, meterStop: payload.meterStop})
+
+                    transactionID = v.getTransactionID(chargerID)
+
+                    socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
+                      // as we have no accounts idTagInfo is 1 as standard
+                    { idTagInfo: 1, transactionId: transactionID }]))
+                }
+            })
+            
+            
+        } else {
+            console.log("getStartTransactionResponse -> No callback tied to this chargerID OR invalid chargerID")
+
+            if (socket != null) {
+                socket.send(func.getGenericError(uniqueID, c.NO_ACTIVE_TRANSACTION))
+            }
+        }
     }
 
     function handleStartTrasaction(chargerID, uniqueID, request) {
@@ -93,7 +133,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 } else {
                     console.log("\nCharger updated in DB: " + charger.status)
                     payload = request[c.PAYLOAD_INDEX]
-                    callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp})
+                    callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart})
 
                     transactionID = v.getTransactionID(chargerID)
 
@@ -272,7 +312,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     break
 
                 case c.REMOTE_STOP_TRANSACTION:
-                    interfaceHandler.handleRemoteStopResponse(chargerID, uniqueID, response)
+                    interfaceHandler.handleRemoteStopResponse(chargerID, response)
                     break
 
                 default:
