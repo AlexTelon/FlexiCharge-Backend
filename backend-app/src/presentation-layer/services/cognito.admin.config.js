@@ -125,7 +125,25 @@ class AdminCognitoService {
         }
 
         try {
+            const res = await this.cognitoIdentity.adminDeleteUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
 
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async deleteAdmin(username) {
+        const params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool
+        }
+        try {
             const res = await this.cognitoIdentity.adminDeleteUser(params).promise();
             const data = {
                 data: res,

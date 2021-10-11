@@ -176,6 +176,21 @@ module.exports = function () {
             })
     })
 
+    router.delete('/:username', checkJwt, checkIfAdmin, function (req, res) {
+        const username = req.params.username;
+
+        cognito.deleteAdmin(username)
+            .then(result => {
+                if (result.statusCode === 200) {
+                    console.log(result);
+                    res.status(200).json(result.data).end();
+                } else {
+                    console.log(result);
+                    res.status(400).json(result).end();
+                }
+            })
+    })
+
     router.put('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
 
         const username = req.params.username;
