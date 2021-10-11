@@ -41,3 +41,23 @@
     "status": "Accepted"
     } ]
 
+[ 2,
+  "uniqueID",
+  "DataTransfer",
+  { 
+    messageId: "ChargeLevelUpdate",
+    data: "{\"kWhTransferred\":\"6.9\",\"CurrentChargePercentage\":\"69\"}"
+    } ]
+
+[ 2,
+  "uniqueID",
+  "StartTransaction",
+  { 
+    "connectorId": 1,
+    "idTag": 1,
+    "meterStart": 1,
+    "reservationId": 1,
+    "timestamp":1234512345124123
+
+    } ]
+

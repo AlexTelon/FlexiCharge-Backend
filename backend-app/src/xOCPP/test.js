@@ -19,11 +19,11 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
     exports.testRemoteStart = function (chargerID) {
 
         console.log("Got test RemoteStart :)")
-        ocppInterface.remoteStartTransaction(chargerID, c.CONNECTOR_ID, c.ID_TAG, function (error, response) {
+        ocppInterface.remoteStartTransaction(chargerID, 57, function (error, response) {
             if (error != null) {
-                console.log("\nError updating charger status in DB: " + error)
+                console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp)
             }
         })
     }

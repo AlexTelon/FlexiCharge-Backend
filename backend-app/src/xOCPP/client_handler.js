@@ -1,8 +1,10 @@
+const { Console } = require("console")
+const { Socket } = require("dgram")
+
 module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
     const c = constants.get()
     
     exports.handleClient = function (clientSocket, chargerSerial) {
-
         var messageCache = ""
 
         isValidClient(clientSocket, chargerSerial, function (error, chargerID) {
@@ -59,27 +61,32 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
     }
 
     function isValidClient(newSocket, chargerSerial, callback) {
-        databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
 
-            if (errorCodes.length) {
-                console.log(errorCodes)
-                callback(errorCodes[0], false)
-            } else {
-
-                if (charger.length != 0) {
-                    let chargerID = charger.chargerID
-
-                    // Save the websocket with the charger's serial in array:
-                    v.addConnectedSockets(chargerID, newSocket)
-                    v.addChargerSerials(chargerSerial)
-                    v.addChargerIDs(chargerSerial, chargerID)
-
-                    callback(null, chargerID)
+        if (chargerSerial == "") {
+            callback(null, false)
+        } else {
+            databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
+    
+                if (errorCodes.length) {
+                    console.log(errorCodes)
+                    callback(errorCodes[0], false)
                 } else {
-                    callback(null, false)
+    
+                    if (charger.length != 0) {
+                        let chargerID = charger.chargerID
+    
+                        // Save the websocket with the charger's serial in array:
+                        v.addConnectedSockets(chargerID, newSocket)
+                        v.addChargerSerials(chargerSerial)
+                        v.addChargerIDs(chargerSerial, chargerID)
+    
+                        callback(null, chargerID)
+                    } else {
+                        callback(null, false)
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     function testSwitch(message, clientSocket) {

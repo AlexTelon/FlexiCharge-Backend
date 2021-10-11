@@ -1,7 +1,7 @@
 module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     const c = constants.get()
 
-    exports.interfaceHandler = function (chargerID, action, payload, callback) {
+    exports.interfaceHandler = function (chargerID, transactionID, action, payload, callback) {
 
         try {
             const socket = v.getConnectedSocket(chargerID)
@@ -13,16 +13,16 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
                 switch (action) {
     
                     case c.RESERVE_NOW:
-                        message = sendReserveNowCall(chargerID, action, payload, callback)
+                        message = getMessageReserveNowCall(chargerID, action, payload, callback)
                         break
     
                     case c.REMOTE_START_TRANSACTION:
-                        message = sendRemoteStartCall(chargerID, action, payload, callback)
+                        message = getMessageRemoteStartCall(chargerID, transactionID, action, payload, callback)
                         break;
                     
                     case c.REMOTE_STOP_TRANSACTION:
-                        message = sendRemoteStopCall(chargerID, action, payload, callback)
-                        break;
+                        message = getMessageRemoteStopCall(chargerID, action, payload, callback)
+                        break;  
                 }
     
                 socket.send(message)
@@ -43,7 +43,7 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     /************************************************************
      * RESERVE NOW FUNCTIONS
     **************************************************************/
-    function sendReserveNowCall(chargerID, action, dataObject, callback) {
+    function getMessageReserveNowCall(chargerID, action, dataObject, callback) {
         let uniqueID = func.getUniqueId(chargerID, action)
         let message = func.buildJSONMessage([
             c.CALL,
@@ -88,7 +88,7 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     /************************************************************
      * REMOTE START FUNCTIONS
     **************************************************************/
-    function sendRemoteStartCall(chargerID, action, dataObject, callback) {
+    function getMessageRemoteStartCall(chargerID, transactionID, action, dataObject, callback) {
         let uniqueID = func.getUniqueId(chargerID, action)
         let message = func.buildJSONMessage([
             c.CALL,
@@ -98,37 +98,27 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
                 connectorID: dataObject.connectorID,
                 idTag: dataObject.idTag,
             }])
-        v.addCallback(uniqueID, callback)
+        v.addCallback(chargerID, callback)
+        v.addCallback
         return message
     }
 
-    exports.handleRemoteStartResponse = function (chargerID, uniqueID, response) {
-        
+    exports.handleRemoteStartResponse = function (chargerID, response) {
+        console.log()
         let status = response[c.PAYLOAD_INDEX].status
         console.log("\nCharger "+chargerID+" responded to RemoteStartTransaction request: "+status)
-
-        callback = v.getCallback(uniqueID)
-        v.removeCallback(uniqueID)
-
         if (status == c.ACCEPTED) {
-            databaseInterfaceCharger.updateChargerStatus(chargerID, c.CHARGING, function (error, charger) {
-                if (error.length > 0) {
-                    console.log("\nError updating charger status in DB: " + error)
-                    callback(c.INTERNAL_ERROR, null)
-                } else {
-                    console.log("\nCharger updated in DB: " + charger.status)
-                    callback(null, status)
-                }
-            })
-        } else {
-            callback(null, status)
+            console.log("Waiting for StartTransaction...")
+        }else{
+            v.getCallback(chargerID)(null, {status: status, timestamp: null})
+            v.removeCallback(chargerID)
         }
     }
 
     /************************************************************
      * REMOTE START FUNCTIONS
     **************************************************************/
-    function sendRemoteStopCall(chargerID, action, payload, callback) {
+    function getMessageRemoteStopCall(chargerID, action, payload, callback) {
         let uniqueID = func.getUniqueId(chargerID, action)
         let message = func.buildJSONMessage([
             c.CALL,
