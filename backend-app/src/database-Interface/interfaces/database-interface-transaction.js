@@ -190,8 +190,6 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                             } else {
                                                 ocppInterface.remoteStartTransaction(charger.chargerID, transactionId, function(error, returnObject) {
                                                     if(error != null || returnObject.status == "Rejected") {
-                                                        console.log("Status: ", returnObject.status)
-                                                        console.log("Error: ", error)
                                                         callback(["couldNotStartOCPPTransaction"], [])
                                                     } else {
                                                         dataAccessLayerTransaction.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
@@ -253,8 +251,6 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                             } else {
                                 ocppInterface.remoteStopTransaction(charger.chargerID, transactionId, function(error, returnObject) {
                                     if(error != null || returnObject.status == "Rejected") {
-                                        console.log("Status: ", returnObject.status)
-                                        console.log("Error: ", error)
                                         callback(["couldNotStopOCPPTransaction"])
                                     } else {
                                         dataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction){
@@ -269,7 +265,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                     dataAccessLayerTransaction.updateTransactionChargingStatus(transactionId, kwhTransfered, transaction.currentChargePercentage, function(error, updatedTransaction) {
                                                         if (Object.keys(error).length > 0) {
                                                             dbErrorCheck.checkError(error, function(errorCode) {
-                                                                console.log(errorCode)
+                                                                callback(errorCode, [])
                                                             })
                                                         } else {
                                                             //FINALIZING THE KLARNA ORDER, THIS WORKS

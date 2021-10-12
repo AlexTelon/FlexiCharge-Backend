@@ -220,11 +220,8 @@ module.exports = function({}) {
         }
 
         const request = https.request(captureOptions, result => {
-            if (result.statusCode == 200) {
-                result.on('data', jsonResponse => {
-                    responseData = JSON.parse(jsonResponse);
-                    callback([])
-                })
+            if (result.statusCode == 201) {
+                callback([])
             } else {
                 switch (result.statusCode) {
                     case 403: // Capture not allowed.
