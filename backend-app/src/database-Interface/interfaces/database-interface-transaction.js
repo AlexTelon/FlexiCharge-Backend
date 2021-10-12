@@ -217,18 +217,6 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
-    function remoteStartTransaction(transaction) {
-        if (!transaction.paymentID == null) {
-            ocppInterface.remoteStartTransaction(transaction.chargerID, 1, 1, function(error, transactionStarted) {
-                if (error.length == 0) {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        }
-    }
-
     exports.finalizeKlarnaOrder = async function(transactionId, callback) {
 
         dataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction) {
@@ -299,18 +287,6 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                 })
             }
         })
-    }
-
-    function remoteStopTransaction(transaction) {
-        if (!transaction.paymentID == null) {
-            ocppInterface.remoteStopTransaction(transaction.chargerID, transactrion.transactionID, function(error, transactionStatus) {
-                if (error.length == 0 && transactionStatus == 'AVAILABLE') {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        }
     }
 
     return exports
