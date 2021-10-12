@@ -118,8 +118,9 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StartTransaction...")
         } else {
+            callback = v.getCallback(chargerID)
             if (callback != null) {
-                v.getCallback(chargerID)(null, { status: status })
+                callback(null, { status: status })
                 v.removeCallback(chargerID)
             } else {
                 socket = v.getConnectedSocket(chargerID)
@@ -155,8 +156,9 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StopTransaction...")
         } else {
+            callback = v.getCallback(chargerID)
             if (callback != null) {
-                v.getCallback(chargerID)(null, { status: status })
+                callback(null, { status: status })
                 v.removeCallback(chargerID)
             } else {
                 socket = v.getConnectedSocket(chargerID)
