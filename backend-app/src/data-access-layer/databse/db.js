@@ -1,11 +1,11 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-//const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -113,6 +113,10 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentConfirmed: {
         type: DataTypes.BOOLEAN,
+        allowNull: true
+    },
+    meterStart: {
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 }, {

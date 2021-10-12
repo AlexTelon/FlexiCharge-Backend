@@ -172,7 +172,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             transactionID = v.getTransactionID(chargerID)
             if (transactionID != null) {
                 databaseInterfaceTransactions.updateTransactionChargingStatus(
-                    57, data.latestMeterValue, data.CurrentChargePercentage,
+                    transactionID, data.latestMeterValue, data.CurrentChargePercentage,
                     function (error, _) {
                         if (error.length > 0) {
                             console.log("Error updating charger level in DB: " + error)
