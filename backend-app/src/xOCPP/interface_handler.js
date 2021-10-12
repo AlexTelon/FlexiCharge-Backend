@@ -70,19 +70,30 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         callback = v.getCallback(uniqueID)
         v.removeCallback(uniqueID)
 
-        if (status == c.ACCEPTED) {
+        if (callback != null) {
+            if (status == c.ACCEPTED) {
 
-            databaseInterfaceCharger.updateChargerStatus(chargerID, c.RESERVED, function(error, charger) {
-                if (error.length > 0) {
-                    console.log("\nError updating charger status in DB: " + error)
-                    callback(c.INTERNAL_ERROR, null)
-                } else {
-                    console.log("\nCharger updated in DB: " + charger.status)
-                    callback(null, status)
-                }
-            })
+                databaseInterfaceCharger.updateChargerStatus(chargerID, c.RESERVED, function (error, charger) {
+                    if (error.length > 0) {
+                        console.log("\nError updating charger status in DB: " + error)
+                        callback(c.INTERNAL_ERROR, null)
+                    } else {
+                        console.log("\nCharger updated in DB: " + charger.status)
+                        callback(null, status)
+                    }
+                })
+            } else {
+                callback(null, status)
+            }
         } else {
-            callback(null, status)
+            socket = v.getConnectedSocket(chargerID)
+            if (socket != null) {
+                socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
+                console.log("handleReserveNowResponse -> No callback tied to this unuiqueID")
+            } else {
+                console.log("handleReserveNowResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+            }
+
         }
     }
 
@@ -107,8 +118,20 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StartTransaction...")
         } else {
-            v.getCallback(chargerID)(null, { status: status })
-            v.removeCallback(chargerID)
+            let callback = v.getCallback(chargerID)
+            if (callback != null) {
+                callback(null, { status: status })
+                v.removeCallback(chargerID)
+            } else {
+                socket = v.getConnectedSocket(chargerID)
+                if (socket != null) {
+                    socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
+                    console.log("handleRemoteStartResponse -> No callback tied to this chargerID")
+                } else {
+                    console.log("handleRemoteStartResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+                }
+
+            }
         }
     }
 
@@ -133,23 +156,21 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StopTransaction...")
         } else {
-            v.getCallback(chargerID)(null, { status: status })
-            v.removeCallback(chargerID)
-        }
+            callback = v.getCallback(chargerID)
+            if (callback != null) {
+                callback(null, { status: status })
+                v.removeCallback(chargerID)
+            } else {
+                socket = v.getConnectedSocket(chargerID)
+                if (socket != null) {
+                    socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
+                    console.log("handleRemoteStopResponse -> No callback tied to this chargerID")
+                } else {
+                    console.log("handleRemoteStopResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+                }
 
-        // if (status == c.ACCEPTED) {
-        //     databaseInterfaceCharger.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
-        //         if (error.length > 0) {
-        //             console.log("\nError updating charger status in DB: " + error)
-        //             callback(c.INTERNAL_ERROR, null)
-        //         } else {
-        //             console.log("\nCharger updated in DB: " + charger.status)
-        //             callback(null, status)
-        //         }
-        //     })
-        // } else {
-        //     callback(null, status)
-        // }
+            }
+        }
     }
 
     return exports
