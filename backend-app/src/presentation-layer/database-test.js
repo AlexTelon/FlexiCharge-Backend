@@ -217,17 +217,9 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     pricePerKwh: 32.87,
                     session_id: "068df369-13a7-4d47-a564-62f8408bb760",
                     client_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwMDAtMDAwMDAtMDAwMC0wMDAwMDAwMC0wMDAwIiwidXJsIjoiaHR0cHM6Ly9jcmVkaXQtZXUua2xhcm5hLmNvbSJ9.A_rHWMSXQN2NRNGYTREBTkGwYwtm-sulkSDMvlJL87M",
-                    payment_method_categories: [{
-                        "identifier": "pay_later",
-                        "name": "Buy now, pay later",
-                        "asset_urls": {
-                            "descriptive": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
-                            "standard": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
-                        }
-                    }]
                 }
 
-                // databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, klarnaTransaction.payment_method_categories, function(errors, klarnaTransaction) {
+                // databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, function(errors, klarnaTransaction) {
                 //     console.log(errors)
                 //     console.log(klarnaTransaction)
 
