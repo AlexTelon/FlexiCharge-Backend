@@ -4,6 +4,10 @@ module.exports = function({}){
         
         const constants = {
             INVALID_ID: "InvalidId",
+            INVALID_CHARGE_POINT: "InvalidChargePoint",
+            NO_TRANSACTION_ID: "NoTransactionId",
+            NO_ACTIVE_TRANSACTION: "NoActiveTransaction",
+
             SSB: 0,
             CHARGER_PLUS: 1,
             TEST1: "FreeCharger",
@@ -40,6 +44,22 @@ module.exports = function({}){
             SECURITY_ERROR: "SecurityError",
             RESERVE_NOW: "ReserveNow",
             DATA_TRANSFER: "DataTransfer",
+            START_TRANSACTION: "StartTransaction",
+            STOP_TRANSACTION: "StopTransaction",
+            
+            
+            CHARGE_LEVEL_UPDATE: "ChargeLevelUpdate",
+            
+
+            CURRENT_CHARGE_PERCENTAGE: "CurrentChargePercentage",
+            KWH_TRANSFERRED: "kWhTransferred",
+
+            //Possible answers for DataTransfer 
+            ACCEPTED: "Accepted",
+            REJECTED: "Rejected",
+            UNKOWN_MESSAGE_ID :"UnknownMessageId",
+
+
 
             //Possible status states a charger can have
             AVAILABLE: "Available",

@@ -2,6 +2,7 @@ const connectedSockets = {}
 const chargerSerials = []
 const chargerIDs = {}
 const callbacks = {}
+const transactionIDs = {}
 
 module.exports = function ({ }) {
     
@@ -57,7 +58,7 @@ module.exports = function ({ }) {
     }
 
     //CALLBACKS
-    //get callback with unique ids
+    //get callback with some type of id
     exports.getCallback = function (id) {
         return callbacks[id]
     }
@@ -66,6 +67,19 @@ module.exports = function ({ }) {
     }
     exports.removeCallback = function (id) {
         delete callbacks[id]
+    }
+    
+
+    //TRANSACTIONIDS
+    //get transactionID with chargerID
+    exports.getTransactionID = function (chargerID) {
+        return transactionIDs[chargerID]
+    }
+    exports.addTransactionID = function (chargerID, transactionID) {
+        transactionIDs[chargerID] = transactionID
+    }
+    exports.removeTransactionID = function (chargerID) {
+        delete transactionIDs[chargerID]
     }
 
     return exports

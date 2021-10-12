@@ -15,19 +15,11 @@ module.exports = function ({ v, constants }) {
         if (isCall) {
             return exports.buildJSONMessage([c.CALL, uniqueID, c.DATA_TRANSFER, data])
         } else {
-            // Sending DataTranser as a CALLRESULT is not implemented yet, but the following fields would be required:
-            let dataResponse = {
-                status: "Accepted",
-                data: "Sample response data"
-            }
-            switch (data.messageId) {
-
-                default:
-                    return exports.buildJSONMessage([c.CALL_RESULT, uniqueID, c.DATA_TRANSFER, dataResponse])
-            }
+            return exports.buildJSONMessage([c.CALL_RESULT, uniqueID, c.DATA_TRANSFER, data])
         }
     }
-
+    
+    
     exports.getUniqueId = function (chargerID, action) {
         
         return chargerID.toString() + action.toString() + Date.now().toString()
@@ -37,8 +29,8 @@ module.exports = function ({ v, constants }) {
         return chargerID.toString() + Date.now().toString() + idTag.toString() + connectorID.toString()
     }
 
-    exports.checkIfValidUniqueID = function (uniqueID) {
-        return v.getCallback(uniqueID) != null ? true : false
+    exports.checkIfValidUniqueID = function (chargerID ,uniqueID) {
+        return v.getCallback(uniqueID) != null || v.getCallback(chargerID) ? true : false
     }
 
     exports.getCallResultNotImplemeted = function (uniqueID, operation) {
