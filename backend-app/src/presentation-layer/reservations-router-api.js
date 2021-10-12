@@ -1,13 +1,12 @@
 const express = require('express')
 const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
+const authenticate = new AuthMiddleware().verifyToken;
 
 module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
 
     const router = express.Router()
 
     router.get('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
         const reservationId = request.params.id
         databaseInterfaceReservations.getReservation(reservationId, function (errors, reservation) {
             if (errors.length == 0 && reservation.length == 0) {
@@ -21,8 +20,12 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
         const userId = request.params.userID
+
+        ////////////////////////////////////////////////
+        // A user can only view its own reservations? //
+        ////////////////////////////////////////////////
+
         databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
             if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
@@ -35,7 +38,6 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
         const chargerId = request.params.chargerID
         databaseInterfaceReservations.getReservationForCharger(chargerId, function (error, chargerReservation) {
             if (error.length == 0 && chargerReservation.length == 0) {
@@ -49,6 +51,8 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.post('/', function (request, response) {
+
+        // Skicka access token istället för userID?
         const { chargerID, userID, start, end } = request.body;
         databaseInterfaceReservations.addReservation(chargerID, userID, start, end, function (errors, reservation) {
             if (errors.length > 0) {
@@ -59,11 +63,13 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
                 response.status(500).json(errors)
             }
         })
-
     })
 
     router.delete('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+
+        //////////////////////////////////////////////////
+        // A user can only remove its own reservations? //
+        //////////////////////////////////////////////////
         const reservationId = request.params.id
         databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
             if (errors.length == 0 && isReservationDeleted) {
@@ -83,8 +89,6 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         const reservationId = request.body.reservationId
         const parentIdTag = request.body.parentIdTag
         ocppInterface.reserveNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function (resp, error) {
-            console.log(resp);
-            console.log(error);
             if (error === null && resp != null) {
                 response.status(201).json(resp)
             } else {

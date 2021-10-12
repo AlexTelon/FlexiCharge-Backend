@@ -1,6 +1,23 @@
 var express = require('express')
-const AuthMiddleware = require('./middleware/auth.middleware')
-const authMiddleware = new AuthMiddleware()
+const jwtAuthz = require('express-jwt-authz');
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+
+// Put in .env variable?
+const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
+const region = 'eu-west-1';
+const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
+
+const checkJwt = jwt({
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://cognito-idp.${region}.amazonaws.com/${adminUserPoolId}/.well-known/jwks.json`,
+    }),
+    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1fWIOF9Yf'],
+    algorithms: ['RS256']
+});
 
 module.exports = function ({ databaseInterfaceCharger }) {
 
@@ -17,7 +34,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
     router.get('/available', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+
         databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
                 response.status(404).json(errors)
@@ -28,7 +45,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.get('/serial/:serialNumber', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+
         const serialNumber = request.params.serialNumber
         databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
             if (error.length > 0) {
@@ -40,7 +57,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
 
     router.get('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+
         const id = request.params.id
         databaseInterfaceCharger.getCharger(id, function (errors, charger) {
             if (errors.length == 0 && charger.length == 0) {
@@ -53,10 +70,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
+    router.post('/', checkJwt, checkIfAdmin, function (request, response) {
 
-
-    router.post('/', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
         const chargerPointId = request.body.chargePointID
         const location = request.body.location
         const serialNumber = request.body.serialNumber;
@@ -75,8 +90,8 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.delete('/:id', function (request, response) {
-        //authMiddleware.verifyToken(request, response);
+    router.delete('/:id', checkJwt, checkIfAdmin, function (request, response) {
+
         const id = request.params.id
         databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
             if (errors.length == 0 && isChargerDeleted) {
@@ -89,8 +104,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         })
     })
 
-    router.put('/:id', function (request, response) {
-        // authMiddleware.verifyToken(request, response);
+    router.put('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargerId = request.params.id
         const newStatus = request.body.status
         databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {

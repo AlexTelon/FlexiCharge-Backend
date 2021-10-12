@@ -4,21 +4,19 @@ const container = awilix.createContainer()
 container.register({
 
     //Data access layers
-    dataAccessLayerCharger: awilix.asFunction(require('./data-access-layer/databse/charger-repository')),
-    dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/databse/reservation-repository')),
-    dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/databse/transaction-repository')),
-    dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/databse/charge-point-repository')),
-    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/billing/klarna-repository')),
-    databaseInit: awilix.asFunction(require('./data-access-layer/databse/db')),
-
+    dataAccessLayerCharger: awilix.asFunction(require('./data-access-layer/charger-repository')),
+    dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
+    dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
+    dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/charge-point-repository')),
+    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/klarna-repository')),
+    //Business logic layers
+    databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
+    databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
+    databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
+    databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
+    databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
-
-    //Business logic layers
-    databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/interfaces/database-interface-charger')),
-    databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/interfaces/database-interface-transaction')),
-    databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/interfaces/database-interface-reservations')),
-    databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/interfaces/database-interface-charge-point')),
 
     //Validation
     chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
@@ -37,7 +35,8 @@ container.register({
 
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
-    ocppInterface: awilix.asFunction(require('./xOCPP//interface')),
+    ocppInterface: awilix.asFunction(require('./xOCPP/interface')),
+    interfaceHandler: awilix.asFunction(require('./xOCPP/interface_handler')),
     clientHandler: awilix.asFunction(require('./xOCPP/client_handler')),
     messageHandler: awilix.asFunction(require('./xOCPP/message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),

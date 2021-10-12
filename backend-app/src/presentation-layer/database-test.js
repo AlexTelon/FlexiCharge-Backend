@@ -3,13 +3,20 @@
  */
 const express = require('express')
 
-module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservations, databaseInterfaceTransactions, databaseInterfaceChargePoint }) {
+module.exports = function ({ databaseInterfaceCharger, databaseInterfaceReservations, databaseInterfaceTransactions, databaseInterfaceChargePoint }) {
 
     const router = express.Router()
 
-    router.get("/check", async function(request, response) {
+    router.use('/', function (request, response, next) {
+        next()
+    })
 
-        switch ('klarna') {
+    router.get("/check", async function (request, response) {
+
+
+
+        switch ('transaction') {
+
             case 'chargePoints':
 
                 const chargePoint = {
@@ -19,10 +26,10 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     price: 0.55,
                 }
 
-                databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.location, chargePoint.price, chargePoint.klarnaReservationAmount, function(errors, chargePointAdded) {
+                databaseInterfaceChargePoint.addChargePoint(chargePoint.name, chargePoint.location, chargePoint.price, chargePoint.klarnaReservationAmount, function (errors, chargePointAdded) {
                     console.log(errors)
                     console.log(chargePointAdded)
-                    databaseInterfaceChargePoint.updateChargePoint(chargePoint.chargePointId, 'haj', chargePoint.location, chargePoint.price, function(errors, updatedChargePoint) {
+                    databaseInterfaceChargePoint.updateChargePoint(chargePoint.chargePointId, 'haj', chargePoint.location, chargePoint.price, function (errors, updatedChargePoint) {
                         console.log(errors)
                         console.log(updatedChargePoint)
                         response.redirect("/")
@@ -64,7 +71,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     status: 1
                 }
 
-                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function (errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
                     response.redirect("/")
@@ -96,13 +103,13 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 // })
 
 
-                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function(errors, chargerAdded) {
+                databaseInterfaceCharger.addCharger(charger.chargePointID, charger.serialNumber, charger.location, function (errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
 
                 })
 
-                databaseInterfaceCharger.addCharger(charger2.chargePointID, charger2.serialNumber, charger2.location, function(errors, chargerAdded) {
+                databaseInterfaceCharger.addCharger(charger2.chargePointID, charger2.serialNumber, charger2.location, function (errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
                     response.redirect("/")
@@ -145,22 +152,22 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                 break;
             case 'reservation':
                 const reservation = {
-                    reservationID: 2,
-                    userID: "hejhallå",
-                    chargerID: 2,
-                    start: 4,
-                    end: 10
+                    reservationID: 1,
+                    userID: 1,
+                    chargerID: 1,
+                    start: 1,
+                    end: 4
                 }
 
-                // databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function(errors, chargerReservation) {
-                //     console.log(errors)
-                //     console.log(chargerReservation)
-                //     databaseInterfaceReservations.removeReservation(55, function(errors, reservation) {
-                //         console.log(errors)
-                //         console.log(reservation)
-                //         response.redirect("/")
-                //     })
-                // })
+                databaseInterfaceReservations.getReservationForCharger(reservation.chargerID, function (errors, chargerReservation) {
+                    console.log(errors)
+                    console.log(chargerReservation)
+                    databaseInterfaceReservations.removeReservation(55, function (errors, reservation) {
+                        console.log(errors)
+                        console.log(reservation)
+                        response.redirect("/")
+                    })
+                })
 
                 // databaseInterfaceReservations.getReservationForUser(reservation.userID, function(errors, userReservation) {
                 //     console.log(errors)
@@ -190,62 +197,29 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
             case 'transaction':
 
                 const transaction = {
-                        transactionID: 2,
-                        userID: "vemedu",
-                        chargerID: 1,
-                        isKlarnaPayment: true,
-                        pricePerKwh: 45.66,
-                        kwhTransfered: 10.5,
-                        currentChargePercentage: 59.3,
-                        paymentID: 44,
-                        userID: null
-                    }
-                    // const transaction = {
-                    //     transactionID: 2,
-                    //     chargerID: 1,
-                    //     isKlarnaPayment: true,
-                    //     pricePerKwh: 45.66,
-                    //     kwhTransfered: 10.5,
-                    //     currentChargePercentage: 59.3,
-                    //     paymentID: 44,
-                    //     userID: null
-                    // }
-
-                const klarnaTransaction = {
-                    userID: "hv71",
+                    transactionID: 2,
                     chargerID: 1,
-                    pricePerKwh: 32.87,
-                    session_id: "068df369-13a7-4d47-a564-62f8408bb760",
-                    client_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAwMDAwMDAwMDAtMDAwMDAtMDAwMC0wMDAwMDAwMC0wMDAwIiwidXJsIjoiaHR0cHM6Ly9jcmVkaXQtZXUua2xhcm5hLmNvbSJ9.A_rHWMSXQN2NRNGYTREBTkGwYwtm-sulkSDMvlJL87M",
-                    payment_method_categories: [{
-                        "identifier": "pay_later",
-                        "name": "Buy now, pay later",
-                        "asset_urls": {
-                            "descriptive": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
-                            "standard": "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
-                        }
-                    }]
+                    isKlarnaPayment: true,
+                    pricePerKwh: 45.66,
+                    kwhTransfered: 10.5,
+                    currentChargePercentage: 59.3,
+                    paymentID: 44,
+                    userID: null
                 }
 
-                // databaseInterfaceTransactions.addKlarnaTransaction(klarnaTransaction.userID, klarnaTransaction.chargerID, klarnaTransaction.pricePerKwh, klarnaTransaction.session_id, klarnaTransaction.client_token, klarnaTransaction.payment_method_categories, function(errors, klarnaTransaction) {
-                //     console.log(errors)
-                //     console.log(klarnaTransaction)
-
-                // })
-
-                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function(errors, transactionId) {
+                databaseInterfaceTransactions.addTransaction(transaction.userID, transaction.chargerID, transaction.isKlarnaPayment, transaction.pricePerKwh, function (errors, transactionId) {
                     console.log(errors)
-                    console.log(addedTransaction)
+                    console.log(transactionId)
 
-                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                    databaseInterfaceTransactions.getTransaction(transaction.transactionID, function (errors, createdTransaction) {
                         console.log(errors)
                         console.log(createdTransaction)
 
-                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                        databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function (errors, updatedTransaction) {
                             console.log(errors)
                             console.log(updatedTransaction)
 
-                            databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function(errors, updatedTransaction) {
+                            databaseInterfaceTransactions.updateTransactionPayment(transaction.transactionID, transaction.paymentID, function (errors, updatedTransaction) {
                                 console.log(errors)
                                 console.log(updatedTransaction)
 
@@ -265,7 +239,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                                 }]
 
 
-                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function(errors, updatedTransaction) {
+                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, order_lines, function (errors, updatedTransaction) {
                                     console.log(errors)
                                     console.log(updatedTransaction)
                                     response.redirect("/")
@@ -273,6 +247,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                             })
                         })
                     })
+
                 })
 
                 // databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, transaction) {
@@ -350,7 +325,7 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     status: 1
                 }
 
-                databaseInterfaceCharger.addCharger(charger1.chargePointID, charger1.serialNumber, charger1.location, function(errors, chargerAdded) {
+                databaseInterfaceCharger.addCharger(charger1.chargePointID, charger1.serialNumber, charger1.location, function (errors, chargerAdded) {
                     console.log(errors)
                     console.log(chargerAdded)
 
@@ -361,19 +336,19 @@ module.exports = function({ databaseInterfaceCharger, databaseInterfaceReservati
                     // })
 
 
-                    databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 100000, function(error, transaction) {
+                    databaseInterfaceTransactions.getNewKlarnaPaymentSession(null, 100000, function (error, transaction) {
                         console.log(error)
                         console.log(transaction)
 
-                        databaseInterfaceTransactions.getTransaction(transaction.transactionID, function(errors, createdTransaction) {
+                        databaseInterfaceTransactions.getTransaction(transaction.transactionID, function (errors, createdTransaction) {
                             console.log(errors)
                             console.log(createdTransaction)
 
-                            databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function(errors, updatedTransaction) {
+                            databaseInterfaceTransactions.updateTransactionChargingStatus(transaction.transactionID, transaction.kwhTransfered, transaction.currentChargePercentage, function (errors, updatedTransaction) {
                                 console.log(errors)
                                 console.log(updatedTransaction)
 
-                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, function(errors, updatedTransaction) {
+                                databaseInterfaceTransactions.finalizeKlarnaOrder(transaction.transactionID, function (errors, updatedTransaction) {
                                     console.log(errors)
                                     console.log(updatedTransaction)
                                     response.redirect("/")
