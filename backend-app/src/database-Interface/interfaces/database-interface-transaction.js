@@ -268,7 +268,6 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                                 callback(errorCode, [])
                                                             })
                                                         } else {
-                                                            //FINALIZING THE KLARNA ORDER, THIS WORKS
                                                             dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, chargePoint.klarnaReservationAmount, function(error, responseData) {
                                                                 if (error.length == 0) {
                                                                     dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
