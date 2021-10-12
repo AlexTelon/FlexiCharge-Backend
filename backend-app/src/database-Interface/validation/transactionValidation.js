@@ -10,9 +10,6 @@ module.exports = function({}) {
     //Validation for Transfered Kwh
     MIN_TRANSFERED_KWH = 0
 
-    //Validation for payment_method_categories
-    MIN_PAYMENT_METHOD_CATEGORIES = 1
-
     //Validation for session_id
     MIN_SESSION_ID = 1
 
@@ -24,34 +21,37 @@ module.exports = function({}) {
     exports.getAddTransactionValidation = function(currentChargePercentage, pricePerKwh) {
         const validationErrors = []
 
-        if (pricePerKwh < MIN_KWH_PRICE) {
+        if(pricePerKwh == undefined || pricePerKwh == null) {
+            validationErrors.push("invalidKwhPrice")
+        }
+        else if(pricePerKwh < MIN_KWH_PRICE) {
             validationErrors.push("invalidKwhPrice")
         }
 
         return validationErrors
     }
 
-    exports.getUpdateTransactionChargingStatus = function(kwhTransfered, currentChargePercentage) {
+    exports.getUpdateTransactionChargingStatus = function(currentMeterValue, currentChargePercentage) {
         const validationErrors = []
 
-        if (currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
             validationErrors.push("invalidChargePrecentage")
         }
-        if (currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
             validationErrors.push("invalidChargePrecentage")
         }
-        if (kwhTransfered < MIN_TRANSFERED_KWH) {
-            validationErrors.push("invalidTransferedKwh")
+        if (currentMeterValue == null || currentMeterValue == undefined || currentMeterValue < MIN_TRANSFERED_KWH) {
+            validationErrors.push("invalidMeterValue")
         }
 
         return validationErrors
     }
 
-    exports.addKlarnaTransactionValidation = function(session_id, client_token, payment_method_categories) {
+    exports.addKlarnaTransactionValidation = function(session_id, client_token) {
 
         const validationErrors = []
 
-        if (session_id === undefined) {
+        if (session_id === undefined || session_id === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof session_id !== 'string') {
@@ -62,24 +62,13 @@ module.exports = function({}) {
             }
         }
 
-        if (client_token === undefined) {
+        if (client_token === undefined || client_token === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof client_token !== 'string') {
                 validationErrors.push("klarnaError")
             }
             if (client_token.length < MIN_CLIENT_TOKEN) {
-                validationErrors.push("klarnaError")
-            }
-        }
-
-        if (payment_method_categories === undefined) {
-            validationErrors.push("klarnaError")
-        } else {
-            if ((payment_method_categories instanceof Array) == false) {
-                validationErrors.push("klarnaError")
-            }
-            if (payment_method_categories < MIN_PAYMENT_METHOD_CATEGORIES) {
                 validationErrors.push("klarnaError")
             }
         }
