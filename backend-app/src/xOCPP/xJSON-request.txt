@@ -46,7 +46,7 @@
   "DataTransfer",
   { 
     "messageId": "ChargeLevelUpdate",
-    "data": "{\"latestMeterValue\":\"6969\",\"CurrentChargePercentage\":\"69\"}"
+    "data": "{\"transactionId\":57,\"latestMeterValue\":133769,\"CurrentChargePercentage\":69}"
     } ]
 
 [ 2,
@@ -73,3 +73,7 @@
     "timestamp":1234512345124123
 
     } ]
+
+//active transactionIds for charger teams to test with
++ = 32
+ssb = 33

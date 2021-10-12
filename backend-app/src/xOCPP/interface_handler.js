@@ -93,7 +93,6 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
             } else {
                 console.log("handleReserveNowResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
             }
-
         }
     }
 
