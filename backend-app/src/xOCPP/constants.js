@@ -7,6 +7,7 @@ module.exports = function({}){
             INVALID_CHARGE_POINT: "InvalidChargePoint",
             NO_TRANSACTION_ID: "NoTransactionId",
             NO_ACTIVE_TRANSACTION: "NoActiveTransaction",
+            NOT_AN_ACTIVE_CONVERSATION: "NotAnActiveConversation",
 
             SSB: 0,
             CHARGER_PLUS: 1,
