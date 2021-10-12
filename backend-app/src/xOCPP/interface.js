@@ -1,13 +1,18 @@
-module.exports = function({ v, constants, messageHandler, interfaceHandler, func }) {
+
+module.exports = function({ v, constants, interfaceHandler, func }) {
     const c = constants.get()
     
-    exports.remoteStartTransaction = function(chargerID, connectorID, idTag, callback){
+    exports.remoteStartTransaction = function(chargerID, transactionID, callback){
         
         console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
 
+        v.addTransactionID(chargerID, transactionID)
+
         const payload = {
-            connectorID: connectorID,
-            idTag: idTag,
+            //is set to one as we assume there is only one connector per charger
+            connectorID: 1,
+            //we don't have useres so allwasy set to 1
+            idTag: 1,
         }
         interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, payload, callback)
     }

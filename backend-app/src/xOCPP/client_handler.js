@@ -1,23 +1,41 @@
+const { Console } = require("console")
+const { Socket } = require("dgram")
+
 module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
     const c = constants.get()
+    
     exports.handleClient = function (clientSocket, chargerSerial) {
+        var messageCache = ""
 
-        var messageChache = ""
-
-        isValidClient(clientSocket, chargerSerial, function (chargerID) {
-            if (chargerID) {
-                console.log("Charger with ID: " + chargerID + " connected to the system.")
-                console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
-                if (messageChache != "") {
-                    messageHandler.handleMessage(messageChache, clientSocket, chargerID)
+        isValidClient(clientSocket, chargerSerial, function (error, chargerID) {
+            if (error == null ) {
+                if (chargerID) {
+                    console.log("Charger with ID: " + chargerID + " connected to the system.")
+                    console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+                    if (messageCache != "") {
+    
+                        /*****************************************
+                         used for internal testing, remove before production
+                         *****************************************/
+                        var test = false
+                        test = testSwitch(messageCache, clientSocket)
+                        /*****************************************/
+    
+                        if (!test) {
+                            messageHandler.handleMessage(messageCache, clientSocket, chargerID)
+                        }
+    
+                    }
+    
+                } else {
+                    console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
+                    let message = func.buildJSONMessage([c.CALL_ERROR, 1337, c.SECURITY_ERROR,
+                        "Serial number was not found in database.", {}])
+                    clientSocket.send(message)
+                    clientSocket.terminate()
                 }
-
             } else {
-                console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
-                let message = func.buildJSONMessage([c.CALL_ERROR, 1337, c.SECURITY_ERROR,
-                    "Serial number was not found in database GTFO", {}])
-                clientSocket.send(message)
-                clientSocket.terminate()
+                func.getGenericError(func.getUniqueId(chargerID, c.INVALID_ID), error.toString())
             }
         })
 
@@ -27,47 +45,84 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
 
                 /*****************************************
                  used for internal testing, remove before production
-                *****************************************/
-                let data = JSON.parse(message)
-                let messageTypeID = data[0]
-                
-                if (messageTypeID == c.TEST) {
-                    test.test()
-                }
+                 *****************************************/
+                var test = false
+                test = testSwitch(message, clientSocket)
                 /*****************************************/
-                
-                else {
+
+                if (!test) {
                     messageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
                 }
 
             } else {
-                messageChache = message
+                messageCache = message
             }
         })
     }
 
     function isValidClient(newSocket, chargerSerial, callback) {
-        databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
 
-            if (errorCodes.length) {
-                console.log(errorCodes)
-            } else {
-
-                if (charger.length != 0) {
-                    let chargerID = charger.chargerID
-
-                    // Save the websocket with the charger's serial in array:
-                    v.addConnectedSockets(chargerID, newSocket)
-                    v.addChargerSerials(chargerSerial)
-                    v.addChargerIDs(chargerSerial, chargerID)
-
-                    callback(chargerID)
+        if (chargerSerial == "") {
+            callback(null, false)
+        } else {
+            databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
+    
+                if (errorCodes.length) {
+                    console.log(errorCodes)
+                    callback(errorCodes[0], false)
                 } else {
-                    callback(false)
+    
+                    if (charger.length != 0) {
+                        let chargerID = charger.chargerID
+    
+                        // Save the websocket with the charger's serial in array:
+                        v.addConnectedSockets(chargerID, newSocket)
+                        v.addChargerSerials(chargerSerial)
+                        v.addChargerIDs(chargerSerial, chargerID)
+    
+                        callback(null, chargerID)
+                    } else {
+                        callback(null, false)
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
+    function testSwitch(message, clientSocket) {
+        try {
+            let data = JSON.parse(message)
+            let chargerSerial = data[0]
+            let chargerID = v.getChargerID(chargerSerial)
+            
+            let testFunction = data[1]
+
+            switch (testFunction) {
+
+                case c.TEST1:
+                    test.testFreeCharger(chargerID)
+                    return true
+
+                case c.TEST2:
+                    test.testRemoteStart(chargerID)
+                    return true
+
+                case c.TEST3:
+                    test.testRemoteStop(chargerID)
+                    return true
+                
+                case c.TEST4:
+                    test.testReserveNow(chargerID)
+                    return true
+                default:
+                    return false
+
+            }
+        } catch (error) {
+            console.log(error)
+            clientSocket.send(func.getGenericError("test error", error.toString()))
+            return true
+        }
+    }
     return exports
 }

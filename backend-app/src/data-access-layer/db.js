@@ -99,10 +99,6 @@ const Transactions = sequelize.define('Transactions', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    payment_method_categories: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        allowNull: true
-    },
     session_id: {
         type: DataTypes.STRING,
         allowNull: true
@@ -113,6 +109,10 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentConfirmed: {
         type: DataTypes.BOOLEAN,
+        allowNull: true
+    },
+    meterStart: {
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 }, {
@@ -184,12 +184,12 @@ sequelize.sync().then(function () {
             // });
             Transactions.create({
                 paymentID: null,
-                userID: "1",
+                userID: null,
                 timestamp: 1631522252,
                 isKlarnaPayment: true,
-                kwhTransfered: 5,
-                currentChargePercentage: 20,
-                pricePerKwh: 44.66
+                kwhTransfered: 23,
+                currentChargePercentage: 56,
+                pricePerKwh: 450
             });
             Reservations.create({
                 chargerID: 1,
