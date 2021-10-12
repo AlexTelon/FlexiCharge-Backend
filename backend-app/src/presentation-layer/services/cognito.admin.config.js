@@ -5,7 +5,7 @@ const auth = new AuthMiddleware()
 
 const path = require('path')
 const dirPath = path.join(__dirname, '/config.json')
-/*
+
 AWS.config.loadFromPath(dirPath);
 AWS.config.getCredentials(function (err) {
     if (err) console.log(err.stack);
@@ -14,7 +14,7 @@ AWS.config.getCredentials(function (err) {
         // console.log("Access key:", AWS.config.credentials.accessKeyId);
     }
 });
-*/
+
 class AdminCognitoService {
 
     config = {
@@ -105,7 +105,13 @@ class AdminCognitoService {
                 family_name: userdata.family_name,
                 user_id: userdata.sub
             }
-            return data
+
+            const res = {
+                data: data,
+                statusCode: 200
+            }
+
+            return res
         } catch (error) {
             console.log(error);
             return error
@@ -119,7 +125,25 @@ class AdminCognitoService {
         }
 
         try {
+            const res = await this.cognitoIdentity.adminDeleteUser(params).promise();
+            const data = {
+                data: res,
+                statusCode: 200
+            }
+            return data
 
+        } catch (error) {
+            console.log(error);
+            return error
+        }
+    }
+
+    async deleteAdmin(username) {
+        const params = {
+            "Username": username,
+            "UserPoolId": this.adminUserPool
+        }
+        try {
             const res = await this.cognitoIdentity.adminDeleteUser(params).promise();
             const data = {
                 data: res,
@@ -213,12 +237,26 @@ class AdminCognitoService {
         }
     }
 
+    async getUsers(paginationToken, limit = 60, filterAttribute = "username", filterValue = "") {
 
-    async getUsers() {
-        const params = {
-            Limit: 0,
-            UserPoolId: this.userPool
+        const value = filterValue
+        const attribute = filterAttribute
+
+        let params = {
+            Limit: limit,
+            UserPoolId: this.userPool,
+            Filter: `${attribute} ^= \"${value}\"`
         }
+
+        if (paginationToken !== undefined) {
+            params = {
+                PaginationToken: paginationToken,
+                Limit: limit,
+                UserPoolId: this.userPool,
+                Filter: `${attribute} ^= \"${value}\"`
+            }
+        }
+
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
             const data = {
@@ -252,11 +290,25 @@ class AdminCognitoService {
         }
     }
 
-    async getAdmins(limit) {
-        const params = {
+    async getAdmins(paginationToken, limit = 60, filterAttribute = "username", filterValue = "") {
+        const value = filterValue
+        const attribute = filterAttribute
+
+        let params = {
             Limit: limit,
-            UserPoolId: this.adminUserPool
+            UserPoolId: this.adminUserPool,
+            Filter: `${attribute} ^= \"${value}\"`
         }
+
+        if (paginationToken !== undefined) {
+            params = {
+                PaginationToken: paginationToken,
+                Limit: limit,
+                UserPoolId: this.adminUserPool,
+                Filter: `${attribute} ^= \"${value}\"`
+            }
+        }
+
         try {
             const res = await this.cognitoIdentity.listUsers(params).promise();
             const data = {

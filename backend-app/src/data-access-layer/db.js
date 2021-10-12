@@ -1,11 +1,11 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-//const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -99,10 +99,6 @@ const Transactions = sequelize.define('Transactions', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    payment_method_categories: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        allowNull: true
-    },
     session_id: {
         type: DataTypes.STRING,
         allowNull: true
@@ -113,6 +109,10 @@ const Transactions = sequelize.define('Transactions', {
     },
     paymentConfirmed: {
         type: DataTypes.BOOLEAN,
+        allowNull: true
+    },
+    meterStart: {
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 }, {
@@ -159,15 +159,15 @@ Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' 
 // Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
-sequelize.sync().then(function() {
-    ChargePoints.findAndCountAll().then(function({ rows, count }) {
+sequelize.sync().then(function () {
+    ChargePoints.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
-            ChargePoints.create({
-                name: 'Jönköping University',
-                location: [57.777714, 14.163010],
-                price: 450,
-                klarnaReservationAmount: 30000
-            });
+            // ChargePoints.create({
+            //     name: 'Jönköping University',
+            //     location: [57.777714, 14.163010],
+            //     price: 44.52,
+            //     klarnaReservationAmount: 30000
+            // });
             // Chargers.create({
             //     chargerID: 100000,
             //     location: [57.777714, 14.163012],
@@ -184,12 +184,12 @@ sequelize.sync().then(function() {
             // });
             Transactions.create({
                 paymentID: null,
-                userID: "1",
+                userID: null,
                 timestamp: 1631522252,
                 isKlarnaPayment: true,
-                kwhTransfered: 5,
-                currentChargePercentage: 20,
-                pricePerKwh: 44.66
+                kwhTransfered: 23,
+                currentChargePercentage: 56,
+                pricePerKwh: 450
             });
             Reservations.create({
                 chargerID: 1,
@@ -201,7 +201,7 @@ sequelize.sync().then(function() {
     })
 })
 
-module.exports = function({}) {
+module.exports = function ({ }) {
     const exports = { Chargers, Transactions, Reservations, ChargePoints }
     return exports
 }

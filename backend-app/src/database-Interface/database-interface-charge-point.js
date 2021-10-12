@@ -1,5 +1,4 @@
 module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePointValidation }) {
-    const DEFAULT_RESERVATION_PRICE = 30000
 
     const exports = {}
 
@@ -43,7 +42,6 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
             dataAccessLayerChargePoint.addChargePoint(name, location, price, klarnaReservationAmount, function(error, chargePointId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
-                        console.log(errorCode)
                         callback(errorCode, [])
                     })
                 } else {

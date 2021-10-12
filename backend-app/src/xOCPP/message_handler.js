@@ -181,7 +181,6 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                             { status: c.ACCEPTED, data: "" }]))
                     }
                 })
-
         } else {
             console.log("updateChargerLevel -> No socket connected to this chargerID")
         }

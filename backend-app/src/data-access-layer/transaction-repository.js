@@ -48,7 +48,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, payment_method_categories, isKlarnaPayment, timestamp, paymentConfirmed, callback){
+    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, isKlarnaPayment, timestamp, paymentConfirmed, callback){
         
         const klarnaTransaction = {
             userID: userID,
@@ -56,7 +56,6 @@ module.exports = function({ databaseInit }) {
             pricePerKwh: pricePerKwh,
             session_id: session_id,
             client_token: client_token,
-            payment_method_categories: payment_method_categories,
             paymentConfirmed: paymentConfirmed,
             isKlarnaPayment: isKlarnaPayment,
             timestamp: timestamp
@@ -113,6 +112,20 @@ module.exports = function({ databaseInit }) {
                 console.log(e)
                 callback(e, [])
             })
+    }
+    exports.updateTransactionMeterStart = function(transactionID, meterStart, callback) {
+        databaseInit.Transactions.update({
+            meterStart: meterStart
+        }, {
+            where: { transactionID: transactionID },
+            returning: true,
+            raw: true
+        })
+        .then(transaction => callback([], transaction[1]))
+        .catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
     }
 
     return exports
