@@ -167,7 +167,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                     callback(errorCode, [])
                 })
             } else {
-                dataAccessLayerCharger.get(transaction.chargerID, function (error, charger) {
+                dataAccessLayerCharger.getCharger(transaction.chargerID, function (error, charger) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
