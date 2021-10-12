@@ -14,7 +14,7 @@ module.exports = function({}) {
 
     const exports = {}
 
-    exports.getAddChargerValidation = function(location, serialNumber) {
+    exports.getAddChargerValidation = function(location, serialNumber, chargePointID) {
 
         const validationErrors = []
 
@@ -41,6 +41,10 @@ module.exports = function({}) {
 
                 validationErrors.push("invalidSerialNumber")
             }
+        }
+
+        if(chargePointID === undefined || chargePointID === null) {
+            validationErrors.push("invalidChargePointID")
         }
 
         return validationErrors
