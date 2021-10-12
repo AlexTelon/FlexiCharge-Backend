@@ -88,7 +88,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         socket = v.getConnectedSocket(chargerID)
 
         if (callback != null && socket != null) {
-            
+
             databaseInterfaceCharger.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
@@ -97,15 +97,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 } else {
                     console.log("\nCharger updated in DB: " + charger.status)
                     payload = request[c.PAYLOAD_INDEX]
-                    callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp, meterStop: payload.meterStop})
+                    callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStop: payload.meterStop })
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.STOP_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
                     { idTagInfo: 1 }]))
                 }
             })
-            
-            
+
+
         } else {
             console.log("getStartTransactionResponse -> No callback tied to this chargerID OR invalid chargerID")
 
@@ -122,7 +122,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         socket = v.getConnectedSocket(chargerID)
 
         if (callback != null && socket != null) {
-            
+
             databaseInterfaceCharger.updateChargerStatus(chargerID, c.CHARGING, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
@@ -131,17 +131,17 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 } else {
                     console.log("\nCharger updated in DB: " + charger.status)
                     payload = request[c.PAYLOAD_INDEX]
-                    callback(null, {status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart})
+                    callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
                     transactionID = v.getTransactionID(chargerID)
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
-                      // as we have no accounts idTagInfo is 1 as standard
+                    // as we have no accounts idTagInfo is 1 as standard
                     { idTagInfo: 1, transactionId: transactionID }]))
                 }
             })
-            
-            
+
+
         } else {
             console.log("getStartTransactionResponse -> No callback tied to this chargerID OR invalid chargerID")
 
@@ -169,25 +169,18 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
         socket = v.getConnectedSocket(chargerID)
         if (socket != null) {
-            transactionID = v.getTransactionID(chargerID)
-            if (transactionID != null) {
-                databaseInterfaceTransactions.updateTransactionChargingStatus(
-                    transactionID, data.latestMeterValue, data.CurrentChargePercentage,
-                    function (error, _) {
-                        if (error.length > 0) {
-                            console.log("Error updating charger level in DB: " + error)
-                            socket.send(func.getGenericError(uniqueID, error.toString()))
-                        } else {
-                            socket.send(
-                                func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.DATA_TRANSFER,
-                                { status: c.ACCEPTED, data: "" }]))
-                        }
-                    })
-
-            } else {
-                socket.send(func.getGenericError(uniqueID, c.NO_TRANSACTION_ID))
-                console.log("updateChargerLevel -> No transactionID connected to this chargerID")
-            }
+            databaseInterfaceTransactions.updateTransactionChargingStatus(
+                data.transactionId, data.latestMeterValue, data.CurrentChargePercentage,
+                function (error, _) {
+                    if (error.length > 0) {
+                        console.log("Error updating charger level in DB: " + error)
+                        socket.send(func.getGenericError(uniqueID, error.toString()))
+                    } else {
+                        socket.send(
+                            func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.DATA_TRANSFER,
+                            { status: c.ACCEPTED, data: "" }]))
+                    }
+                })
         } else {
             console.log("updateChargerLevel -> No socket connected to this chargerID")
         }

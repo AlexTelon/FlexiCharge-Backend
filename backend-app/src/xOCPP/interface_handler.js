@@ -93,7 +93,6 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
             } else {
                 console.log("handleReserveNowResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
             }
-
         }
     }
 
@@ -118,7 +117,8 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StartTransaction...")
         } else {
-            let callback = v.getCallback(chargerID)
+            callback = v.getCallback(chargerID)
+
             if (callback != null) {
                 callback(null, { status: status })
                 v.removeCallback(chargerID)
