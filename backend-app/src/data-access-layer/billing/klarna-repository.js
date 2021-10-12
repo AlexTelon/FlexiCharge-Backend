@@ -121,9 +121,14 @@ module.exports = function({}) {
         request.end()
     }
 
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, callback) {
+
+    exports.finalizeKlarnaOrder = async function(transaction, transactionId, klarnaReservationAmount, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
-        const order_lines = getOrderLines(newOrderAmount)
+        const order_lines = getOrderLines(klarnaReservationAmount)
+
+        order_lines[0].total_amount = newOrderAmount;
+        order_lines[0].unit_price = newOrderAmount;
+
 
         updateOrder(transaction, order_lines, function(error, responseData) {
             if (error.length == 0) {
@@ -139,6 +144,7 @@ module.exports = function({}) {
             }
         })
     }
+
 
     function updateOrder(transaction, order_lines, callback) {
         const data = new TextEncoder().encode(
@@ -226,6 +232,7 @@ module.exports = function({}) {
                         break;
                     default:
                         callback(["klarnaError"], [])
+
                 }
             }
         })

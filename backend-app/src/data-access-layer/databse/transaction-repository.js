@@ -113,6 +113,20 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
+    exports.updateTransactionMeterStart = function(transactionID, meterStart, callback) {
+        databaseInit.Transactions.update({
+            meterStart: meterStart
+        }, {
+            where: { transactionID: transactionID },
+            returning: true,
+            raw: true
+        })
+        .then(transaction => callback([], transaction[1]))
+        .catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
 
     return exports
 }

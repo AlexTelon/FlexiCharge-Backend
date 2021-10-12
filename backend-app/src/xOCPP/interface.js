@@ -1,19 +1,31 @@
 
-module.exports = function({ v, constants, messageHandler }) {
+module.exports = function({ v, constants, interfaceHandler, func }) {
     const c = constants.get()
     
-    exports.startTransaction = function(transactionID, chargerID){
+    exports.remoteStartTransaction = function(chargerID, transactionID, callback){
         
-        //to do, not working
-        console.log("Incoming request from API: startTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
-        messageHandler.sendMessage(c.START_TRANSACTION, transactionID, v.getConnectedSocket(chargerID))
+        console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
+
+        v.addTransactionID(chargerID, transactionID)
+
+        const payload = {
+            //is set to one as we assume there is only one connector per charger
+            connectorID: 1,
+            //we don't have useres so allwasy set to 1
+            idTag: 1,
+        }
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_START_TRANSACTION, payload, callback)
     }
 
-    exports.stopTransaction = function(transactionID, chargerID){
+    exports.remoteStopTransaction = function(chargerID, transactionID, callback){
 
         //to do, not working
         console.log("Incoming request from API: stopTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
-        messageHandler.sendMessage(c.STOP_TRANSACTION, transactionID, v.getConnectedSocket(chargerID))
+        
+        const payload = {
+            transactionID: transactionID
+        }
+        interfaceHandler.interfaceHandler(chargerID, c.REMOTE_STOP_TRANSACTION, payload, callback)
     }
 
 
@@ -23,18 +35,15 @@ module.exports = function({ v, constants, messageHandler }) {
     //othervise it will be one of this responses: "Faulted", "Occupied", "Rejected" or "Unavailable".
     exports.reserveNow = function(chargerID, connectorID, idTag, reservationID, parentIdTag, callback){
 
-        //to do, not working
-        console.log("Incoming request from API: reserveNow -> chargerId;"+chargerID)
+        console.log("Incoming request from API: reserveNow -> chargerId:"+chargerID)
 
-        const dataObject = {
+        const payload = {
             connectorID: connectorID,
             idTag: idTag,
-            reservationID: reservationID,
+            reservationID: func.getReservationID(chargerID, idTag, connectorID),
             parentIdTag: parentIdTag
         }
-        messageHandler.interfaceHandler(chargerID, c.RESERVE_NOW, dataObject, function(response, error){
-            callback(response, error)
-        })
+        interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
     }
 
     

@@ -165,7 +165,7 @@ sequelize.sync().then(function() {
             ChargePoints.create({
                 name: 'Jönköping University',
                 location: [57.777714, 14.163010],
-                price: 450,
+                price: 44.52,
                 klarnaReservationAmount: 30000
             });
             // Chargers.create({
