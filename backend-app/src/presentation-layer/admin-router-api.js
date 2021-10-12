@@ -151,7 +151,6 @@ module.exports = function () {
         cognito.createUser(username, password, userAttributes)
             .then(result => {
                 if (result.statusCode === 201) {
-                    console.log(result);
                     res.status(201).json(result.data).end();
                 } else {
                     console.log(result);
@@ -171,7 +170,6 @@ module.exports = function () {
         cognito.createAdmin(username, password, userAttributes)
             .then(result => {
                 if (result.statusCode === 201) {
-                    console.log(result);
                     res.status(201).json(result.data).end();
                 } else {
                     console.log(result);
@@ -186,7 +184,6 @@ module.exports = function () {
         cognito.deleteUser(username)
             .then(result => {
                 if (result.statusCode === 200) {
-                    console.log(result);
                     res.status(200).json(result.data).end();
                 } else if (result.statusCode === 400) {
                     console.log(result);
@@ -204,7 +201,6 @@ module.exports = function () {
         cognito.deleteAdmin(username)
             .then(result => {
                 if (result.statusCode === 200) {
-                    console.log(result);
                     res.status(200).json(result.data).end();
                 } else {
                     console.log(result);
@@ -224,7 +220,6 @@ module.exports = function () {
                     res.status(204).json(result.data).end();
 
                 } else if (result.statusCode === 400) {
-                    console.log(result);
                     res.status(400).json(result).end();
                 } else {
                     console.log(result);
@@ -236,7 +231,6 @@ module.exports = function () {
     router.put('/users/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
-        console.log("active");
         cognito.enableUser(username)
             .then(result => {
                 if (result.statusCode === 200) {
@@ -255,7 +249,6 @@ module.exports = function () {
     router.put('/users/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
         const username = req.params.username;
 
-        console.log("active");
         cognito.disableUser(username)
             .then(result => {
                 if (result.statusCode === 200) {
