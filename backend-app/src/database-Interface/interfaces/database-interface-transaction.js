@@ -95,27 +95,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                         callback(errorCode, [])
                                     })
                                 } else {
-                                    // dataAccessLayerCharger.getCharger(updatedTransaction[0].chargerID, function(error, charger) {
-                                    //     if (Object.keys(error).length > 0) {
-                                    //         dbErrorCheck.checkError(error, function(errorCode) {
-                                    //             callback(errorCode, [])
-                                    //         })
-                                    //     } else {
-                                    //         dataAccessLayerChargePoint.getChargePoint(charger.chargePointID, function(error, chargePoint) {
-                                    //             if (Object.keys(error).length > 0) {
-                                    //                 dbErrorCheck.checkError(error, function(errorCode) {
-                                    //                     callback(errorCode, [])
-                                    //                 })
-                                    //             } else {
-                                    //                 if (updatedTransaction.pricePerKwh * kwhTransfered >= chargePoint.klarnaReservationAmount) {
-                                    //                     //TODO: STOP CHARGING HERE
-                                    //                 } else {
-                                                        callback([], updatedTransaction)
-                                    //                 }
-                                    //             }
-                                    //         })
-                                    //     }
-                                    // })
+                                    callback([], updatedTransaction)
                                 }
                             })
                         } else {
