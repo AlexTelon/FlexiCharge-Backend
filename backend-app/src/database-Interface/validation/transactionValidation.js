@@ -34,7 +34,7 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getUpdateTransactionChargingStatus = function(kwhTransfered, currentChargePercentage) {
+    exports.getUpdateTransactionChargingStatus = function(currentMeterValue, currentChargePercentage) {
         const validationErrors = []
 
         if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
@@ -43,8 +43,8 @@ module.exports = function({}) {
         if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
             validationErrors.push("invalidChargePrecentage")
         }
-        if (kwhTransfered == null || kwhTransfered == undefined || kwhTransfered < MIN_TRANSFERED_KWH) {
-            validationErrors.push("invalidTransferedKwh")
+        if (currentMeterValue == null || currentMeterValue == undefined || currentMeterValue < MIN_TRANSFERED_KWH) {
+            validationErrors.push("invalidMeterValue")
         }
 
         return validationErrors

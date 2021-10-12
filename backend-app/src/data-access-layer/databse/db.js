@@ -114,6 +114,10 @@ const Transactions = sequelize.define('Transactions', {
     paymentConfirmed: {
         type: DataTypes.BOOLEAN,
         allowNull: true
+    },
+    meterStart: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 }, {
     timestamps: false

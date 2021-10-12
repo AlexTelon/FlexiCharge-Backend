@@ -74,41 +74,40 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
-    exports.updateTransactionChargingStatus = function(transactionID, kwhTransfered, currentChargePercentage, callback) {
-        const validationError = transactionValidation.getUpdateTransactionChargingStatus(kwhTransfered, currentChargePercentage)
+    exports.updateTransactionChargingStatus = function(transactionID, currentMeterValue, currentChargePercentage, callback) {
+        const validationError = transactionValidation.getUpdateTransactionChargingStatus(currentMeterValue, currentChargePercentage)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerTransaction.updateTransactionChargingStatus(transactionID, kwhTransfered, currentChargePercentage, function(error, updatedTransaction) {
+            dataAccessLayerTransaction.getTransaction(transactionID, function(error, transaction){
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
-                    dataAccessLayerCharger.getCharger(updatedTransaction[0].chargerID, function(error, charger) {
-                        if (Object.keys(error).length > 0) {
-                            dbErrorCheck.checkError(error, function(errorCode) {
-                                callback(errorCode, [])
-                            })
-                        } else {
-                            dataAccessLayerChargePoint.getChargePoint(charger.chargePointID, function(error, chargePoint) {
+                    if(transaction != undefined) {
+                        const kwhTransfered = (currentMeterValue - transaction.meterStart) / 1000
+
+                        if(kwhTransfered >= 0) {
+                            dataAccessLayerTransaction.updateTransactionChargingStatus(transactionID, kwhTransfered, currentChargePercentage, function(error, updatedTransaction) {
                                 if (Object.keys(error).length > 0) {
                                     dbErrorCheck.checkError(error, function(errorCode) {
                                         callback(errorCode, [])
                                     })
                                 } else {
-                                    if (updatedTransaction.pricePerKwh * kwhTransfered >= chargePoint.klarnaReservationAmount) {
-                                        //TODO: STOP CHARGING HERE
-                                    } else {
-                                        callback([], updatedTransaction)
-                                    }
+                                    callback([], updatedTransaction)
                                 }
                             })
+                        } else {
+                            callback(["invalidMeterValue"], [])
                         }
-                    })
-
+                    } else {
+                        callback(["invalidTransactionId"], [])
+                    }
                 }
             })
+
+            
         }
     }
 
