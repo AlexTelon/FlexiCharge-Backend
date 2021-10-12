@@ -99,10 +99,6 @@ const Transactions = sequelize.define('Transactions', {
         type: DataTypes.STRING,
         allowNull: true
     },
-    payment_method_categories: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
-        allowNull: true
-    },
     session_id: {
         type: DataTypes.STRING,
         allowNull: true
