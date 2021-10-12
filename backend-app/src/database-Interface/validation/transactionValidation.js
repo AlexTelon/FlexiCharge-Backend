@@ -24,7 +24,10 @@ module.exports = function({}) {
     exports.getAddTransactionValidation = function(currentChargePercentage, pricePerKwh) {
         const validationErrors = []
 
-        if (pricePerKwh < MIN_KWH_PRICE) {
+        if(pricePerKwh == undefined || pricePerKwh == null) {
+            validationErrors.push("invalidKwhPrice")
+        }
+        else if(pricePerKwh < MIN_KWH_PRICE) {
             validationErrors.push("invalidKwhPrice")
         }
 
@@ -34,13 +37,13 @@ module.exports = function({}) {
     exports.getUpdateTransactionChargingStatus = function(kwhTransfered, currentChargePercentage) {
         const validationErrors = []
 
-        if (currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
             validationErrors.push("invalidChargePrecentage")
         }
-        if (currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
             validationErrors.push("invalidChargePrecentage")
         }
-        if (kwhTransfered < MIN_TRANSFERED_KWH) {
+        if (kwhTransfered == null || kwhTransfered == undefined || kwhTransfered < MIN_TRANSFERED_KWH) {
             validationErrors.push("invalidTransferedKwh")
         }
 
@@ -51,7 +54,7 @@ module.exports = function({}) {
 
         const validationErrors = []
 
-        if (session_id === undefined) {
+        if (session_id === undefined || session_id === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof session_id !== 'string') {
@@ -62,7 +65,7 @@ module.exports = function({}) {
             }
         }
 
-        if (client_token === undefined) {
+        if (client_token === undefined || client_token === null) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof client_token !== 'string') {
@@ -73,7 +76,7 @@ module.exports = function({}) {
             }
         }
 
-        if (payment_method_categories === undefined) {
+        if (payment_method_categories === undefined || payment_method_categories === null) {
             validationErrors.push("klarnaError")
         } else {
             if ((payment_method_categories instanceof Array) == false) {
