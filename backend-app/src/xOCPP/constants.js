@@ -23,7 +23,7 @@ module.exports = function({}){
             PARENT_ID_TAG: 89347,
 
             HEART_BEAT_INTERVALL: 86400, //24h
-            RESERVATION_TIME: 15, //15sec
+            RESERVATION_TIME: 300, //5min
 
             CALL: 2,
             CALL_RESULT: 3,

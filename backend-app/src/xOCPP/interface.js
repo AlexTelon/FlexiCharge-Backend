@@ -38,10 +38,10 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
         console.log("Incoming request from API: reserveNow -> chargerId:"+chargerID)
 
         const payload = {
-            connectorID: connectorID,
-            idTag: idTag,
-            reservationID: func.getReservationID(chargerID, idTag, connectorID),
-            parentIdTag: parentIdTag
+            connectorID: 1,
+            idTag: 1,
+            reservationID: func.getReservationID(chargerID, 1, 1),
+            parentIdTag: 1
         }
         interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
     }
