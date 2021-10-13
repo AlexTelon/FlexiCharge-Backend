@@ -1,5 +1,4 @@
 const { checkPrime } = require("crypto")
-const { finalizeKlarnaOrder } = require("../../data-access-layer/billing/klarna-repository")
 
 module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
 
@@ -160,15 +159,15 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
-    exports.createKlarnaOrder = async function (transactionId, authorization_token, callback) { //TODO, THIS FUNCTION IS ONLY A START AND NEEDS TO BE IMPROVED AND TESTED
+    exports.createKlarnaOrder = async function (transactionId, authorization_token, callback) {
 
         dataAccessLayerTransaction.getTransaction(transactionId, function (error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
-            } else { //Mock transaction data with a charger id cant be created in development
-                dataAccessLayerCharger.getCharger( /*transaction.chargerID*/ 100000, function (error, charger) {
+            } else {
+                dataAccessLayerCharger.getCharger(transaction.chargerID, function (error, charger) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
@@ -225,7 +224,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                     callback(errorCode, [])
                 })
             } else {
-                dataAccessLayerCharger.getCharger( /*transaction.chargerID*/ 100000, function (error, charger) {
+                dataAccessLayerCharger.getCharger(transaction.chargerID, function (error, charger) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
@@ -256,7 +255,7 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                                 callback(errorCode, [])
                                                             })
                                                         } else {
-                                                            dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, chargePoint.klarnaReservationAmount, function(error, responseData) {
+                                                            dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, function(error, responseData) {
                                                                 if (error.length == 0) {
                                                                     dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
                                                                         if (Object.keys(error).length > 0) {

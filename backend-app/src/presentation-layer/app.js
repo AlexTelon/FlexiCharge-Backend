@@ -2,10 +2,9 @@ const express = require("express")
 const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser');
-const databaseTest = require("./database-test");
 require('dotenv').config()
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, databaseTest }) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -36,7 +35,6 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
     app.use('/auth/admin', adminRouter)
-    app.use('/database', databaseTest)
 
     return app
 }
