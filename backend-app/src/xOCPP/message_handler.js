@@ -83,7 +83,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
     function handleStopTransaction(chargerID, uniqueID, request) {
 
-        callback = v.getCallback(chargerID)
+        let callback = v.getCallback(chargerID)
         v.removeCallback(chargerID)
         socket = v.getConnectedSocket(chargerID)
 
@@ -117,7 +117,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
     function handleStartTrasaction(chargerID, uniqueID, request) {
 
-        callback = v.getCallback(chargerID)
+        let callback = v.getCallback(chargerID)
         v.removeCallback(chargerID)
         socket = v.getConnectedSocket(chargerID)
 
@@ -195,7 +195,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 c.BOOT_NOTIFICATION,
                 {
                     status: status,
-                    currentTime: new Date().getTime(),
+                    currentTime: new Date().now().getTime(),
                     interval: c.HEART_BEAT_INTERVALL,
                 }
             ])

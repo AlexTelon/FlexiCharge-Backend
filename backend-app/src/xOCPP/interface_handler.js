@@ -67,7 +67,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         let status = response[c.PAYLOAD_INDEX].status
         console.log("\nCharger " + chargerID + " responded to ReserveNow request: " + status)
 
-        callback = v.getCallback(uniqueID)
+        let callback = v.getCallback(uniqueID)
         v.removeCallback(uniqueID)
 
         if (callback != null) {
@@ -117,7 +117,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StartTransaction...")
         } else {
-            callback = v.getCallback(chargerID)
+            let callback = v.getCallback(chargerID)
 
             if (callback != null) {
                 callback(null, { status: status })
@@ -156,7 +156,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (status == c.ACCEPTED) {
             console.log("Waiting for StopTransaction...")
         } else {
-            callback = v.getCallback(chargerID)
+            let callback = v.getCallback(chargerID)
             if (callback != null) {
                 callback(null, { status: status })
                 v.removeCallback(chargerID)
