@@ -195,7 +195,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 c.BOOT_NOTIFICATION,
                 {
                     status: status,
-                    currentTime: new Date().now().getTime(),
+                    currentTime: Math.floor(Date.now()/1000),
                     interval: c.HEART_BEAT_INTERVALL,
                 }
             ])

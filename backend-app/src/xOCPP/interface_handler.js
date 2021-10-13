@@ -51,7 +51,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
             c.RESERVE_NOW,
             {
                 connectorID: dataObject.connectorID,
-                expiryDate: Date.now() + c.RESERVATION_TIME,
+                expiryDate: Math.floor(Date.now()/1000) + c.RESERVATION_TIME,
                 idTag: dataObject.idTag,
                 reservationID: dataObject.reservationID,
                 parentIdTag: dataObject.parentIdTag
