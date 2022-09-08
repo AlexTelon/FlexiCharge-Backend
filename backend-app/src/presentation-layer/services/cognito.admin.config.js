@@ -3,10 +3,6 @@ const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware()
 
-const path = require('path')
-const dirPath = path.join(__dirname, '/config.json')
-
-AWS.config.loadFromPath(dirPath);
 AWS.config.getCredentials(function (err) {
     if (err) console.log(err.stack);
     // credentials not loaded
