@@ -10,4 +10,6 @@ RUN npm install
 
 COPY src src
 
+COPY docs docs
+
 CMD npm run start

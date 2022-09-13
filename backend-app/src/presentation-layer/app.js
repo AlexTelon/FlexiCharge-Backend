@@ -3,6 +3,10 @@ const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser');
 require('dotenv').config()
+const swaggerUi = require('swagger-ui-express')
+const path = require('path')
+const yaml = require('yamljs')
+const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
 module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface }) { //authenticationRouter
 
@@ -24,11 +28,13 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
 
         next()
     })
+    
 
+    app.use('/', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
-    app.get('/', (req, res) => {
-        res.render('index.hbs')
-    })
+    // app.get('/', (req, res) => {
+    //     res.render('index.hbs')
+    // })
     app.use('/chargers', chargersRouter)
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
