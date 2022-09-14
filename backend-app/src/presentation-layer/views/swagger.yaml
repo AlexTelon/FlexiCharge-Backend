@@ -1,0 +1,219 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Swagger",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "https://virtserver.swaggerhub.com/DANIELPELMAS_1/test/1.0.0",
+        "description": "SwaggerHub API Auto Mocking"
+      },
+      {
+        "url": "http://{{url}}"
+      }
+    ],
+    "paths": {
+      "/auth/sign-in": {
+        "post": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Sign-in",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "username": "username",
+                    "password": "password"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/auth/sign-up": {
+        "post": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Sign-up",
+          "description": "Creates a new user. Sends a verification code in a email to the supplied email address. Use this verification code with the \"Verify user\" request.",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "username": "username",
+                    "password": "password",
+                    "email": "email",
+                    "name": "first_name",
+                    "family_name": "last_name"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/auth/verify": {
+        "post": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Verify user",
+          "description": "Verifies a new user account with a verification code.",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "username": "username",
+                    "code": "verification_code"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/chargers/available": {
+        "get": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Available chargers",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/chargers/100012": {
+        "get": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Charger by id",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/chargers/serial/NEWCHARGER1A": {
+        "get": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Charger by serial number",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        }
+      },
+      "/chargers": {
+        "get": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Chargers",
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "General"
+          ],
+          "summary": "Chargers",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "chargerPointNumber": 23,
+                    "location": [
+                      57.777714,
+                      14.16301
+                    ],
+                    "serialNumber": "android"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful response",
+              "content": {
+                "application/json": {}
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {},
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      }
+    }
+  }
