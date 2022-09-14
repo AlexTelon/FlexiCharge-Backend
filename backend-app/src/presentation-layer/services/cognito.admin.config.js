@@ -3,23 +3,9 @@ const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware()
 
-const path = require('path')
-const dirPath = path.join(__dirname, '/config.json')
-
-AWS.config.loadFromPath(dirPath);
-AWS.config.getCredentials(function (err) {
-    if (err) console.log(err.stack);
-    // credentials not loaded
-    else {
-        // console.log("Access key:", AWS.config.credentials.accessKeyId);
-    }
-});
+AWS.config.update({"region": "eu-west-1"});
 
 class AdminCognitoService {
-
-    config = {
-        region: 'eu-west-1'
-    }
     cognitoIdentity;
     secretHash = 'gbnne4qg7d44sdmom0ovoa3r9030qnguttq91j1aeandlven5r8'
     clientId = '3hcnd5dm9a0cjiqnmuvcu0dbqa'
@@ -28,15 +14,7 @@ class AdminCognitoService {
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
-        AWS.config.getCredentials(function (err) {
-            if (err) console.log(err.stack);
-            // credentials not loaded
-            else {
-                // console.log("Access key:", AWS.config.credentials.accessKeyId);
-            }
-        });
     }
-
 
     async setUserPassword(username, password) {
 
