@@ -11,9 +11,8 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             let data = JSON.parse(message)
             let messageTypeID = data[c.MESSAGE_TYPE_INDEX]
             let uniqueID = data[c.UNIQUE_ID_INDEX]
-
+            
             var response = ""
-
             switch (messageTypeID) {
                 case c.CALL:
 
@@ -137,7 +136,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
-                    { idTagInfo: 1, transactionId: transactionID }]))
+                    { idTagInfo: 1, transactionId: transactionID, status: c.CHARGING }]))
                 }
             })
 
