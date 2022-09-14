@@ -3,7 +3,7 @@ info:
   title: Swagger
   version: 1.0.0
 servers:
-  - url: http://{{url}}
+  - url: http://localhost:8080
 components:
   securitySchemes:
     bearerAuth:
@@ -13,7 +13,7 @@ paths:
   /auth/sign-in:
     post:
       tags:
-        - General
+        - User
       summary: Sign-in
       requestBody:
         content:
@@ -31,7 +31,7 @@ paths:
   /auth/sign-up:
     post:
       tags:
-        - General
+        - User
       summary: Sign-up
       description: >-
         Creates a new user. Sends a verification code in a email to the supplied
@@ -56,7 +56,7 @@ paths:
   /auth/verify:
     post:
       tags:
-        - General
+        - User
       summary: Verify user
       description: Verifies a new user account with a verification code.
       requestBody:
@@ -72,10 +72,41 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /auth/confirm-forgot-password:
+    post:
+      tags:
+        - User
+      summary: Confirm forgot password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-user
+                password: '{{rest-api-account-password}}'
+                confirmationCode: email_code
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/forgot-password/username:
+    post:
+      tags:
+        - User
+      summary: Forgot password
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
   /chargers/available:
     get:
       tags:
-        - General
+        - Chargers
       summary: Available chargers
       responses:
         '200':
@@ -85,7 +116,7 @@ paths:
   /chargers/100012:
     get:
       tags:
-        - General
+        - Chargers
       summary: Charger by id
       responses:
         '200':
@@ -95,7 +126,7 @@ paths:
   /chargers/serial/NEWCHARGER1A:
     get:
       tags:
-        - General
+        - Chargers
       summary: Charger by serial number
       responses:
         '200':
@@ -105,7 +136,7 @@ paths:
   /chargers:
     post:
       tags:
-        - General
+        - Chargers
       summary: Chargers
       requestBody:
         content:
@@ -127,8 +158,232 @@ paths:
             application/json: {}
     get:
       tags:
-        - General
+        - Chargers
       summary: Chargers
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions/1:
+    get:
+      tags:
+        - Transactions
+      summary: Transaction
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions:
+    post:
+      tags:
+        - Transactions
+      summary: Transaction
+      description: |-
+        userID = string,
+
+        chargerID = int
+
+        isKlarnaPayment = bool
+
+        pricePerKwh = string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                userID: '1'
+                chargerID: 100001
+                isKlarnaPayment: true
+                pricePerKwh: '333'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions/userTransactions/"1":
+    get:
+      tags:
+        - Transactions
+      summary: Transaction by userId
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions/payment/3:
+    put:
+      tags:
+        - Transactions
+      summary: Update payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                transactionId: '1'
+                paymentId: '2'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions/stop/698:
+    put:
+      tags:
+        - Transactions
+      summary: Stop
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions/start/698:
+    put:
+      tags:
+        - Transactions
+      summary: Start
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/admin/sign-in:
+    post:
+      tags:
+        - Admin
+      summary: Sign-in
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: '{{rest-api-account-password}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/admin/:
+    post:
+      tags:
+        - Admin
+      summary: Admin
+      description: >-
+        Creates a new user. Sends a verification code in a email to the supplied
+        email address. Use this verification code with the "Verify user"
+        request.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: zi6YrmpWZLQG^5
+                email: lela19so@student.ju.se
+                name: first_name
+                family_name: last_name
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/admin/force-change-password:
+    post:
+      tags:
+        - Admin
+      summary: force-password-change
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: zi6YrmpWZLQG^5
+                session: >-
+                  AYABeAvR1_coVz0EnKxmyNJPM94AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgGS5dTNK8uczcSpkcC_8tHoAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSrBLX5nHC2z4cD9YAgEQgDs-mx5U_LlqzlXumqd9MH-drBQ4Vy3dpGqvmRcuBQEFHaSahxhSUgj863fmUSNdpS4Jhq1t8jqPaNQdKAIAAAAADAAAEAAAAAAAAAAAAAAAAADnU04jgSqDAu5p8cfXlAus_____wAAAAEAAAAAAAAAAAAAAAEAAAC_y-lSQjfe6npxGWXg7eDvHCLxEA-1CQ2mTYPYQu4d_WHo8ubIgy1k5l_6ON_PkuQoJn11jNma2IBsK5ZQZJ-VDV3tn6lTxLvA-U2xxhDhgZi8ZrhZMSf-FSYVRHmgV45pDNx9kps1i436i6oUeWI4bbDBaOWLdhWG1KQJGPNv2ZJSWFvlxSYnCHaO-snLXvnSotjxR5XR4tr58HBII1U14fT6LGm6dM5EKOMtZh97P4Y1K6zJuIIGF9pRvZDyWrpx9HY74aW5qXDzePGCQzj7
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /reservations/8:
+    get:
+      tags:
+        - Reservations
+      summary: Reservation by id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /reservations/userReservation/1:
+    get:
+      tags:
+        - Reservations
+      summary: Reservation by userId
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /reservations:
+    post:
+      tags:
+        - Reservations
+      summary: Reservation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                chargerID: 1
+                userID: 5
+                start: 200
+                end: 300
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /reservations/chargerReservation/1:
+    get:
+      tags:
+        - Reservations
+      summary: Reservation by chargerId
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /reservations/1:
+    put:
+      tags:
+        - Reservations
+      summary: Update Reservation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                chargerId: 1
+                connectorId: 1
+                idTag: 1
+                reservationId: 1
+                parentIdTag: 1
       responses:
         '200':
           description: Successful response
