@@ -29,12 +29,11 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
         next()
     })
     
+    app.get('/', (req, res) => {
+        res.redirect('/swagger')
+    })
 
-    app.use('/', swaggerUi.serve, swaggerUi.setup(openApiDocument));
-
-    // app.get('/', (req, res) => {
-    //     res.render('index.hbs')
-    // })
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(openApiDocument));
     app.use('/chargers', chargersRouter)
     app.use('/transactions', transactionsRouter)
     app.use('/reservations', reservationsRouter)
