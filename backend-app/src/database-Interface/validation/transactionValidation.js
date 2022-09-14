@@ -18,7 +18,7 @@ module.exports = function({}) {
 
     const exports = {}
 
-    exports.getAddTransactionValidation = function(currentChargePercentage, pricePerKwh) {
+    exports.getAddTransactionValidation = function(pricePerKwh) {
         const validationErrors = []
 
         if(pricePerKwh == undefined || pricePerKwh == null) {
