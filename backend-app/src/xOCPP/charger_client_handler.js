@@ -4,7 +4,7 @@ const { Socket } = require("dgram")
 module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func, test }) {
     const c = constants.get()
     
-    exports.handleClient = function (clientSocket, chargerSerial) {
+    exports.handleClient = function (clientSocket, chargerSerial, ) {
         var messageCache = ""
 
         isValidClient(clientSocket, chargerSerial, function (error, chargerID) {

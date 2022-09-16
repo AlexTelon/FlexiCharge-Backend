@@ -36,8 +36,9 @@ container.register({
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
     ocppInterface: awilix.asFunction(require('./xOCPP/interface')),
     interfaceHandler: awilix.asFunction(require('./xOCPP/interface_handler')),
-    clientHandler: awilix.asFunction(require('./xOCPP/client_handler')),
+    chargerClientHandler: awilix.asFunction(require('./xOCPP/charger_client_handler')),
     chargerMessageHandler: awilix.asFunction(require('./xOCPP/charger_message_handler')),
+    appClientHandler: awilix.asFunction(require('./xOCPP/app_client_handler')),
     appMessageHandler: awilix.asFunction(require('./xOCPP/app_message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
     //v is for variables

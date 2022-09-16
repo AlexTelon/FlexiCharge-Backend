@@ -1,5 +1,6 @@
 const connectedSockets = {}
 const chargerSerials = []
+const appIDs = []
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
@@ -57,6 +58,26 @@ module.exports = function ({ }) {
         return Object.keys(chargerIDs).length
     }
 
+    //APP IDS 
+    //Array with all the app ids
+    exports.getAppIDs = function () {
+        return appIDs
+    }
+    exports.addAppID = function (id) {
+        appIDs.push(id)
+    }
+    exports.removeAppID = function (id) {
+        const appIDIndex = appIDs.indexOf(id)
+        appIDs.splice(appIDIndex)
+    }
+    exports.getLengthAppIDs = function () {
+        return appIDs.length
+    }
+    exports.isInAppIDs = function (id) {
+        return appIDs.includes(id)
+    }
+
+
     //CALLBACKS
     //get callback with some type of id
     exports.getCallback = function (id) {
@@ -81,6 +102,4 @@ module.exports = function ({ }) {
     exports.removeTransactionID = function (chargerID) {
         delete transactionIDs[chargerID]
     }
-
-    return exports
 }
