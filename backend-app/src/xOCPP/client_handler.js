@@ -1,7 +1,7 @@
 const { Console } = require("console")
 const { Socket } = require("dgram")
 
-module.exports = function ({ databaseInterfaceCharger, messageHandler, v, constants, func, test }) {
+module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func, test }) {
     const c = constants.get()
     
     exports.handleClient = function (clientSocket, chargerSerial) {
@@ -22,7 +22,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                         /*****************************************/
     
                         if (!test) {
-                            messageHandler.handleMessage(messageCache, clientSocket, chargerID)
+                            chargerMessageHandler.handleMessage(messageCache, clientSocket, chargerID)
                         }
     
                     }
@@ -51,7 +51,7 @@ module.exports = function ({ databaseInterfaceCharger, messageHandler, v, consta
                 /*****************************************/
 
                 if (!test) {
-                    messageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
+                    chargerMessageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
                 }
 
             } else {
