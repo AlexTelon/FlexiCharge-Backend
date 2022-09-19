@@ -7,11 +7,6 @@ servers:
     description: Development Environment
   - url: http://18.202.253.30:8080/
     description: Production Environment (AWS)
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
 paths:
   /auth/sign-in:
     post:
@@ -392,36 +387,41 @@ paths:
           description: Successful response
           content:
             application/json: {}
-
+            
 components:
   schemas:
-    Order:
+    Charger:
       type: object
       properties:
-        id:
+        chargerID:
           type: integer
           format: int64
-          example: 10
-        petId:
-          type: integer
-          format: int64
-          example: 198772
-        quantity:
-          type: integer
-          format: int32
-          example: 7
-        shipDate:
+          example: 100011
+        location:
+          type: array
+          items:
+            type: number
+            example: 
+              - 123.123
+              - 123.123
+              
+        serialNumber:
           type: string
-          format: date-time
+          example: "testnumber15"
+        chargePointID:
+          type: integer
+          format: int64
+          example: 24
         status:
           type: string
-          description: Order Status
-          example: approved
+          description: Charger status
+          example: Available
           enum:
-            - placed
-            - approved
-            - delivered
-        complete:
-          type: boolean
+            - Available
+            - Reserved
       xml:
-        name: order
+        name: charger
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
