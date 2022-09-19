@@ -110,7 +110,9 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
   /chargers/100012:
     get:
       tags:
@@ -120,7 +122,9 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
   /chargers/serial/NEWCHARGER1A:
     get:
       tags:
@@ -130,7 +134,9 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
   /chargers:
     post:
       tags:
@@ -162,7 +168,12 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
   /transactions/1:
     get:
       tags:
@@ -401,10 +412,9 @@ components:
           type: array
           items:
             type: number
-            example: 
-              - 123.123
-              - 123.123
-              
+          example: 
+            - 57.777714
+            - 14.16301
         serialNumber:
           type: string
           example: "testnumber15"
