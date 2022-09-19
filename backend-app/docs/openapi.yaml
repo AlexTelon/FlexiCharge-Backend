@@ -116,6 +116,8 @@ paths:
                 items:
                   allOf:
                   $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers/100012:
     get:
       tags:
@@ -128,6 +130,10 @@ paths:
             application/json: 
               schema:
                 $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
+        '500':
+          description: Error message
   /chargers/serial/NEWCHARGER1A:
     get:
       tags:
@@ -140,6 +146,8 @@ paths:
             application/json: 
               schema:
                 $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers:
     post:
       tags:
@@ -163,6 +171,8 @@ paths:
           description: Successful response
           content:
             application/json: {}
+        '404':
+          description: Error message
     get:
       tags:
         - Chargers
@@ -177,6 +187,8 @@ paths:
                 items:
                   allOf:
                   $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /transactions/1:
     get:
       tags:
