@@ -112,7 +112,10 @@ paths:
           content:
             application/json: 
               schema:
-                $ref: '#/components/schemas/Charger'
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
   /chargers/100012:
     get:
       tags:
