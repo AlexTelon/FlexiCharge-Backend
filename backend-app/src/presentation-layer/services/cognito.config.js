@@ -10,21 +10,20 @@ class CognitoService {
     }
 
     cognitoIdentity;
-    secretHash = '17dlkm3vvufapqf8cv4p3252j3m4j4rd6t69bo5jc1kheqovcoui'
-    clientId = '2ng9ud2h1cd4het746tcldvlh2'
+    secretHash = ''
+    clientId = ''
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
     }
 
-    async signUpUser(username, password, userAttributes) {
+    async signUpUser(username, password) {
 
         const params = {
             Username: username,
             Password: password,
             ClientId: this.clientId,
             SecretHash: this.generateHash(username),
-            UserAttributes: userAttributes
         }
         try {
             const data = await this.cognitoIdentity.signUp(params).promise();

@@ -8,18 +8,9 @@ module.exports = function () {
 
     router.post('/sign-up', function (req, res) {
 
-        let { username, password, email, name, family_name } = req.body;
+        let { username, password } = req.body;
 
-        // This might cause issues
-        // If username is not sent with the request sets the username of the email + random numbers as username
-        username = username == undefined ? email.split('@')[0] + (Math.random() + 1).toString(10).substring(7) : username
-
-        let userAttributes = [];
-        userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-
-        cognito.signUpUser(username, password, userAttributes)
+        cognito.signUpUser(username, password)
             .then(result => {
                 if (result === true) {
                     res.status(200).end()
