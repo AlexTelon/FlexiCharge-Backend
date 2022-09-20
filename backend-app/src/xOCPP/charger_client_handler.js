@@ -11,7 +11,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
             if (error == null ) {
                 if (chargerID) {
                     console.log("Charger with ID: " + chargerID + " connected to the system.")
-                    console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+                    console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                     if (messageCache != "") {
     
                         /*****************************************
@@ -76,7 +76,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                         let chargerID = charger.chargerID
     
                         // Save the websocket with the charger's serial in array:
-                        v.addConnectedSockets(chargerID, newSocket)
+                        v.addConnectedChargerSockets(chargerID, newSocket)
                         v.addChargerSerials(chargerSerial)
                         v.addChargerIDs(chargerSerial, chargerID)
     

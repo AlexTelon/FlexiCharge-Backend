@@ -1,6 +1,6 @@
 const WebSocket = require('ws')
 
-module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger }) {
+module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, appClientHandler }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
@@ -11,16 +11,26 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger }
             // Get the charger's serial number:
             let origin = req.url
             let originArray = origin.split("/")
-            const clientType = originArray[1]
+            let clientType = originArray[1]
             
             switch(clientType){
                 case 'app':
-                    const appID = originArray[originArray.length - 1]
+                    const transactionID = Number.parseInt(originArray[originArray.length - 1]) //Currently for example '1a' becomes 1 and 'a' becomes NaN
+                    console.log(transactionID)
+
+                    if(!Number.isInteger(transactionID)){
+                        ws.terminate()
+                        return
+                    }
+
+                    appClientHandler.handleClient(ws, transactionID)
 
                     ws.on('close', function disconnection() {
-                    
+                        v.removeConnectedAppSockets(transactionID)
+                        v.removeAppTransactionID(transactionID)
                     })
-                    break
+
+                    break;
 
                 case 'charger':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
@@ -32,14 +42,18 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger }
 
                             const chargerID = v.getChargerID(chargerSerial)
 
-                            v.removeConnectedSockets(chargerID)
+                            v.removeConnectedChargerSockets(chargerID)
                             v.removeChargerSerials(chargerSerial)
                             v.removeChargerIDs(chargerSerial)
                             console.log("Disconnected from charger with ID: " + chargerID)
-                            console.log("Number of connected chargers: " + v.getLengthConnectedSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+                            console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                         }
                     })
-                    break
+                    break;
+                
+                default:
+                    ws.terminate()
+                    break;
             }
 
             

@@ -2,7 +2,7 @@
 
 module.exports = function({ func, v }){
 
-    exports.handleMessage = function(message, clientSocket, transactionID ){
+    exports.handleMessage = function(message, clientSocket, transactionID){
         
     }
 

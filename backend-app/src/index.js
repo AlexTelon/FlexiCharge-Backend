@@ -41,6 +41,10 @@ container.register({
     appClientHandler: awilix.asFunction(require('./xOCPP/app_client_handler')),
     appMessageHandler: awilix.asFunction(require('./xOCPP/app_message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
+
+    //OCPP Mocks
+    //dbInterfaceTransactionsMock: awilix.asFunction(require('./xOCPP/ocpp_mocks/db_interface_transactions_mock')), //TODO: NOT WORKING!!!
+
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
     func: awilix.asFunction(require('./xOCPP/global_functions')),

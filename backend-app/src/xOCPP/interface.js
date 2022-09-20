@@ -19,7 +19,7 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
 
     exports.remoteStopTransaction = function(chargerID, transactionID, callback){
 
-        //to do, not working
+        //to do, not working (EDIT 2022-09-22: Klarna in DAL is not working, therefor this is not working)
         console.log("Incoming request from API: stopTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
         
         const payload = {

@@ -1,25 +1,26 @@
-const connectedSockets = {}
+const connectedChargerSockets = {}
+const connectedAppSockets = []
 const chargerSerials = []
-const appIDs = []
+const appTransactionIDs = []
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
 
 module.exports = function ({ }) {
     
-    // CONNECTED SOCKETS
-    // Get socket with charger IDs
-    exports.getConnectedSocket = function (id) {
-        return connectedSockets[id]
+    // CONNECTED CHARGER SOCKETS
+    // Get charger socket with charger IDs
+    exports.getConnectedChargerSocket = function (id) {
+        return connectedChargerSockets[id]
     }
-    exports.addConnectedSockets = function (id, socket) {
-        connectedSockets[id] = socket
+    exports.addConnectedChargerSockets = function (id, socket) {
+        connectedChargerSockets[id] = socket
     }
-    exports.removeConnectedSockets = function (id) {
-        delete connectedSockets[id]
+    exports.removeConnectedChargerSockets = function (id) {
+        delete connectedChargerSockets[id]
     }
-    exports.getLengthConnectedSockets = function () {
-        return Object.keys(connectedSockets).length
+    exports.getLengthConnectedChargerSockets = function () {
+        return Object.keys(connectedChargerSockets).length
     }
 
     
@@ -58,23 +59,38 @@ module.exports = function ({ }) {
         return Object.keys(chargerIDs).length
     }
 
+    // CONNECTED APP SOCKETS
+    // Get app socket with transactionIDs 
+    exports.getConnectedAppSocket = function (transactionID) {
+        return connectedAppSockets[transactionID]
+    }
+    exports.addConnectedAppSockets = function (transactionID, socket) {
+        connectedAppSockets[transactionID] = socket
+    }
+    exports.removeConnectedAppSockets = function (transactionID) {
+        delete connectedAppSockets[transactionID]
+    }
+    exports.getLengthConnectedAppSockets = function () {
+        return Object.keys(connectedAppSockets).length
+    }
+
     //APP IDS 
     //Array with all the app ids
-    exports.getAppIDs = function () {
-        return appIDs
+    exports.getTransactionIDs = function () {
+        return appTransactionIDs
     }
-    exports.addAppID = function (id) {
-        appIDs.push(id)
+    exports.addAppTransactionID = function (transactionID) {
+        appTransactionIDs.push(transactionID)
     }
-    exports.removeAppID = function (id) {
-        const appIDIndex = appIDs.indexOf(id)
-        appIDs.splice(appIDIndex)
+    exports.removeAppTransactionID = function (transactionID) {
+        const appTransactionIDIndex = appTransactionIDs.indexOf(transactionID)
+        appTransactionIDs.splice(appTransactionIDIndex)
     }
     exports.getLengthAppIDs = function () {
-        return appIDs.length
+        return appTransactionIDs.length
     }
-    exports.isInAppIDs = function (id) {
-        return appIDs.includes(id)
+    exports.isInAppIDs = function (transactionID) {
+        return appTransactionIDs.includes(transactionID)
     }
 
 
@@ -102,4 +118,6 @@ module.exports = function ({ }) {
     exports.removeTransactionID = function (chargerID) {
         delete transactionIDs[chargerID]
     }
+
+    return exports
 }
