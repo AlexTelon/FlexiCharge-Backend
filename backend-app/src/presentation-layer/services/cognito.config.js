@@ -17,14 +17,13 @@ class CognitoService {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
     }
 
-    async signUpUser(username, password, userAttributes) {
+    async signUpUser(username, password) {
 
         const params = {
             Username: username,
             Password: password,
             ClientId: this.clientId,
             SecretHash: this.generateHash(username),
-            UserAttributes: userAttributes
         }
         try {
             const data = await this.cognitoIdentity.signUp(params).promise();
