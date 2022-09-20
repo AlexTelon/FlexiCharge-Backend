@@ -10,8 +10,8 @@ class CognitoService {
     }
 
     cognitoIdentity;
-    secretHash = '17dlkm3vvufapqf8cv4p3252j3m4j4rd6t69bo5jc1kheqovcoui'
-    clientId = '2ng9ud2h1cd4het746tcldvlh2'
+    secretHash = ''
+    clientId = ''
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
