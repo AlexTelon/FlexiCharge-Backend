@@ -389,6 +389,6 @@ paths:
                 parentIdTag: 1
       responses:
         '200':
-          description: Successful response
+          description: Successful response.
           content:
             application/json: {}
