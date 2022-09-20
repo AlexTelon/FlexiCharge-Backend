@@ -7,8 +7,8 @@ let pems = {};
 class AuthMiddleware {
 
     region = 'eu-west-1';
-    userPoolId = process.env.USER_POOL_ID;
-    adminUserPoolId = process.env.ADMIN_POOL_ID;
+    userPoolId = process.env.USER_POOL;
+    adminUserPoolId = process.env.ADMIN_POOL;
 
     constructor() {
         this.setUp();
