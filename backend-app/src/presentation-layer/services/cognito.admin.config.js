@@ -7,10 +7,10 @@ AWS.config.update({"region": "eu-west-1"});
 
 class AdminCognitoService {
     cognitoIdentity;
-    secretHash = 'gbnne4qg7d44sdmom0ovoa3r9030qnguttq91j1aeandlven5r8'
-    clientId = '3hcnd5dm9a0cjiqnmuvcu0dbqa'
-    adminUserPool = 'eu-west-1_1fWIOF9Yf'; // admin
-    userPool = 'eu-west-1_aSUDsld3S'
+    secretHash = process.env.ADMIN_POOL_SECRET
+    clientId = process.env.ADMIN_POOL_ID
+    adminUserPool = 'eu-west-1_tPq5id1uh'; // admin
+    userPool = 'eu-west-1_NqeTT8tjs'
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();

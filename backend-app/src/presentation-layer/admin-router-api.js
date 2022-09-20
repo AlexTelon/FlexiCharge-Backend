@@ -8,7 +8,7 @@ const AdminCognitoService = require('./services/cognito.admin.config')
 // Put in .env variable?
 const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
 const region = 'eu-west-1';
-const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
+const adminUserPoolId = 'eu-west-1_tPq5id1uh';
 
 const checkJwt = jwt({
     // Dynamically provide a signing key
@@ -159,15 +159,9 @@ module.exports = function () {
             })
     })
     router.post('/', checkJwt, checkIfAdmin, function (req, res) {
-        const { username, password, email, name, family_name } = req.body;
-
-        let userAttributes = [];
-        userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-        userAttributes.push({ Name: 'email_verified', Value: "true" });
-
-        cognito.createAdmin(username, password, userAttributes)
+        const { username, password } = req.body;
+        
+        cognito.createAdmin(username, password)
             .then(result => {
                 if (result.statusCode === 201) {
                     res.status(201).json(result.data).end();
