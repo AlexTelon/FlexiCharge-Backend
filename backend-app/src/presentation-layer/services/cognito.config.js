@@ -10,8 +10,8 @@ class CognitoService {
     }
 
     cognitoIdentity;
-    secretHash = ''
-    clientId = ''
+    secretHash = process.env.USER_POOL_SECRET
+    clientId = process.env.USER_POOL_ID
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider(this.config);
