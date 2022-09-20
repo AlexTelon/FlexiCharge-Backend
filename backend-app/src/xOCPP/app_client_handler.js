@@ -1,22 +1,23 @@
 
 
-module.exports = function({ v, func, appMessageHandler, constants, databaseInterfaceTransactions}){
+module.exports = function({ v, func, appMessageHandler, constants, databaseInterfaceTransactions, dbInterfaceTransactionsMock}){
 
     exports.handleClient = function(clientSocket, transactionID){
-        validateClient(clientSocket, transactionID, function(errors, transactionID){
+        validateClient(clientSocket, transactionID, function(errors, dbTransactionID){
             if(errors.length){
                 errorMessage = 'validateClient: transactionID was not found in DB'
                 console.log(errorMessage)
+                console.log(errors)
                 clientSocket.send(errorMessage)
                 clientSocket.terminate()
                 return
             }
 
-            console.log('App client socket connected with transactionID:' + transactionID)
-            console.log('Number of connected app sockets: ' + v.getLengthConnectedAppSockets())
+            v.addConnectedAppSockets(dbTransactionID, clientSocket)
+            v.addAppTransactionID(dbTransactionID)
 
-            v.addConnectedAppSocket(transactionID, clientSocket)
-            v.addAppTransactionID(transactionID)
+            console.log('App client socket connected with transactionID: ' + dbTransactionID)
+            console.log('Number of connected app sockets: ' + v.getLengthConnectedAppSockets())
             
         })
 
@@ -33,15 +34,14 @@ module.exports = function({ v, func, appMessageHandler, constants, databaseInter
             return
         }
 
-        /********** FOR INTERNAL TESTING, REMOVE BEFORE PRODUCTION *********/
-        //dbInterfaceTransactionsMock.getTransaction(transactionID, function(error, transaction){
-        /*******************************************************************/
-        
-        databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){
-            if(error){
-                console.log(error)
-                callback([error], null)
+        // dbInterfaceTransactionsMock.getTransaction(transactionID, function(errors, transaction){ /** FOR INTERNAL TESTING ONLY */
+        databaseInterfaceTransactions.getTransaction(transactionID, function(errors, transaction){ /** PRODUCTION CODE */
+            if(errors.length && transaction.transactionID){
+                console.log(errors)
+                callback(errors, null)
             } else{
+                console.log(transaction.transactionID)
+                console.log(errors)
                 callback([], transaction.transactionID) //Should we check userID instead, and add that to variables aswell?
             }
         })

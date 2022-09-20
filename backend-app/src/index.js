@@ -43,7 +43,7 @@ container.register({
     constants: awilix.asFunction(require('./xOCPP/constants')),
 
     //OCPP Mocks
-    //dbInterfaceTransactionsMock: awilix.asFunction(require('./xOCPP/ocpp_mocks/db_interface_transactions_mock')), //TODO: NOT WORKING!!!
+    dbInterfaceTransactionsMock: awilix.asFunction(require('./xOCPP/OCPP_mocks/db_interface_transactions_mock')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
