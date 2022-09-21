@@ -15,7 +15,7 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
             
             switch(clientType){
                 case 'app':
-                    const transactionID = Number.parseInt(originArray[originArray.length - 1]) //Currently for example '1a' becomes 1 and 'a' becomes NaN
+                    const transactionID = Number.parseInt(originArray[originArray.length - 1]) //Currently for example '1a' becomes 1 and 'a' or 'a1' becomes NaN
                     console.log(transactionID)
 
                     if(!Number.isInteger(transactionID)){
@@ -26,8 +26,10 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
                     appClientHandler.handleClient(ws, transactionID)
 
                     ws.on('close', function disconnection() {
-                        v.removeConnectedAppSockets(transactionID)
-                        v.removeAppTransactionID(transactionID)
+                        if(v.isInAppTransactionIDs(transactionID)){
+                            v.removeConnectedAppSockets(transactionID)
+                            v.removeAppTransactionID(transactionID)
+                        }
                     })
 
                     break;

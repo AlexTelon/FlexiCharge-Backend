@@ -96,9 +96,14 @@ module.exports = function({}){
             RESET_FAILURE: "ResetFailure",
             UNDERVOLTAGE: "UnderVoltage",
             OVERVOLTAGE: "OverVoltage",
-            WEAK_SIGNAL: "WeakSignal"
+            WEAK_SIGNAL: "WeakSignal",
 
             
+            /** LIVE STREAM METRICS CONSTANTS */
+            START_LIVESTREAMING: 'StartLivestreaming',
+            STOP_LIVESTREAMING: 'StopLivestreaming',
+
+
         }
 
         return constants

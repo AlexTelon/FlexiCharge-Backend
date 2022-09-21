@@ -17,7 +17,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                         /*****************************************
                          used for internal testing, remove before production
                          *****************************************/
-                        var test = false
+                        var test = true
                         test = testSwitch(messageCache, clientSocket)
                         /*****************************************/
     
@@ -61,7 +61,6 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
     }
 
     function isValidClient(newSocket, chargerSerial, callback) {
-
         if (chargerSerial == "") {
             callback(null, false)
         } else {

@@ -76,7 +76,7 @@ module.exports = function ({ }) {
 
     //APP IDS 
     //Array with all the app ids
-    exports.getTransactionIDs = function () {
+    exports.getAppTransactionIDs = function () {
         return appTransactionIDs
     }
     exports.addAppTransactionID = function (transactionID) {
@@ -86,10 +86,10 @@ module.exports = function ({ }) {
         const appTransactionIDIndex = appTransactionIDs.indexOf(transactionID)
         appTransactionIDs.splice(appTransactionIDIndex)
     }
-    exports.getLengthAppIDs = function () {
+    exports.getLengthAppTransactionIDs = function () {
         return appTransactionIDs.length
     }
-    exports.isInAppIDs = function (transactionID) {
+    exports.isInAppTransactionIDs = function (transactionID) {
         return appTransactionIDs.includes(transactionID)
     }
 
