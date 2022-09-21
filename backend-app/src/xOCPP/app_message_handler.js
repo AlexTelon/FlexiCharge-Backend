@@ -2,33 +2,28 @@
 
 module.exports = function({ func, v }){
 
-    exports.handleMessage = function(message, clientSocket, transactionID){
+    exports.handleMessage = function(message, appClientSocket, transactionID){
         try {
             let parsedMessage = JSON.parse(message)
             let messageTypeID = data[c.MESSAGE_TYPE_INDEX]
             let uniqueID = data[c.UNIQUE_ID_INDEX] //TODO: Currently not in use
 
-            var response = ""
-
             switch (messageTypeID) {
                 case c.CALL:
-                    response = callSwitch(parsedMessage, chargerID, transactionID)
+                    callSwitch(parsedMessage, appClientSocket, transactionID)
                     break
 
                 case c.CALL_RESULT:
-                    callResultSwitch(parsedMessage, chargerID)
+                    //callResultSwitch(parsedMessage, chargerID)
                     break
-
+                    
                 case c.CALL_ERROR:
-                    response = callErrorSwitch(parsedMessage)
+                    //callErrorSwitch(parsedMessage)
                     break
 
                 default:
-                    response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
+                    clientSocket.send(func.getGenericError(uniqueID, "MessageTypeID is invalid"))
                     break
-            }
-            if (response != "") {
-                clientSocket.send(response)
             }
         } catch (error) {
             console.log(error)
@@ -40,7 +35,6 @@ module.exports = function({ func, v }){
 
         let action = parsedMessage[c.ACTION_INDEX]
         console.log("Incoming request call: " + action)
-        let callResult = ""
 
         switch (action) {
             case c.START_LIVESTREAMING:
@@ -51,19 +45,37 @@ module.exports = function({ func, v }){
                 //callResult = func.getCallResultNotImplemeted(uniqueID, action)
                 break
         }
-
-        return callResult
     }
     
-    function handleStartLivestreaming(parsedMessage, chargerID, transactionID) {
-        clientSocket = v.getConnectedAppSocket(transactionID)
+    function handleStartLivestreaming(parsedMessage, appClientSocket, transactionID) {
 
-        if(clientSocket){
-            console.log("\n Livestreaming metrics...")
-            payload = parsedMessage[c.PAYLOAD_INDEX]
-
-            socket.send(func.buildJSONMessage([c.CALL_RESULT, payload]))
+        //TODO: run test code here to make sure that a chargerID can be retrieved, for internal testing only
+        const chargerID = v.getChargerIdByTransactionID(transactionID)
+        const chargerClientSocket = v.getConnectedChargerSocket(chargerID)
+        
+        if(!appClientSocket || !chargerClientSocket){
+            //TODO: Error here
+            return
         }
+        console.log("\n Livestreaming started :oooo...")
+
+        //TODO: IMPLEMENT AUTHORIZATION / AUTHENTICATION
+
+        //if authenticated
+        appClientSocket.send(func.buildJSONMessage([
+            c.CALL_RESULT, 
+            'someUniqueID', 
+            c.START_LIVESTREAMING, 
+            {status: c.ACCEPTED}
+        ]))
+
+        chargerClientSocket.send(func.buildJSONMessage([
+            c.CALL,
+            'someUniqueID',
+            c.START_LIVESTREAMING,
+            {}
+        ]))
+
     }
 
     function handleStopLivestreaming() {

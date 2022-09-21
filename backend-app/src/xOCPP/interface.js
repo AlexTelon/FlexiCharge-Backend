@@ -46,8 +46,5 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
         interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
     }
 
-    
-
-
     return exports
 }

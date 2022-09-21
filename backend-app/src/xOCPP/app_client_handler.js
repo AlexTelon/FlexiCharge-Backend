@@ -2,34 +2,34 @@
 
 module.exports = function({ v, func, appMessageHandler, constants, databaseInterfaceTransactions, dbInterfaceTransactionsMock}){
 
-    exports.handleClient = function(clientSocket, transactionID){
+    exports.handleClient = function(appClientSocket, transactionID){
         let messageCache = ""
-        validateClient(clientSocket, transactionID, function(errors, dbTransactionID){
-            if(errors.length || !dbTransactionID){
-                errorMessage = 'validateClient: transactionID was not found in DB'
+        
+        validateTransaction(transactionID, function(errors, transaction){
+            if(errors.length || !transaction){
+                errorMessage = 'validateClient: transaction was not found in DB'
                 console.log(errorMessage)
                 console.log(errors)
-                clientSocket.send(errorMessage)
-                clientSocket.terminate()
+                appClientSocket.send(errorMessage)
+                appClientSocket.terminate()
                 return
             }
-            
-            v.addConnectedAppSockets(dbTransactionID, clientSocket)
-            v.addAppTransactionID(dbTransactionID)
 
-            console.log('App client socket connected with transactionID: ' + dbTransactionID)
+            v.addConnectedAppSockets(transactionID, appClientSocket)
+            v.addAppTransactionID(transactionID)
+
+            console.log('App client socket connected with transactionID: ' + transactionID)
             console.log('Number of connected app sockets: ' + v.getLengthConnectedAppSockets())
 
             if(messageCache){
-                appMessageHandler.handleMessage(messageCache, clientSocket, transactionID)
+                appMessageHandler.handleMessage(messageCache, appClientSocket, transactionID)
             }
-            
         })
 
-        clientSocket.on('message', function incoming(message){
+        appClientSocket.on('message', function incoming(message){
             console.log(message) //TODO: Handle message, messageCache if not yet validated?
             if(v.isInAppTransactionIDs(transactionID)){
-                appMessageHandler.handleMessage(message, clientSocket, transactionID)
+                appMessageHandler.handleMessage(message, appClientSocket, transactionID)
             } else {
                 messageCache = message
             }
@@ -37,7 +37,7 @@ module.exports = function({ v, func, appMessageHandler, constants, databaseInter
 
     }
 
-    function validateClient(clientSocket, transactionID, callback) {
+    function validateTransaction(transactionID, callback) {
         if(transactionID == ""){
             const errorMessage = 'badTransactionID' // TODO: Should we have an dedicated file with error codes?
             callback([errorMessage], null)
@@ -46,14 +46,14 @@ module.exports = function({ v, func, appMessageHandler, constants, databaseInter
 
         // dbInterfaceTransactionsMock.getTransaction(transactionID, function(errors, transaction){ /** FOR INTERNAL TESTING ONLY */
         databaseInterfaceTransactions.getTransaction(transactionID, function(errors, transaction){ /** PRODUCTION CODE */
-            if(errors.length || !Number.isInteger(transaction.transactionID)){
+            if(errors.length || !transaction){
                 console.log(errors)
                 callback(errors, null)
             } else {
-                console.log(transaction.transactionID)
+                console.log(transaction)
                 console.log(errors)
 
-                callback([], transaction.transactionID) //Should we check userID instead, and add that to variables aswell?
+                callback([], transaction) //Should we check userID instead, and add that to variables aswell?
             }
         })
         

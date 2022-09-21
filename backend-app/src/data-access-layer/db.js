@@ -150,7 +150,7 @@ const ChargePoints = sequelize.define('ChargePoints', {
     timestamps: false
 });
 
-Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
+//Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 
 // Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })

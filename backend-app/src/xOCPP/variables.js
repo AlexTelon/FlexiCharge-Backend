@@ -118,6 +118,9 @@ module.exports = function ({ }) {
     exports.removeTransactionID = function (chargerID) {
         delete transactionIDs[chargerID]
     }
+    exports.getChargerIdByTransactionID = function (transactionId) {
+        return transactionIDs.indexOf(transactionId)
+    }
 
     return exports
 }

@@ -47,6 +47,7 @@ module.exports = function({}){
             DATA_TRANSFER: "DataTransfer",
             START_TRANSACTION: "StartTransaction",
             STOP_TRANSACTION: "StopTransaction",
+            METER_VALUES: "MeterValues",
             
             
             CHARGE_LEVEL_UPDATE: "ChargeLevelUpdate",
