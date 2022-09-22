@@ -12,9 +12,14 @@ if (error) throw new Error(error);
 
 module.exports = {
   PORT: !parseInt(process.env.PORT) ? 8080 : process.env.PORT,
+
   AWS_REGION: process.env.AWS_REGION,
-  AWS_SECRET_HASH: process.env.AWS_SECRET_HASH,
-  AWS_CLIENT_ID: process.env.AWS_CLIENT_ID,
-  AWS_ADMIN_USER_POOL: process.env.AWS_ADMIN_USER_POOL,
-  AWS_USER_POOL: process.env.AWS_USER_POOL
+
+  USER_POOL_SECRET: process.env.USER_POOL_SECRET,
+  USER_POOL_ID: process.env.USER_POOL_ID,
+  USER_POOL: process.env.USER_POOL,
+
+  ADMIN_POOL_SECRET: process.env.ADMIN_POOL_SECRET,
+  ADMIN_POOL_ID: process.env.ADMIN_POOL_ID,
+  ADMIN_POOL: process.env.ADMIN_POOL
 }

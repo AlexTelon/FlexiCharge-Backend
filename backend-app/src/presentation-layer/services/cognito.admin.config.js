@@ -8,10 +8,10 @@ AWS.config.update({"region": config.AWS_REGION});
 
 class AdminCognitoService {
     cognitoIdentity;
-    secretHash = config.AWS_SECRET_HASH
-    clientId = config.AWS_CLIENT_ID
-    adminUserPool = config.AWS_ADMIN_USER_POOL
-    userPool = config.AWS_USER_POOL
+    secretHash = config.ADMIN_POOL_SECRET
+    clientId = config.ADMIN_POOL_ID
+    adminUserPool = config.ADMIN_POOL
+    userPool = config.USER_POOL
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
