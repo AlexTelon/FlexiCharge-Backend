@@ -1,8 +1,7 @@
 const WebSocket = require('ws')
 
 module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants, v }) {
-    const c = constants.get()   
-    //let ws
+    const c = constants.get()  
 
     exports.runTests = function(){
         console.log('\n========= RUNNING TESTS ==========\n')
@@ -19,10 +18,15 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants,
         try {
             console.log('\n========= CONNECTING... ==========\n')
             const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
+
             ws.on('open', function open() {
                 v.addConnectedChargerSockets(chargerId, ws)
                 callback(ws)
-            });
+            })
+
+            ws.on('message', function message(data){
+                
+            })
             
         } catch (error) {
             console.log(error)
@@ -31,7 +35,6 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants,
 
     //test 2
     testRemoteStart = function (chargerID) {
-
         console.log("\n========= TESTING REMOTE START... ==========\n")
         ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
