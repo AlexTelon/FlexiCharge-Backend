@@ -1,21 +1,5 @@
-const WebSocket = require('ws')
-
 module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}) {
     const c = constants.get()   
-
-    exports.runTests = function(){
-        
-    }
-    
-    exports.testSocketConnection = function () {
-        try {
-            console.log("Testing connection...")
-            const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
-
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     //test 1
     exports.testFreeCharger = function (chargerID) {
