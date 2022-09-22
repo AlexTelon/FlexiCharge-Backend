@@ -7,11 +7,6 @@ servers:
     description: Development Environment
   - url: http://18.202.253.30:8080/
     description: Production Environment (AWS)
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
 paths:
   /auth/sign-in:
     post:
@@ -115,7 +110,14 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers/100012:
     get:
       tags:
@@ -125,7 +127,13 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
+        '500':
+          description: Error message
   /chargers/serial/NEWCHARGER1A:
     get:
       tags:
@@ -135,7 +143,11 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers:
     post:
       tags:
@@ -159,6 +171,8 @@ paths:
           description: Successful response
           content:
             application/json: {}
+        '404':
+          description: Error message
     get:
       tags:
         - Chargers
@@ -167,7 +181,14 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /transactions/1:
     get:
       tags:
@@ -392,3 +413,40 @@ paths:
           description: Successful response
           content:
             application/json: {}
+            
+components:
+  schemas:
+    Charger:
+      type: object
+      properties:
+        chargerID:
+          type: integer
+          format: int64
+          example: 100011
+        location:
+          type: array
+          items:
+            type: number
+          example: 
+            - 57.777714
+            - 14.16301
+        serialNumber:
+          type: string
+          example: "testnumber15"
+        chargePointID:
+          type: integer
+          format: int64
+          example: 24
+        status:
+          type: string
+          description: Charger status
+          example: Available
+          enum:
+            - Available
+            - Reserved
+      xml:
+        name: charger
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
