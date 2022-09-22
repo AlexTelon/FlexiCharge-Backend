@@ -25,7 +25,8 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants,
             })
 
             ws.on('message', function message(data){
-                
+                parsedData = JSON.parse(data)
+                console.log(parsedData)
             })
             
         } catch (error) {
