@@ -1,41 +1,39 @@
 const WebSocket = require('ws')
 
-module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}) {
+module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants, v }) {
     const c = constants.get()   
+    //let ws
 
     exports.runTests = function(){
-
+        console.log('\n========= RUNNING TESTS ==========\n')
+        const chargerId = 100001
+        connectAsChargerSocket(chargerId, function(ws){
+            testRemoteStart(chargerId)
+            testRemoteStop(chargerId)
+            testReserveNow(chargerId)
+        })
+        
     }
     
-    exports.testSocketConnection = function () {
+    connectAsChargerSocket = function (chargerId, callback) {
         try {
-            console.log("Testing connection...")
+            console.log('\n========= CONNECTING... ==========\n')
             const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
-
+            ws.on('open', function open() {
+                v.addConnectedChargerSockets(chargerId, ws)
+                callback(ws)
+            });
+            
         } catch (error) {
             console.log(error)
         }
     }
 
-    //test 1
-    exports.testFreeCharger = function (chargerID) {
-
-        console.log("Got test FreeCharger :)")
-
-        databaseInterfaceCharger.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
-            if (error.length > 0) {
-                console.log("\nError updating charger status in DB: " + error)
-            } else {
-                console.log("\nCharger "+chargerID+ " updated in DB: " + charger.status)
-            }
-        })
-    }
-
     //test 2
-    exports.testRemoteStart = function (chargerID) {
+    testRemoteStart = function (chargerID) {
 
-        console.log("Got test RemoteStart :)")
-        ocppInterface.remoteStartTransaction(chargerID, 57, function (error, response) {
+        console.log("\n========= TESTING REMOTE START... ==========\n")
+        ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
                 console.log("\nError: "+error)
             } else {
@@ -45,9 +43,9 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
     }
 
     //test 3
-    exports.testRemoteStop = function (chargerID) {
+    testRemoteStop = function (chargerID) {
 
-        console.log("Got test RemoteStop :)")
+        console.log("\n========= TESTING REMOTE STOP... ==========\n")
         ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
             if (error != null) {
                 console.log("\nError: "+error)
@@ -58,9 +56,9 @@ module.exports = function ({ ocppInterface, databaseInterfaceCharger, constants}
     }
 
     // test 4
-    exports.testReserveNow = function (chargerID) {
+    testReserveNow = function (chargerID) {
 
-        console.log("Got test ReserveNow :)")
+        console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
             if (error != null) {
                 console.log("\nError updating charger status in DB: " + error)

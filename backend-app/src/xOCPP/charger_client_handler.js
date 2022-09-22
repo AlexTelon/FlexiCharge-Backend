@@ -17,7 +17,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                         /*****************************************
                          used for internal testing, remove before production
                          *****************************************/
-                        var test = true
+                        var test = false
                         test = testSwitch(messageCache, clientSocket)
                         /*****************************************/
     
