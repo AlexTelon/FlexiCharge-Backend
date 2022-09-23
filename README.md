@@ -1,6 +1,13 @@
 # FlexiCharge-Backend
 
-# Start app
+# Start up
+## Prerequisites
+Needed to start app.
+### .env.example file
+- This file needs to be renamed to .env
+- Populate these variables.
+- It's validated that these variables are populated.
+## Start app
 - cd /FlexiCharge-Backend
 - docker-compose up
 
