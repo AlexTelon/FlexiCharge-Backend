@@ -301,14 +301,13 @@ class AdminCognitoService {
         }
     }
 
-    async createUser(username, password, userAttributes) {
+    async createUser(username, password) {
 
         let params = {
             "UserPoolId": this.userPool,
             "Username": username,
             // "MessageAction": "SUPPRESS", // Do not send welcome email
-            "TemporaryPassword": password,
-            "UserAttributes": userAttributes,
+            "TemporaryPassword": password
         };
         try {
             const res = await this.cognitoIdentity.adminCreateUser(params).promise();
