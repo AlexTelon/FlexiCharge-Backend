@@ -1,5 +1,6 @@
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
+const config = require('../../config');
 
 const checkJwt = jwt({
     // Dynamically provide a signing key
@@ -9,13 +10,13 @@ const checkJwt = jwt({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.ADMIN_POOL}/.well-known/jwks.json`,
+        jwksUri: `https://cognito-idp.${config.AWS_REGION}.amazonaws.com/${config.ADMIN_POOL}/.well-known/jwks.json`,
         // jwksUri: `https://dev-t3vri3ge.us.auth0.com/.well-known/jwks.json`
     }),
 
     // Validate the audience and the issuer.
     // audience: 'flexicharge.app',
-    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, `https://cognito-idp.eu-west-1.amazonaws.com/${process.env.ADMIN_POOL}`],
+    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, `https://cognito-idp.eu-west-1.amazonaws.com/${config.ADMIN_POOL}`],
     algorithms: ['RS256']
 });
 
