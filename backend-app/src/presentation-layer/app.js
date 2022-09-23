@@ -8,7 +8,8 @@ const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface }) { //authenticationRouter
+// TODO - Remove databaseInterfaceTransactionTests from app, or start all
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, databaseInterfaceTransactionTests }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -28,10 +29,13 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
 
         next()
     })
+
     
     app.get('/', (req, res) => {
         res.redirect('/swagger')
     })
+
+    databaseInterfaceTransactionTests.runTests()
 
     app.use('/swagger', swaggerUi.serve, swaggerUi.setup(openApiDocument));
     app.use('/chargers', chargersRouter)

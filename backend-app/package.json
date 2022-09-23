@@ -29,6 +29,8 @@
         "nodemon": "^2.0.12",
         "pg": "^8.7.1",
         "sequelize": "^6.6.5",
+        "sequelize-mock": "^0.10.2",
+        "sequelize-mock-v5": "^1.2.4",
         "swagger-ui-express": "^4.5.0",
         "ws": "^8.2.1",
         "yamljs": "^0.3.0"

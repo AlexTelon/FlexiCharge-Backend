@@ -1,20 +1,23 @@
 const awilix = require('awilix')
 const container = awilix.createContainer()
 
+
 container.register({
 
-    //Data access layers
+    //Data access layer
     dataAccessLayerCharger: awilix.asFunction(require('./data-access-layer/charger-repository')),
     dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
     dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
     dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/charge-point-repository')),
     dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/klarna-repository')),
-    //Business logic layers
+    databaseInit: awilix.asFunction(require('./data-access-layer/db')),
+    //Business logic layer
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
-    databaseInit: awilix.asFunction(require('./data-access-layer/db')),
+    //Business logic layer tests
+    databaseInterfaceTransactionTests: awilix.asFunction(require('./database-Interface/tests/transaction-interface.test')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 
@@ -24,7 +27,7 @@ container.register({
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
     chargePointValidation: awilix.asFunction(require("./database-Interface/validation/chargePointValidation")),
 
-    //Presentation layers
+    //Presentation layer
     chargePointsRouter: awilix.asFunction(require('./presentation-layer/charge-point-router-api')),
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),

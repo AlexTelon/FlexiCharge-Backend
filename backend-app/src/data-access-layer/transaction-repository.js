@@ -4,8 +4,8 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.getTransaction = function(transactionID, callback) {
-        databaseInit.Transactions.findOne({ where: { transactionID: transactionID }, raw: true })
+    exports.getTransaction = function(transactionID, database, callback) {
+        database.findOne({ where: { transactionID: transactionID }, raw: true })
             .then(transaction => callback([], transaction))
             .catch(e => {
                 console.log(e)
@@ -30,7 +30,7 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
-    exports.addTransaction = function(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, callback) {
+    exports.addTransaction = function(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, database, callback) {
 
         const transaction = {
             userID: userID,
@@ -40,7 +40,7 @@ module.exports = function({ databaseInit }) {
             timestamp: timestamp
         }
 
-        databaseInit.Transactions.create(transaction)
+        database.create(transaction)
             .then(transaction => callback([], transaction.transactionID))
             .catch(e => {
                 console.log(e)
