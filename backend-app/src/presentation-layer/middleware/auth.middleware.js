@@ -1,14 +1,15 @@
 const jwt = require('jsonwebtoken');
 const jwkToPem = require('jwk-to-pem');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const config = require('../../config');
 
 let pems = {};
 
 class AuthMiddleware {
 
-    region = 'eu-west-1';
-    userPoolId = 'eu-west-1_aSUDsld3S';
-    adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
+    region = config.AWS_REGION;
+    userPool = config.USER_POOL;
+    adminUserPool = config.ADMIN_POOL;
 
     constructor() {
         this.setUp();
@@ -50,7 +51,7 @@ class AuthMiddleware {
     }
 
     async setUp() {
-        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPoolId}/.well-known/jwks.json`
+        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`
 
         try {
             const response = await fetch(URL);
@@ -79,7 +80,7 @@ class AuthMiddleware {
         }
     }
     async setUpAdmin() {
-        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.adminUserPoolId}/.well-known/jwks.json`
+        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.adminUserPool}/.well-known/jwks.json`
 
         try {
             const response = await fetch(URL);
