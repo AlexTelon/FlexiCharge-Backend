@@ -30,8 +30,8 @@ paths:
                 type: object
                 example:
                   accessToken: accesToken
-                  email: username
-                  username: password
+                  email: email
+                  username: username
                   user_id: user_id
         '400':
           description: Incorrect username or password

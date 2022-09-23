@@ -2,15 +2,16 @@ const AWS = require('aws-sdk')
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware()
+const config = require('../../config')
 
-AWS.config.update({"region": "eu-west-1"});
+AWS.config.update({"region": config.AWS_REGION});
 
 class AdminCognitoService {
     cognitoIdentity;
-    secretHash = process.env.ADMIN_POOL_SECRET
-    clientId = process.env.ADMIN_POOL_ID
-    adminUserPool = 'eu-west-1_tPq5id1uh'; // admin
-    userPool = 'eu-west-1_NqeTT8tjs'
+    secretHash = config.ADMIN_POOL_SECRET
+    clientId = config.ADMIN_POOL_ID
+    adminUserPool = config.ADMIN_POOL
+    userPool = config.USER_POOL
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();

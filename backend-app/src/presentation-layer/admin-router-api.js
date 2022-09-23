@@ -117,12 +117,10 @@ module.exports = function () {
     })
 
     router.post('/users', checkJwt, checkIfAdmin, async function (req, res) {
-        const { username, password, email, name, family_name } = req.body;
-
+        const { username, password, email } = req.body;
+        // admin have to put in extra parameter email to create user
         let userAttributes = [];
         userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
         userAttributes.push({ Name: 'email_verified', Value: "true" });
 
         cognito.createUser(username, password, userAttributes)
