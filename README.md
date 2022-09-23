@@ -4,8 +4,8 @@
 ## Prerequisites
 Needed to start app.
 ### .env.example file
-- This file needs to be renamed to .env
-- Populate these variables.
+- Create a .env with variables matching the .env.example file.
+- Populate these variables in the .env file.
 - It's validated that these variables are populated.
 ## Start app
 - cd /FlexiCharge-Backend
