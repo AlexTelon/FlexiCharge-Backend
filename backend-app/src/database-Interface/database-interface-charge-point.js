@@ -1,12 +1,8 @@
-module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePointValidation, databaseInit }) {
+module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePointValidation }) {
 
     const exports = {}
 
     exports.getChargePoint = function(chargePointId, database, callback) {
-        if(database == null) {
-            database = databaseInit.chargePoint
-        }
-        
         dataAccessLayerChargePoint.getChargePoint(chargePointId, database, function(error, chargePoint) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
@@ -24,10 +20,6 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
     }
 
     exports.getChargePoints = function(database, callback) {
-        if(database == null) {
-            database = databaseInit.chargePoint
-        }
-
         dataAccessLayerChargePoint.getChargePoints(database, function(error, chargePoints) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {

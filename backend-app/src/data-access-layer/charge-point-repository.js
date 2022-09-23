@@ -4,6 +4,9 @@ module.exports = function({ databaseInit }) {
 
 
     exports.getChargePoint = function(chargePointId, database, callback) {
+        if(database == null) {
+            database = databaseInit.chargePoint
+        }
         database.findOne({ where: { chargePointID: chargePointId }, raw: true })
             .then(chargePoint => callback([], chargePoint))
             .catch(e => {
@@ -13,6 +16,9 @@ module.exports = function({ databaseInit }) {
     }
 
     exports.getChargePoints = function(database, callback) {
+        if(database == null) {
+            database = databaseInit.chargePoint
+        }
         database.findAll({ raw: true })
             .then(chargePoints => callback([], chargePoints))
             .catch(e => {
