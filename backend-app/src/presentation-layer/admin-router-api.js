@@ -118,7 +118,6 @@ module.exports = function () {
 
     router.post('/users', checkJwt, checkIfAdmin, async function (req, res) {
         const { username, password } = req.body;
-        // admin have to put in extra parameter email to create user
 
         cognito.createUser(username, password)
             .then(result => {
