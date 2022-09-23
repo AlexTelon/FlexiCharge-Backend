@@ -3,8 +3,8 @@ module.exports = function({ databaseInit }) {
     const exports = {}
 
 
-    exports.getChargePoint = function(chargePointId, callback) {
-        databaseInit.ChargePoints.findOne({ where: { chargePointID: chargePointId }, raw: true })
+    exports.getChargePoint = function(chargePointId, database, callback) {
+        database.findOne({ where: { chargePointID: chargePointId }, raw: true })
             .then(chargePoint => callback([], chargePoint))
             .catch(e => {
                 console.log(e)

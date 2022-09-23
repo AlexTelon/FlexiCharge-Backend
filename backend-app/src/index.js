@@ -18,6 +18,7 @@ container.register({
     databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
     //Business logic layer tests
     databaseInterfaceTransactionTests: awilix.asFunction(require('./database-Interface/tests/transaction-interface.test')),
+    databaseInterfaceChargePointTests: awilix.asFunction(require('./database-Interface/tests/charge-point-interface.test')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 
