@@ -12,8 +12,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getChargePoints = function(callback) {
-        databaseInit.ChargePoints.findAll({ raw: true })
+    exports.getChargePoints = function(database, callback) {
+        database.findAll({ raw: true })
             .then(chargePoints => callback([], chargePoints))
             .catch(e => {
                 console.log(e)

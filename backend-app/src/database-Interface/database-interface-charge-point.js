@@ -23,8 +23,12 @@ module.exports = function({ dataAccessLayerChargePoint, dbErrorCheck, chargePoin
         })
     }
 
-    exports.getChargePoints = function(callback) {
-        dataAccessLayerChargePoint.getChargePoints(function(error, chargePoints) {
+    exports.getChargePoints = function(database, callback) {
+        if(database == null) {
+            database = databaseInit.chargePoint
+        }
+
+        dataAccessLayerChargePoint.getChargePoints(database, function(error, chargePoints) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])

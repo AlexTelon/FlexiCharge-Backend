@@ -32,12 +32,25 @@ module.exports = function({ databaseInterfaceChargePoint, transactionValidation 
         })
     }
 
+    exports.getChargePointsTest = function(callback){
+        databaseInterfaceChargePoint.getChargePoints(ChargePointMock, function(error, chargePoints) {
+            console.log("GetChargePointsTest completed");
+            callback(error, chargePoints)
+        })
+    }
+
     exports.runTests = function() {
         const FailedTests = []
 
         exports.getChargePointTest(1, (error, chargePoint) => {
             if(error.length > 0){
                 FailedTests.push(`getChargePointTest Failed! : ${error}`)
+            }
+        })
+
+        exports.getChargePointsTest((error, chargePoints) => {
+            if(error.length > 0){
+                FailedTests.push(`getChargePointsTest Failed! : ${error}`)
             }
         })
 

@@ -24,7 +24,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
     const router = express.Router()
 
     router.get('/', async function (request, response) {
-        databaseInterfaceChargePoint.getChargePoints(function (error, chargePoints) {
+        databaseInterfaceChargePoint.getChargePoints(null, function (error, chargePoints) {
             if (error.length == 0 && chargePoints.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -37,7 +37,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
 
     router.get('/:id', function (request, response) {
         const chargePointId = request.params.id
-        databaseInterfaceChargePoint.getChargePoint(chargePointId, function (error, chargePoint) {
+        databaseInterfaceChargePoint.getChargePoint(chargePointId, null, function (error, chargePoint) {
             if (error.length == 0 && chargePoint.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
