@@ -8,7 +8,7 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.get('/:id', function (request, response) {
 
         const transactionId = request.params.id
-        databaseInterfaceTransactions.getTransaction(transactionId, function (errors, transaction) {
+        databaseInterfaceTransactions.getTransaction(transactionId, null, function (errors, transaction) {
             if (errors.length == 0 && transaction.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -63,7 +63,6 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
 
     router.put('/payment/:transactionID', function (request, response) {
-
         const transactionId = request.params.transactionID
         const paymentId = request.body.paymentID
         databaseInterfaceTransactions.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {

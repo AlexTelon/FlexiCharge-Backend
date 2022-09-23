@@ -1,11 +1,15 @@
 const { checkPrime } = require("crypto")
 
-module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
+module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface, databaseInit }) {
 
     const exports = {}
 
-    exports.getTransaction = function (transactionID, callback) {
-        dataAccessLayerTransaction.getTransaction(transactionID, function (error, transaction) {
+    exports.getTransaction = function (transactionID, database, callback) {
+        if (database == null) {
+            database = databaseInit.Transactions
+        }
+        
+        dataAccessLayerTransaction.getTransaction(transactionID, database, function (error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -44,13 +48,17 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
-    exports.addTransaction = function (userID, chargerID, isKlarnaPayment, pricePerKwh, callback) {
+    exports.addTransaction = function (userID, chargerID, isKlarnaPayment, pricePerKwh, database, callback) {
+        if (database == null) {
+            database = databaseInit.Transactions
+        }
+
         const validationError = transactionValidation.getAddTransactionValidation(pricePerKwh)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
             timestamp = (Date.now() / 1000 | 0)
-            dataAccessLayerTransaction.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, function (error, transactionId) {
+            dataAccessLayerTransaction.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, database, function (error, transactionId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])

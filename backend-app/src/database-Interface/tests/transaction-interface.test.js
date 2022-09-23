@@ -1,6 +1,7 @@
+const assert = require("assert");
 const SequelizeMock = require("sequelize-mock")
 
-module.exports = function({ dataAccessLayerTransaction, transactionValidation }) {
+module.exports = function({ databaseInterfaceTransactions, transactionValidation,  }) {
 
     const exports = {}
 
@@ -21,7 +22,28 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation })
         "meterStart" : true
     })
 
+    exports.getTransactionTest = function (transactionID, callback) {
+        databaseInterfaceTransactions.getTransaction(transactionID, TransactionsMock, function(error, transaction) {
+            console.log(`GetTransactionRun!`);
+            console.log(transaction);
+        });
+    }
+
+    exports.getTransactionsForUser = function (userID, callback) {
+        dataAccessLayerTransaction.getTransactionsForUser(userID, function (error, userTransaction) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                callback([], userTransaction)
+            }
+        })
+    }
+
     exports.addTransactionTest = function (userID, chargerID, isKlarnaPayment, pricePerKwh, callback) {
+        databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, callback)
+        
         const validationError = transactionValidation.getAddTransactionValidation(pricePerKwh)
         if (validationError.length > 0) {
             callback(validationError, [])
@@ -39,30 +61,17 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation })
         }
     }
 
-    exports.getTransactionTest = function (transactionID, callback) {
-        dataAccessLayerTransaction.getTransaction(transactionID, TransactionsMock, function (error, transaction) {            
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function (errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                if (transaction == null) {
-                    callback([], [])
-                } else {
-                    callback([], transaction)
-                }
-            }
-        })
-    }
-
     exports.runTests = function() {
         const FailedTests = []
+        
 
-        exports.addTransactionTest(4, 10011, true, 10,(error, transactionID) => {
-            if (error.length > 0) {
-                FailedTests.push(`addTransactionTest Failed! : ${error}`)
-            }
-        })
+        // exports.addTransactionTest(1000001, 1000, true, 10,(error, transactionID) => {
+        //     if (error.length > 0) {
+        //         FailedTests.push(`addTransactionTest Failed! : ${error}`)
+        //     }
+        // })
+
+        
 
         exports.getTransactionTest(1, (error, transaction) => {
             if (error.length > 0) {
