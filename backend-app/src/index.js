@@ -9,7 +9,7 @@ container.register({
     dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
     dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
     dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/charge-point-repository')),
-    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/klarna-repository')),
+    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/payment-methods/klarna-repository')),
     //Business logic layers
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
