@@ -39,20 +39,84 @@ module.exports = function({ databaseInit }) {
 
     exports.updatePaymentMethod = function(transactionID, newPaymentMethod, callback) {
         // TODO Update Payment Method of TranasctionID to newPaymentMethod
+        databaseInit.newTransactions.update({
+            newPaymentMethod: newPaymentMethod
+        }, {
+            where: {transactionID : transactionID},
+            returning: true,
+            raw: true
+        }).then(transaction => {
+            if (transaction == null) {
+                callback([], false)
+            } else {
+                callback([], true)
+            }
+        }).catch(e => {
+            console.log(e);
+            callback(e, [])
+        })
     }
 
-    exports.updateIsPayed = function(transactionID, callback) {
+    exports.updateIsPayed = function(transactionID, isPayed, callback) {
         // TODO updateIsPayed
+        databaseInit.newTransactions.update({
+            isPayed: isPayed
+        }, {
+            where: {transactionID : transactionID},
+            returning: true,
+            raw: true
+        }).then(transaction => {
+            if (transaction === null) {
+                callback([], false)
+            } else {
+                callback([], true)
+            }
+        }).catch(e => {
+            console.log(e);
+            callback(e, [])
+        })
     }
 
     // transactionDate & paymentDueDate must be created when we create transaction, and we do not need to update them.
 
-    exports.updatePayedDate = function(transactionID, callback) {
+    exports.updatePayedDate = function(transactionID, payedDate, callback) {
         // TODO update payedDate
+        databaseInit.newTransactions.update({
+            payedDate: payedDate
+        }, {
+            where: {transactionID : transactionID},
+            returning: true,
+            raw: true
+        }).then(transaction => {
+            if (transaction === null) {
+                callback([], true)
+            } else {
+                callback([], transactionID)
+            }
+        }).catch(e => {
+            console.log(e);
+            callback(e, [])
+        })
     }
 
-    exports.updateTotalPrice = function(transactionID, callback) {
+    exports.updateTotalPrice = function(transactionID, totalPrice, callback) {
         // TODO update totalPrice
+        databaseInit.newTransactions.update({
+            totalPrice: totalPrice
+        }, {
+            where: {transactionID : transactionID},
+            returning: true,
+            raw: true
+        }).then(transaction => {
+            if (transaction === null) {
+                callback([], true)
+            } else {
+                callback([], transactionID)
+            }
+        }).catch(e => {
+            console.log(e);
+            callback(e, [])
+        })
     }
 
     // exports.getTransactionsForCharger = function(chargerID, callback) {
