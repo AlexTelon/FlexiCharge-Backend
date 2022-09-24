@@ -1,11 +1,12 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-// const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -182,21 +183,21 @@ sequelize.sync().then(function () {
             //     status: '0',
             //     chargePointID: 1
             // });
-            Transactions.create({
-                paymentID: null,
-                userID: null,
-                timestamp: 1631522252,
-                isKlarnaPayment: true,
-                kwhTransfered: 23,
-                currentChargePercentage: 56,
-                pricePerKwh: 450
-            });
-            Reservations.create({
-                chargerID: 1,
-                userID: 1,
-                start: 164966755,
-                end: 164968555
-            });
+            // Transactions.create({
+            //     paymentID: null,
+            //     userID: null,
+            //     timestamp: 1631522252,
+            //     isKlarnaPayment: true,
+            //     kwhTransfered: 23,
+            //     currentChargePercentage: 56,
+            //     pricePerKwh: 450
+            // });
+            // Reservations.create({
+            //     chargerID: 1,
+            //     userID: 1,
+            //     start: 164966755,
+            //     end: 164968555
+            // });
         }
     })
 })
