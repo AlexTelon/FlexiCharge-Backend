@@ -208,7 +208,7 @@ const newReservations = sequelize.define('newReservations', {
     timestamps: false
 });
 
-const newChargeSession = sequelize.define('newChargeSessions', {
+const newChargeSessions = sequelize.define('newChargeSessions', {
     chargeSessionID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -317,8 +317,8 @@ const newChargePoints = sequelize.define('newChargePoints', {
     timestamps: false
 });
 
-newTransactions.belongsTo(newChargeSession, { foreignKey: 'chargeSessionID'})
-newChargeSession.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
+newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
+newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
 newChargers.belongsTo(newChargePoints, { foreignKey: 'chargerID', onDelete: 'cascade'})
 newReservations.belongsTo(newChargers, {foreignKey: 'chargerID', onDelete: 'cascade'})
 
@@ -450,6 +450,6 @@ sequelize.sync().then(function () {
 })
 
 module.exports = function ({ }) {
-    const exports = { paymentType, Chargers, Transactions, Reservations, ChargePoints, newChargers, newTransactions, newReservations, newChargePoints, newChargeSession}
+    const exports = { paymentType, Chargers, Transactions, Reservations, ChargePoints, newChargers, newTransactions, newReservations, newChargePoints, newChargeSessions}
     return exports
 }
