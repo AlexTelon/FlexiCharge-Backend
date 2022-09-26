@@ -8,7 +8,8 @@ module.exports = function({ databaseInit }) {
             userID: userID,
             chargeSessionID: chargeSessionID,
             payNow : payNow,
-            paymentDueDate : paymentDueDate
+            paymentDueDate : paymentDueDate,
+            transactionDate : (Date.now() / 1000 | 0)
         }
 
         databaseInit.newTransactions.create(transaction)
@@ -37,20 +38,16 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.updatePaymentMethod = function(transactionID, newPaymentMethod, callback) {
-        // TODO Update Payment Method of TranasctionID to newPaymentMethod
+    exports.updatePaymentMethod = function(transactionID, paymentMethod, callback) {
+        // TODO Update Payment Method of TranasctionID to paymentMethod
         databaseInit.newTransactions.update({
-            newPaymentMethod: newPaymentMethod
+            paymentMethod: paymentMethod
         }, {
             where: {transactionID : transactionID},
             returning: true,
             raw: true
         }).then(transaction => {
-            if (transaction == null) {
-                callback([], false)
-            } else {
-                callback([], true)
-            }
+            callback([], transaction)
         }).catch(e => {
             console.log(e);
             callback(e, [])
@@ -66,11 +63,7 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         }).then(transaction => {
-            if (transaction === null) {
-                callback([], false)
-            } else {
-                callback([], true)
-            }
+            callback([], transaction)
         }).catch(e => {
             console.log(e);
             callback(e, [])
@@ -88,11 +81,7 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         }).then(transaction => {
-            if (transaction === null) {
-                callback([], true)
-            } else {
-                callback([], transactionID)
-            }
+            callback([], transaction)
         }).catch(e => {
             console.log(e);
             callback(e, [])
@@ -108,11 +97,7 @@ module.exports = function({ databaseInit }) {
             returning: true,
             raw: true
         }).then(transaction => {
-            if (transaction === null) {
-                callback([], true)
-            } else {
-                callback([], transactionID)
-            }
+            callback([], transaction)
         }).catch(e => {
             console.log(e);
             callback(e, [])
