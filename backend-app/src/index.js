@@ -32,6 +32,7 @@ container.register({
     reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
+    electricityRouter: awilix.asFunction(require('./presentation-layer/electricity-router-api')),
 
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
