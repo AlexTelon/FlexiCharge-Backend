@@ -2,13 +2,13 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addChargeSession = function(chargerID, userID, currentChargePercentage, callback) {
+    exports.addChargeSession = function(chargerID, userID, callback) {
         // TODO addChargeSession
         const chargeSession = {
             chargerID: chargerID,
             userID: userID,
-            currentChargePercentage: currentChargePercentage,
-            kwhTransfered : 0
+            currentChargePercentage: null,
+            kwhTransfered : null
         }
 
         databaseInit.newChargingSessions.create(chargeSession)
@@ -29,35 +29,20 @@ module.exports = function({ databaseInit }) {
             })
     } 
 
-    exports.updatekwhTransfered = function(chargeSessionID, kwhTransfered, callback) {
-        // TODO updatekwhTransfered
-        databaseInit.newChargingSessions.update({ kwhTransfered : kwhTransfered }, {
+    exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered) {
+        // TODO updateChargingState
+        databaseInit.newChargingSessions.update({ 
+            kwhTransfered : kwhTransfered,
+            currentChargePercentage : currentChargePercentage
+        }, {
             where: {chargeSessionID : chargeSessionID},
             raw: true,
             returning : true
         }).then(chargeSession => {
             if (chargeSession == null) {
-                callback([], false)
+                callback([], chargeSession)
             } else {
-                callback([], true)
-            }
-        }).catch(e => {
-            console.log(e)
-            callback(e, [])
-        })
-    }
-
-    exports.updateCurrentChargePercentage = function(chargeSessionID, currentChargePercentage, callback) {
-        // TODO updateCurrentChargePercentage
-        databaseInit.newChargingSessions.update({ currentChargePercentage : currentChargePercentage }, {
-            where: {chargeSessionID : chargeSessionID},
-            raw: true,
-            returning : true
-        }).then(chargeSession => {
-            if (chargeSession == null) {
-                callback([], false)
-            } else {
-                callback([], true)
+                callback([], chargeSession)
             }
         }).catch(e => {
             console.log(e)

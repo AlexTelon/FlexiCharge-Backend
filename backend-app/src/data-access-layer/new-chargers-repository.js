@@ -2,7 +2,7 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.getAllChargers = function(callback) {
+    exports.getChargers = function(callback) {
         databaseInit.newChargers.findAll({ raw: true })
             .then(chargers => callback([], chargers))
             .catch(e => {
@@ -124,7 +124,6 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
-
 
     return exports
 }

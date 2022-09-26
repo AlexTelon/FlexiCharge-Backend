@@ -27,6 +27,8 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
 
         next()
     })
+
+
     
     app.get('/', (req, res) => {
         res.redirect('/swagger')
