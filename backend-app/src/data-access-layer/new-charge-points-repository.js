@@ -24,7 +24,7 @@ module.exports = function({ databaseInit }) {
     exports.addChargePoint = function(name, address, coordinates, callback) {
         const chargePoint = {
             name: name,
-            location: address,
+            address: address,
             coordinates: coordinates
         }
 
