@@ -1,23 +1,6 @@
 var express = require('express')
-const jwtAuthz = require('express-jwt-authz');
-const jwt = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
-
-// Put in .env variable?
-const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
-const region = 'eu-west-1';
-const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
-
-const checkJwt = jwt({
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `https://cognito-idp.${region}.amazonaws.com/${adminUserPoolId}/.well-known/jwks.json`,
-    }),
-    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1fWIOF9Yf'],
-    algorithms: ['RS256']
-});
+const checkJwt = require('./middleware/jwt.middleware')
+const checkIfAdmin = require('./middleware/admin.middleware')
 
 module.exports = function ({ databaseInterfaceCharger }) {
 
