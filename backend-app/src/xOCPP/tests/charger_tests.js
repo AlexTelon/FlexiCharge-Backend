@@ -8,21 +8,26 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         const chargerId = 100001
         connectAsChargerSocket(chargerId, function(ws){
             setTimeout(function(){
+                testBootNotification(ws)
+            }, 2000)
+            
+            setTimeout(function(){
                 testRemoteStart(chargerId)
+            }, 4000)
+            
+            setTimeout(function(){
+                testRemoteStop(chargerId)
+            }, 6000)
+            
+            setTimeout(function(){
+                testReserveNow(chargerId)
+            }, 8000)
 
-                setTimeout(function(){
-                    testRemoteStop(chargerId)
-                }, 2000);
-                
-                setTimeout(function(){
-                    testReserveNow(chargerId)
-                }, 4000);
-
-                setTimeout(function(){
-                    console.log('\n========= CHARGER MOCK DISCONNECTING... ==========\n')
-                    ws.terminate()
-                }, 6000);
-            }, 2000);
+            setTimeout(function(){
+                console.log('\n========= CHARGER MOCK DISCONNECTING... ==========\n')
+                ws.terminate()
+            }, 10000)
+            
             
         })
         
@@ -64,6 +69,8 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
     }
 
     callSwitchForClientMock = function(parsedData, ws){
+        let jsonResponseMessage = ""
+        let jsonRequestMessage = ""
         switch(parsedData[c.ACTION_INDEX]){
             case c.REMOTE_START_TRANSACTION:
                 jsonResponseMessage = func.buildJSONMessage([ 
@@ -137,8 +144,21 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 ws.send(jsonResponseMessage)
                 break
 
+            case c.DATA_TRANSFER:
+                jsonResponseMessage = func.buildJSONMessage([
+                    3,
+                    parsedData[c.UNIQUE_ID_INDEX],
+                    c.DATA_TRANSFER,
+                    {
+                        "status": c.ACCEPTED
+                    }
+                ])
+
+                ws.send(jsonResponseMessage)
+                break
+
             default:
-                console.log('Client message listener switch default case...')
+                console.log('Client message listener switch default case... :( (something went wrong)')
                 break
         }
     }
@@ -147,10 +167,34 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         switch(parsedData[c.ACTION_INDEX]){
             case c.START_TRANSACTION:
                 break
+            case c.BOOT_NOTIFICATION:         
+                break
         }
     }
 
-    //test 2
+    testBootNotification = function (ws) {
+        console.log("\n========= TESTING BOOT NOTIFICATION... ==========\n")
+        
+        const jsonBootNotification = func.buildJSONMessage([ 
+            2,
+            "0jdsEnnyo2kpCP8FLfHlNpbvQXosR5ZNlh8v",
+            c.BOOT_NOTIFICATION,
+            { 
+                "chargePointVendor": "AVT-Company",
+                "chargePointModel": "AVT-Express",
+                "chargePointSerialNumber": "avt.001.13.1",
+                "chargeBoxSerialNumber": "avt.001.13.1.01",
+                "firmwareVersion": "0.9.87",
+                "iccid": "",
+                "imsi": "",
+                "meterType": "AVT NQC-ACDC",
+                "meterSerialNumber": "avt.001.13.1.01" 
+            } 
+        ])
+
+        ws.send(jsonBootNotification)
+    }
+    
     testRemoteStart = function (chargerID) {
         console.log("\n========= TESTING REMOTE START... ==========\n")
         ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
@@ -162,7 +206,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         })
     }
 
-    //test 3
     testRemoteStop = function (chargerID) {
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
         ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
@@ -174,7 +217,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         })
     }
 
-    // test 4
     testReserveNow = function (chargerID) {
         console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
