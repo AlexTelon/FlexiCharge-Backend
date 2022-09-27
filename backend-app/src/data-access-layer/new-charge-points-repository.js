@@ -29,14 +29,14 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.addChargePoint = function(name, location, coordinates, database, callback) {
+    exports.addChargePoint = function(name, address, coordinates, database, callback) {
         if (database == null) {
             database = databaseInit.newChargePoints
         }
 
         const chargePoint = {
             name: name,
-            location: location,
+            address: address,
             coordinates: coordinates
         }
 
@@ -72,7 +72,7 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.updateChargePoint = function(chargePointId, name, location, price, database, callback) {
+    exports.updateChargePoint = function(chargePointId, name, coordinates, address, database, callback) {
         if (database == null) {
             database = databaseInit.newChargePoints
         }
@@ -83,16 +83,12 @@ module.exports = function({ databaseInit }) {
             updateProperties.name = name
         }
 
-        if (location != null) {
-            updateProperties.location = location
+        if (coordinates != null) {
+            updateProperties.coordinates = coordinates
         }
 
-        // if (coordinates != null) {
-        //     updateProperties.coordinates = coordinates
-        // }
-
-        if (price != null) {
-            updateProperties.price = price
+        if (address != null) {
+            updateProperties.address = address
         }
         
         database.update(updateProperties, {

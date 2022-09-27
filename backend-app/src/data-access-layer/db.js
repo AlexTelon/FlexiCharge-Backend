@@ -303,13 +303,12 @@ const newChargePoints = sequelize.define('newChargePoints', {
         unique: true,
         allowNull: false
     },
-    location: {
-        type: DataTypes.ARRAY(DataTypes.FLOAT),
-        unique: false,
+    address: {
+        type: DataTypes.STRING,
         allowNull: false
     },
-    price: {
-        type: DataTypes.DECIMAL(10, 2),
+    coordinates: {
+        type: DataTypes.ARRAY(DataTypes.FLOAT),
         unique: false,
         allowNull: false
     },

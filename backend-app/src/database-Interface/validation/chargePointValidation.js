@@ -4,7 +4,7 @@ module.exports = function({}) {
     NAME_MIN_VALUE = 1
     NAME_MAX_VALUE = 30
 
-    //Validation for location
+    //Validation for coordinates
     LONGITUDE_MIN_VALUE = -180
     LONGITUDE_MAX_VALUE = 180
     LATITUDE_MIN_VALUE = -90
@@ -16,7 +16,7 @@ module.exports = function({}) {
 
     const exports = {}
 
-    exports.chargePointValidation = function(name, location, price, klarnaReservationAmount) {
+    exports.chargePointValidation = function(name, coordinates, address) {
 
         const validationErrors = []
         if (name === undefined) {
@@ -29,30 +29,21 @@ module.exports = function({}) {
                 validationErrors.push("invalidName")
             }
         }
-        if (location === undefined) {
-            validationErrors.push("invalidLocation")
+        if (coordinates === undefined) {
+            validationErrors.push("invalidcoordinates")
         } else {
-            if ((location instanceof Array) == false || (typeof location[0] !== 'number') || (typeof location[1] !== 'number')) {
+            if ((coordinates instanceof Array) == false || (typeof coordinates[0] !== 'number') || (typeof coordinates[1] !== 'number')) {
                 validationErrors.push("invalidDataType")
             }
-            if (location[0] < LATITUDE_MIN_VALUE || location[0] > LATITUDE_MAX_VALUE) {
+            if (coordinates[0] < LATITUDE_MIN_VALUE || coordinates[0] > LATITUDE_MAX_VALUE) {
                 validationErrors.push("invalidLatitude")
             }
-            if (location[1] < LONGITUDE_MIN_VALUE || location[1] > LONGITUDE_MAX_VALUE) {
+            if (coordinates[1] < LONGITUDE_MIN_VALUE || coordinates[1] > LONGITUDE_MAX_VALUE) {
                 validationErrors.push("invalidLongitude")
             }
         }
-        if (price === undefined) {
-            validationErrors.push("invalidPrice")
-        } else {
-            if (typeof price !== 'number') {
-                validationErrors.push("invalidDataType")
-            }
-            if (price < PRICE_MIN_VALUE) {
-                validationErrors.push("invalidPrice")
-            }
-        }
-
+        /* TODO: Address validatation */
+        
 
         return validationErrors
     }
