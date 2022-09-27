@@ -20,7 +20,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
                 setTimeout(function(){
 
-                    console.log('\n========= CLIENT MOCK DISCONNECTING... ==========\n')
+                    console.log('\n========= CHARGER MOCK DISCONNECTING... ==========\n')
                     ws.terminate()
                 }, 6000);
             }, 2000);
@@ -31,7 +31,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
     
     connectAsChargerSocket = function (chargerId, callback) {
         try {
-            console.log('\n========= CLIENT MOCK CONNECTING... ==========\n')
+            console.log('\n========= CHARGER MOCK CONNECTING... ==========\n')
             const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
 
             ws.on('open', function open() {
