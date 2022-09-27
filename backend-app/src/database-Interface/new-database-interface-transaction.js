@@ -2,8 +2,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
 
     const exports = {}
 
-    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, callback) {
-        newDataAccessLayerTransaction.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, function(error, transactionId) {
+    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, database, callback) {
+        newDataAccessLayerTransaction.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionId) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -15,8 +15,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         
     }
 
-    exports.getTransaction = function(transactionID, callback) {
-        newDataAccessLayerTransaction.getTransaction(transactionID, function(error, transaction) {
+    exports.getTransaction = function(transactionID, database, callback) {
+        newDataAccessLayerTransaction.getTransaction(transactionID, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -31,8 +31,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         })
     }
 
-    exports.getTransactionsForUser = function(userID, callback) {
-        newDataAccessLayerTransaction.getTransactionsForUser(userID, function(error, userTransaction) {
+    exports.getTransactionsForUser = function(userID, database, callback) {
+        newDataAccessLayerTransaction.getTransactionsForUser(userID, database, function(error, userTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -43,8 +43,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         })
     }
 
-    exports.updatePaymentMethod = function(transactionID, paymentMethod, callback) {
-        newDataAccessLayerTransaction.updatePaymentMethod(transactionID, paymentMethod, function(error, transaction) {
+    exports.updatePaymentMethod = function(transactionID, paymentMethod, database, callback) {
+        newDataAccessLayerTransaction.updatePaymentMethod(transactionID, paymentMethod, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -55,8 +55,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         })
     } 
     // TODO Maybe merge : updateIsPayed, updatePayedDate, updateTotalPrice to one field. 
-    exports.updatePayedDate = function(transactionID, payedDate, callback) {
-        newDataAccessLayerTransaction.updatePayedDate(transactionID, payedDate, function(error, transaction) {
+    exports.updatePayedDate = function(transactionID, payedDate, database, callback) {
+        newDataAccessLayerTransaction.updatePayedDate(transactionID, payedDate, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -67,8 +67,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         })
     } 
 
-    exports.updateTotalPrice = function(transactionID, totalPrice, callback) {
-        newDataAccessLayerTransaction.updateTotalPrice(transactionID, totalPrice, function(error, transaction) {
+    exports.updateTotalPrice = function(transactionID, totalPrice, database, callback) {
+        newDataAccessLayerTransaction.updateTotalPrice(transactionID, totalPrice, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -79,8 +79,8 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
         })
     } 
 
-    exports.getTransactionsForCharger = function(chargerID, callback) {
-        newDataAccessLayerTransaction.getTransactionsForCharger(chargerID, function(error, chargerTransaction) {
+    exports.getTransactionsForCharger = function(chargerID, database, callback) {
+        newDataAccessLayerTransaction.getTransactionsForCharger(chargerID, database, function(error, chargerTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])

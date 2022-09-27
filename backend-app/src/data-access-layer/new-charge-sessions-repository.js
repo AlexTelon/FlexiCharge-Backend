@@ -2,7 +2,11 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addChargeSession = function(chargerID, userID, callback) {
+    exports.addChargeSession = function(chargerID, userID, database, callback) {
+        if (database == null) {
+            database = databaseInit.newChargeSessions
+        }
+
         // TODO addChargeSession
         const chargeSession = {
             chargerID: chargerID,
@@ -11,7 +15,7 @@ module.exports = function({ databaseInit }) {
             kwhTransfered : null
         }
 
-        databaseInit.newChargingSessions.create(chargeSession)
+        database.create(chargeSession)
             .then(chargeSession => callback([], chargeSession.chargeSessionID))
             .catch(e => {
                 console.log(e)
@@ -19,9 +23,13 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getChargeSession = function(chargeSessionID, callback) {
+    exports.getChargeSession = function(chargeSessionID, database, callback) {
+        if (database == null) {
+            database = databaseInit.newChargeSessions
+        }
+
         // TODO getChargeSession
-        databaseInit.newChargingSessions.findOne({ where: {chargeSessionID : chargeSessionID}, raw: true })
+        database.findOne({ where: {chargeSessionID : chargeSessionID}, raw: true })
             .then(chargeSession => callback([], chargeSession))
             .catch(e => {
                 console.log(e)
@@ -29,21 +37,25 @@ module.exports = function({ databaseInit }) {
             })
     } 
 
-    exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered) {
+    exports.getChargeSessions = function(chargerID, callback) {
+        // TODO fetch all chargeSessions for a charger...
+    }
+
+    exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
         // TODO updateChargingState
-        databaseInit.newChargingSessions.update({ 
+        if (database == null) {
+            database = databaseInit.newChargeSessions
+        }
+
+        database.update({ 
             kwhTransfered : kwhTransfered,
             currentChargePercentage : currentChargePercentage
         }, {
             where: {chargeSessionID : chargeSessionID},
             raw: true,
             returning : true
-        }).then(chargeSession => {
-            if (chargeSession == null) {
-                callback([], chargeSession)
-            } else {
-                callback([], chargeSession)
-            }
+        }).then(updatedChargeSession => {
+            callback([], updatedChargeSession[1][0])
         }).catch(e => {
             console.log(e)
             callback(e, [])
