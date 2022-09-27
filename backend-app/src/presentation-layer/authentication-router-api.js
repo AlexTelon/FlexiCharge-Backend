@@ -8,15 +8,15 @@ module.exports = function () {
 
     router.put('/update-user', function (req, res) {
 
-        const { accessToken, name, family_name, phone_number, street_adress, zip_code, city, country } = req.body;
+        const { accessToken, name, family_name, phone_number, street_address, zip_code, city, country } = req.body;
         let userAttributes = [];
         userAttributes.push({ Name: 'name', Value: name });
         userAttributes.push({ Name: 'family_name', Value: family_name });
         userAttributes.push({ Name: 'phone_number', Value: phone_number });
-        userAttributes.push({ Name: 'street_adress', Value: street_adress });
-        userAttributes.push({ Name: 'zip', Value: zip_code });
-        userAttributes.push({ Name: 'city', Value: city });
-        userAttributes.push({ Name: 'country', Value: country });
+        userAttributes.push({ Name: 'custom:street_address', Value: street_address });
+        userAttributes.push({ Name: 'custom:zip_code', Value: zip_code });
+        userAttributes.push({ Name: 'custom:city', Value: city });
+        userAttributes.push({ Name: 'custom:country', Value: country });
 
         cognito.updateUserAttributes(accessToken, userAttributes)
             .then(result => {
