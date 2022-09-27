@@ -16,6 +16,7 @@ container.register({
     newDataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/new-reservations-repository')),
     newDataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/new-transactions-repository')),
     newDataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/new-charge-points-repository')),
+    newDataAccessLayerElectricityTariff: awilix.asFunction(require('./data-access-layer/new-electricity-tariff-repository')),
     //Business logic layers
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
@@ -27,9 +28,11 @@ container.register({
     newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/new-database-interface-transaction')),
     newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
     newDatabaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
+    newDatabaseInterfaceElectricityTariff: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     // Business logic tests
     interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),
+    interfaceElectricityTariffTests: awilix.asFunction(require('./database-Interface/tests/database-interface-electricity-tariff.test')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 

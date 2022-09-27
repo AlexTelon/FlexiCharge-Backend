@@ -317,10 +317,10 @@ const newChargePoints = sequelize.define('newChargePoints', {
     timestamps: false
 });
 
-const newElectricityTariff = sequelize.define('newElectricityTariff', {
+const newElectricityTariffs = sequelize.define('newElectricityTariffs', {
     date: {
         type: DataTypes.DATE,
-        unique: false,
+        unique: true,
         allowNull: false
     },
     price: {
@@ -337,7 +337,7 @@ const newElectricityTariff = sequelize.define('newElectricityTariff', {
     timestamps: false
 });
 
-newElectricityTariff.removeAttribute('id');
+newElectricityTariffs.removeAttribute('id');
 
 newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
 newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
@@ -467,6 +467,7 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
+            /*
             //Fill the ElectricityTariff table with random data
             const generateDays = 61; //Days to generate prices from startDate
             const startDate = new Date(2022, 8, 1); //Sets the start point
@@ -478,18 +479,18 @@ sequelize.sync().then(function () {
             //Iterates through each hour and sets price+currency from startDate
             for (let hour = 0; hour < 24 * generateDays; hour++) {
                 iterTime += 1*60*60*1000
-                newElectricityTariff.create({
+                newElectricityTariffs.create({
                     date: iterTime,
                     price: randomPrice(1, 6),
                     currency: "SEK"
                 })
-            }
+            }*/
         }
     })
 })
 
 module.exports = function ({ }) {
     const exports = { paymentType, Chargers, Transactions, Reservations, ChargePoints, newChargers,
-                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariff}
+                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariffs}
     return exports
 }
