@@ -14,7 +14,7 @@ module.exports = function () {
         userAttributes.push({ Name: 'family_name', Value: family_name });
         userAttributes.push({ Name: 'phone_number', Value: phone_number });
         userAttributes.push({ Name: 'street_adress', Value: street_adress });
-        userAttributes.push({ Name: 'zip', Value: zip });
+        userAttributes.push({ Name: 'zip', Value: zip_code });
         userAttributes.push({ Name: 'city', Value: city });
         userAttributes.push({ Name: 'country', Value: country });
 
