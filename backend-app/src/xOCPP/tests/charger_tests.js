@@ -36,7 +36,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
     connectAsChargerSocket = function (chargerId, callback) {
         try {
             console.log('\n========= CHARGER MOCK CONNECTING... ==========\n')
-            const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
+            const ws = new WebSocket("ws://localhost:1337/123abc")  
 
             ws.on('open', function open() {
                 v.addConnectedChargerSockets(chargerId, ws)
