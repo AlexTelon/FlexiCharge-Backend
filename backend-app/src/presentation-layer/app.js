@@ -7,7 +7,8 @@ const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, interfaceChargeSessionsTests, interfaceElectricityTariffTests}) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, 
+    chargePointsRouter, ocppInterface, interfaceChargeSessionsTests, interfaceChargersTests, interfaceChargePointsTests, interfaceElectricityTariffsTests}) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -29,8 +30,9 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     })
 
     interfaceChargeSessionsTests.runTests()
-    interfaceElectricityTariffTests.runTests()
-    
+    interfaceElectricityTariffsTests.runTests()
+    interfaceChargersTests.runTests()
+    interfaceChargePointsTests.runTests()
     
     app.get('/', (req, res) => {
         res.redirect('/swagger')

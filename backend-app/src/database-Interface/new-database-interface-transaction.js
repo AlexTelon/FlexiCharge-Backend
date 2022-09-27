@@ -1,9 +1,9 @@
-module.exports = function({ newDataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
+module.exports = function({ newDataAccessLayerTransactions, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
 
     const exports = {}
 
     exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, database, callback) {
-        newDataAccessLayerTransaction.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionId) {
+        newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionId) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -16,7 +16,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     }
 
     exports.getTransaction = function(transactionID, database, callback) {
-        newDataAccessLayerTransaction.getTransaction(transactionID, database, function(error, transaction) {
+        newDataAccessLayerTransactions.getTransaction(transactionID, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -32,7 +32,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     }
 
     exports.getTransactionsForUser = function(userID, database, callback) {
-        newDataAccessLayerTransaction.getTransactionsForUser(userID, database, function(error, userTransaction) {
+        newDataAccessLayerTransactions.getTransactionsForUser(userID, database, function(error, userTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -44,7 +44,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     }
 
     exports.updatePaymentMethod = function(transactionID, paymentMethod, database, callback) {
-        newDataAccessLayerTransaction.updatePaymentMethod(transactionID, paymentMethod, database, function(error, transaction) {
+        newDataAccessLayerTransactions.updatePaymentMethod(transactionID, paymentMethod, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -56,7 +56,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     } 
     // TODO Maybe merge : updateIsPayed, updatePayedDate, updateTotalPrice to one field. 
     exports.updatePayedDate = function(transactionID, payedDate, database, callback) {
-        newDataAccessLayerTransaction.updatePayedDate(transactionID, payedDate, database, function(error, transaction) {
+        newDataAccessLayerTransactions.updatePayedDate(transactionID, payedDate, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -68,7 +68,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     } 
 
     exports.updateTotalPrice = function(transactionID, totalPrice, database, callback) {
-        newDataAccessLayerTransaction.updateTotalPrice(transactionID, totalPrice, database, function(error, transaction) {
+        newDataAccessLayerTransactions.updateTotalPrice(transactionID, totalPrice, database, function(error, transaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -80,7 +80,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     } 
 
     exports.getTransactionsForCharger = function(chargerID, database, callback) {
-        newDataAccessLayerTransaction.getTransactionsForCharger(chargerID, database, function(error, chargerTransaction) {
+        newDataAccessLayerTransactions.getTransactionsForCharger(chargerID, database, function(error, chargerTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
@@ -117,7 +117,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                                     const isKlarnaPayment = true
     //                                     const timestamp = (Date.now() / 1000 | 0)
 
-    //                                     newDataAccessLayerTransaction.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
+    //                                     newDataAccessLayerTransactions.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
     //                                         if (Object.keys(error).length > 0) {
     //                                             dbErrorCheck.checkError(error, function(error) {
     //                                                 callback(error, [])
@@ -142,7 +142,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
 
     // exports.createKlarnaOrder = async function(transactionId, authorization_token, callback) {
 
-    //     newDataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction) {
+    //     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction) {
     //         if (Object.keys(error).length > 0) {
     //             dbErrorCheck.checkError(error, function(errorCode) {
     //                 callback(errorCode, [])
@@ -162,7 +162,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                         } else {
     //                             dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, function(error, klarnaOrder) {
     //                                 if (error.length == 0) {
-    //                                     newDataAccessLayerTransaction.updateTransactionPayment(transactionId, klarnaOrder.order_id, function(error, updatedTransaction) {
+    //                                     newDataAccessLayerTransactions.updateTransactionPayment(transactionId, klarnaOrder.order_id, function(error, updatedTransaction) {
     //                                         if (Object.keys(error).length > 0) {
     //                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                 callback(errorCode, [])
@@ -172,7 +172,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                                                 if(error != null || returnObject.status == "Rejected") {
     //                                                     callback(["couldNotStartOCPPTransaction"], [])
     //                                                 } else {
-    //                                                     newDataAccessLayerTransaction.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
+    //                                                     newDataAccessLayerTransactions.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
     //                                                         if (Object.keys(error).length > 0) {
     //                                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                                 callback(errorCode, [])
@@ -199,7 +199,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
 
     // exports.finalizeKlarnaOrder = async function(transactionId, callback) {
 
-    //     newDataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction) {
+    //     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction) {
     //         if (Object.keys(error).length > 0) {
     //             dbErrorCheck.checkError(error, function(errorCode) {
     //                 callback(errorCode, [])
@@ -221,7 +221,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                                 if(error != null || returnObject.status == "Rejected") {
     //                                     callback(["couldNotStopOCPPTransaction"])
     //                                 } else {
-    //                                     newDataAccessLayerTransaction.getTransaction(transactionId, function(error, transaction){
+    //                                     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction){
     //                                         if (Object.keys(error).length > 0) {
     //                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                 callback(errorCode, [])
@@ -230,7 +230,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                                             const kwhTransfered = (returnObject.meterStop - transaction.meterStart) / 1000
 
     //                                             if(kwhTransfered >= 0) {
-    //                                                 newDataAccessLayerTransaction.updateTransactionChargingStatus(transactionId, kwhTransfered, transaction.currentChargePercentage, function(error, updatedTransaction) {
+    //                                                 newDataAccessLayerTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, transaction.currentChargePercentage, function(error, updatedTransaction) {
     //                                                     if (Object.keys(error).length > 0) {
     //                                                         dbErrorCheck.checkError(error, function(errorCode) {
     //                                                             callback(errorCode, [])
@@ -238,7 +238,7 @@ module.exports = function({ newDataAccessLayerTransaction, transactionValidation
     //                                                     } else {
     //                                                         dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, function(error, responseData) {
     //                                                             if (error.length == 0) {
-    //                                                                 newDataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
+    //                                                                 newDataAccessLayerTransactions.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
     //                                                                     if (Object.keys(error).length > 0) {
     //                                                                         dbErrorCheck.checkError(error, function(errorCode) {
     //                                                                             callback(errorCode, [])

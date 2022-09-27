@@ -1,6 +1,6 @@
 const SequelizeMock = require('sequelize-mock')
 
-module.exports = function({newDatabaseInterfaceElectricityTariff}) {
+module.exports = function({newDatabaseInterfaceElectricityTariffs}) {
     const exports = {}
 
     const DBConnectionMock = new SequelizeMock();

@@ -35,7 +35,7 @@ module.exports = function({ databaseInit }) {
                 console.log(e)
                 callback(e, [])
             })
-    } 
+    }
 
     exports.getChargeSessions = function(chargerID, callback) {
         // TODO fetch all chargeSessions for a charger...

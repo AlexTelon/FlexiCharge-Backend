@@ -1,4 +1,4 @@
-module.exports = function({newDataAccessLayerElectricityTariff, dbErrorCheck}) {
+module.exports = function({newDataAccessLayerElectricityTariffs, dbErrorCheck}) {
     const exports = {}
 
     exports.getElectricityTariffsOrderByDate = function(callback){

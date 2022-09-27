@@ -6,6 +6,7 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
 
     const DBConnectionMock = new SequelizeMock();
     let ChargeSession = DBConnectionMock.define('newChargeSessions', {
+        chargeSessionID : 1,
         userID : null,
         chargerID : null,
         kwhTransfered: null,
@@ -17,7 +18,7 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
 
 
     exports.addChargeSessionTest = function(chargerID, userID, callback) {        
-        newDatabaseInterfaceChargeSessions.addChargeSession(chargerID, userID, ChargeSession, (error, result) => {
+        newDatabaseInterfaceChargeSessions.addChargeSession(chargerID, userID, ChargeSession, (error) => {
             const errorList = []
 
             error.forEach(err => {
@@ -31,21 +32,21 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
     exports.getChargeSessionTest = function(chargeSessionID, callback) {
         const chargerID = 10
         const userID = 1337
-        
+
         ChargeSession.$queueResult(ChargeSession.build({chargerID : chargerID, userID : userID}))
 
-        newDatabaseInterfaceChargeSessions.getChargeSession(chargeSessionID, ChargeSession, (error, result) => {
+        newDatabaseInterfaceChargeSessions.getChargeSession(chargeSessionID, ChargeSession, (error, chargeSession) => {
             const errorList = []
 
             error.forEach(err => {
                 errorList.push(err)
             });
 
-            if (result.dataValues.chargerID !== chargerID) {
+            if (chargeSession.dataValues.chargerID !== chargerID) {
                 errorList.push("chargerID does not match intended output!")
             }
 
-            if (result.dataValues.userID !== userID) {
+            if (chargeSession.dataValues.userID !== userID) {
                 errorList.push("userID does not match intended output!")
             }
             callback(errorList)
@@ -53,18 +54,18 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
-        newDatabaseInterfaceChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, ChargeSession, (error, result) => {
+        newDatabaseInterfaceChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, ChargeSession, (error, updatedChargeSession) => {
             const errorList = []
 
             error.forEach(err => {
                 errorList.push(err)
             });
 
-            if (result.dataValues.currentChargePercentage !== currentChargePercentage) {
+            if (updatedChargeSession.dataValues.currentChargePercentage !== currentChargePercentage) {
                 errorList.push("currentChargePercentage does not match intended output!")
             }
 
-            if (result.dataValues.kwhTransfered !== kwhTransfered) {
+            if (updatedChargeSession.dataValues.kwhTransfered !== kwhTransfered) {
                 errorList.push("kwhTransfered does not match intended output!")
             }
 
@@ -77,7 +78,7 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
 
         exports.updateChargingState(1, 10, 1000, (error) => {
             error.forEach(err => {
-                FailedTests.push(`addChargeSessionTest Failed! : ${err}`);
+                FailedTests.push(`updateChargingState Failed! : ${err}`);
             });
         })
 
@@ -96,7 +97,7 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
         if (FailedTests.length == 0) {
             console.log(`All Charge Sessions Tests succeeded!`);
         } else {
-            console.log(`Transaction tests had ${FailedTests.length} failed tests!`);
+            console.log(`Charge Sessions tests had ${FailedTests.length} failed tests!`);
             FailedTests.forEach(message => {
                 console.log(message);
             });
