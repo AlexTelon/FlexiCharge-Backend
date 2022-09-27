@@ -1,5 +1,6 @@
 const awilix = require('awilix')
 const container = awilix.createContainer()
+const config = require('./config')
 
 container.register({
 
@@ -59,4 +60,4 @@ const ocpp = container.resolve("ocpp")
 ocpp.startServer()
 
 
-app.listen(8080)
+app.listen(config.PORT)

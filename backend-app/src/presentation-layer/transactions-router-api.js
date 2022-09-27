@@ -98,7 +98,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.put('/start/:transactionID', function (request, response) {
 
-        const { transactionID, authorization_token } = request.body;
+        const transactionID = request.params.transactionID
+        const authorization_token = request.body.authorization_token;
 
         databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
             console.log(error);

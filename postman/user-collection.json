@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "a6f4557a-797f-4188-ac5c-003a2ff47de0",
+		"name": "User",
+		"description": "Create a new user with the \"Sign-up\" request. The registered user will get a email with a verification code. Use this verification code with the \"Verify user\" request. When verified sign in with the \"Sign-in\" request to get a access token.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23211732"
+	},
+	"item": [
+		{
+			"name": "Sign-in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"rest-api-user\",\r\n    \"password\": \"{{rest-api-account-password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/sign-in",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-up",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username\",\r\n    \"password\": \"password\",\r\n    \"email\": \"email@email.com\",\r\n    \"name\": \"first_name\",\r\n    \"family_name\": \"last_name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/sign-up",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"sign-up"
+					]
+				},
+				"description": "Creates a new user. Sends a verification code in a email to the supplied email address. Use this verification code with the \"Verify user\" request."
+			},
+			"response": []
+		},
+		{
+			"name": "Verify user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username\",\r\n    \"code\": \"verification_code\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/verify",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"verify"
+					]
+				},
+				"description": "Verifies a new user account with a verification code."
+			},
+			"response": []
+		},
+		{
+			"name": "Change password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accessToken\": \"\",\r\n    \"previousPassword\": \"{{rest-api-account-password}}\",\r\n    \"newPassword\": \"{{rest-api-account-password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/change-password",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm forgot password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"rest-api-user\",\n    \"password\": \"{{rest-api-account-password}}\",\n    \"confirmationCode\": \"email_code\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/confirm-forgot-password",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"confirm-forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/forgot-password/username",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"forgot-password",
+						"username"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-in-test-save",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"rest-api-user\",\r\n    \"password\": \"{{rest-api-account-password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/sign-in",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:8080"
+		}
+	]
+}

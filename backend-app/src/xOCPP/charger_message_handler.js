@@ -287,36 +287,58 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
     function callResultSwitch(uniqueID, response, chargerID) {
 
-        if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
-
+        try {
             let action = response[c.ACTION_INDEX]
             console.log("Incoming result call: " + action)
-
+    
             switch (action) {
-
+    
                 case c.RESERVE_NOW:
-                    interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
                 case c.REMOTE_START_TRANSACTION:
-                    interfaceHandler.handleRemoteStartResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleRemoteStartResponse(chargerID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
                 case c.REMOTE_STOP_TRANSACTION:
-                    interfaceHandler.handleRemoteStopResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleRemoteStopResponse(chargerID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
+                case c.DATA_TRANSFER:
+                    //do nothing
+                    break
+    
                 default:
                     let socket = v.getConnectedChargerSocket(chargerID)
                     let message = func.getGenericError(uniqueID, "Could not interpret the response for the callcode: " + action)
                     socket.send(message)
                     break
             }
-        } else {
-            let socket = v.getConnectedChargerSocket(chargerID)
-            let message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
-            socket.send(message)
+            
+        } catch (error) {
+            switch(error){
+                case c.INVALID_UNIQUE_ID:
+                    let socket = v.getConnectedSocket(chargerID)
+                    let message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
+                    socket.send(message)
+                    break
+            }
         }
+
+        
 
     }
 

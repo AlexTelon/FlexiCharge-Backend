@@ -1,32 +1,9 @@
 var express = require('express')
-const jwtAuthz = require('express-jwt-authz');
-const jwt = require('express-jwt');
-const jwksRsa = require('jwks-rsa');
+const checkJwt = require('./middleware/jwt.middleware')
+const checkIfAdmin = require('./middleware/admin.middleware')
 
 const AdminCognitoService = require('./services/cognito.admin.config')
 
-// Put in .env variable?
-const checkIfAdmin = jwtAuthz(['Admins'], { customScopeKey: 'cognito:groups' });
-const region = 'eu-west-1';
-const adminUserPoolId = 'eu-west-1_1fWIOF9Yf';
-
-const checkJwt = jwt({
-    // Dynamically provide a signing key
-    // based on the kid in the header and 
-    // the signing keys provided by the JWKS endpoint.
-    secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `https://cognito-idp.${region}.amazonaws.com/${adminUserPoolId}/.well-known/jwks.json`,
-        // jwksUri: `https://dev-t3vri3ge.us.auth0.com/.well-known/jwks.json`
-    }),
-
-    // Validate the audience and the issuer.
-    // audience: 'flexicharge.app',
-    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1fWIOF9Yf'],
-    algorithms: ['RS256']
-});
 
 module.exports = function () {
     const router = express.Router()
@@ -140,15 +117,9 @@ module.exports = function () {
     })
 
     router.post('/users', checkJwt, checkIfAdmin, async function (req, res) {
-        const { username, password, email, name, family_name } = req.body;
+        const { username, password } = req.body;
 
-        let userAttributes = [];
-        userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-        userAttributes.push({ Name: 'email_verified', Value: "true" });
-
-        cognito.createUser(username, password, userAttributes)
+        cognito.createUser(username, password)
             .then(result => {
                 if (result.statusCode === 201) {
                     res.status(201).json(result.data).end();
@@ -159,15 +130,9 @@ module.exports = function () {
             })
     })
     router.post('/', checkJwt, checkIfAdmin, function (req, res) {
-        const { username, password, email, name, family_name } = req.body;
+        const { username, password } = req.body;
 
-        let userAttributes = [];
-        userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-        userAttributes.push({ Name: 'email_verified', Value: "true" });
-
-        cognito.createAdmin(username, password, userAttributes)
+        cognito.createAdmin(username, password)
             .then(result => {
                 if (result.statusCode === 201) {
                     res.status(201).json(result.data).end();
