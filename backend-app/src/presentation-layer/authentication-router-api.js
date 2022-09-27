@@ -6,6 +6,29 @@ module.exports = function () {
     const router = express.Router()
     const cognito = new CognitoService();
 
+    router.put('/update-user', function (req, res) {
+
+        const { accessToken, name, family_name, phone_number, street_adress, zip_code, city, country } = req.body;
+        let userAttributes = [];
+        userAttributes.push({ Name: 'name', Value: name });
+        userAttributes.push({ Name: 'family_name', Value: family_name });
+        userAttributes.push({ Name: 'phone_number', Value: phone_number });
+        userAttributes.push({ Name: 'street_adress', Value: street_adress });
+        userAttributes.push({ Name: 'zip', Value: zip });
+        userAttributes.push({ Name: 'city', Value: city });
+        userAttributes.push({ Name: 'country', Value: country });
+
+        cognito.updateUserAttributes(accessToken, userAttributes)
+            .then(result => {
+                if (result.statusCode === 204) {
+                    res.status(204).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
+                }
+            })
+
+    })
+
     router.post('/sign-up', function (req, res) {
 
         let { username, password } = req.body;
@@ -45,24 +68,6 @@ module.exports = function () {
                     res.status(400).json(result).end();
                 }
             })
-    })
-
-    router.put('/update-user', function (req, res) {
-
-        const { accessToken, name, family_name } = req.body;
-        let userAttributes = [];
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-
-        cognito.updateUserAttributes(accessToken, userAttributes)
-            .then(result => {
-                if (result.statusCode === 204) {
-                    res.status(204).json(result.data).end();
-                } else {
-                    res.status(400).json(result).end();
-                }
-            })
-
     })
 
     router.post('/confirm-forgot-password', function (req, res) {
