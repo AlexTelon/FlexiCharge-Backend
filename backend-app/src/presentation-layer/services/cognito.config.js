@@ -222,6 +222,20 @@ class CognitoService {
         }
     }
 
+    async getUserByAccessToken(accessToken){
+        var params = {
+            "AccessToken": accessToken
+        }
+        try {
+            const res = await this.cognitoIdentity.getUser(params).promise();
+            console.log(res);
+            return res;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
+
     generateHash(username) {
         return createHmac('SHA256', this.secretHash)
             .update(username + this.clientId)

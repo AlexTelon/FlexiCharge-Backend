@@ -124,5 +124,16 @@ module.exports = function () {
             })
     })
 
+    router.get('/:accessToken', async (req, res) => {
+        const accessToken = req.params.accessToken;
+        try {
+            const result = await cognito.getUserByAccessToken(accessToken);
+            res.status(200).json(result).end();
+            
+        } catch (error){
+            res.status(401).json(error).end();
+        }
+    })
+    
     return router
 }
