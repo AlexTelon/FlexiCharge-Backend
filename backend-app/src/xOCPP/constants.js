@@ -96,7 +96,8 @@ module.exports = function({}){
             RESET_FAILURE: "ResetFailure",
             UNDERVOLTAGE: "UnderVoltage",
             OVERVOLTAGE: "OverVoltage",
-            WEAK_SIGNAL: "WeakSignal"
+            WEAK_SIGNAL: "WeakSignal",
+            INVALID_UNIQUE_ID: "InvalidUniqueID"
 
             
         }
