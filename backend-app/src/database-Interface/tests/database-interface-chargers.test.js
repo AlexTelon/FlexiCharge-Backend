@@ -129,38 +129,38 @@ module.exports = function({ newDatabaseInterfaceChargers }) {
 
         exports.getChargerTest(1, (error) => {
             error.forEach(e => {
-                FailedTests.push(`getChargers Failed ! ${e}`)
+                FailedTests.push(`getChargerTest Failed ! ${e}`)
             })
         })
 
         exports.getChargerBySerialNumberTest("abc111", (error) => {
             error.forEach(e => {
-                FailedTests.push(`getChargers Failed ! ${e}`)
+                FailedTests.push(`getChargerBySerialNumberTest Failed ! ${e}`)
             })
         })
 
         exports.getAvailableChargersTest((error) => {
             error.forEach(e => {
-                FailedTests.push(`getChargers Failed ! ${e}`)
+                FailedTests.push(`getAvailableChargersTest Failed ! ${e}`)
             })
         })
 
         exports.addChargerTest(1, "abc999", [39.749812214261034,39.070100435207065], (error) => {
             error.forEach(e => {
-                FailedTests.push(`getChargers Failed ! ${e}`)
+                FailedTests.push(`addChargerTest Failed ! ${e}`)
             })
         })
 
         exports.removeChargerTest(chargersDefaultValue.chargerID, (error) => {
             error.forEach(e => {
-                FailedTests.push(`getChargers Failed ! ${e}`)
+                FailedTests.push(`removeChargerTest Failed ! ${e}`)
             })
         })
 
         if (FailedTests.length == 0) {
             console.log(`All Chargers Tests succeeded!`);
         } else {
-            console.log(`Transaction tests had ${FailedTests.length} failed tests!`);
+            console.log(`Chargers tests had ${FailedTests.length} failed tests!`);
             FailedTests.forEach(message => {
                 console.log(message);
             });

@@ -1,9 +1,9 @@
-module.exports = function ({ newDataAccessLayerReservation, reservationValidation, dbErrorCheck }) {
+module.exports = function ({ newDataAccessLayerReservations, reservationValidation, dbErrorCheck }) {
 
     const exports = {}
 
     exports.getReservation = function (reservationID, callback) {
-        newDataAccessLayerReservation.getReservation(reservationID, function (error, reservation) {
+        newDataAccessLayerReservations.getReservation(reservationID, function (error, reservation) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -15,7 +15,7 @@ module.exports = function ({ newDataAccessLayerReservation, reservationValidatio
     }
 
     exports.getReservationForCharger = function (chargerID, callback) {
-        newDataAccessLayerReservation.getReservationForCharger(chargerID, function (error, chargerReservation) {
+        newDataAccessLayerReservations.getReservationForCharger(chargerID, function (error, chargerReservation) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -31,7 +31,7 @@ module.exports = function ({ newDataAccessLayerReservation, reservationValidatio
     }
 
     exports.getReservationForUser = function (userID, callback) {
-        newDataAccessLayerReservation.getReservationForUser(userID, function (error, userReservation) {
+        newDataAccessLayerReservations.getReservationForUser(userID, function (error, userReservation) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -51,7 +51,7 @@ module.exports = function ({ newDataAccessLayerReservation, reservationValidatio
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            newDataAccessLayerReservation.addReservation(chargerID, userID, start, end, function (error, reservationId) {
+            newDataAccessLayerReservations.addReservation(chargerID, userID, start, end, function (error, reservationId) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -64,7 +64,7 @@ module.exports = function ({ newDataAccessLayerReservation, reservationValidatio
     }
 
     exports.removeReservation = function (reservationID, callback) {
-        newDataAccessLayerReservation.removeReservation(reservationID, function (error, removeReservation) { //removeReservation = bool
+        newDataAccessLayerReservations.removeReservation(reservationID, function (error, removeReservation) { //removeReservation = bool
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
