@@ -19,7 +19,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 }, 4000);
 
                 setTimeout(function(){
-
                     console.log('\n========= CHARGER MOCK DISCONNECTING... ==========\n')
                     ws.terminate()
                 }, 6000);
@@ -53,7 +52,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                         break
                     
                     default:
-                        //TODO: c.CALL_ERROR or otherwise...
+                        // Error, do nothing
                         break
                 }
                 
@@ -113,7 +112,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                     { 
                         "connectorId": 1,
                         "idTag": 1,
-                        "meterStop": 100,
+                        "meterStop": 100, //TODO: this needs to be stored somewhere in db, cannot find it in db currently
                         "reservationId": 1,
                         "transactionId": 1,
                         "timestamp":1234512345124123
@@ -165,7 +164,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
     //test 3
     testRemoteStop = function (chargerID) {
-
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
         ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
             if (error != null) {
@@ -178,7 +176,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
     // test 4
     testReserveNow = function (chargerID) {
-
         console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
             if (error != null) {
