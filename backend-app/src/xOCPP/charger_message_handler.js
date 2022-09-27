@@ -318,7 +318,11 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     break
     
                 case c.DATA_TRANSFER:
-                    //do nothing
+                    if(response[c.PAYLOAD_INDEX].status == c.ACCEPTED){
+                        console.log('DataTransfer response was OK')
+                    } else {
+                        throw c.RESPONSE_STATUS_REJECTED
+                    }
                     break
     
                 default:
@@ -329,10 +333,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             }
             
         } catch (error) {
+            let socket = v.getConnectedChargerSocket(chargerID)
+            let message = ""
             switch(error){
                 case c.INVALID_UNIQUE_ID:
-                    let socket = v.getConnectedSocket(chargerID)
-                    let message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
+                    message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
+                    socket.send(message)
+                    break
+                case c.RESPONSE_STATUS_REJECTED:
+                    message = func.getGenericError(uniqueID, "Request was rejected.")
                     socket.send(message)
                     break
             }

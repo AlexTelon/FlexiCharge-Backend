@@ -99,6 +99,7 @@ module.exports = function({}){
             OVERVOLTAGE: "OverVoltage",
             WEAK_SIGNAL: "WeakSignal",
             INVALID_UNIQUE_ID: "InvalidUniqueID",
+            RESPONSE_STATUS_REJECTED: "ResponseStatusRejected",
 
 
 
