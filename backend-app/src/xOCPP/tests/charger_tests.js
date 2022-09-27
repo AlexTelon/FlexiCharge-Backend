@@ -3,7 +3,7 @@ const WebSocket = require('ws')
 module.exports = function ({ ocppInterface, constants, v, func }) {
     const c = constants.get()  
 
-    exports.runTests = function(){
+    exports.runTests = function(){ /** PLEASE NOTE THAT THIS ONLY WORKS WITH LOCAL DATABASE AND THE CORRECT TEST DATA IN THE LOCAL DATABASE */
         console.log('\n========= RUNNING TESTS ==========\n')
         const chargerId = 100001
         connectAsChargerSocket(chargerId, function(ws){
@@ -19,6 +19,8 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 }, 4000);
 
                 setTimeout(function(){
+
+                    console.log('\n========= CLIENT MOCK DISCONNECTING... ==========\n')
                     ws.terminate()
                 }, 6000);
             }, 2000);
@@ -29,7 +31,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
     
     connectAsChargerSocket = function (chargerId, callback) {
         try {
-            console.log('\n========= MOCK CLIENT CONNECTING... ==========\n')
+            console.log('\n========= CLIENT MOCK CONNECTING... ==========\n')
             const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
 
             ws.on('open', function open() {
@@ -39,7 +41,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
             ws.on('message', function message(data){
                 parsedData = JSON.parse(data)
-                console.log(parsedData)
+                console.log('\nCLIENT MOCK GOT: \n', parsedData, '\n')
 
                 switch(parsedData[c.MESSAGE_TYPE_INDEX]){
                     case c.CALL:
@@ -48,6 +50,10 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                     
                     case c.CALL_RESULT:
                         callResultSwitchForClientMock(parsedData, ws)
+                        break
+                    
+                    default:
+                        //TODO: c.CALL_ERROR or otherwise...
                         break
                 }
                 
@@ -89,10 +95,47 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 break
 
             case c.REMOTE_STOP_TRANSACTION:
+                jsonResponseMessage = func.buildJSONMessage([ 
+                    3,
+                    parsedData[c.UNIQUE_ID_INDEX],
+                    c.REMOTE_STOP_TRANSACTION,
+                    { 
+                        "status": c.ACCEPTED
+                    }
+                ])
+
+                ws.send(jsonResponseMessage)
+
+                jsonRequestMessage = func.buildJSONMessage([ 
+                    2,
+                    parsedData[c.UNIQUE_ID_INDEX],
+                    c.STOP_TRANSACTION,
+                    { 
+                        "connectorId": 1,
+                        "idTag": 1,
+                        "meterStop": 100,
+                        "reservationId": 1,
+                        "transactionId": 1,
+                        "timestamp":1234512345124123
                 
+                    }
+                ])
+
+                ws.send(jsonRequestMessage)
+
                 break
 
             case c.RESERVE_NOW:
+                jsonResponseMessage = func.buildJSONMessage([ 
+                    3,
+                    parsedData[c.UNIQUE_ID_INDEX],
+                    c.RESERVE_NOW,
+                    { 
+                        "status": c.ACCEPTED
+                    } 
+                ])
+
+                ws.send(jsonResponseMessage)
                 break
 
             default:
@@ -101,10 +144,10 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         }
     }
 
-    callResultSwitchForClientMock = function(parsedData, ws){
+    callResultSwitchForClientMock = function(parsedData, ws){ // ONLY NEEDED WHEN CHARGER STARTS A CONVERSATION
         switch(parsedData[c.ACTION_INDEX]){
             case c.START_TRANSACTION:
-                console.log('Server responded with: ' + parsedData)
+                break
         }
     }
 
