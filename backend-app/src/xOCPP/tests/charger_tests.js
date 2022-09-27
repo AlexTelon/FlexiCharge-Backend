@@ -45,7 +45,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
             ws.on('message', function message(data){
                 parsedData = JSON.parse(data)
-                console.log('\nCHARGER MOCK GOT: \n', parsedData, '\n')
+                console.log('\nCHARGER MOCK RECEIVED: \n', parsedData, '\n')
 
                 switch(parsedData[c.MESSAGE_TYPE_INDEX]){
                     case c.CALL:
