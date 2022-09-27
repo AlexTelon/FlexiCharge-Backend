@@ -22,14 +22,16 @@ container.register({
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
     // New Business logic layers
-    newDatabaseInterfaceCharger: awilix.asFunction(require('./database-Interface/new-database-interface-chargers')),
+    newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/new-database-interface-chargers')),
     newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/new-database-interface-charge-sessions')),
     newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/new-database-interface-transaction')),
     newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
-    newDatabaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
+    newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     // Business logic tests
     interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),
+    interfaceChargersTests: awilix.asFunction(require('./database-Interface/tests/database-interface-chargers.test')),
+
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 
