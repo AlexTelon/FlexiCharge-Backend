@@ -1,11 +1,11 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});
-// const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+// const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+//     host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+//     dialect: "postgres"
+// });
+const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
 
 //sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
@@ -157,26 +157,26 @@ Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'casca
 sequelize.sync().then(function () {
     ChargePoints.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
-            // ChargePoints.create({
-            //     name: 'Jönköping University',
-            //     location: [57.777714, 14.163010],
-            //     price: 44.52,
-            //     klarnaReservationAmount: 30000
-            // });
-            // Chargers.create({
-            //     chargerID: 100000,
-            //     location: [57.777714, 14.163012],
-            //     serialNumber: 'abc123',
-            //     status: '1',
-            //     chargePointID: 1
-            // });
-            // Chargers.create({
-            //     chargerID: 100001,
-            //     location: [57.777714, 14.163016],
-            //     serialNumber: '123abc',
-            //     status: '0',
-            //     chargePointID: 1
-            // });
+            ChargePoints.create({
+                name: 'Jönköping University',
+                location: [57.777714, 14.163010],
+                price: 44.52,
+                klarnaReservationAmount: 30000
+            });
+            Chargers.create({
+                chargerID: 100000,
+                location: [57.777714, 14.163012],
+                serialNumber: 'abc123',
+                status: '1',
+                chargePointID: 1
+            });
+            Chargers.create({
+                chargerID: 100001,
+                location: [57.777714, 14.163016],
+                serialNumber: '123abc',
+                status: '0',
+                chargePointID: 1
+            });
             Transactions.create({
                 paymentID: null,
                 userID: null,
