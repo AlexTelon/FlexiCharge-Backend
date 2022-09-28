@@ -1,35 +1,43 @@
-module.exports = function({ newDataAccessLayerChargeSessions, dbErrorCheck }) {
+module.exports = function({ newDataAccessLayerChargeSessions, dbErrorCheck, newChargeSessionValidation }) {
 
     const exports = {}
     
     exports.addChargeSession = function(chargerID, userID, database, callback) {
-        // TODO Add validation for currentChargePercentage format... refer to addCharger method
-
-        newDataAccessLayerChargeSessions.addChargeSession(chargerID, userID, database, (error, chargeSessionID) => {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargeSessionID)
-            }
-        })
+        const validationErrors = newChargeSessionValidation.getAddChargeSessionValidation(chargerID, userID)
+        if(validationErrors.length > 0){
+            callback(validationErrors, [])
+        } else {
+            newDataAccessLayerChargeSessions.addChargeSession(chargerID, userID, database, (error, chargeSessionID) => {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], chargeSessionID)
+                }
+            })
+        }
     }
 
     exports.getChargeSession = function(chargeSessionID, database, callback) {
-        newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function(error, chargeSession) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                if (chargeSession == null) {
-                    callback([], [])
+        const validationErrors = newChargeSessionValidation.getChargeSessionValidation(chargeSessionID)
+        if(validationErrors.length > 0){
+            callback(validationErrors, [])
+        } else {
+            newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function(error, chargeSession) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
                 } else {
-                    callback([], chargeSession)
+                    if (chargeSession == null) {
+                        callback([], [])
+                    } else {
+                        callback([], chargeSession)
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     exports.getChargeSessions = function(chargerID, callback) {
@@ -37,17 +45,20 @@ module.exports = function({ newDataAccessLayerChargeSessions, dbErrorCheck }) {
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
-        // TODO Validate currentChargePercentage & kwhTransfered...
-        newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, database, (error, updatedChargingSession) => {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], updatedChargingSession)
-            }
-        }) 
-
+        const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kwhTransfered)
+        if(validationErrors.length > 0){
+            callback(validationErrors, [])
+        } else {
+            newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, database, (error, updatedChargingSession) => {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], updatedChargingSession)
+                }
+            }) 
+        }
     }
 
     return exports
