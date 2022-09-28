@@ -501,6 +501,23 @@ paths:
           description: Successful response.
           content:
             application/json: {}
+  /electricity/current:
+    get:
+      tags:
+        - Electricity
+      summary: Fetch kwh price
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  dateFrom: 1
+                  dateTo: 2
+                  price: 4.65
+                  currency: SEK
             
 components:
   schemas:
