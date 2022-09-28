@@ -47,6 +47,41 @@ paths:
                   statusCode: 400
                   retryable: false
                   retryDelay: 4.128536351395207
+  /auth/update-user:
+    put:
+      tags:
+        - User
+      summary: Update-user profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                accessToken: accesToken
+                name: string
+                family_name: string
+                phone_number: string
+                street_address: string
+                zip_code: string
+                city: string
+                country: string
+      responses:
+        '204':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  
+        '400':
+          description: Incorrect username or password
+          content: 
+            application/json:
+              schema: 
+                type: object
+                example:
   /auth/sign-up:
     post:
       tags:
