@@ -16,22 +16,18 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
             switch (messageTypeID) {
                 case c.CALL:
-
                     response = callSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_RESULT:
-
                     callResultSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_ERROR:
-
                     response = callErrorSwitch(uniqueID, data)
                     break
 
                 default:
-
                     response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
                     break
             }
@@ -72,6 +68,10 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             case c.STOP_TRANSACTION:
                 handleStopTransaction(chargerID, uniqueID, request)
                 break
+            
+            case v.METER_VALUES:
+                handleMeterValues(chargerID, request)
+                break
 
             default:
                 callResult = func.getCallResultNotImplemeted(uniqueID, action)
@@ -79,6 +79,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
 
         return callResult
+    }
+
+    function handleMeterValues(chargerID, request){
+        //TODO: Add validation
+
+        
+        
     }
 
     function handleStopTransaction(chargerID, uniqueID, request) {

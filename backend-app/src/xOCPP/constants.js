@@ -101,8 +101,8 @@ module.exports = function({}){
 
             
             /** LIVE STREAM METRICS CONSTANTS */
-            START_LIVESTREAMING: 'StartLivestreaming',
-            STOP_LIVESTREAMING: 'StopLivestreaming',
+            START_LIVESTREAMING: 'StartLivestreaming', // UNECCESSARY?
+            STOP_LIVESTREAMING: 'StopLivestreaming', // UNECCESSARY?
 
 
         }
