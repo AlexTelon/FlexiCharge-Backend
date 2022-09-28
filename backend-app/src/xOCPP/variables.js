@@ -1,4 +1,4 @@
-const connectedSockets = {}
+const connectedChargerSockets = {}
 const chargerSerials = []
 const chargerIDs = {}
 const callbacks = {}
@@ -6,19 +6,19 @@ const transactionIDs = {}
 
 module.exports = function ({ }) {
     
-    // CONNECTED SOCKETS
-    // Get socket with charger IDs
-    exports.getConnectedSocket = function (id) {
-        return connectedSockets[id]
+    // CONNECTED CHARGER SOCKETS
+    // Get charger socket with charger IDs
+    exports.getConnectedChargerSocket = function (id) {
+        return connectedChargerSockets[id]
     }
-    exports.addConnectedSockets = function (id, socket) {
-        connectedSockets[id] = socket
+    exports.addConnectedChargerSockets = function (id, socket) {
+        connectedChargerSockets[id] = socket
     }
-    exports.removeConnectedSockets = function (id) {
-        delete connectedSockets[id]
+    exports.removeConnectedChargerSockets = function (id) {
+        delete connectedChargerSockets[id]
     }
-    exports.getLengthConnectedSockets = function () {
-        return Object.keys(connectedSockets).length
+    exports.getLengthConnectedChargerSockets = function () {
+        return Object.keys(connectedChargerSockets).length
     }
 
     
@@ -56,6 +56,7 @@ module.exports = function ({ }) {
     exports.getLengthChargerIDs = function () {
         return Object.keys(chargerIDs).length
     }
+
 
     //CALLBACKS
     //get callback with some type of id
