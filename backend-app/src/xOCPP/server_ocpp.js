@@ -14,21 +14,16 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
             let clientType = originArray[1]
             
             switch(clientType){
-                case 'app':
-                    const transactionID = Number.parseInt(originArray[originArray.length - 1]) //Currently for example '1a' becomes 1 and 'a' or 'a1' becomes NaN
-                    console.log(transactionID)
+                case 'user':
+                    const userID = originArray[originArray.length - 1]
+                    console.log('UserID trying to connect: ', userID)
 
-                    if(!Number.isInteger(transactionID)){
-                        ws.terminate()
-                        return
-                    }
-
-                    appClientHandler.handleClient(ws, transactionID)
+                    appClientHandler.handleClient(ws, userID)
 
                     ws.on('close', function disconnection() {
-                        if(v.isInAppTransactionIDs(transactionID)){
-                            v.removeConnectedAppSockets(transactionID)
-                            v.removeAppTransactionID(transactionID)
+                        if(v.isInUserIDs(userID)){
+                            v.removeConnectedUserSocket(userID)
+                            v.removeUserID(userID)
                         }
                     })
 

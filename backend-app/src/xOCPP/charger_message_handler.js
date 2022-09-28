@@ -1,6 +1,7 @@
 const { Socket } = require("dgram")
 const { stringify } = require("querystring")
 const { buildJSONMessage } = require("./global_functions")
+const PubSub = require('pubsub-js')
 
 module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions }) {
     const c = constants.get()
@@ -84,7 +85,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
     function handleMeterValues(chargerID, request){
         //TODO: Add validation
 
-        
+
         
     }
 
