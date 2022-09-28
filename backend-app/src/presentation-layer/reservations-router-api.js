@@ -26,7 +26,7 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         // A user can only view its own reservations? //
         ////////////////////////////////////////////////
 
-        databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
+        databaseInterfaceReservations.getReservationsForUser(userId, function (error, userReservation) {
             if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -39,7 +39,7 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
         const chargerId = request.params.chargerID
-        databaseInterfaceReservations.getReservationForCharger(chargerId, function (error, chargerReservation) {
+        databaseInterfaceReservations.getReservationsForCharger(chargerId, function (error, chargerReservation) {
             if (error.length == 0 && chargerReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {

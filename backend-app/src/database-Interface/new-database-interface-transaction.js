@@ -2,12 +2,12 @@ module.exports = function({ newDataAccessLayerTransactions, newTransactionValida
 
     const exports = {}
 
-    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, database, callback) {
+    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, totalPrice, database, callback) {
         const validationErrors = newTransactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
         if(validationErrors.length > 0){
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionID) {
+            newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, totalPrice, database, function(error, transactionID) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])

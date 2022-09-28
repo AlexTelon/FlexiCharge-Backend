@@ -193,11 +193,11 @@ const newReservations = sequelize.define('newReservations', {
         allowNull: false
     },
     startTime: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, // TOOD Should change to dateObject of some sort
         allowNull: false
     },
     endTime: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, // TODO should change to DateObject of some sort
         allowNull: false
     },
     userID: {
@@ -232,11 +232,11 @@ const newChargeSessions = sequelize.define('newChargeSessions', {
         allowNull: true
     },
     startTime: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, // TODO should change to DateObject of some sort
         allowNull: true
     },
     endTime: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, // TODO should change to DateObject of some sort
         allowNull: true
     }
 }, {

@@ -14,8 +14,8 @@ module.exports = function ({ dataAccessLayerReservation, reservationValidation, 
         })
     }
 
-    exports.getReservationForCharger = function (chargerID, callback) {
-        dataAccessLayerReservation.getReservationForCharger(chargerID, function (error, chargerReservation) {
+    exports.getReservationsForCharger = function (chargerID, callback) {
+        dataAccessLayerReservation.getReservationsForCharger(chargerID, function (error, chargerReservation) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -30,8 +30,8 @@ module.exports = function ({ dataAccessLayerReservation, reservationValidation, 
         })
     }
 
-    exports.getReservationForUser = function (userID, callback) {
-        dataAccessLayerReservation.getReservationForUser(userID, function (error, userReservation) {
+    exports.getReservationsForUser = function (userID, callback) {
+        dataAccessLayerReservation.getReservationsForUser(userID, function (error, userReservation) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])

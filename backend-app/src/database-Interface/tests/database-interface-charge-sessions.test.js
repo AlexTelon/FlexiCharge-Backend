@@ -94,22 +94,22 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
         }
 
         exports.updateChargingState(1, 10, 1000, (errors) => {
-            errors.forEach(err => {
-                FailedTests.push(`updateChargingState Failed! : ${err}`);
+            errors.forEach(e => {
+                FailedTests.push(`updateChargingState Failed! : ${e}`);
             });
             checkIfAllTestsAreDone()
         })
 
         exports.addChargeSessionTest(10, 10, (errors) => {
-            errors.forEach(err => {
-                FailedTests.push(`addChargeSessionTest Failed! : ${err}`);
+            errors.forEach(e => {
+                FailedTests.push(`addChargeSessionTest Failed! : ${e}`);
             });
             checkIfAllTestsAreDone()
         })
 
         exports.getChargeSessionTest(1, (errors) => {
-            errors.forEach(err => {
-                FailedTests.push(`getChargeSessionTest Failed! : ${err}`);
+            errors.forEach(e => {
+                FailedTests.push(`getChargeSessionTest Failed! : ${e}`);
             });
             checkIfAllTestsAreDone()
         })

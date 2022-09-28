@@ -2,13 +2,13 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, callback) {
-
+    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, totalPrice, callback) {
         const transaction = {
             userID: userID,
             chargeSessionID: chargeSessionID,
             payNow : payNow,
             paymentDueDate : paymentDueDate,
+            totalPrice : totalPrice,
             transactionDate : (Date.now() / 1000 | 0)
         }
 
@@ -70,7 +70,6 @@ module.exports = function({ databaseInit }) {
         })
     }
 
-    // transactionDate & paymentDueDate must be created when we create transaction, and we do not need to update them.
 
     exports.updatePayedDate = function(transactionID, payedDate, callback) {
         // TODO update payedDate
@@ -88,21 +87,21 @@ module.exports = function({ databaseInit }) {
         })
     }
 
-    exports.updateTotalPrice = function(transactionID, totalPrice, callback) {
-        // TODO update totalPrice
-        databaseInit.newTransactions.update({
-            totalPrice: totalPrice
-        }, {
-            where: {transactionID : transactionID},
-            returning: true,
-            raw: true
-        }).then(transaction => {
-            callback([], transaction)
-        }).catch(e => {
-            console.log(e);
-            callback(e, [])
-        })
-    }
+    // exports.updateTotalPrice = function(transactionID, totalPrice, callback) {
+    //     // TODO update totalPrice
+    //     databaseInit.newTransactions.update({
+    //         totalPrice: totalPrice
+    //     }, {
+    //         where: {transactionID : transactionID},
+    //         returning: true,
+    //         raw: true
+    //     }).then(transaction => {
+    //         callback([], transaction)
+    //     }).catch(e => {
+    //         console.log(e);
+    //         callback(e, [])
+    //     })
+    // }
 
     // exports.getTransactionsForCharger = function(chargerID, callback) {
     //     databaseInit.newTransactions.findAll({ where: { chargerID: chargerID }, raw: true })

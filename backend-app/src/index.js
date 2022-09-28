@@ -35,10 +35,10 @@ container.register({
     interfaceChargersTests: awilix.asFunction(require('./database-Interface/tests/database-interface-chargers.test')),
     interfaceChargePointsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-points.test')),
     interfaceElectricityTariffsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-electricity-tariffs.test')),
-    
+    interfaceTransactionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-transactions.test')),
+    interfaceReservationsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-reservations.test')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
-
     //Validation
     chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
     transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),

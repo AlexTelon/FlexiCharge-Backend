@@ -13,7 +13,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationForCharger = function(chargerID, callback) {
+    exports.getReservationsForCharger = function(chargerID, callback) {
         databaseInit.Reservations.findAll({ where: { chargerID: chargerID }, raw: true })
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
@@ -22,7 +22,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationForUser = function(userID, callback) {
+    exports.getReservationsForUser = function(userID, callback) {
         databaseInit.Reservations.findAll({ where: { userID: userID }, raw: true })
             .then(userReservation => callback([], userReservation))
             .catch(e => {

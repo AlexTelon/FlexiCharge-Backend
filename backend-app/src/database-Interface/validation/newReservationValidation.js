@@ -17,7 +17,7 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getReservationForChargerValidation = function(chargerID){
+    exports.getReservationsForChargerValidation = function(chargerID){
         const validationErrors = []
 
         if(chargerID == null || chargerID == undefined) {
@@ -27,7 +27,7 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getReservationForUserValidation = function(userID){
+    exports.getReservationsForUserValidation = function(userID){
         const validationErrors = []
 
         if(userID == null || userID == undefined){
