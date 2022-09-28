@@ -1,11 +1,12 @@
 const WebSocket = require('ws')
+const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, appClientHandler }) {
+module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, test }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
-
+        
         wss.on('connection', function connection(ws, req) {
 
             // Get the charger's serial number:
@@ -26,9 +27,8 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
                             v.removeUserID(userID)
                         }
                     })
-
-                    break;
-
+                    break
+                
                 case 'charger':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
                     // Validate and handle connecting charger:
@@ -46,15 +46,17 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
                             console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                         }
                     })
-                    break;
-                
-                default:
-                    ws.terminate()
-                    break;
-            }
-
-            
+                    break
         })
+
+        
+        if(config.RUN_OCPP_TEST){
+            setTimeout(function(){
+                test.runTests()
+            }, 2000);
+        }
+        
+        
     }
     return exports
 }

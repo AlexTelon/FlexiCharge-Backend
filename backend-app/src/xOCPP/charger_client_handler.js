@@ -4,7 +4,7 @@ const { Socket } = require("dgram")
 module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func, test }) {
     const c = constants.get()
     
-    exports.handleClient = function (clientSocket, chargerSerial, ) {
+    exports.handleClient = function (clientSocket, chargerSerial) {
         var messageCache = ""
 
         isValidClient(clientSocket, chargerSerial, function (error, chargerID) {
@@ -13,18 +13,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                     console.log("Charger with ID: " + chargerID + " connected to the system.")
                     console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                     if (messageCache != "") {
-    
-                        /*****************************************
-                         used for internal testing, remove before production
-                         *****************************************/
-                        var test = true
-                        test = testSwitch(messageCache, clientSocket)
-                        /*****************************************/
-    
-                        if (!test) {
-                            chargerMessageHandler.handleMessage(messageCache, clientSocket, chargerID)
-                        }
-    
+                        chargerMessageHandler.handleMessage(messageCache, clientSocket, chargerID)
                     }
     
                 } else {
@@ -42,18 +31,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
         clientSocket.on('message', function incoming(message) {
 
             if (v.isInChargerSerials(chargerSerial)) {
-
-                /*****************************************
-                 used for internal testing, remove before production
-                 *****************************************/
-                var test = false
-                test = testSwitch(message, clientSocket)
-                /*****************************************/
-
-                if (!test) {
-                    chargerMessageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
-                }
-
+                chargerMessageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
             } else {
                 messageCache = message
             }
@@ -85,42 +63,6 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                     }
                 }
             })
-        }
-    }
-
-    function testSwitch(message, clientSocket) {
-        try {
-            let data = JSON.parse(message)
-            let chargerSerial = data[0]
-            let chargerID = v.getChargerID(chargerSerial)
-            
-            let testFunction = data[1]
-
-            switch (testFunction) {
-
-                case c.TEST1:
-                    test.testFreeCharger(chargerID)
-                    return true
-
-                case c.TEST2:
-                    test.testRemoteStart(chargerID)
-                    return true
-
-                case c.TEST3:
-                    test.testRemoteStop(chargerID)
-                    return true
-                
-                case c.TEST4:
-                    test.testReserveNow(chargerID)
-                    return true
-                default:
-                    return false
-
-            }
-        } catch (error) {
-            console.log(error)
-            clientSocket.send(func.getGenericError("test error", error.toString()))
-            return true
         }
     }
     return exports

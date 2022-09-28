@@ -2,7 +2,6 @@ const express = require("express")
 const expressHandlebars = require('express-handlebars');
 const app = express()
 const bodyParser = require('body-parser');
-require('dotenv').config()
 const swaggerUi = require('swagger-ui-express')
 const path = require('path')
 const yaml = require('yamljs')

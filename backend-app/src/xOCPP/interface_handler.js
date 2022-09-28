@@ -5,7 +5,6 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
 
         try {
             const socket = v.getConnectedChargerSocket(chargerID)
-
             if (socket != null) {
 
                 var message = ""

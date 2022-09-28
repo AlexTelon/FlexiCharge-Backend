@@ -73,47 +73,6 @@
     "timestamp":1234512345124123
     } ]
 
-[ 
-    2, 
-    "uniqueID",
-    "MeterValues",
-    {
-        "connectorId": 1,
-        "transactionId": 1,
-        "timestamp": 1234512345124123
-        "values": {
-            "chargingPercent": {
-                "value": 0,
-                "unit": %,
-                "measurand": "SoC"
-            },
-            "chargingPower": {
-                "value": 0,
-                "unit": W,
-                "measurand": "Power.Active.Import"
-            },
-            "chargedSoFar": {
-                "value": 0,
-                "unit": Wh,
-                "measurand": "Energy.Active.Import.Interval"
-            }
-            
-        }
-    }
-]
-
-[
-    3,
-    "uniqueID",
-    "MeterValues",
-    {
-        "SoC": int (percent)
-        "Energy.Active.Import.Interval": int (Wh)
-        "Power.Active.Import": int (W)
-        "timestamp": 1234512345124123
-    }
-]
-
 //active transactionIds for charger teams to test with
 + = 32
 ssb = 33

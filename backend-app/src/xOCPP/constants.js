@@ -98,6 +98,8 @@ module.exports = function({}){
             UNDERVOLTAGE: "UnderVoltage",
             OVERVOLTAGE: "OverVoltage",
             WEAK_SIGNAL: "WeakSignal",
+            INVALID_UNIQUE_ID: "InvalidUniqueID",
+            RESPONSE_STATUS_REJECTED: "ResponseStatusRejected",
 
             
             /** LIVE STREAM METRICS CONSTANTS */
