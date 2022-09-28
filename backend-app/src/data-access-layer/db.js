@@ -283,8 +283,8 @@ const newTransactions = sequelize.define('newTransactions', {
         allowNull: true
     },
     totalPrice: {
-        type: DataTypes.INTEGER,
-        defaultValue: 20, // This is strictly for development, remove this.
+        type: DataTypes.FLOAT,
+        defaultValue: 20, // Default value is strictly for development, remove this.
         allowNull: false
     }
 }, {
@@ -439,13 +439,10 @@ sequelize.sync().then(function () {
             Transactions.create({
                 paymentID: null,
                 userID: 1,
-                chargerID: 100004, // Coop, forserum
-                timestamp: 1663663935,
-                isKlarnaPayment: false,
-                kwhTransfered: 12,
-                currentChargePercentage: 67,
-                pricePerKwh: 7500
-            });
+                chargeSessionID: 1,
+                paymentMethod: paymentType[1],
+
+            });/*
             Transactions.create({
                 paymentID: null,
                 userID: 1,
@@ -465,7 +462,7 @@ sequelize.sync().then(function () {
                 kwhTransfered: 12,
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
-            });
+            });*/
             /*
             //Fill the ElectricityTariff table with random data
             const generateDays = 61; //Days to generate prices from startDate

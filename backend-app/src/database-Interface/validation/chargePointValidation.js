@@ -10,9 +10,9 @@ module.exports = function({}) {
     LATITUDE_MIN_VALUE = -90
     LATITUDE_MAX_VALUE = 90
 
-    //Validation for price
-    PRICE_MIN_VALUE = 0
-    DEFAULT_RESERVATION_PRICE = 300
+    //Validation for address
+    ADDRESS_MIN_VALUE = 3
+    ADDRESS_MAX_VALUE = 255
 
     const exports = {}
 
@@ -42,8 +42,17 @@ module.exports = function({}) {
                 validationErrors.push("invalidLongitude")
             }
         }
-        /* TODO: Address validatation */
         
+        if (address === undefined) {
+            validationErrors.push("invalidAddress")
+        } else {
+            if(typeof address !== 'string'){
+                validationErrors.push("invalidDataType")
+            }
+            if(address.length < ADDRESS_MIN_VALUE || address.length > ADDRESS_MAX_VALUE){
+                validationErrors.push("invalidAddress")
+            }
+        }
 
         return validationErrors
     }
