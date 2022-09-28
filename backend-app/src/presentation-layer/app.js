@@ -38,7 +38,7 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/reservations', reservationsRouter)
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
-    app.use('/auth/admin', adminRouter)
+    app.use('/admin', adminRouter)
 
     return app
 }

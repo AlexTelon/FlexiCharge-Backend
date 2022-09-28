@@ -342,7 +342,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /auth/admin/sign-in:
+  /admin/sign-in:
     post:
       tags:
         - Admin
@@ -369,7 +369,7 @@ paths:
 
             **Future improvement**: *Send other 4xx codes, such as 401 for 
               bad username/password.*'
-  /auth/admin/:
+  /admin/:
     post:
       tags:
         - Admin
@@ -403,7 +403,7 @@ paths:
           content:
             application/json: {}
 
-  /auth/admin/force-change-password:
+  /admin/force-change-password:
     post:
       tags:
         - Admin
