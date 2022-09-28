@@ -1,6 +1,5 @@
-var express = require('express')
-const fs = require('fs')
-const path = require('path')
+const express = require('express')
+const invoice = require('../database-Interface/utils/invoices') // test
 
 module.exports = function ({}) {
     const router = express.Router()
@@ -33,7 +32,9 @@ module.exports = function ({}) {
         const { invoiceID } = req.params
         const { adminSession, userSession} = req.body
         
-        fs.createReadStream(path.join(__dirname, '/invoice-example.pdf')).pipe(res)
+
+
+        invoice.generateMonthlyInvoicePDF().pipe(res)
 
 
     })
