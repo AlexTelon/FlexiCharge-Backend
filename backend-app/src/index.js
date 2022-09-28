@@ -40,6 +40,8 @@ container.register({
     chargerClientHandler: awilix.asFunction(require('./xOCPP/charger_client_handler')),
     chargerMessageHandler: awilix.asFunction(require('./xOCPP/charger_message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
+    broker: awilix.asFunction(require('./xOCPP/broker')),
+    userClientHandler: awilix.asFunction(require('./xOCPP/user_client_handler')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),

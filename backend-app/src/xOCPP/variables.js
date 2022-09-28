@@ -1,11 +1,11 @@
 const connectedChargerSockets = {}
-const connectedUserSockets = []
+const connectedUserSockets = {}
 const chargerSerials = []
 
 //Stored under transactionID index
 const userIDs = []
 
-const liveMetricsTokens = []
+const liveMetricsTokens = {}
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
@@ -64,7 +64,7 @@ module.exports = function ({ }) {
     }
 
     // CONNECTED USER SOCKETS
-    // Get user socket with transactionIDs 
+    // Get user socket with userIDs 
     exports.getConnectedUserSocket = function (userID) {
         return connectedUserSockets[userID]
     }
@@ -80,10 +80,11 @@ module.exports = function ({ }) {
 
     //USER IDS 
     //Array with all the user ids under transactionIDs index
-    exports.addUserIDWIthTransactionID = function(userID, transactionIDArray){
-        for(const transactionIDIndex of transactionIDArray){
-            userIDs[transactionIDIndex] = userID
-        }
+    exports.addUserIDWIthTransactionID = function(userID, transactionID){
+        // for(const transactionIDIndex of transactionIDArray){
+        //     userIDs[transactionIDIndex] = userID
+        // }
+        userIDs[transactionID] = userID
     }
     exports.getUserIDWithTransactionID = function(transactionID){
         return userIDs[transactionID]
@@ -95,16 +96,27 @@ module.exports = function ({ }) {
             }
         }
     }
+    exports.isInUserIDs = function (userID) {
+        return userIDs.includes(userID)
+    }
 
-
-    exports.getLiveMetricsTokens = function(){
-        return liveMetricsTokens
+    //LIVE METRICS TOKENS
+    //Array with all the PubSub tokens for all subscribers, stored under userID
+    exports.getLiveMetricsToken = function(userID){
+        return liveMetricsTokens[userID]
     }
     exports.addLiveMetricsToken = function(userID, token) {
         liveMetricsTokens[userID] = token
+
+        // liveMetricsToken = {
+        //     "tjijgioerjgiore-gjruijgeruigh": token // only supports one token per userID
+        // }
     }
     exports.removeLiveMetricsToken = function(userID){
         delete liveMetricsTokens[userID]
+    }
+    exports.getLiveMetricsTokensLength = function(){
+        return Object.keys(liveMetricsTokens).length
     }
 
 
@@ -120,13 +132,6 @@ module.exports = function ({ }) {
     //     const userIDIndex = userIDs.indexOf(userID)
     //     userIDs.splice(userIDIndex)
     // }
-    // exports.getLengthUserIDs = function () {
-    //     return userIDs.length
-    // }
-    // exports.isInUserIDs = function (userID) {
-    //     return userIDs.includes(userID)
-    // }
-
 
     //CALLBACKS
     //get callback with some type of id

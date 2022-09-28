@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, test }) {
+module.exports = function ({ chargerClientHandler, v, userClientHandler, test }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
@@ -14,18 +14,24 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
             let originArray = origin.split("/")
             let clientType = originArray[1]
             
+            
             switch(clientType){
+                //ws://123.123.123:1337/user/abc123-123-123
                 case 'user':
-                    const userID = originArray[originArray.length - 1]
+                    const userID = originArray[originArray.length - 1].toString()
                     console.log('UserID trying to connect: ', userID)
 
-                    appClientHandler.handleClient(ws, userID)
+                    userClientHandler.handleClient(ws, userID)
 
                     ws.on('close', function disconnection() {
+                        v.removeConnectedUserSocket(userID)
+
                         if(v.isInUserIDs(userID)){
-                            v.removeConnectedUserSocket(userID)
                             v.removeUserID(userID)
                         }
+
+                        console.log("Disconnected from client with ID: " + userID)
+                        console.log("Number of connected clients: " + v.getLengthConnectedUserSockets())
                     })
                     break
                 

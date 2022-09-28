@@ -1,9 +1,9 @@
 const { Socket } = require("dgram")
 const { stringify } = require("querystring")
 const { buildJSONMessage } = require("./global_functions")
-const PubSub = require('pubsub-js')
 
-module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions }) {
+
+module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -70,7 +70,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 handleStopTransaction(chargerID, uniqueID, request)
                 break
             
-            case v.METER_VALUES:
+            case c.METER_VALUES:
                 handleMeterValues(chargerID, request)
                 break
 
@@ -83,10 +83,12 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
     }
 
     function handleMeterValues(chargerID, request){
-        //TODO: Add validation
-
-
-        
+        //TODO: Add validation 
+        const transactionID = request[3].transactionID
+        const userID = v.getUserIDWithTransactionID(transactionID)
+        console.log("INSIDE METERVALUES, USER_ID: " + userID)
+        console.log("TRANSACTION_ID: " + transactionID)
+        broker.publishToLiveMetrics(userID, request)
     }
 
     function handleStopTransaction(chargerID, uniqueID, request) {
@@ -142,6 +144,14 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
                     transactionID = v.getTransactionID(chargerID)
+
+                    databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
+                        if(error.length > 0){
+                            console.log("\nError fetching transaction from DB: " + error)
+                        } else {
+                            v.addUserIDWIthTransactionID(transaction.userID, transactionID)
+                        }
+                    }) 
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
