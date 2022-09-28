@@ -283,8 +283,8 @@ const newTransactions = sequelize.define('newTransactions', {
         allowNull: true
     },
     totalPrice: {
-        type: DataTypes.INTEGER,
-        defaultValue: 20, // This is strictly for development, remove this.
+        type: DataTypes.FLOAT,
+        defaultValue: 20, // Default value is strictly for development, remove this.
         allowNull: false
     }
 }, {
