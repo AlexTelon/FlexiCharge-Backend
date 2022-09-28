@@ -8,9 +8,8 @@ AWS.config.update({"region": config.AWS_REGION});
 
 class AdminCognitoService {
     cognitoIdentity;
-    secretHash = config.ADMIN_POOL_SECRET
-    clientId = config.ADMIN_POOL_ID
-    adminUserPool = config.ADMIN_POOL
+    secretHash = config.USER_POOL_SECRET
+    clientId = config.USER_POOL_ID
     userPool = config.USER_POOL
 
     constructor() {
@@ -45,7 +44,7 @@ class AdminCognitoService {
             "Password": password,
             "Permanent": true,
             "Username": username,
-            "UserPoolId": this.adminUserPool
+            "UserPoolId": this.userPool
         }
 
         try {
@@ -67,7 +66,7 @@ class AdminCognitoService {
                 'SECRET_HASH': this.generateHash(username)
             },
             "ClientId": this.clientId,
-            "UserPoolId": this.adminUserPool
+            "UserPoolId": this.userPool
         }
         try {
             const tokens = await this.cognitoIdentity.adminInitiateAuth(params).promise();
@@ -120,7 +119,7 @@ class AdminCognitoService {
     async deleteAdmin(username) {
         const params = {
             "Username": username,
-            "UserPoolId": this.adminUserPool
+            "UserPoolId": this.userPool
         }
         try {
             const res = await this.cognitoIdentity.adminDeleteUser(params).promise();
@@ -159,7 +158,7 @@ class AdminCognitoService {
     async updateAdminAttributes(username, userAttributes) {
         const params = {
             "Username": username,
-            "UserPoolId": this.adminUserPool,
+            "UserPoolId": this.userPool,
             "UserAttributes": userAttributes
         }
         try {
@@ -224,7 +223,7 @@ class AdminCognitoService {
         let params = {
             Limit: limit,
             UserPoolId: this.userPool,
-            Filter: `${attribute} ^= \"${value}\"`
+            GroupName: 'Users'
         }
 
         if (paginationToken !== undefined) {
@@ -232,12 +231,12 @@ class AdminCognitoService {
                 PaginationToken: paginationToken,
                 Limit: limit,
                 UserPoolId: this.userPool,
-                Filter: `${attribute} ^= \"${value}\"`
+                GroupName: 'Users'
             }
         }
 
         try {
-            const res = await this.cognitoIdentity.listUsers(params).promise();
+            const res = await this.cognitoIdentity.listUsersInGroup(params).promise();
             const data = {
                 data: res,
                 statusCode: 200
@@ -252,7 +251,7 @@ class AdminCognitoService {
     async getAdmin(username) {
         const params = {
             "Username": username,
-            "UserPoolId": this.adminUserPool,
+            "UserPoolId": this.userPool,
         }
         try {
 
@@ -275,21 +274,21 @@ class AdminCognitoService {
 
         let params = {
             Limit: limit,
-            UserPoolId: this.adminUserPool,
-            Filter: `${attribute} ^= \"${value}\"`
+            UserPoolId: this.userPool,
+            GroupName: 'Admins'
         }
 
         if (paginationToken !== undefined) {
             params = {
                 PaginationToken: paginationToken,
                 Limit: limit,
-                UserPoolId: this.adminUserPool,
-                Filter: `${attribute} ^= \"${value}\"`
+                UserPoolId: this.userPool,
+                GroupName: 'Admins'
             }
         }
 
         try {
-            const res = await this.cognitoIdentity.listUsers(params).promise();
+            const res = await this.cognitoIdentity.listUsersInGroup(params).promise();
             const data = {
                 data: res,
                 statusCode: 200
@@ -326,7 +325,7 @@ class AdminCognitoService {
     async createAdmin(username, password, userAttributes) {
 
         let params = {
-            UserPoolId: this.adminUserPool,
+            UserPoolId: this.userPool,
             Username: username,
             // MessageAction: "SUPPRESS", // Do not send welcome email
             TemporaryPassword: password,
@@ -338,7 +337,7 @@ class AdminCognitoService {
                     const paramsGroup = {
                         "GroupName": "Admins",
                         "Username": result.User.Username,
-                        "UserPoolId": this.adminUserPool
+                        "UserPoolId": this.userPool
                     }
                     this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
                 })
@@ -397,7 +396,7 @@ class AdminCognitoService {
     async enableAdmin(username) {
         let params = {
             "Username": username,
-            "UserPoolId": this.adminUserPool
+            "UserPoolId": this.userPool
         }
 
         try {
@@ -416,7 +415,7 @@ class AdminCognitoService {
     async disableAdmin(username) {
         let params = {
             "Username": username,
-            "UserPoolId": this.adminUserPool
+            "UserPoolId": this.userPool
         }
 
         try {
