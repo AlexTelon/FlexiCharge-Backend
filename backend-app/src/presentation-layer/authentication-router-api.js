@@ -131,9 +131,9 @@ module.exports = function () {
             res.status(200).json(result).end();
             
         } catch (error){
-            res.status(401).json(error).end();
+            res.status(error.statusCode).json(error).end();
         }
-    })
+    });
     
     return router
 }
