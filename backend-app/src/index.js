@@ -46,9 +46,9 @@ container.register({
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
     chargePointValidation: awilix.asFunction(require("./database-Interface/validation/chargePointValidation")),
     //New Validation
-    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
-    newChargerSessionValidation: awilix.asFunction(require("./database-Interface/validation/newChargeSessionValidation")),
-    newChargerPointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
+    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargerValidation")),
+    newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/newChargeSessionValidation")),
+    newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
     newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
     newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
     //Presentation layers
