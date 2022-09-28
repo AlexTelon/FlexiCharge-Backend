@@ -3,13 +3,13 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     const exports = {}
 
     exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, database, callback) {
-        newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionId) {
+        newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, database, function(error, transactionID) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                callback([], transactionId)
+                callback([], transactionID)
             }
         })
         
@@ -134,15 +134,15 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     //                     }
     //                 })
     //             } else {
-    //                 callback(["invalidChargerId"], [])
+    //                 callback(["invalidChargerID"], [])
     //             }
     //         }
     //     })
     // }
 
-    // exports.createKlarnaOrder = async function(transactionId, authorization_token, callback) {
+    // exports.createKlarnaOrder = async function(transactionID, authorization_token, callback) {
 
-    //     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction) {
+    //     newDataAccessLayerTransactions.getTransaction(transactionID, function(error, transaction) {
     //         if (Object.keys(error).length > 0) {
     //             dbErrorCheck.checkError(error, function(errorCode) {
     //                 callback(errorCode, [])
@@ -160,19 +160,19 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     //                                 callback(errorCode, [])
     //                             })
     //                         } else {
-    //                             dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, function(error, klarnaOrder) {
+    //                             dataAccessLayerKlarna.createKlarnaOrder(transactionID, chargePoint.klarnaReservationAmount, authorization_token, function(error, klarnaOrder) {
     //                                 if (error.length == 0) {
-    //                                     newDataAccessLayerTransactions.updateTransactionPayment(transactionId, klarnaOrder.order_id, function(error, updatedTransaction) {
+    //                                     newDataAccessLayerTransactions.updateTransactionPayment(transactionID, klarnaOrder.order_id, function(error, updatedTransaction) {
     //                                         if (Object.keys(error).length > 0) {
     //                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                 callback(errorCode, [])
     //                                             })
     //                                         } else {
-    //                                             ocppInterface.remoteStartTransaction(charger.chargerID, transactionId, function(error, returnObject) {
+    //                                             ocppInterface.remoteStartTransaction(charger.chargerID, transactionID, function(error, returnObject) {
     //                                                 if(error != null || returnObject.status == "Rejected") {
     //                                                     callback(["couldNotStartOCPPTransaction"], [])
     //                                                 } else {
-    //                                                     newDataAccessLayerTransactions.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
+    //                                                     newDataAccessLayerTransactions.updateTransactionMeterStart(transactionID, returnObject.meterStart, function(error, updatedTransaction) {
     //                                                         if (Object.keys(error).length > 0) {
     //                                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                                 callback(errorCode, [])
@@ -197,9 +197,9 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     //     })
     // }
 
-    // exports.finalizeKlarnaOrder = async function(transactionId, callback) {
+    // exports.finalizeKlarnaOrder = async function(transactionID, callback) {
 
-    //     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction) {
+    //     newDataAccessLayerTransactions.getTransaction(transactionID, function(error, transaction) {
     //         if (Object.keys(error).length > 0) {
     //             dbErrorCheck.checkError(error, function(errorCode) {
     //                 callback(errorCode, [])
@@ -217,11 +217,11 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     //                                 callback(errorCode, [])
     //                             })
     //                         } else {
-    //                             ocppInterface.remoteStopTransaction(charger.chargerID, transactionId, function(error, returnObject) {
+    //                             ocppInterface.remoteStopTransaction(charger.chargerID, transactionID, function(error, returnObject) {
     //                                 if(error != null || returnObject.status == "Rejected") {
     //                                     callback(["couldNotStopOCPPTransaction"])
     //                                 } else {
-    //                                     newDataAccessLayerTransactions.getTransaction(transactionId, function(error, transaction){
+    //                                     newDataAccessLayerTransactions.getTransaction(transactionID, function(error, transaction){
     //                                         if (Object.keys(error).length > 0) {
     //                                             dbErrorCheck.checkError(error, function(errorCode) {
     //                                                 callback(errorCode, [])
@@ -230,15 +230,15 @@ module.exports = function({ newDataAccessLayerTransactions, transactionValidatio
     //                                             const kwhTransfered = (returnObject.meterStop - transaction.meterStart) / 1000
 
     //                                             if(kwhTransfered >= 0) {
-    //                                                 newDataAccessLayerTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, transaction.currentChargePercentage, function(error, updatedTransaction) {
+    //                                                 newDataAccessLayerTransactions.updateTransactionChargingStatus(transactionID, kwhTransfered, transaction.currentChargePercentage, function(error, updatedTransaction) {
     //                                                     if (Object.keys(error).length > 0) {
     //                                                         dbErrorCheck.checkError(error, function(errorCode) {
     //                                                             callback(errorCode, [])
     //                                                         })
     //                                                     } else {
-    //                                                         dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, function(error, responseData) {
+    //                                                         dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionID, function(error, responseData) {
     //                                                             if (error.length == 0) {
-    //                                                                 newDataAccessLayerTransactions.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
+    //                                                                 newDataAccessLayerTransactions.updateTransactionPaymentConfirmed(transactionID, true, function(error, transaction) {
     //                                                                     if (Object.keys(error).length > 0) {
     //                                                                         dbErrorCheck.checkError(error, function(errorCode) {
     //                                                                             callback(errorCode, [])

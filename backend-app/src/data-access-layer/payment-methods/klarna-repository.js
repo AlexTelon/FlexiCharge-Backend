@@ -63,7 +63,7 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
+    exports.createKlarnaOrder = async function(transactionID, klarnaReservationAmount, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -121,7 +121,7 @@ module.exports = function({}) {
         request.end()
     }
 
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, callback) {
+    exports.finalizeKlarnaOrder = async function(transaction, transactionID, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
         const order_lines = getOrderLines(newOrderAmount)
 

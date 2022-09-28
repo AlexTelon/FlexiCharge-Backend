@@ -68,25 +68,25 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, chargerValidat
         })
     }
 
-    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
-        const ValidationError = chargerValidation.getAddChargerValidation(location, serialNumber, chargePointId)
+    exports.addCharger = function(chargePointID, serialNumber, location, callback) {
+        const ValidationError = chargerValidation.getAddChargerValidation(location, serialNumber, chargePointID)
         if (ValidationError.length > 0) {
             callback(ValidationError, [])
         } else {
-            dataAccessLayerCharger.addCharger(chargePointId, serialNumber, location, function(error, chargerId) {
+            dataAccessLayerCharger.addCharger(chargePointID, serialNumber, location, function(error, chargerID) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
-                    callback([], chargerId)
+                    callback([], chargerID)
                 }
             })
         }
     }
 
-    exports.removeCharger = function(chargerId, callback) {
-        dataAccessLayerCharger.removeCharger(chargerId, function(error, chargerRemoved) { //chargerRemoved = bool
+    exports.removeCharger = function(chargerID, callback) {
+        dataAccessLayerCharger.removeCharger(chargerID, function(error, chargerRemoved) { //chargerRemoved = bool
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function(errorCode) {
                     callback(errorCode, chargerRemoved)
@@ -98,12 +98,12 @@ module.exports = function({ dataAccessLayerCharger, dbErrorCheck, chargerValidat
     }
 
 
-    exports.updateChargerStatus = function(chargerId, status, callback) {
+    exports.updateChargerStatus = function(chargerID, status, callback) {
         const validationError = chargerValidation.getUpdateChargerStatusValidation(status)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            dataAccessLayerCharger.updateChargerStatus(chargerId, status, function(error, charger) {
+            dataAccessLayerCharger.updateChargerStatus(chargerID, status, function(error, charger) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])

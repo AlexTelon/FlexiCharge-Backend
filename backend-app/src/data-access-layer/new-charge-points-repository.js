@@ -2,12 +2,12 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.getChargePoint = function(chargePointId, database, callback) {
+    exports.getChargePoint = function(chargePointID, database, callback) {
         if (database == null) {
             database = databaseInit.newChargePoints
         }
 
-        database.findOne({ where: { chargePointID: chargePointId }, raw: true })
+        database.findOne({ where: { chargePointID: chargePointID }, raw: true })
             .then(chargePoint => callback([], chargePoint))
             .catch(e => {
                 console.log(e)
@@ -48,13 +48,13 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.removeChargePoint = function(chargePointId, database, callback) {
+    exports.removeChargePoint = function(chargePointID, database, callback) {
         if (database == null) {
             database = databaseInit.newChargePoints
         }
 
         database.destroy({
-                where: { chargePointID: chargePointId },
+                where: { chargePointID: chargePointID },
                 raw: true
             })
             .then(deletedChargePointsAmount => {
@@ -72,7 +72,7 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.updateChargePoint = function(chargePointId, name, coordinates, address, database, callback) {
+    exports.updateChargePoint = function(chargePointID, name, address, coordinates, database, callback) {
         if (database == null) {
             database = databaseInit.newChargePoints
         }
@@ -83,16 +83,16 @@ module.exports = function({ databaseInit }) {
             updateProperties.name = name
         }
 
-        if (coordinates != null) {
-            updateProperties.coordinates = coordinates
-        }
-
         if (address != null) {
             updateProperties.address = address
         }
-        
+
+        if (coordinates != null) {
+            updateProperties.coordinates = coordinates
+        }
+       
         database.update(updateProperties, {
-                where: { chargePointID: chargePointId },
+                where: { chargePointID: chargePointID },
                 returning: true,
                 raw: true
             })

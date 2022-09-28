@@ -9,12 +9,11 @@ module.exports = function({ newDatabaseInterfaceChargePoints }) {
         chargePointID : 1,
         name : "Coop, Forserum",
         address : "Värnamovägen",
-        location : [57.70022044183724,14.475150415104222],
-        price: 10.15
+        coordinates : [57.70022044183724,14.475150415104222]
     })
 
-    exports.getChargePointTest = function(chargePointId, callback) {        
-        newDatabaseInterfaceChargePoints.getChargePoint(chargePointId, ChargePoints, (error, chargePoint) => {
+    exports.getChargePointTest = function(chargePointID, callback) {        
+        newDatabaseInterfaceChargePoints.getChargePoint(chargePointID, ChargePoints, (error, chargePoint) => {
             const errorList = []
 
             error.forEach(err => {
@@ -85,6 +84,9 @@ module.exports = function({ newDatabaseInterfaceChargePoints }) {
                 errorList.push(err)
             });
 
+            console.log(`updatedChargePoint:`)
+            console.log(updatedChargePoint)
+
             callback(errorList)
         })
     }
@@ -117,7 +119,7 @@ module.exports = function({ newDatabaseInterfaceChargePoints }) {
             })
         })
 
-        exports.updateChargePointTest(1, "ICA", [56.014765,19.023512], 10.15, (error) => {
+        exports.updateChargePointTest(1, "ICA", "Zuesvägen", [56.014765,19.023512], (error) => {
             error.forEach(e => {
                 FailedTests.push(`updateChargePointTest Failed ! ${e}`)
             })

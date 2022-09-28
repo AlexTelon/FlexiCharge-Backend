@@ -51,13 +51,13 @@ module.exports = function ({ newDataAccessLayerReservations, reservationValidati
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            newDataAccessLayerReservations.addReservation(chargerID, userID, start, end, function (error, reservationId) {
+            newDataAccessLayerReservations.addReservation(chargerID, userID, start, end, function (error, reservationID) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
-                    callback([], reservationId)
+                    callback([], reservationID)
                 }
             })
         }

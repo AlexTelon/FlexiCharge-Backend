@@ -11,8 +11,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getCharger = function(chargerId, callback) {
-        databaseInit.Chargers.findOne({ where: { chargerID: chargerId }, raw: true })
+    exports.getCharger = function(chargerID, callback) {
+        databaseInit.Chargers.findOne({ where: { chargerID: chargerID }, raw: true })
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
@@ -38,9 +38,9 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
+    exports.addCharger = function(chargePointID, serialNumber, location, callback) {
         const charger = {
-            chargePointID: chargePointId,
+            chargePointID: chargePointID,
             serialNumber: serialNumber,
             location: location,
             status: 'Reserved'
@@ -84,9 +84,9 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.removeCharger = function(chargerId, callback) {
+    exports.removeCharger = function(chargerID, callback) {
         databaseInit.Chargers.destroy({
-                where: { chargerID: chargerId },
+                where: { chargerID: chargerID },
                 raw: true
             })
             .then(numberDeletedOfChargers => {
@@ -104,11 +104,11 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.updateChargerStatus = function(chargerId, status, callback) {
+    exports.updateChargerStatus = function(chargerID, status, callback) {
         databaseInit.Chargers.update({
                 status: status
             }, {
-                where: { chargerID: chargerId },
+                where: { chargerID: chargerID },
                 returning: true,
                 raw: true
             })
