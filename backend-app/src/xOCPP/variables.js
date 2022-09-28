@@ -1,7 +1,11 @@
 const connectedChargerSockets = {}
 const connectedUserSockets = []
 const chargerSerials = []
+
+//Stored under transactionID index
 const userIDs = []
+
+const liveMetricsTokens = []
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
@@ -74,28 +78,54 @@ module.exports = function ({ }) {
         return Object.keys(connectedUserSockets).length
     }
 
-    exports.getUserIDWithTransactionID = function(transactionID){
-        //TODO: IMPLEMENT
+    //USER IDS 
+    //Array with all the user ids under transactionIDs index
+    exports.addUserIDWIthTransactionID = function(userID, transactionIDArray){
+        for(const transactionIDIndex of transactionIDArray){
+            userIDs[transactionIDIndex] = userID
+        }
     }
+    exports.getUserIDWithTransactionID = function(transactionID){
+        return userIDs[transactionID]
+    }
+    exports.removeUserID = function(userID){
+        for(i = 0; i < userIDs.length; i += 1){
+            if(userIDs[i] == userID){
+                delete userIDs[i]
+            }
+        }
+    }
+
+
+    exports.getLiveMetricsTokens = function(){
+        return liveMetricsTokens
+    }
+    exports.addLiveMetricsToken = function(userID, token) {
+        liveMetricsTokens[userID] = token
+    }
+    exports.removeLiveMetricsToken = function(userID){
+        delete liveMetricsTokens[userID]
+    }
+
 
     //USER IDS 
     //Array with all the user ids
-    exports.getUserIDs = function () {
-        return userIDs
-    }
-    exports.addUserID = function (userID) {
-        userIDs.push(userID)
-    }
-    exports.removeUserID = function (userID) {
-        const userIDIndex = userIDs.indexOf(userID)
-        userIDs.splice(userIDIndex)
-    }
-    exports.getLengthUserIDs = function () {
-        return userIDs.length
-    }
-    exports.isInUserIDs = function (userID) {
-        return userIDs.includes(userID)
-    }
+    // exports.getUserIDs = function () {
+    //     return userIDs
+    // }
+    // exports.addUserID = function (userID) {
+    //     userIDs.push(userID)
+    // }
+    // exports.removeUserID = function (userID) {
+    //     const userIDIndex = userIDs.indexOf(userID)
+    //     userIDs.splice(userIDIndex)
+    // }
+    // exports.getLengthUserIDs = function () {
+    //     return userIDs.length
+    // }
+    // exports.isInUserIDs = function (userID) {
+    //     return userIDs.includes(userID)
+    // }
 
 
     //CALLBACKS
