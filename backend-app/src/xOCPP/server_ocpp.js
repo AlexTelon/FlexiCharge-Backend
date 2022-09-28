@@ -47,6 +47,7 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
                         }
                     })
                     break
+            }
         })
 
         
