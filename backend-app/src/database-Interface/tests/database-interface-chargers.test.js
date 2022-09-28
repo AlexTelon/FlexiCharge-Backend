@@ -120,51 +120,67 @@ module.exports = function({ newDatabaseInterfaceChargers }) {
 
     exports.runTests = function() {
         const FailedTests = []
+        let amountOfTestsDone = 0
+        let totalTests = Object.keys(exports).length - 1
 
-        exports.getChargersTest((error) => {
-            error.forEach(e => {
+        const checkIfAllTestsAreDone = function() {
+            amountOfTestsDone++
+
+            if (amountOfTestsDone >= totalTests) {
+                if (FailedTests.length == 0) {
+                    console.log(`All Chargers Tests succeeded!`);
+                } else {
+                    console.log(`Chargers tests had ${FailedTests.length} failed tests!`);
+                    FailedTests.forEach(message => {
+                        console.log(message);
+                    });
+                }
+            }
+        }
+
+        exports.getChargersTest((errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`getChargers Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        exports.getChargerTest(1, (error) => {
-            error.forEach(e => {
+        exports.getChargerTest(1, (errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`getChargerTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        exports.getChargerBySerialNumberTest("abc111", (error) => {
-            error.forEach(e => {
+        exports.getChargerBySerialNumberTest("abc111", (errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`getChargerBySerialNumberTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        exports.getAvailableChargersTest((error) => {
-            error.forEach(e => {
+        exports.getAvailableChargersTest((errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`getAvailableChargersTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        exports.addChargerTest(1, "abc999", [39.749812214261034,39.070100435207065], (error) => {
-            error.forEach(e => {
+        exports.addChargerTest(1, "abc999", [39.749812214261034,39.070100435207065], (errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`addChargerTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        exports.removeChargerTest(chargersDefaultValue.chargerID, (error) => {
-            error.forEach(e => {
+        exports.removeChargerTest(chargersDefaultValue.chargerID, (errors) => {
+            errors.forEach(e => {
                 FailedTests.push(`removeChargerTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        if (FailedTests.length == 0) {
-            console.log(`All Chargers Tests succeeded!`);
-        } else {
-            console.log(`Chargers tests had ${FailedTests.length} failed tests!`);
-            FailedTests.forEach(message => {
-                console.log(message);
-            });
-        }
+        
     }
 
     return exports

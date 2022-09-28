@@ -75,33 +75,46 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
 
     exports.runTests = function() {
         const FailedTests = []
+        let amountOfTestsDone = 0
+        let totalTests = Object.keys(exports).length - 1
 
-        exports.updateChargingState(1, 10, 1000, (error) => {
-            error.forEach(err => {
+        const checkIfAllTestsAreDone = function() {
+            amountOfTestsDone++
+
+            if (amountOfTestsDone >= totalTests) {
+                if (FailedTests.length == 0) {
+                    console.log(`All Charge Sessions Tests succeeded!`);
+                } else {
+                    console.log(`Charge Sessions tests had ${FailedTests.length} failed tests!`);
+                    FailedTests.forEach(message => {
+                        console.log(message);
+                    });
+                }
+            }
+        }
+
+        exports.updateChargingState(1, 10, 1000, (errors) => {
+            errors.forEach(err => {
                 FailedTests.push(`updateChargingState Failed! : ${err}`);
             });
+            checkIfAllTestsAreDone()
         })
 
-        exports.addChargeSessionTest(10, 10, (error) => {
-            error.forEach(err => {
+        exports.addChargeSessionTest(10, 10, (errors) => {
+            errors.forEach(err => {
                 FailedTests.push(`addChargeSessionTest Failed! : ${err}`);
             });
+            checkIfAllTestsAreDone()
         })
 
-        exports.getChargeSessionTest(1, (error) => {
-            error.forEach(err => {
+        exports.getChargeSessionTest(1, (errors) => {
+            errors.forEach(err => {
                 FailedTests.push(`getChargeSessionTest Failed! : ${err}`);
             });
+            checkIfAllTestsAreDone()
         })
 
-        if (FailedTests.length == 0) {
-            console.log(`All Charge Sessions Tests succeeded!`);
-        } else {
-            console.log(`Charge Sessions tests had ${FailedTests.length} failed tests!`);
-            FailedTests.forEach(message => {
-                console.log(message);
-            });
-        }
+        
     }
 
     return exports

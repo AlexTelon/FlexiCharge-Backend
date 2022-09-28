@@ -95,6 +95,7 @@ module.exports = function({databaseInit}) {
                 date: oldDate
             }
         }).then(electricityTariff => callback([], electricityTariff))
+        .catch(error => callback(error, []))
     }
 
     exports.removeElectricityTariff = function(date, database, callback){

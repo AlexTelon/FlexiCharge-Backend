@@ -84,9 +84,6 @@ module.exports = function({ newDatabaseInterfaceChargePoints }) {
                 errorList.push(err)
             });
 
-            console.log(`updatedChargePoint:`)
-            console.log(updatedChargePoint)
-
             callback(errorList)
         })
     }
@@ -94,45 +91,60 @@ module.exports = function({ newDatabaseInterfaceChargePoints }) {
 
     exports.runTests = function() {
         const FailedTests = []
+        let amountOfTestsDone = 0
+        let totalTests = Object.keys(exports).length - 1
+
+        const checkIfAllTestsAreDone = function() {
+            amountOfTestsDone++
+
+            if (amountOfTestsDone >= totalTests) {
+                if (FailedTests.length == 0) {
+                    console.log(`All Charge Points Tests succeeded!`);
+                } else {
+                    console.log(`Charge Points tests had ${FailedTests.length} failed tests!`);
+                    FailedTests.forEach(message => {
+                        console.log(message);
+                    });
+                }
+            }
+        }
 
         exports.getChargePointTest(1, (error) => {
             error.forEach(e => {
                 FailedTests.push(`getChargePointTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
         exports.getChargePointsTest((error) => {
             error.forEach(e => {
                 FailedTests.push(`getChargePointsTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
         exports.addChargePointTest("ICA", "Zeusvägen", [55.136461, 17.125360], (error) => {
             error.forEach(e => {
                 FailedTests.push(`addChargePointTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
         exports.removeChargePointTest(1, (error) => {
             error.forEach(e => {
                 FailedTests.push(`removeChargePointTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
         exports.updateChargePointTest(1, "ICA", "Zuesvägen", [56.014765,19.023512], (error) => {
             error.forEach(e => {
                 FailedTests.push(`updateChargePointTest Failed ! ${e}`)
             })
+            checkIfAllTestsAreDone()
         })
 
-        if (FailedTests.length == 0) {
-            console.log(`All Charge Points Tests succeeded!`);
-        } else {
-            console.log(`Charge Points tests had ${FailedTests.length} failed tests!`);
-            FailedTests.forEach(message => {
-                console.log(message);
-            });
-        }
+        
     }
 
     return exports
