@@ -71,7 +71,6 @@
     "reservationId": 1,
     "transactionId": 1,
     "timestamp":1234512345124123
-
     } ]
 
 //active transactionIds for charger teams to test with
