@@ -1,16 +1,17 @@
 const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
+const config = require('../config')
 
-// ********************** USE THESE LINES FOR PRODUCTION DB ***************** */
-/*
-const sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
-    host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
-    dialect: "postgres"
-});*/
 
-/* ********************** USE THIS LINE FOR DEVELOPMENT DB ****************** */
- const sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
-//sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+if(config.USE_LOCAL_DATABASE){
+    var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+    sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+} else {
+    var sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+        host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
+        dialect: "postgres"
+    });
+}
 
 try {
     sequelize.authenticate();
@@ -18,6 +19,7 @@ try {
 } catch (error) {
     console.error('Unable to connect to the database:', error);
 }
+
 
 const Chargers = sequelize.define('Chargers', {
     chargerID: {
