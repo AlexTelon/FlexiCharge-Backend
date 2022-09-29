@@ -4,7 +4,7 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
     
     exports.remoteStartTransaction = function(chargerID, transactionID, callback){
         
-        console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
+        console.log("Incoming request from API: startTransaction -> chargerId;")
 
         v.addTransactionID(chargerID, transactionID)
 
@@ -19,7 +19,7 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
 
     exports.remoteStopTransaction = function(chargerID, transactionID, callback){
 
-        //to do, not working
+        //to do, not working (EDIT 2022-09-22: Klarna in DAL is not working, therefor this is not working)
         console.log("Incoming request from API: stopTransaction -> transactionId;"+transactionID+" chargerId;"+chargerID)
         
         const payload = {
@@ -45,9 +45,6 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
         }
         interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
     }
-
-    
-
 
     return exports
 }

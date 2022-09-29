@@ -25,7 +25,28 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: object
+                example:
+                  accessToken: accesToken
+                  email: email
+                  username: username
+                  user_id: user_id
+        '400':
+          description: Incorrect username or password
+          content: 
+            application/json:
+              schema: 
+                type: object
+                example:
+                  message: message
+                  code: NotAuthorizedException
+                  time: time
+                  requestId: requestId
+                  statusCode: 400
+                  retryable: false
+                  retryDelay: 4.128536351395207
   /auth/sign-up:
     post:
       tags:
@@ -41,16 +62,23 @@ paths:
             schema:
               type: object
               example:
-                username: username
+                username: mustBeEmail
                 password: password
-                email: email
-                name: first_name
-                family_name: last_name
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+        '400':
+          description: Username not email
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  message: Username should be an email
+                  code: InvalidParameterException
+                  statusCode: 400
   /auth/verify:
     post:
       tags:
@@ -435,7 +463,7 @@ paths:
                 parentIdTag: 1
       responses:
         '200':
-          description: Successful response
+          description: Successful response.
           content:
             application/json: {}
             

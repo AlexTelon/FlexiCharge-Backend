@@ -47,6 +47,7 @@ module.exports = function({}){
             DATA_TRANSFER: "DataTransfer",
             START_TRANSACTION: "StartTransaction",
             STOP_TRANSACTION: "StopTransaction",
+            METER_VALUES: "MeterValues",
             
             
             CHARGE_LEVEL_UPDATE: "ChargeLevelUpdate",
@@ -96,9 +97,12 @@ module.exports = function({}){
             RESET_FAILURE: "ResetFailure",
             UNDERVOLTAGE: "UnderVoltage",
             OVERVOLTAGE: "OverVoltage",
-            WEAK_SIGNAL: "WeakSignal"
+            WEAK_SIGNAL: "WeakSignal",
+            INVALID_UNIQUE_ID: "InvalidUniqueID",
+            RESPONSE_STATUS_REJECTED: "ResponseStatusRejected",
 
-            
+
+
         }
 
         return constants

@@ -2,15 +2,16 @@ const AWS = require('aws-sdk')
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware()
+const config = require('../../config')
 
-AWS.config.update({"region": "eu-west-1"});
+AWS.config.update({"region": config.AWS_REGION});
 
 class AdminCognitoService {
     cognitoIdentity;
-    secretHash = 'gbnne4qg7d44sdmom0ovoa3r9030qnguttq91j1aeandlven5r8'
-    clientId = '3hcnd5dm9a0cjiqnmuvcu0dbqa'
-    adminUserPool = 'eu-west-1_1fWIOF9Yf'; // admin
-    userPool = 'eu-west-1_aSUDsld3S'
+    secretHash = config.ADMIN_POOL_SECRET
+    clientId = config.ADMIN_POOL_ID
+    adminUserPool = config.ADMIN_POOL
+    userPool = config.USER_POOL
 
     constructor() {
         this.cognitoIdentity = new AWS.CognitoIdentityServiceProvider();
@@ -300,14 +301,13 @@ class AdminCognitoService {
         }
     }
 
-    async createUser(username, password, userAttributes) {
+    async createUser(username, password) {
 
         let params = {
             "UserPoolId": this.userPool,
             "Username": username,
             // "MessageAction": "SUPPRESS", // Do not send welcome email
-            "TemporaryPassword": password,
-            "UserAttributes": userAttributes,
+            "TemporaryPassword": password
         };
         try {
             const res = await this.cognitoIdentity.adminCreateUser(params).promise();
