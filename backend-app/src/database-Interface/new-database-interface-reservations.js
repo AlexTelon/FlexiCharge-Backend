@@ -62,9 +62,9 @@ module.exports = function ({ newDataAccessLayerReservations, newReservationValid
     }
 
     exports.addReservation = function (chargerID, userID, start, end, database, callback) {
-        const validationError = newReservationValidation.getAddReservationValidation(start, end)
-        if (validationError.length > 0) {
-            callback(validationError, [])
+        const validationErrors = newReservationValidation.getAddReservationValidation(start, end)
+        if (validationErrors.length > 0) {
+            callback(validationErrors, [])
         } else {
             newDataAccessLayerReservations.addReservation(chargerID, userID, start, end, database, function (error, reservationID) {
                 if (Object.keys(error).length > 0) {
@@ -83,13 +83,13 @@ module.exports = function ({ newDataAccessLayerReservations, newReservationValid
         if(validationErrors.length > 0){
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerReservations.removeReservation(reservationID, database, function (error, removeReservation) { //removeReservation = bool
+            newDataAccessLayerReservations.removeReservation(reservationID, database, function (error, reservationWasRemoved) { //removeReservation = bool
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
-                    callback([], removeReservation)
+                    callback([], reservationWasRemoved)
                 }
             })   
         }

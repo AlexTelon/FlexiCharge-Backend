@@ -73,7 +73,7 @@ module.exports = function({ newDataAccessLayerTransactions, newTransactionValida
             })
         }
     } 
-    // TODO Maybe merge : updateIsPayed, updatePayedDate, updateTotalPrice to one field. 
+    
     exports.updatePayedDate = function(transactionID, payedDate, database, callback) {
         const validationErrors = newTransactionValidation.getUpdatePayedDateValidation(transactionID, payedDate)
         if(validationErrors.length > 0){

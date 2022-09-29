@@ -57,22 +57,22 @@ module.exports = function({ newDataAccessLayerChargePoints, dbErrorCheck, newCha
         if(validationErrors.length > 0){
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerChargePoints.removeChargePoint(chargePointID, database, function(error, chargePointRemoved) { //chargePointRemoved = bool
+            newDataAccessLayerChargePoints.removeChargePoint(chargePointID, database, function(error, chargePointWasRemoved) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
-                        callback(errorCode, chargePointRemoved)
+                        callback(errorCode, chargePointWasRemoved)
                     })
                 } else {
-                    callback([], chargePointRemoved)
+                    callback([], chargePointWasRemoved)
                 }
             })
         }
     }
 
     exports.updateChargePoint = function(chargePointID, name, address, coordinates , database, callback) {
-        const validationError = newChargePointValidation.getAddChargePointValidation(name, address, coordinates)
-        if (validationError.length > 0) {
-            callback(validationError, [])
+        const validationErrors = newChargePointValidation.getAddChargePointValidation(name, address, coordinates)
+        if (validationErrors.length > 0) {
+            callback(validationErrors, [])
         } else {
             newDataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, coordinates, database, function(error, updatedChargePoint) {
                 if (Object.keys(error).length > 0) {

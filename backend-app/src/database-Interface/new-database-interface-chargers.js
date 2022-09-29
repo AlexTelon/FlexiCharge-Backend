@@ -35,11 +35,10 @@ module.exports = function({ newDataAccessLayerChargers, dbErrorCheck, newCharger
         }
     }
 
-
     exports.getChargerBySerialNumber = function(serialNumber, database, callback) {
-        const validationError = newChargerValidation.getChargerBySerialNumberValidation(serialNumber)
-        if (validationError.length > 0) {
-            callback(validationError, [])
+        const validationErrors = newChargerValidation.getChargerBySerialNumberValidation(serialNumber)
+        if (validationErrors.length > 0) {
+            callback(validationErrors, [])
         } else {
             newDataAccessLayerChargers.getChargerBySerialNumber(serialNumber, database, function(error, charger) {
                 if (Object.keys(error).length > 0) {
@@ -72,9 +71,9 @@ module.exports = function({ newDataAccessLayerChargers, dbErrorCheck, newCharger
     }
 
     exports.addCharger = function(chargePointID, serialNumber, coordinates, database, callback) {
-        const ValidationError = newChargerValidation.getAddChargerValidation(coordinates, serialNumber, chargePointID)
-        if (ValidationError.length > 0) {
-            callback(ValidationError, [])
+        const ValidationErrors = newChargerValidation.getAddChargerValidation(coordinates, serialNumber, chargePointID)
+        if (ValidationErrors.length > 0) {
+            callback(ValidationErrors, [])
         } else {
             newDataAccessLayerChargers.addCharger(chargePointID, serialNumber, coordinates, database, function(error, chargerID) {
                 if (Object.keys(error).length > 0) {
@@ -107,9 +106,15 @@ module.exports = function({ newDataAccessLayerChargers, dbErrorCheck, newCharger
 
 
     exports.updateChargerStatus = function(chargerID, status, callback) {
+<<<<<<< HEAD
         const validationError = newChargerValidation.getUpdateChargerStatusValidation(status)
         if (validationError.length > 0) {
             callback(validationError, [])
+=======
+        const validationErrors = newChargerValidation.getUpdateChargerStatusValidation(status)
+        if (validationErrors.length > 0) {
+            callback(validationErrors, [])
+>>>>>>> 9517073b152305b7fd2750751f580e251c488cdd
         } else {
             newDataAccessLayerChargers.updateChargerStatus(chargerID, status, function(error, charger) {
                 if (Object.keys(error).length > 0) {
