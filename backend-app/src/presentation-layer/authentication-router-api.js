@@ -8,13 +8,13 @@ module.exports = function () {
 
     router.put('/update-user', function (req, res) {
 
-        const { accessToken, name, family_name, phone_number, street_address, zip_code, city, country } = req.body;
+        const { accessToken, firstName, lastName, phoneNumber, streetAddress, zipCode, city, country } = req.body;
         let userAttributes = [];
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-        userAttributes.push({ Name: 'phone_number', Value: phone_number });
-        userAttributes.push({ Name: 'custom:street_address', Value: street_address });
-        userAttributes.push({ Name: 'custom:zip_code', Value: zip_code });
+        userAttributes.push({ Name: 'name', Value: firstName });
+        userAttributes.push({ Name: 'family_name', Value: lastName });
+        userAttributes.push({ Name: 'phone_number', Value: phoneNumber });
+        userAttributes.push({ Name: 'custom:street_address', Value: streetAddress });
+        userAttributes.push({ Name: 'custom:zip_code', Value: zipCode });
         userAttributes.push({ Name: 'custom:city', Value: city });
         userAttributes.push({ Name: 'custom:country', Value: country });
 
@@ -128,7 +128,7 @@ module.exports = function () {
         const accessToken = req.params.accessToken;
         try {
             const result = await cognito.getUserByAccessToken(accessToken);
-            res.status(200).json(result).end();
+            res.status(result.statusCode).json(result.data).end();
             
         } catch (error){
             res.status(error.statusCode).json(error).end();
