@@ -63,7 +63,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 break
 
             case c.START_TRANSACTION:
-                handleStartTrasaction(chargerID, uniqueID, request)
+                handleStartTransaction(chargerID, uniqueID, request)
                 break
 
             case c.STOP_TRANSACTION:
@@ -123,7 +123,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
     }
 
-    function handleStartTrasaction(chargerID, uniqueID, request) {
+    function handleStartTransaction(chargerID, uniqueID, request) {
 
         let callback = v.getCallback(chargerID)
         v.removeCallback(chargerID)
