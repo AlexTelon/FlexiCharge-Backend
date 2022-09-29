@@ -41,7 +41,7 @@ module.exports = function({ newDataAccessLayerChargeSessions, dbErrorCheck, newC
     }
 
     exports.getChargeSessions = function(chargerID, callback) {
-        // TODO fetch all chargeSessions for a charger...
+        newDataAccessLayerChargeSessions.getChargeSession(chargerID, callback)
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {

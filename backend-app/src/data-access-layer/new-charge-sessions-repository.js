@@ -37,8 +37,17 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getChargeSessions = function(chargerID, callback) {
-        // TODO fetch all chargeSessions for a charger...
+    exports.getChargeSessions = function(chargerID, database, callback) {
+        if (database == null) {
+            database = databaseInit.newChargeSessions
+        }
+
+        database.findAll({ where: {chargerID : chargerID}, raw: true })
+            .then(ChargeSessions => callback([], ChargeSessions))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
