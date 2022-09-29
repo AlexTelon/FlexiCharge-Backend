@@ -150,13 +150,8 @@ const ChargePoints = sequelize.define('ChargePoints', {
     timestamps: false
 });
 
-//Reservations.hasOne(Reservations, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
-
-// Transactions.hasOne(Transactions, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
-
-// Chargers.hasOne(Chargers, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
 sequelize.sync().then(function () {

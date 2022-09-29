@@ -8,7 +8,7 @@ services:
       - 1337:1337
     volumes:
       - ./backend-app/src:/backend-app/src
-    env_file: .env
+    env_file: ./backend-app/.env
     depends_on: 
       - postgre_db
   postgre_db:

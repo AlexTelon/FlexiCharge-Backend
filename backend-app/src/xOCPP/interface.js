@@ -4,7 +4,7 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
     
     exports.remoteStartTransaction = function(chargerID, transactionID, callback){
         
-        console.log("Incoming request from API: startTransaction -> chargerId;"+chargerID)
+        console.log("Incoming request from API: startTransaction -> chargerId;")
 
         v.addTransactionID(chargerID, transactionID)
 

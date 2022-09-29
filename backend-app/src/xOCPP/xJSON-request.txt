@@ -61,7 +61,7 @@
 
     } ]
 
-[ 2,
+[  2,
   "uniqueID",
   "StopTransaction",
   { 
@@ -73,31 +73,30 @@
     "timestamp":1234512345124123
     } ]
 
-[ 
+[   
     2, 
     "uniqueID",
     "MeterValues",
     {
         "connectorId": 1,
         "transactionId": 1,
-        "timestamp": 1234512345124123
+        "timestamp": 1234512345124123,
         "values": {
             "chargingPercent": {
                 "value": 0,
-                "unit": %,
+                "unit": "%",
                 "measurand": "SoC"
             },
             "chargingPower": {
                 "value": 0,
-                "unit": W,
+                "unit": "W",
                 "measurand": "Power.Active.Import"
             },
             "chargedSoFar": {
                 "value": 0,
-                "unit": Wh,
+                "unit": "Wh",
                 "measurand": "Energy.Active.Import.Interval"
             }
-            
         }
     }
 ]

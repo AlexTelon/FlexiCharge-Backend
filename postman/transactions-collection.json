@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "3d538151-0f87-463d-bbf3-1ef8f06ae19c",
+		"name": "Transactions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23211732"
+	},
+	"item": [
+		{
+			"name": "Transaction",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/transactions/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": \"1\",\n    \"chargerID\": 100001,\n    \"isKlarnaPayment\": true,\n    \"pricePerKwh\": \"333\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/transactions/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						""
+					]
+				},
+				"description": "userID = string,\n\nchargerID = int\n\nisKlarnaPayment = bool\n\npricePerKwh = string"
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction by userId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/transactions/userTransactions/\"1\"",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						"userTransactions",
+						"\"1\""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "chargerTransactions by charger Id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update payment",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"1\",\n    \"paymentId\": \"2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/transactions/payment/3",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						"payment",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/transactions/stop/698",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						"stop",
+						"698"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userID",
+							"value": "\"1\"",
+							"type": "text"
+						},
+						{
+							"key": "chargerID",
+							"value": "100001",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/transactions/session",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"transactions",
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

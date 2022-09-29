@@ -1,5 +1,6 @@
 const awilix = require('awilix')
 const container = awilix.createContainer()
+const config = require('./config')
 
 container.register({
 
@@ -38,12 +39,9 @@ container.register({
     interfaceHandler: awilix.asFunction(require('./xOCPP/interface_handler')),
     chargerClientHandler: awilix.asFunction(require('./xOCPP/charger_client_handler')),
     chargerMessageHandler: awilix.asFunction(require('./xOCPP/charger_message_handler')),
-    appClientHandler: awilix.asFunction(require('./xOCPP/app_client_handler')),
-    appMessageHandler: awilix.asFunction(require('./xOCPP/app_message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
-
-    //OCPP Mocks
-    dbInterfaceTransactionsMock: awilix.asFunction(require('./xOCPP/OCPP_mocks/db_interface_transactions_mock')),
+    broker: awilix.asFunction(require('./xOCPP/broker')),
+    userClientHandler: awilix.asFunction(require('./xOCPP/user_client_handler')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
@@ -59,4 +57,4 @@ const ocpp = container.resolve("ocpp")
 ocpp.startServer()
 
 
-app.listen(8080)
+app.listen(config.PORT)

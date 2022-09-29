@@ -1,6 +1,13 @@
 # FlexiCharge-Backend
 
-# Start app
+# Start up
+## Prerequisites
+Needed to start app.
+### .env.example file
+- Create a .env with variables matching the .env.example file.
+- Populate these variables in the .env file.
+- It's validated that these variables are populated.
+## Start app
 - cd /FlexiCharge-Backend
 - docker-compose up
 
@@ -60,3 +67,14 @@ module.exports = function({ databaseInterfaceCharger}) {
 - dbError: General database error
 - dbForeignKeyConstraintError: Specified foreign key doesn´t match a primary key
 - dbUniqueConstraintError: A unique constraint has been violated
+
+
+## OCPP 
+  OCPP handles communication between chargers and backend. Conversations can be iniated by either chargers or backend. A conversation is always iniated with a request and responded to with a confirmation, in most conversations the usefull data is in the request, and the confirmation is just a message to confirm that data arrived as expected.  
+
+### TESTS
+  In your env. file you must set *RUN_OCCP_TEST=1* before you run *docker-compose up* to start the app. 
+  Now the tests will run everytime you save a file.
+
+  testBootNotificaiton is a request sent from the charger containing information about that charger.
+  test RemoteStart/RemoteStop/ReserveNow are conversations iniated by the server.

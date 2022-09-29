@@ -1,7 +1,11 @@
 const connectedChargerSockets = {}
-const connectedAppSockets = []
+const connectedUserSockets = {}
 const chargerSerials = []
-const appTransactionIDs = []
+
+//Stored under transactionID index
+const userIDs = []
+
+const liveMetricsTokens = {}
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
@@ -59,40 +63,75 @@ module.exports = function ({ }) {
         return Object.keys(chargerIDs).length
     }
 
-    // CONNECTED APP SOCKETS
-    // Get app socket with transactionIDs 
-    exports.getConnectedAppSocket = function (transactionID) {
-        return connectedAppSockets[transactionID]
+    // CONNECTED USER SOCKETS
+    // Get user socket with userIDs 
+    exports.getConnectedUserSocket = function (userID) {
+        return connectedUserSockets[userID]
     }
-    exports.addConnectedAppSockets = function (transactionID, socket) {
-        connectedAppSockets[transactionID] = socket
+    exports.addConnectedUserSocket = function (userID, socket) {
+        connectedUserSockets[userID] = socket
     }
-    exports.removeConnectedAppSockets = function (transactionID) {
-        delete connectedAppSockets[transactionID]
+    exports.removeConnectedUserSocket = function (userID) {
+        delete connectedUserSockets[userID]
     }
-    exports.getLengthConnectedAppSockets = function () {
-        return Object.keys(connectedAppSockets).length
-    }
-
-    //APP IDS 
-    //Array with all the app ids
-    exports.getAppTransactionIDs = function () {
-        return appTransactionIDs
-    }
-    exports.addAppTransactionID = function (transactionID) {
-        appTransactionIDs.push(transactionID)
-    }
-    exports.removeAppTransactionID = function (transactionID) {
-        const appTransactionIDIndex = appTransactionIDs.indexOf(transactionID)
-        appTransactionIDs.splice(appTransactionIDIndex)
-    }
-    exports.getLengthAppTransactionIDs = function () {
-        return appTransactionIDs.length
-    }
-    exports.isInAppTransactionIDs = function (transactionID) {
-        return appTransactionIDs.includes(transactionID)
+    exports.getLengthConnectedUserSockets = function () {
+        return Object.keys(connectedUserSockets).length
     }
 
+    //USER IDS 
+    //Array with all the user ids under transactionIDs index
+    exports.addUserIDWIthTransactionID = function(userID, transactionID){
+        // for(const transactionIDIndex of transactionIDArray){
+        //     userIDs[transactionIDIndex] = userID
+        // }
+        userIDs[transactionID] = userID
+    }
+    exports.getUserIDWithTransactionID = function(transactionID){
+        return userIDs[transactionID]
+    }
+    exports.removeUserID = function(userID){
+        for(i = 0; i < userIDs.length; i += 1){
+            if(userIDs[i] == userID){
+                delete userIDs[i]
+            }
+        }
+    }
+    exports.isInUserIDs = function (userID) {
+        return userIDs.includes(userID)
+    }
+
+    //LIVE METRICS TOKENS
+    //Array with all the PubSub tokens for all subscribers, stored under userID
+    exports.getLiveMetricsToken = function(userID){
+        return liveMetricsTokens[userID]
+    }
+    exports.addLiveMetricsToken = function(userID, token) {
+        liveMetricsTokens[userID] = token
+
+        // liveMetricsToken = {
+        //     "tjijgioerjgiore-gjruijgeruigh": token // only supports one token per userID
+        // }
+    }
+    exports.removeLiveMetricsToken = function(userID){
+        delete liveMetricsTokens[userID]
+    }
+    exports.getLiveMetricsTokensLength = function(){
+        return Object.keys(liveMetricsTokens).length
+    }
+
+
+    //USER IDS 
+    //Array with all the user ids
+    // exports.getUserIDs = function () {
+    //     return userIDs
+    // }
+    // exports.addUserID = function (userID) {
+    //     userIDs.push(userID)
+    // }
+    // exports.removeUserID = function (userID) {
+    //     const userIDIndex = userIDs.indexOf(userID)
+    //     userIDs.splice(userIDIndex)
+    // }
 
     //CALLBACKS
     //get callback with some type of id
@@ -117,9 +156,6 @@ module.exports = function ({ }) {
     }
     exports.removeTransactionID = function (chargerID) {
         delete transactionIDs[chargerID]
-    }
-    exports.getChargerIdByTransactionID = function (transactionId) {
-        return transactionIDs.indexOf(transactionId)
     }
 
     return exports

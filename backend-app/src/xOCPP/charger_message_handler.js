@@ -2,7 +2,8 @@ const { Socket } = require("dgram")
 const { stringify } = require("querystring")
 const { buildJSONMessage } = require("./global_functions")
 
-module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions }) {
+
+module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -16,22 +17,18 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
             switch (messageTypeID) {
                 case c.CALL:
-
                     response = callSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_RESULT:
-
                     callResultSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_ERROR:
-
                     response = callErrorSwitch(uniqueID, data)
                     break
 
                 default:
-
                     response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
                     break
             }
@@ -72,6 +69,10 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             case c.STOP_TRANSACTION:
                 handleStopTransaction(chargerID, uniqueID, request)
                 break
+            
+            case c.METER_VALUES:
+                handleMeterValues(chargerID, request)
+                break
 
             default:
                 callResult = func.getCallResultNotImplemeted(uniqueID, action)
@@ -79,6 +80,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
 
         return callResult
+    }
+
+    function handleMeterValues(chargerID, request){
+        //TODO: Add validation 
+        const transactionID = request[3].transactionID
+        const userID = v.getUserIDWithTransactionID(transactionID)
+        console.log("INSIDE METERVALUES, USER_ID: " + userID)
+        console.log("TRANSACTION_ID: " + transactionID)
+        broker.publishToLiveMetrics(userID, request)
     }
 
     function handleStopTransaction(chargerID, uniqueID, request) {
@@ -134,6 +144,14 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
                     transactionID = v.getTransactionID(chargerID)
+
+                    databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
+                        if(error.length > 0){
+                            console.log("\nError fetching transaction from DB: " + error)
+                        } else {
+                            v.addUserIDWIthTransactionID(transaction.userID, transactionID)
+                        }
+                    }) 
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
@@ -287,36 +305,67 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
     function callResultSwitch(uniqueID, response, chargerID) {
 
-        if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
-
+        try {
             let action = response[c.ACTION_INDEX]
             console.log("Incoming result call: " + action)
-
+    
             switch (action) {
-
+    
                 case c.RESERVE_NOW:
-                    interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
                 case c.REMOTE_START_TRANSACTION:
-                    interfaceHandler.handleRemoteStartResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleRemoteStartResponse(chargerID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
                 case c.REMOTE_STOP_TRANSACTION:
-                    interfaceHandler.handleRemoteStopResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
+                        interfaceHandler.handleRemoteStopResponse(chargerID, response)
+                    } else {
+                        throw c.INVALID_UNIQUE_ID
+                    }
                     break
-
+    
+                case c.DATA_TRANSFER:
+                    if(response[c.PAYLOAD_INDEX].status == c.ACCEPTED){
+                        console.log('DataTransfer response was OK')
+                    } else {
+                        throw c.RESPONSE_STATUS_REJECTED
+                    }
+                    break
+    
                 default:
                     let socket = v.getConnectedChargerSocket(chargerID)
                     let message = func.getGenericError(uniqueID, "Could not interpret the response for the callcode: " + action)
                     socket.send(message)
                     break
             }
-        } else {
+            
+        } catch (error) {
             let socket = v.getConnectedChargerSocket(chargerID)
-            let message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
-            socket.send(message)
+            let message = ""
+            switch(error){
+                case c.INVALID_UNIQUE_ID:
+                    message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
+                    socket.send(message)
+                    break
+                case c.RESPONSE_STATUS_REJECTED:
+                    message = func.getGenericError(uniqueID, "Request was rejected.")
+                    socket.send(message)
+                    break
+            }
         }
+
+        
 
     }
 

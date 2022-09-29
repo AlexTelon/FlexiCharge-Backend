@@ -1,11 +1,12 @@
 const WebSocket = require('ws')
+const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, appClientHandler }) {
+module.exports = function ({ chargerClientHandler, v, userClientHandler, test }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
-
+        
         wss.on('connection', function connection(ws, req) {
 
             // Get the charger's serial number:
@@ -13,27 +14,27 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
             let originArray = origin.split("/")
             let clientType = originArray[1]
             
+            
             switch(clientType){
-                case 'app':
-                    const transactionID = Number.parseInt(originArray[originArray.length - 1]) //Currently for example '1a' becomes 1 and 'a' or 'a1' becomes NaN
-                    console.log(transactionID)
+                //ws://123.123.123:1337/user/abc123-123-123
+                case 'user':
+                    const userID = originArray[originArray.length - 1].toString()
+                    console.log('UserID trying to connect: ', userID)
 
-                    if(!Number.isInteger(transactionID)){
-                        ws.terminate()
-                        return
-                    }
-
-                    appClientHandler.handleClient(ws, transactionID)
+                    userClientHandler.handleClient(ws, userID)
 
                     ws.on('close', function disconnection() {
-                        if(v.isInAppTransactionIDs(transactionID)){
-                            v.removeConnectedAppSockets(transactionID)
-                            v.removeAppTransactionID(transactionID)
+                        v.removeConnectedUserSocket(userID)
+
+                        if(v.isInUserIDs(userID)){
+                            v.removeUserID(userID)
                         }
+
+                        console.log("Disconnected from client with ID: " + userID)
+                        console.log("Number of connected clients: " + v.getLengthConnectedUserSockets())
                     })
-
-                    break;
-
+                    break
+                
                 case 'charger':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
                     // Validate and handle connecting charger:
@@ -51,15 +52,18 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
                             console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                         }
                     })
-                    break;
-                
-                default:
-                    ws.terminate()
-                    break;
+                    break
             }
-
-            
         })
+
+        
+        if(config.RUN_OCPP_TEST){
+            setTimeout(function(){
+                test.runTests()
+            }, 2000);
+        }
+        
+        
     }
     return exports
 }
