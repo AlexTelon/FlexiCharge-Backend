@@ -1,6 +1,36 @@
-const PDFDocument = require('pdfkit-table');
+const PDFDocument = require('pdfkit-table')
+const { 
+    convertUnixToIso8601, 
+    getYearAndMonthFromUnix 
+} = require('../helpers/date')
 
-exports.generateMonthlyInvoicePDF = () => {
+const calculateChargeSessions = (chargeSessions) => {
+    const tableRows = []
+    let totalSum = 0
+    
+    for (const chargeSession of chargeSessions) {
+        const chargeSessionRow = []
+        const sessionPrice = 10 // kwh price * duration
+        
+        chargeSessionRow.push(convertUnixToIso8601(chargeSession.startTime))
+        chargeSessionRow.push(convertUnixToIso8601(chargeSession.endTime))
+        chargeSessionRow.push(chargeSession.kwhTransfered)
+        
+        tableRows.push(chargeSessionRow)
+        totalSum += sessionPrice
+    }
+    console.log(tableRows)
+    return {
+        tableRows,
+        totalSum
+    }
+}
+
+
+
+exports.generateMonthlyInvoicePDF = (user, chargeSessions) => {
+    const calculatedChargeSessions = calculateChargeSessions(chargeSessions)
+    const { year, month } = getYearAndMonthFromUnix(chargeSessions[0].startTime)
     const doc = new PDFDocument({
         margin: 30, size: 'A4'
     })
@@ -9,13 +39,13 @@ exports.generateMonthlyInvoicePDF = () => {
     doc
     .fontSize(12)
     .text('FlexiCharge Invoice', {align: 'left', continued: true})
-    .text('2022-09-01 To 2022-09-30', {align: 'right'})
+    .text(`${year} - ${month}`, {align: 'right'})
     .text(' ')
 
     doc
     .fontSize(14)
-    .text('Name: Nisse Hult')
-    .text("Email: nisse.hult@riksdagen.se")
+    .text(`Name: ${user.name} ${user.familyName}`)
+    .text(`Email: ${user.email}`)
     .text(' ')
 
     doc
@@ -28,15 +58,9 @@ exports.generateMonthlyInvoicePDF = () => {
         headers: [
             "Charge session start", 
             "Charge session end", 
-            "Price (SEK)"
+            "KWH transfered"
         ],
-        rows: [
-            ["2022-07-02 23:31", "2022-07-03 07:25", "12:31"],
-            ["2022-07-04 23:31", "2022-07-05 07:25", "12:00"],
-            ["2022-07-08 23:31", "2022-07-09 07:25", "25:01"],
-            ["2022-07-15 23:31", "2022-07-17 07:25", "69:69"],
-            ["2022-07-21 23:31", "2022-07-22 07:25", "14:88"],
-        ],
+        rows: calculatedChargeSessions.tableRows,
     };
         doc.table( tableArrayColor, { 
             columnsSize: [150,150,100],
@@ -49,7 +73,7 @@ exports.generateMonthlyInvoicePDF = () => {
     doc
     .fontSize(15)
     .font('Helvetica-Bold')
-    .text('Total Price (SEK): 133:89')
+    .text(`Total Price (SEK): ${calculatedChargeSessions.totalSum}`)
     .text(' ')
     
     doc
