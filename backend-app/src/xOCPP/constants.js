@@ -104,7 +104,13 @@ module.exports = function({}){
 
             
             /** LIVE STREAM METRICS CONSTANTS */
-            LIVEMETRICS_TOPIC_PREFIX: '/metrics/'
+            LIVEMETRICS_TOPIC_PREFIX: '/metrics/',
+
+            //TEST DATA
+            CHARGER_ID: 100001,
+            USER_ID: 1,
+            TRANSACTION_ID: 1
+            
 
 
         }
