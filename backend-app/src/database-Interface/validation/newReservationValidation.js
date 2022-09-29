@@ -47,7 +47,7 @@ module.exports = function({}) {
             validationErrors.push("invalidEndValue")
         }
         if(end < start){
-            validationErrors.push("startGreaterThenEnd")
+            validationErrors.push("startGreaterThanEnd")
         }
 
         return validationErrors

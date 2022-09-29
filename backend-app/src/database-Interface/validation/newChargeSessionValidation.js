@@ -1,9 +1,9 @@
 module.exports = function({}){
     const exports = {}
 
-    //Validation for Charge Precentage
-    MAX_CHARGE_PRECENTAGE = 100
-    MIN_CHARGE_PRECENTAGE = 0
+    //Validation for Charge PERCENTAGE
+    MAX_CHARGE_PERCENTAGE = 100
+    MIN_CHARGE_PERCENTAGE = 0
 
     MIN_TRANSFERED_KWH = 0
 
@@ -24,11 +24,8 @@ module.exports = function({}){
     exports.getUpdateChargingStateValidation = function(currentChargePercentage, kwhTransfered){
         const validationErrors = []
         
-        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
-            validationErrors.push("invalidChargePrecentage")
-        }
-        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
-            validationErrors.push("invalidChargePrecentage")
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PERCENTAGE || currentChargePercentage > MAX_CHARGE_PERCENTAGE) {
+            validationErrors.push("invalidChargePercentage")
         }
 
         if (kwhTransfered == null || kwhTransfered == undefined || kwhTransfered < MIN_TRANSFERED_KWH) {

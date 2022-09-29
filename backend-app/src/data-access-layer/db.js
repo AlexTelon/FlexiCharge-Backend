@@ -466,7 +466,7 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
-            /*
+            
             //Fill the ElectricityTariff table with random data
             const generateDays = 61; //Days to generate prices from startDate
             const startDate = new Date(2022, 8, 1); //Sets the start point
@@ -475,7 +475,7 @@ sequelize.sync().then(function () {
             function randomPrice(min, max) {
                 return (Math.random() * (max - min) + min).toFixed(2)
             }
-            //Iterates through each hour and sets price+currency from startDate
+            // Iterates through each hour and sets price+currency from startDate
             for (let hour = 0; hour < 24 * generateDays; hour++) {
                 iterTime += 1*60*60*1000
                 newElectricityTariffs.create({
@@ -483,7 +483,7 @@ sequelize.sync().then(function () {
                     price: randomPrice(1, 6),
                     currency: "SEK"
                 })
-            }*/
+            }
         }
     })
 })

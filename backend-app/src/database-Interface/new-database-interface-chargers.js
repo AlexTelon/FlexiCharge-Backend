@@ -106,22 +106,22 @@ module.exports = function({ newDataAccessLayerChargers, dbErrorCheck, newCharger
     }
 
 
-    // exports.updateChargerStatus = function(chargerID, status, callback) {
-    //     const validationError = chargerValidation.getUpdateChargerStatusValidation(status)
-    //     if (validationError.length > 0) {
-    //         callback(validationError, [])
-    //     } else {
-    //         newDataAccessLayerChargers.updateChargerStatus(chargerID, status, function(error, charger) {
-    //             if (Object.keys(error).length > 0) {
-    //                 dbErrorCheck.checkError(error, function(errorCode) {
-    //                     callback(errorCode, [])
-    //                 })
-    //             } else {
-    //                 callback([], charger)
-    //             }
-    //         })
-    //     }
-    // }
+    exports.updateChargerStatus = function(chargerID, status, callback) {
+        const validationError = newChargerValidation.getUpdateChargerStatusValidation(status)
+        if (validationError.length > 0) {
+            callback(validationError, [])
+        } else {
+            newDataAccessLayerChargers.updateChargerStatus(chargerID, status, function(error, charger) {
+                if (Object.keys(error).length > 0) {
+                    dbErrorCheck.checkError(error, function(errorCode) {
+                        callback(errorCode, [])
+                    })
+                } else {
+                    callback([], charger)
+                }
+            })
+        }
+    }
 
     return exports
 }
