@@ -13,6 +13,8 @@ if(config.USE_LOCAL_DATABASE){
     });
 }
 
+// sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+
 try {
     sequelize.authenticate();
     console.log('Connection has been established successfully.');
