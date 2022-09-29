@@ -11,6 +11,8 @@ const {error} = validationSchema
 if (error) throw new Error(error);
 
 module.exports = {
+  USE_LOCAL_DATABASE: !parseInt(process.env.USE_LOCAL_DATABASE) ? 1 : process.env.USE_LOCAL_DATABASE,
+
   PORT: !parseInt(process.env.PORT) ? 8080 : process.env.PORT,
 
   AWS_REGION: process.env.AWS_REGION,
