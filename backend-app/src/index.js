@@ -48,7 +48,7 @@ container.register({
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
     func: awilix.asFunction(require('./xOCPP/global_functions')),
-    test: awilix.asFunction(require('./xOCPP/tests/charger_tests')),
+    tester: awilix.asFunction(require('./xOCPP/tests/tester')),
 
     app: awilix.asFunction(require('./presentation-layer/app'))
 })

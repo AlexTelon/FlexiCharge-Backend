@@ -84,10 +84,8 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
     function handleMeterValues(chargerID, request){
         //TODO: Add validation 
-        const transactionID = request[3].transactionID
+        const transactionID = request[3].transactionId
         const userID = v.getUserIDWithTransactionID(transactionID)
-        console.log("INSIDE METERVALUES, USER_ID: " + userID)
-        console.log("TRANSACTION_ID: " + transactionID)
         broker.publishToLiveMetrics(userID, request)
     }
 

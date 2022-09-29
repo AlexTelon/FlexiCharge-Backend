@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, userClientHandler, test }) {
+module.exports = function ({ chargerClientHandler, v, userClientHandler, tester }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
@@ -52,14 +52,17 @@ module.exports = function ({ chargerClientHandler, v, userClientHandler, test })
                             console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
                         }
                     })
-                    break
+                    break 
             }
         })
 
-        
         if(config.RUN_OCPP_TEST){
+            // // setTimeout(function(){
+            // //     tester.runTests()
+            // // }, 2000);
+
             setTimeout(function(){
-                test.runTests()
+                tester.runLiveMetricsTests()
             }, 2000);
         }
         

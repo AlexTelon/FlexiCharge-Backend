@@ -1,6 +1,3 @@
-const { buildJSONMessage } = require("./global_functions")
-
-
 module.exports = function ({ constants, func, broker, v }) {
     const c = constants.get()
 

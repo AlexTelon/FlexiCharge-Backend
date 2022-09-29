@@ -1,7 +1,7 @@
 const { Console } = require("console")
 const { Socket } = require("dgram")
 
-module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func, test }) {
+module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func }) {
     const c = constants.get()
     
     exports.handleClient = function (clientSocket, chargerSerial) {
