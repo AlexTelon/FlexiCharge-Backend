@@ -5,15 +5,13 @@ const config = require('../config')
 
 if(config.USE_LOCAL_DATABASE == 1){
     var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
-    sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+    // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
     var sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
         host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
         dialect: "postgres"
     });
 }
-
-// sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 
 try {
     sequelize.authenticate();
