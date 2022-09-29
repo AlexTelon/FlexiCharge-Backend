@@ -3,7 +3,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config')
 
 
-if(config.USE_LOCAL_DATABASE){
+if(config.USE_LOCAL_DATABASE == 1){
     var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
     sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
