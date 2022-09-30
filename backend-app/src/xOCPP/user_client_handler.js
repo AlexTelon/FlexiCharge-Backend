@@ -19,8 +19,6 @@ module.exports = function ({ constants, func, broker, v }) {
 
         //THIS RUNS AFTER TERMINATE IN CASE OF ERROR!!!!
         clientSocket.on('close', function disconnection() {
-            console.log("closing")
-
             v.removeConnectedUserSocket(userID)
             broker.unsubscribeToLiveMetrics(userID)
 
