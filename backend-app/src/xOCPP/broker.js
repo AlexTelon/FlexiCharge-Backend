@@ -3,18 +3,18 @@ const PubSub = require('pubsub-js')
 module.exports = function ({ v, constants, func }) {
     const c = constants.get()
 
-    exports.subcribeToLiveMetrics = function(userID){  
+    exports.subcribeToLiveMetrics = function(userID, callback){  
         const token = PubSub.subscribe(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, function subscriptionListener(topic, message){ // TODO: add token to variables somehow
             userSocket = v.getConnectedUserSocket(userID)
 
             jsonMessage = func.buildJSONMessage(message)
-            userSocket.send(jsonMessage)
+            if(userSocket) userSocket.send(jsonMessage)
         }) 
         if(token){
             v.addLiveMetricsToken(userID, token)
-            //callback no error
+            callback([])
         } else {
-            //callback with error
+            callback([c.INTERNAL_ERROR])
         } 
     }
 

@@ -350,7 +350,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                         throw c.RESPONSE_STATUS_REJECTED
                     }
                     break
-    
+
                 default:
                     let socket = v.getConnectedChargerSocket(chargerID)
                     let message = func.getGenericError(uniqueID, "Could not interpret the response for the callcode: " + action)
