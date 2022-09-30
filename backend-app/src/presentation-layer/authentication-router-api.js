@@ -1,14 +1,15 @@
 var express = require('express')
 const checkJwt = require('./middleware/jwt.middleware')
 const CognitoService = require('./services/cognito.config')
+const { getAccessTokenFromRequestHeader } = require('./authentication-helpers');
 
 module.exports = function () {
     const router = express.Router()
     const cognito = new CognitoService();
 
-    router.put('/update-user', function (req, res) {
-
-        const { accessToken, firstName, lastName, phoneNumber, streetAddress, zipCode, city, country } = req.body;
+    router.put('/user-information', checkJwt, function (req, res) {
+        const accessToken = getAccessTokenFromRequestHeader(req);
+        const { firstName, lastName, phoneNumber, streetAddress, zipCode, city, country } = req.body;
         let userAttributes = [];
         userAttributes.push({ Name: 'name', Value: firstName });
         userAttributes.push({ Name: 'family_name', Value: lastName });
@@ -125,7 +126,7 @@ module.exports = function () {
     })
 
     router.get('/user-information', checkJwt, async (req, res) => {
-        const accessToken = req.header('authorization').split(' ')[1];
+        const accessToken = getAccessTokenFromRequestHeader(req);
         try {
             const result = await cognito.getUserByAccessToken(accessToken);
             res.status(result.statusCode).json(result.data).end();

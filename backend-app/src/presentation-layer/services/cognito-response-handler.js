@@ -1,7 +1,6 @@
 class CognitoResponseHandler{
     reformatUserInformationResponse(cognitoResponse){
         const attributes = cognitoResponse.UserAttributes;
-        console.log(attributes)
         var res = {
             username:"",
             firstName:"",
