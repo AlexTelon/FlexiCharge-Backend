@@ -1,5 +1,5 @@
 var express = require('express')
-
+const checkJwt = require('./middleware/jwt.middleware')
 const CognitoService = require('./services/cognito.config')
 
 module.exports = function () {
@@ -124,8 +124,8 @@ module.exports = function () {
             })
     })
 
-    router.get('/:accessToken', async (req, res) => {
-        const accessToken = req.params.accessToken;
+    router.get('/user-information', checkJwt, async (req, res) => {
+        const accessToken = req.header('authorization').split(' ')[1];
         try {
             const result = await cognito.getUserByAccessToken(accessToken);
             res.status(result.statusCode).json(result.data).end();
