@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk')
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
+const CognitoResponseHandler = require('./cognito-response-handler')
+const cognitoResponseHandler = new CognitoResponseHandler();
 const auth = new AuthMiddleware();
 const config = require('../../config')
 
@@ -235,66 +237,16 @@ class CognitoService {
             "AccessToken": accessToken
         }
         try {
-            const cognitoRespones = await this.cognitoIdentity.getUser(params).promise();
+            const cognitoResponse = await this.cognitoIdentity.getUser(params).promise();
             const res = {
                 statusCode: 200,
-                data: this.readCognitoResponse(cognitoRespones)
+                data: cognitoResponseHandler.reformatUserInformationResponse(cognitoResponse)
             }
             return res;
         } catch (error) {
             console.log(error)
             throw error;
         }
-    }
-
-    readCognitoResponse(response){
-        const attributes = response.UserAttributes;
-        var res = {
-            username:"",
-            firstName:"",
-            lastName:"",
-            phoneNumber:"",
-            streetAddress:"",
-            zipCode:"",
-            city:"",
-            country:""
-        };
-        for(let attribute of attributes){
-            switch(attribute.Name){
-                case('email'):
-                    res.username = attribute.Value;
-                    break;
-                
-                case('name'):
-                    res.firstName = attribute.Value;
-                    break;
-                
-                case('family_name'):
-                    res.lastName = attribute.Value;
-                    break;
-                
-                case('phone_number'):
-                    res.phoneNumber = attribute.Value;
-                    break;
-                
-                case('custom:city'):
-                    res.city = attribute.Value;
-                    break;
-                
-                case('custom:street_address'):
-                    res.streetAddress = attribute.Value;
-                    break;
-
-                case('custom:zip_code'):
-                    res.zipCode = attribute.Value;
-                    break;
-                    
-                case('custom:country'):
-                    res.country = attribute.Value;
-                    break;
-            }
-        }   
-        return res;
     }
 
     generateHash(username) {
