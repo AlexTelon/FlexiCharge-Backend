@@ -6,10 +6,10 @@ module.exports = function ({ v, constants, func }) {
     exports.subcribeToLiveMetrics = function(userID, callback){  
         const token = PubSub.subscribe(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, function subscriptionListener(topic, message){ // TODO: add token to variables somehow
             userSocket = v.getConnectedUserSocket(userID)
-
             jsonMessage = func.buildJSONMessage(message)
             if(userSocket) userSocket.send(jsonMessage)
         }) 
+
         if(token){
             v.addLiveMetricsToken(userID, token)
             callback([])

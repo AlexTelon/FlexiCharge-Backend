@@ -36,6 +36,19 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                 messageCache = message
             }
         })
+
+        clientSocket.on('close', function disconnection() {
+            if (v.isInChargerSerials(chargerSerial)) {
+
+                const chargerID = v.getChargerID(chargerSerial)
+
+                v.removeConnectedChargerSockets(chargerID)
+                v.removeChargerSerials(chargerSerial)
+                v.removeChargerIDs(chargerSerial)
+                console.log("Disconnected from charger with ID: " + chargerID)
+                console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+            }
+        })
     }
 
     function isValidClient(newSocket, chargerSerial, callback) {

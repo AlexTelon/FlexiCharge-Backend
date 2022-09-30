@@ -22,36 +22,12 @@ module.exports = function ({ chargerClientHandler, v, userClientHandler, tester 
                     console.log('UserID trying to connect: ', userID)
 
                     userClientHandler.handleClient(ws, userID)
-
-                    ws.on('close', function disconnection() {
-                        v.removeConnectedUserSocket(userID)
-
-                        if(v.isInUserIDs(userID)){
-                            v.removeUserID(userID)
-                        }
-
-                        console.log("Disconnected from client with ID: " + userID)
-                        console.log("Number of connected clients: " + v.getLengthConnectedUserSockets())
-                    })
                     break
                 
                 case 'charger':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
                     // Validate and handle connecting charger:
                     chargerClientHandler.handleClient(ws, chargerSerial)
-
-                    ws.on('close', function disconnection() {
-                        if (v.isInChargerSerials(chargerSerial)) {
-
-                            const chargerID = v.getChargerID(chargerSerial)
-
-                            v.removeConnectedChargerSockets(chargerID)
-                            v.removeChargerSerials(chargerSerial)
-                            v.removeChargerIDs(chargerSerial)
-                            console.log("Disconnected from charger with ID: " + chargerID)
-                            console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
-                        }
-                    })
                     break 
             }
         })
