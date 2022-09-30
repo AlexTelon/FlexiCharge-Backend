@@ -10,11 +10,21 @@ module.exports = function ({ v, constants, func }) {
             jsonMessage = func.buildJSONMessage(message)
             userSocket.send(jsonMessage)
         }) 
-        v.addLiveMetricsToken(userID, token)
+        if(token){
+            v.addLiveMetricsToken(userID, token)
+            //callback no error
+        } else {
+            //callback with error
+        } 
     }
 
-    exports.publishToLiveMetrics = function(userID, metricsMessage){
-        PubSub.publish(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, metricsMessage)
+    exports.publishToLiveMetrics = function(userID, metricsMessage, callback){
+        const isPublished = PubSub.publish(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, metricsMessage)
+        if(isPublished){
+            callback([])
+        } else {
+            callback([c.INTERNAL_ERROR])
+        }
     }
 
     exports.unsubscribeToLiveMetrics = function(token){
