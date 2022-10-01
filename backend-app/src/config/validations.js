@@ -3,7 +3,7 @@ const joi = require("joi");
 const validationSchema = joi.object()
     .keys({
         PORT: joi.number(),
-        USE_LOCAL_DATABASE: joi.binary().integer().min(0).max(1),
+        USE_LOCAL_DATABASE: joi.number().required(),
         AWS_REGION: joi.string().required(),
 
         USER_POOL_SECRET: joi.string().required(),
