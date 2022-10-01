@@ -3,9 +3,9 @@ const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config')
 
 
-if(config.USE_LOCAL_DATABASE){
+if(config.USE_LOCAL_DATABASE == 1){
     var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
-    sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+    // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
     var sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
         host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
@@ -384,7 +384,7 @@ sequelize.sync().then(function () {
                 location: [57.777714, 14.163010],
                 serialNumber: 'abc112',
                 status: 'Available',
-                chargePointID: 1 
+                chargePointID: 1
             });
             Chargers.create({
                 chargerID: 100002,
@@ -468,7 +468,37 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
-            
+            Reservations.create({
+                chargerID: 100002,
+                userID: 1,
+                chargerID: 100004, // Coop, forserum
+                timestamp: 1663663935,
+                isKlarnaPayment: false,
+                kwhTransfered: 12,
+                currentChargePercentage: 67,
+                pricePerKwh: 7500
+            });
+            Transactions.create({
+                paymentID: null,
+                userID: 1,
+                chargerID: 100005,
+                timestamp: 1663664041,
+                isKlarnaPayment: false,
+                kwhTransfered: 36,
+                currentChargePercentage: 82,
+                pricePerKwh: 100000
+            });
+            Transactions.create({
+                paymentID: null,
+                userID: 1,
+                chargerID: 100005,
+                timestamp: 1663664109,
+                isKlarnaPayment: false,
+                kwhTransfered: 12,
+                currentChargePercentage: 52,
+                pricePerKwh: 100000
+            });
+
             //Fill the ElectricityTariff table with random data
             const generateDays = 61; //Days to generate prices from startDate
             const startDate = new Date(2022, 8, 1); //Sets the start point

@@ -32,6 +32,18 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
         })
     }
 
+    exports.getActiveTransactionsForUser = function(userID, callback) {
+        dataAccessLayerTransaction.getActiveTransactionsForUser(userID, function (error, userTransactions) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                callback([], userTransactions)
+            }
+        })
+    }
+
     exports.getTransactionsForCharger = function (chargerID, callback) {
         dataAccessLayerTransaction.getTransactionsForCharger(chargerID, function (error, chargerTransaction) {
             if (Object.keys(error).length > 0) {
