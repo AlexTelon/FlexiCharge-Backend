@@ -466,7 +466,40 @@ paths:
           description: Successful response.
           content:
             application/json: {}
-            
+
+
+
+  /invoices/{invoiceID}:
+    get:
+      tags:
+        - Invoices
+      summary: Get invoice by ID.
+      description: >-
+        Will get the invoice requested by the parameter {invoiceID}.
+        Currently there is only one particular PDF being and it 
+        belongs to Nisse Hult.
+
+
+        **NOTE**: Using the "Execute" function in swagger is weird.
+        Instead try this with "{baseuri:8080}/invoices/1234"
+
+
+        *Future improvements*: 
+
+          1. Check that the user of this endpoint is authorized to look 
+          at the invoice. User X should not be able to read the invoice 
+          of user Y, but currently no verification is done.
+
+          2. Code actually gets data from the database.
+      parameters:
+        - in: path
+          name: invoiceID
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the invoice to get.
+
+
 components:
   schemas:
     Charger:
