@@ -51,14 +51,13 @@ paths:
     put:
       tags:
         - User
-      summary: Update-user profile
+      summary: Update-information
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                accessToken: accesToken
                 name: string
                 family_name: string
                 phone_number: string
@@ -369,6 +368,58 @@ paths:
 
             **Future improvement**: *Send other 4xx codes, such as 401 for 
               bad username/password.*'
+  /admin/"username":
+    get:
+      tags:
+        - Admin
+      summary: Get user information by username
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users with information
+      responses:
+        '200':
+          description: List with all users
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
   /admin/:
     post:
       tags:
@@ -501,24 +552,7 @@ paths:
           description: Successful response.
           content:
             application/json: {}
-  /electricity/current:
-    get:
-      tags:
-        - Electricity
-      summary: Fetch kwh price
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: 
-              schema:
-                type: object
-                example:
-                  dateFrom: 1
-                  dateTo: 2
-                  price: 4.65
-                  currency: SEK
-            
+  
 components:
   schemas:
     Charger:
