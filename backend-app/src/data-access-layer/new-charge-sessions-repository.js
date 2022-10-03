@@ -7,7 +7,6 @@ module.exports = function({ databaseInit }) {
             database = databaseInit.newChargeSessions
         }
 
-        // TODO addChargeSession
         const chargeSession = {
             chargerID: chargerID,
             userID: userID,
@@ -28,7 +27,6 @@ module.exports = function({ databaseInit }) {
             database = databaseInit.newChargeSessions
         }
 
-        // TODO getChargeSession
         database.findOne({ where: {chargeSessionID : chargeSessionID}, raw: true })
             .then(chargeSession => callback([], chargeSession))
             .catch(e => {
@@ -51,7 +49,6 @@ module.exports = function({ databaseInit }) {
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
-        // TODO updateChargingState
         if (database == null) {
             database = databaseInit.newChargeSessions
         }
@@ -70,42 +67,6 @@ module.exports = function({ databaseInit }) {
             callback(e, [])
         })
     }
-
-    // Maybe Delete ChargeSession endpoint??
-
-    // Live Metrics??
-
-    // exports.getTransactionsForCharger = function(chargerID, callback) {
-    //     databaseInit.newTransactions.findAll({ where: { chargerID: chargerID }, raw: true })
-    //         .then(chargerTransaction => callback([], chargerTransaction))
-    //         .catch(e => {
-    //             console.log(e)
-    //             callback(e, [])
-    //         })
-    // }
-
-    // exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, isKlarnaPayment, timestamp, paymentConfirmed, callback){
-        
-    //     const klarnaTransaction = {
-    //         userID: userID,
-    //         chargerID: chargerID,
-    //         pricePerKwh: pricePerKwh,
-    //         session_id: session_id,
-    //         client_token: client_token,
-    //         paymentConfirmed: paymentConfirmed,
-    //         isKlarnaPayment: isKlarnaPayment,
-    //         timestamp: timestamp
-    //     }
-    //     databaseInit.newTransactions.create(klarnaTransaction, {
-    //             returning: true,
-    //             raw: true
-    //         })
-    //         .then(klarnaTransaction => callback([], klarnaTransaction))
-    //         .catch(e => {
-    //             console.log(e)
-    //             callback(e, [])
-    //         })
-    // }
 
     return exports
 }
