@@ -1,6 +1,5 @@
 const { Socket } = require("dgram")
 const { stringify } = require("querystring")
-const { buildJSONMessage } = require("./global_functions")
 
 
 module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
@@ -87,15 +86,14 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         const transactionID = request[3].transactionId
         const uniqueID = request[1]
         const userID = v.getUserIDWithTransactionID(transactionID)
-        broker.publishToLiveMetrics(userID, request, function(error){
-            if(error.length > 0){
-                console.log("\nError sending live metrics: " + error)
-                //Better error handling??
-            } else {
-                const socket = v.getConnectedChargerSocket(chargerID)
-                socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
-                console.log("Meter values response sent!")
-            }
+
+        console.log('transactionID: ', transactionID)
+        console.log('userID: ', userID)
+
+        broker.publishToLiveMetrics(userID, request, function(){
+            const socket = v.getConnectedChargerSocket(chargerID)
+            socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
+            console.log("Meter values response sent!")
         })
     }
 

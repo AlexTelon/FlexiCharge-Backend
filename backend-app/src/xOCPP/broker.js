@@ -7,7 +7,9 @@ module.exports = function ({ v, constants, func }) {
         const token = PubSub.subscribe(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, function subscriptionListener(topic, message){ // TODO: add token to variables somehow
             userSocket = v.getConnectedUserSocket(userID)
             jsonMessage = func.buildJSONMessage(message)
-            if(userSocket) userSocket.send(jsonMessage)
+            if(userSocket){
+                userSocket.send(jsonMessage)
+            }
         }) 
 
         if(token){
@@ -19,16 +21,19 @@ module.exports = function ({ v, constants, func }) {
     }
 
     exports.publishToLiveMetrics = function(userID, metricsMessage, callback){
-        const isPublished = PubSub.publish(`${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`, metricsMessage)
-        if(isPublished){
-            callback([])
-        } else {
-            callback([c.INTERNAL_ERROR])
+        const topic = `${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`
+        const isPublished = PubSub.publish(topic, metricsMessage) // isPublished only represents if there are any subscribers to the topic!!!
+        
+        if(!isPublished){
+            console.log('No subscribers to the following topic: ', topic)
         }
+        callback()
     }
 
-    exports.unsubscribeToLiveMetrics = function(token){
+    exports.unsubscribeToLiveMetrics = function(userID){
+        const token = v.getLiveMetricsToken(userID)
         PubSub.unsubscribe(token)
+        v.removeLiveMetricsToken(userID)
     }
 
     return exports

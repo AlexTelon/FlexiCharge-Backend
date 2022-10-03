@@ -17,7 +17,7 @@ module.exports = function ({ constants, func, broker, v }) {
             }
         })
 
-        //THIS RUNS AFTER TERMINATE IN CASE OF ERROR!!!!
+        //TODO: THIS RUNS AFTER TERMINATE IN CASE OF ERROR!!!!
         clientSocket.on('close', function disconnection() {
             v.removeConnectedUserSocket(userID)
             broker.unsubscribeToLiveMetrics(userID)
@@ -27,8 +27,8 @@ module.exports = function ({ constants, func, broker, v }) {
             }
 
             console.log("Disconnected from client with ID: " + userID)
-            console.log("Number of connected clients: " + v.getLengthConnectedUserSockets())
-        })   
+            console.log("Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ') ' + ' (' + v.getLiveMetricsTokensLength() + ')')
+        })
     }
 
     return exports

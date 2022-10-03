@@ -13,21 +13,28 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                 v.addUserIDWIthTransactionID(c.USER_ID, c.TRANSACTION_ID)
                 callback(ws)
             })
+
+            ws.on('message', function(message){
+                parsedMessage = JSON.parse(message)
+                console.log('USER CLIENT MOCK GOT: ', parsedMessage)
+
+                if(parsedMessage[2] == c.METER_VALUES){
+                    console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
+                } else {
+                    //TODO: Implement
+                }
+                    
+            })
             
         } catch (error) {
             console.log(error)
         }
     }
 
-    exports.testMeterValues = function () {
+    exports.testMeterValues = function (callback) {
         console.log('\n========= TESTING METER VALUES REQUEST... ==========\n')
         connectAsUserSocket(function(userSocket){
-            userSocket.on('message', function(message) {
-                const data = JSON.parse(message)
-                if(data[2] == c.METER_VALUES)
-                console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
-            })
-            chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(chargerSocket){
+            chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(chargerSocket){ //TODO: IS THIS A SERVER SOCKET OR CHARGER SOCKET???
                 meterValues = func.buildJSONMessage([ 
                     2, 
                     "100001RemoteStartTransaction1664455481548",
@@ -55,9 +62,9 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                         }
                     }
                 ])
-                setTimeout(function(){
-                    chargerSocket.send(meterValues)
-                }, 2000);
+
+                chargerSocket.send(meterValues)
+                callback(chargerSocket, userSocket)
             })
         })
     }

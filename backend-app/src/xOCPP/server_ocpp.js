@@ -36,10 +36,6 @@ module.exports = function ({ chargerClientHandler, v, userClientHandler, tester 
             setTimeout(function(){
                 tester.runTests()
             }, 2000); 
-
-            setTimeout(function(){
-                tester.runLiveMetricsTests()
-            }, 2000);
         }
         
         

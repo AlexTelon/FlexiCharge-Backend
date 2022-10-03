@@ -99,6 +99,9 @@ module.exports = function ({ }) {
     exports.isInUserIDs = function (userID) {
         return userIDs.includes(userID)
     }
+    exports.getUserIDsLength = function(){
+        return Object.keys(userIDs).length
+    }
 
     //LIVE METRICS TOKENS
     //Array with all the PubSub tokens for all subscribers, stored under userID

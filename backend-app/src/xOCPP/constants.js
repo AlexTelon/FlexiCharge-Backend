@@ -108,7 +108,7 @@ module.exports = function({}){
 
             //TEST DATA
             CHARGER_ID: 100001,
-            USER_ID: 1,
+            USER_ID: "hej-123",
             TRANSACTION_ID: 1
             
 
