@@ -338,8 +338,25 @@ const newElectricityTariffs = sequelize.define('newElectricityTariffs', {
     timestamps: false
 });
 
+const klarnaPayments = sequelize.define('KlarnaPayments', {
+    paymentID: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false
+    },
+    client_token: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    session_id: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}) 
+
 newElectricityTariffs.removeAttribute('id');
 
+klarnaPayments.belongsTo(newTransactions, { foreignKey: 'transactionID' })
 newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
 newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
 newChargers.belongsTo(newChargePoints, { foreignKey: 'chargerID', onDelete: 'cascade'})
@@ -476,7 +493,9 @@ sequelize.sync().then(function () {
                 isKlarnaPayment: false,
                 kwhTransfered: 12,
                 currentChargePercentage: 67,
-                pricePerKwh: 7500
+                pricePerKwh: 7500,
+                start: 1,
+                end: 2
             });
             Transactions.create({
                 paymentID: null,
@@ -522,6 +541,6 @@ sequelize.sync().then(function () {
 
 module.exports = function ({ }) {
     const exports = { paymentType, Chargers, Transactions, Reservations, ChargePoints, newChargers,
-                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariffs}
+                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariffs, klarnaPayments}
     return exports
 }

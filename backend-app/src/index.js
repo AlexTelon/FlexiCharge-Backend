@@ -29,6 +29,7 @@ container.register({
     newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
     newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
+    databaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     // Business logic tests
     interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),
