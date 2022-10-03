@@ -485,8 +485,8 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
-            Reservations.create({
-                chargerID: 100002,
+            Transactions.create({
+                paymentID: 100002,
                 userID: 1,
                 chargerID: 100004, // Coop, forserum
                 timestamp: 1663663935,

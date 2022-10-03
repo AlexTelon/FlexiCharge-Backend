@@ -105,12 +105,13 @@ module.exports = function({ newDataAccessLayerChargers, dbErrorCheck, newCharger
     }
 
 
-    exports.updateChargerStatus = function(chargerID, status, callback) {
+    exports.updateChargerStatus = function(chargerID, status, database, callback) {
+
         const validationErrors = newChargerValidation.getUpdateChargerStatusValidation(status)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerChargers.updateChargerStatus(chargerID, status, function(error, charger) {
+            newDataAccessLayerChargers.updateChargerStatus(chargerID, status, database, function(error, charger) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function(errorCode) {
                         callback(errorCode, [])
