@@ -1,7 +1,7 @@
 class CognitoResponseHandler{
     reformatUserInformationResponse(cognitoResponse){
         const attributes = cognitoResponse.UserAttributes;
-        var res = {
+        var userInformation = {
             username:"",
             firstName:"",
             lastName:"",
@@ -14,39 +14,44 @@ class CognitoResponseHandler{
         for(let attribute of attributes){
             switch(attribute.Name){
                 case('email'):
-                    res.username = attribute.Value;
+                    userInformation.username = attribute.Value;
                     break;
                 
                 case('name'):
-                    res.firstName = attribute.Value;
+                    userInformation.firstName = attribute.Value;
                     break;
                 
                 case('family_name'):
-                    res.lastName = attribute.Value;
+                    userInformation.lastName = attribute.Value;
                     break;
                 
                 case('phone_number'):
-                    res.phoneNumber = attribute.Value;
+                    userInformation.phoneNumber = attribute.Value;
                     break;
                 
                 case('custom:city'):
-                    res.city = attribute.Value;
+                    userInformation.city = attribute.Value;
                     break;
                 
                 case('custom:street_address'):
-                    res.streetAddress = attribute.Value;
+                    userInformation.streetAddress = attribute.Value;
                     break;
 
                 case('custom:zip_code'):
-                    res.zipCode = attribute.Value;
+                    userInformation.zipCode = attribute.Value;
                     break;
                     
                 case('custom:country'):
-                    res.country = attribute.Value;
+                    userInformation.country = attribute.Value;
                     break;
             }
         }   
-        return res;
+        return userInformation;
+    }
+    reformatUserInformationResponseWithUserId(cognitoResponse){
+        var userInformation = this.reformatUserInformationResponse(cognitoResponse);
+        userInformation.userId = cognitoResponse.Username;
+        return userInformation;
     }
 }
 module.exports = CognitoResponseHandler;

@@ -2,6 +2,8 @@ const AWS = require('aws-sdk')
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
 const auth = new AuthMiddleware()
+const CognitoResponseHandler = require('./cognito-response-handler')
+const cognitoResponseHandler = new CognitoResponseHandler();
 const config = require('../../config')
 
 AWS.config.update({"region": config.AWS_REGION});
@@ -204,7 +206,7 @@ class AdminCognitoService {
 
             const res = await this.cognitoIdentity.adminGetUser(params).promise();
             const data = {
-                data: res,
+                data: cognitoResponseHandler.reformatUserInformationResponseWithUserId(res),
                 statusCode: 200
             }
             return data
