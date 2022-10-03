@@ -7,7 +7,7 @@ const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface }) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, invoicesRouter, ocppInterface }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -39,6 +39,7 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
     app.use('/admin', adminRouter)
+    app.use('/invoices', invoicesRouter)
 
     return app
 }
