@@ -137,7 +137,7 @@ module.exports = function({ databaseInit, constants }) {
     }
     exports.updateTransactionMeterStart = function(transactionID, meterStart, callback) {
         databaseInit.Transactions.update({
-            meterStart: meterStart
+            meterStart: meterStart 
         }, {
             where: { transactionID: transactionID },
             returning: true,

@@ -73,6 +73,27 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
         });
     }
 
+    // TODO Add updateTransactionMeterStart test.
+    // exports.updateTransactionMeterStart = function(chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
+    //     newDatabaseInterfaceChargeSessions.updateTransactionMeterStart(chargeSessionID, currentChargePercentage, kwhTransfered, ChargeSession, (error, updatedChargeSession) => {
+    //         const errorList = []
+
+    //         error.forEach(err => {
+    //             errorList.push(err)
+    //         });
+
+    //         if (updatedChargeSession.dataValues.currentChargePercentage !== currentChargePercentage) {
+    //             errorList.push("currentChargePercentage does not match intended output!")
+    //         }
+
+    //         if (updatedChargeSession.dataValues.kwhTransfered !== kwhTransfered) {
+    //             errorList.push("kwhTransfered does not match intended output!")
+    //         }
+
+    //         callback(errorList)
+    //     });
+    // }
+
     exports.runTests = function() {
         const FailedTests = []
         let amountOfTestsDone = 0

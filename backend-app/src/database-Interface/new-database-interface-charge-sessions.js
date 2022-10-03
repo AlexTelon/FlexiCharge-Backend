@@ -61,5 +61,25 @@ module.exports = function({ newDataAccessLayerChargeSessions, dbErrorCheck, newC
         }
     }
 
+    exports.updateMeterStart = function(chargeSessionID, meterStart, database, callback) {
+        // TODO Validation for updateMeterStart
+        // const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kwhTransfered)
+        // if(validationErrors.length > 0){
+        //     callback(validationErrors, [])
+        // } else {
+            
+        // }
+
+        newDataAccessLayerChargeSessions.updateMeterStart(chargeSessionID, meterStart, database, (error, updatedChargingSession) => {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function(errorCode) {
+                    callback(errorCode, [])
+                })
+            } else {
+                callback([], updatedChargingSession)
+            }
+        }) 
+    }
+
     return exports
 }

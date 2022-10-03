@@ -68,5 +68,24 @@ module.exports = function({ databaseInit }) {
         })
     }
 
+    exports.updateMeterStart = function(chargeSessionID, meterStart, database, callback) {
+        if (database == null) {
+            database = databaseInit.newChargeSessions
+        }
+
+        database.update({ 
+            meterStart : meterStart,
+        }, {
+            where: {chargeSessionID : chargeSessionID},
+            raw: true,
+            returning : true
+        }).then(updatedChargeSession => {
+            callback([], updatedChargeSession[1])
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
+
     return exports
 }
