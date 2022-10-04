@@ -1,4 +1,4 @@
-FROM node:16-alpine3.11
+FROM node:16-alpine3.15
 
 EXPOSE 8080 1337
 
