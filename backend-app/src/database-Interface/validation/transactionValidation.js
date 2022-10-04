@@ -72,7 +72,6 @@ module.exports = function({}) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof client_token !== 'string') {
-                console.log("test",typeof(client_token))
                 validationErrors.push("klarnaError")
             }
             if (client_token.length < MIN_CLIENT_TOKEN) {
