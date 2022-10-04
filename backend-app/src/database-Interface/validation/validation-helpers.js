@@ -9,6 +9,9 @@ function getLocationValidationErrors(location) {
   if (location === undefined || location === null) {
     validationErrors.push("invalidLocation");
   } else {
+    if (location.length > 2){
+      validationErrors.push('invalidLocationInput')
+    }
     if (
       location instanceof Array == false ||
       typeof location[0] !== "number" ||
