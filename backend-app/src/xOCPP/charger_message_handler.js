@@ -136,7 +136,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
-                    { idTagInfo: 1, transactionId: transactionID, status: c.CHARGING }]))
+                    { idTagInfo: 1, transactionId: transactionID }]))
                 }
             })
 

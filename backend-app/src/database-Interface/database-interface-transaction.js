@@ -217,7 +217,21 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                         callback(errorCode, [])
                                                     })
                                                 } else {
-                                                    
+                                                    ocppInterface.remoteStartTransaction(charger.chargerID, transactionId, function(error, returnObject) {
+                                                        if(error != null || returnObject.status == "Rejected") {
+                                                            callback(["couldNotStartOCPPTransaction"], [])
+                                                        } else {
+                                                            dataAccessLayerTransaction.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
+                                                                if (Object.keys(error).length > 0) {
+                                                                    dbErrorCheck.checkError(error, function(errorCode) {
+                                                                        callback(errorCode, [])
+                                                                    })
+                                                                } else {
+                                                                    callback([], updatedTransaction)
+                                                                }
+                                                            })
+                                                        }
+                                                    })
                                                 }
                                             })
                                         } else {
