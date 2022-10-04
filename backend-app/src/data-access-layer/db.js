@@ -270,7 +270,7 @@ const newTransactions = sequelize.define('newTransactions', {
         allowNull: false
     },
     transactionDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.INTEGER,
         unique: false,
         allowNull: false
     },
@@ -376,7 +376,7 @@ newElectricityTariffs.removeAttribute('id');
 klarnaPayments.belongsTo(newTransactions, { foreignKey: 'transactionID' })
 newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
 newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
-newChargers.belongsTo(newChargePoints, { foreignKey: 'chargerID', onDelete: 'cascade'})
+newChargers.belongsTo(newChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade'})
 newReservations.belongsTo(newChargers, {foreignKey: 'chargerID', onDelete: 'cascade'})
 
 sequelize.sync().then(function () {
@@ -534,6 +534,22 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
+            newChargePoints.create({
+                name: "Airport Parking, Jönköping",
+                address: "Flygplansvägen 23",
+                coordinates: [57.749812214261034,14.070100435207065]
+            }).then(function(result) {
+                newChargers.create({
+                    chargerID: 100001,
+                    coordinates: [57.777714, 14.163010],
+                    serialNumber: 'abc111',
+                    status: 'Available',
+                    chargePointID: 1 //Jönköpig University?
+                });
+            });
+            
+            
+            
 
             //Fill the ElectricityTariff table with random data
             const generateDays = 61; //Days to generate prices from startDate

@@ -18,7 +18,7 @@ module.exports = function({ newDatabaseInterfaceChargeSessions }) {
 
 
     exports.addChargeSessionTest = function(chargerID, userID, callback) {        
-        newDatabaseInterfaceChargeSessions.addChargeSession(chargerID, userID, ChargeSession, (error) => {
+        newDatabaseInterfaceChargeSessions.addChargeSession(chargerID, userID, true, "Klarna", ChargeSession, (error) => {
             const errorList = []
 
             error.forEach(err => {

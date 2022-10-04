@@ -17,7 +17,7 @@ module.exports = function({newDatabaseInterfaceTransactions}) {
     })
 
     exports.addTransactionTest = function(chargeSessionID, userID, payNow, paymentDueDate, callback) {
-        newDatabaseInterfaceTransactions.addTransaction(oldDate, newDate, Transactions, (error, electricityTariff) => {
+        newDatabaseInterfaceTransactions.addTransaction(oldDate, newDate,  Transactions, (error, electricityTariff) => {
             const errorList = []
 
             error.forEach(err => {
@@ -37,7 +37,7 @@ module.exports = function({newDatabaseInterfaceTransactions}) {
             });
 
             callback(errorList)
-        })   
+        })
     }
 
     exports.getTransactionTest = function(chargeSessionID, userID, payNow, paymentDueDate, callback) {

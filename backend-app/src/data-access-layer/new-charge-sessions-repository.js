@@ -49,6 +49,25 @@ module.exports = function({ databaseInit }) {
             })
     }
 
+    exports.updateChargeSession = function(chargeSessionID, updatedProperties, database, callback){
+        if(database == null){
+            database = databaseInit.newChargeSessions
+        }
+
+        database.update(updatedProperties, {
+            where: {
+                chargeSessionID: chargeSessionID
+            },
+            raw: true,
+            returning: true
+        }).then(updatedChargeSession => {
+            callback([], updatedChargeSession[1][0])
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
+
     exports.updateChargingEndTime = function(chargeSessionID, endTime, database, callback) {
         if(database == null){
             database = databaseInit.newChargeSessions

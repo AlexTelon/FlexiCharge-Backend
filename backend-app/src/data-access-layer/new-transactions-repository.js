@@ -2,14 +2,16 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, totalPrice, callback) {
+    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+        const date = (Date.now() / 1000 | 0)
         const transaction = {
             userID: userID,
             chargeSessionID: chargeSessionID,
             payNow : payNow,
+            paymentMethod: paymentMethod,
             paymentDueDate : paymentDueDate,
             totalPrice : totalPrice,
-            transactionDate : (Date.now() / 1000 | 0)
+            transactionDate : date
         }
 
         databaseInit.newTransactions.create(transaction)
@@ -104,7 +106,7 @@ module.exports = function({ databaseInit }) {
             database = databaseInit.newTransactions
         }
 
-        database.newTransactions.findOne({
+        database.findOne({
             where: {
                 chargeSessionID: chargeSessionID
             }

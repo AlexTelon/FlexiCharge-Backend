@@ -8,7 +8,7 @@ const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
 module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, 
-    interfaceChargeSessionsTests, interfaceChargersTests, interfaceChargePointsTests, interfaceElectricityTariffsTests, interfaceTransactionsTests, interfaceReservationsTests}) { //authenticationRouter
+    interfaceChargeSessionsTests, interfaceChargersTests, interfaceChargePointsTests, interfaceElectricityTariffsTests, interfaceTransactionsTests, interfaceReservationsTests }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -29,12 +29,27 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
         next()
     })
 
-    interfaceChargeSessionsTests.runTests()
+    //interfaceChargeSessionsTests.runTests()
     interfaceElectricityTariffsTests.runTests()
     interfaceChargersTests.runTests()
     interfaceChargePointsTests.runTests()
     // interfaceTransactionsTests.runTests()
     interfaceReservationsTests.runTests()
+
+    // TODO: Remove before production
+    /*setTimeout(function(){
+        newDatabaseInterfaceChargeSessions.addChargeSession(100001, "testing@gmail.com", true, null, "Klarna", null, function(er1, chargeSessionID){
+            newDatabaseInterfaceTransactions.getTransactionForChargeSession(chargeSessionID, null, function(er2, transaction){
+                newDatabaseInterfaceChargeSessions.updateChargingState(chargeSessionID, 80, 15, null, function(er3, updated){
+
+                    setTimeout(function(){
+                        newDatabaseInterfaceChargeSessions.endChargeSession(chargeSessionID, null, function(er4, updatedChargeSession){
+                        }) 
+                    }, 1000)
+                })
+            })
+        })
+    }, 1500) */
     
     app.get('/', (req, res) => {
         res.redirect('/swagger')
