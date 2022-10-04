@@ -21,7 +21,7 @@ module.exports = function({}) {
     exports.getAddTransactionValidation = function(pricePerKwh) {
         const validationErrors = []
 
-        if(pricePerKwh == undefined || pricePerKwh == null) {
+        if(pricePerKwh == undefined || pricePerKwh == null || typeof pricePerKwh !== 'number') {
             validationErrors.push("invalidKwhPrice")
         }
         else if(pricePerKwh < MIN_KWH_PRICE) {
@@ -32,16 +32,22 @@ module.exports = function({}) {
     }
 
     exports.getUpdateTransactionChargingStatus = function(currentMeterValue, currentChargePercentage) {
+
         const validationErrors = []
 
-        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PRECENTAGE) {
+        if(currentChargePercentage == null || currentChargePercentage == undefined || typeof currentChargePercentage !== 'number') {
             validationErrors.push("invalidChargePrecentage")
+        } else{
+            if(currentChargePercentage < MIN_CHARGE_PRECENTAGE || currentChargePercentage > MAX_CHARGE_PRECENTAGE){
+                validationErrors.push(`invalidChargePrecentage`)
+            }
         }
-        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage > MAX_CHARGE_PRECENTAGE) {
-            validationErrors.push("invalidChargePrecentage")
-        }
-        if (currentMeterValue == null || currentMeterValue == undefined || currentMeterValue < MIN_TRANSFERED_KWH) {
+        if(currentMeterValue == null || currentMeterValue == undefined || typeof currentMeterValue !== 'number') {
             validationErrors.push("invalidMeterValue")
+        } else{
+            if(currentMeterValue < MIN_TRANSFERED_KWH){
+                validationErrors.push(`invalid MeterValue, needs to be above ${MIN_TRANSFERED_KWH}`)
+            }
         }
 
         return validationErrors
@@ -66,6 +72,7 @@ module.exports = function({}) {
             validationErrors.push("klarnaError")
         } else {
             if (typeof client_token !== 'string') {
+                console.log("test",typeof(client_token))
                 validationErrors.push("klarnaError")
             }
             if (client_token.length < MIN_CLIENT_TOKEN) {

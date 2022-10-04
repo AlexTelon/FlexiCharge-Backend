@@ -1,4 +1,4 @@
-const transactionValidation = require('../validation/transaction-validation')({})
+const transactionValidation = require('../validation/transactionValidation')({})
 const {describe, expect, test} = require('@jest/globals')
 
 const validChargeMeterInput = 0
