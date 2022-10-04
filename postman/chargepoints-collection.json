@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "a6c9a82e-94c1-4e2f-a03b-74577ab0bbfe",
+		"name": "Chargepoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23211732"
+	},
+	"item": [
+		{
+			"name": "Chargepoints",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/chargePoints/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"chargePoints",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chargepoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/chargePoints/23",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"chargePoints",
+						"23"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chargepoint",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Testotesto\",\n    \"location\": [\n        52.77771,\n        14.16301\n    ],\n    \"price\": 3000,\n    \"klarnaReservationAmount\": 200\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/chargePoints/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"chargePoints",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chargepoint",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Jönköping University\",\n    \"location\": [\n        52.11, \n        25.02\n    ],\n    \"price\": 2000\n}\n\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/chargePoints/23",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"chargePoints",
+						"23"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chargepoint",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/chargePoints/23",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"chargePoints",
+						"23"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

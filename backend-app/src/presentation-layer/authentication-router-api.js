@@ -1,25 +1,40 @@
 var express = require('express')
-
+const checkJwt = require('./middleware/jwt.middleware')
 const CognitoService = require('./services/cognito.config')
+const { getAccessTokenFromRequestHeader } = require('./authentication-helpers');
 
 module.exports = function () {
     const router = express.Router()
     const cognito = new CognitoService();
 
+    router.put('/user-information', checkJwt, function (req, res) {
+        const accessToken = getAccessTokenFromRequestHeader(req);
+        const { firstName, lastName, phoneNumber, streetAddress, zipCode, city, country } = req.body;
+        let userAttributes = [];
+        userAttributes.push({ Name: 'name', Value: firstName });
+        userAttributes.push({ Name: 'family_name', Value: lastName });
+        userAttributes.push({ Name: 'phone_number', Value: phoneNumber });
+        userAttributes.push({ Name: 'custom:street_address', Value: streetAddress });
+        userAttributes.push({ Name: 'custom:zip_code', Value: zipCode });
+        userAttributes.push({ Name: 'custom:city', Value: city });
+        userAttributes.push({ Name: 'custom:country', Value: country });
+
+        cognito.updateUserAttributes(accessToken, userAttributes)
+            .then(result => {
+                if (result.statusCode === 204) {
+                    res.status(204).json(result.data).end();
+                } else {
+                    res.status(400).json(result).end();
+                }
+            })
+
+    })
+
     router.post('/sign-up', function (req, res) {
 
-        let { username, password, email, name, family_name } = req.body;
+        let { username, password } = req.body;
 
-        // This might cause issues
-        // If username is not sent with the request sets the username of the email + random numbers as username
-        username = username == undefined ? email.split('@')[0] + (Math.random() + 1).toString(10).substring(7) : username
-
-        let userAttributes = [];
-        userAttributes.push({ Name: 'email', Value: email });
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-
-        cognito.signUpUser(username, password, userAttributes)
+        cognito.signUpUser(username, password)
             .then(result => {
                 if (result === true) {
                     res.status(200).end()
@@ -54,24 +69,6 @@ module.exports = function () {
                     res.status(400).json(result).end();
                 }
             })
-    })
-
-    router.put('/update-user', function (req, res) {
-
-        const { accessToken, name, family_name } = req.body;
-        let userAttributes = [];
-        userAttributes.push({ Name: 'name', Value: name });
-        userAttributes.push({ Name: 'family_name', Value: family_name });
-
-        cognito.updateUserAttributes(accessToken, userAttributes)
-            .then(result => {
-                if (result.statusCode === 204) {
-                    res.status(204).json(result.data).end();
-                } else {
-                    res.status(400).json(result).end();
-                }
-            })
-
     })
 
     router.post('/confirm-forgot-password', function (req, res) {
@@ -128,5 +125,16 @@ module.exports = function () {
             })
     })
 
+    router.get('/user-information', checkJwt, async (req, res) => {
+        const accessToken = getAccessTokenFromRequestHeader(req);
+        try {
+            const result = await cognito.getUserByAccessToken(accessToken);
+            res.status(result.statusCode).json(result.data).end();
+            
+        } catch (error){
+            res.status(error.statusCode).json(error).end();
+        }
+    });
+    
     return router
 }

@@ -4,8 +4,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
     exports.interfaceHandler = function(chargerID, action, payload, callback) {
 
         try {
-            const socket = v.getConnectedSocket(chargerID)
-
+            const socket = v.getConnectedChargerSocket(chargerID)
             if (socket != null) {
 
                 var message = ""
@@ -86,7 +85,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
                 callback(null, status)
             }
         } else {
-            socket = v.getConnectedSocket(chargerID)
+            socket = v.getConnectedChargerSocket(chargerID)
             if (socket != null) {
                 socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
                 console.log("handleReserveNowResponse -> No callback tied to this unuiqueID")
@@ -123,7 +122,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
                 callback(null, { status: status })
                 v.removeCallback(chargerID)
             } else {
-                socket = v.getConnectedSocket(chargerID)
+                socket = v.getConnectedChargerSocket(chargerID)
                 if (socket != null) {
                     socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
                     console.log("handleRemoteStartResponse -> No callback tied to this chargerID")
@@ -161,7 +160,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
                 callback(null, { status: status })
                 v.removeCallback(chargerID)
             } else {
-                socket = v.getConnectedSocket(chargerID)
+                socket = v.getConnectedChargerSocket(chargerID)
                 if (socket != null) {
                     socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
                     console.log("handleRemoteStopResponse -> No callback tied to this chargerID")

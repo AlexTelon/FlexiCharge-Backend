@@ -1,7 +1,8 @@
 const { Client } = require('pg')
 
-module.exports = function({ databaseInit }) {
+module.exports = function({ databaseInit, constants }) {
 
+    const c = constants.get()
     const exports = {}
 
     exports.getTransaction = function(transactionID, callback) {
@@ -20,6 +21,27 @@ module.exports = function({ databaseInit }) {
                 console.log(e)
                 callback(e, [])
             })
+    }
+
+    exports.getActiveTransactionsForUser = function(userID, callback) {
+        databaseInit.Transactions.findAll({
+            where: { 
+                userID: userID 
+            }, 
+            raw: true,
+            include: [{
+                model: databaseInit.Chargers,
+                where: {
+                    status: c.CHARGING
+                },
+                attributes: []
+            }],
+        })
+        .then(userTransactions => callback([], userTransactions))
+        .catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
     }
 
     exports.getTransactionsForCharger = function(chargerID, callback) {

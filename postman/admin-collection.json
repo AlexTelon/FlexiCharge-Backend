@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "fe9bef7f-f94d-4b3d-91f3-283fa618117e",
+		"name": "Admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23211732"
+	},
+	"item": [
+		{
+			"name": "force-password-change",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin-ui-admin\",\r\n    \"password\": \"\",\r\n    \"session\": \"AYABeIjAC9WTCl-4ulrDfeiAYn4AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgEIvf2pc985KhGrxA8reJ84AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMIDMfry04MToSu_h5AgEQgDv-YaEfAYsxcg4YO_UZPfr40-RKEwdNK-ddmrELeR6wvCwjspwIt1jQRTG0y_igqMPe2T8153VeZjodgQIAAAAADAAAEAAAAAAAAAAAAAAAAADmTK3Tlsb0Gh9BxUJwzUuu_____wAAAAEAAAAAAAAAAAAAAAEAAAC_RjjKmkbRuzi9K2P4Rjtz8nbRlUXjAMxw9FG61Fooi4eutOaPLaJcsRpKczICWLEEbfqwGDQFk18zVay8PGpZNB5c39n6tGmq1wplgZCFoNd7y9a2HoMDeb9gRbomhgv3KvlKOg369OxxCLFEWo69eHNoppNyhqj4SwRccspn0F3fLGVCep-MpmSNdyOaNhOcqNyI5KOusKb4tilwGNPIPyyqw4hZtfc-Ou76imIRtgCSKF9urF3UJPSt4S64zvKNumpVHgAOonUBhelFXnCY\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/admin/force-change-password",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"force-change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-up",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin-ui-admin\",\r\n    \"password\": \"zi6YrmpWZLQG^5\",\r\n    \"email\": \"admin.ui@flexicharge.se\",\r\n    \"name\": \"first_name\",\r\n    \"family_name\": \"last_name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/admin/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						""
+					]
+				},
+				"description": "Creates a new user. Sends a verification code in a email to the supplied email address. Use this verification code with the \"Verify user\" request."
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"rest-api-admin\",\r\n    \"password\": \"{{rest-api-account-password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/admin/sign-in",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

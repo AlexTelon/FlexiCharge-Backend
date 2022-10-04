@@ -7,11 +7,6 @@ servers:
     description: Development Environment
   - url: http://18.202.253.30:8080/
     description: Production Environment (AWS)
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
 paths:
   /auth/sign-in:
     post:
@@ -30,7 +25,62 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: object
+                example:
+                  accessToken: accesToken
+                  email: email
+                  username: username
+                  user_id: user_id
+        '400':
+          description: Incorrect username or password
+          content: 
+            application/json:
+              schema: 
+                type: object
+                example:
+                  message: message
+                  code: NotAuthorizedException
+                  time: time
+                  requestId: requestId
+                  statusCode: 400
+                  retryable: false
+                  retryDelay: 4.128536351395207
+  /auth/update-user:
+    put:
+      tags:
+        - User
+      summary: Update-information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: string
+                family_name: string
+                phone_number: string
+                street_address: string
+                zip_code: string
+                city: string
+                country: string
+      responses:
+        '204':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  
+        '400':
+          description: Incorrect username or password
+          content: 
+            application/json:
+              schema: 
+                type: object
+                example:
   /auth/sign-up:
     post:
       tags:
@@ -46,16 +96,23 @@ paths:
             schema:
               type: object
               example:
-                username: username
+                username: mustBeEmail
                 password: password
-                email: email
-                name: first_name
-                family_name: last_name
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+        '400':
+          description: Username not email
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  message: Username should be an email
+                  code: InvalidParameterException
+                  statusCode: 400
   /auth/verify:
     post:
       tags:
@@ -115,7 +172,14 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers/100012:
     get:
       tags:
@@ -125,7 +189,13 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
+        '500':
+          description: Error message
   /chargers/serial/NEWCHARGER1A:
     get:
       tags:
@@ -135,7 +205,11 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /chargers:
     post:
       tags:
@@ -159,6 +233,8 @@ paths:
           description: Successful response
           content:
             application/json: {}
+        '404':
+          description: Error message
     get:
       tags:
         - Chargers
@@ -167,7 +243,14 @@ paths:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json: 
+              schema:
+                type: array
+                items:
+                  allOf:
+                  $ref: '#/components/schemas/Charger'
+        '404':
+          description: Error message
   /transactions/1:
     get:
       tags:
@@ -258,11 +341,14 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /auth/admin/sign-in:
+  /admin/sign-in:
     post:
       tags:
         - Admin
-      summary: Sign-in
+      summary: Sign in with an administrator account.
+      description: >-
+        Sign in as an administrator. Account is created by someone 
+        with administrator priveleges.
       requestBody:
         content:
           application/json:
@@ -276,15 +362,75 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /auth/admin/:
+        '400':
+          description: 'A bad request was sent.
+            This includes an incorrect username/password.
+
+            **Future improvement**: *Send other 4xx codes, such as 401 for 
+              bad username/password.*'
+  /admin/"username":
+    get:
+      tags:
+        - Admin
+      summary: Get user information by username
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users with information
+      responses:
+        '200':
+          description: List with all users
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/:
     post:
       tags:
         - Admin
-      summary: Admin
-      description: >-
-        Creates a new user. Sends a verification code in a email to the supplied
-        email address. Use this verification code with the "Verify user"
-        request.
+      summary: Creates an admin account.
+      description: 'Creates a new admin user. Sends a verification code 
+        in a email to the supplied email address.
+
+        Use this verification code with the "Verify user" request.
+
+        '
       requestBody:
         content:
           application/json:
@@ -298,14 +444,21 @@ paths:
                 family_name: last_name
       responses:
         '200':
-          description: Successful response
+          description: 'Successful response.'
           content:
             application/json: {}
-  /auth/admin/force-change-password:
+        '401':
+          description: 'Error: Unauthorized.
+
+            The supplied POST was correctly formatted but not accepted.'
+          content:
+            application/json: {}
+
+  /admin/force-change-password:
     post:
       tags:
         - Admin
-      summary: force-password-change
+      summary: Change a users password.
       requestBody:
         content:
           application/json:
@@ -318,9 +471,16 @@ paths:
                   AYABeAvR1_coVz0EnKxmyNJPM94AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgGS5dTNK8uczcSpkcC_8tHoAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSrBLX5nHC2z4cD9YAgEQgDs-mx5U_LlqzlXumqd9MH-drBQ4Vy3dpGqvmRcuBQEFHaSahxhSUgj863fmUSNdpS4Jhq1t8jqPaNQdKAIAAAAADAAAEAAAAAAAAAAAAAAAAADnU04jgSqDAu5p8cfXlAus_____wAAAAEAAAAAAAAAAAAAAAEAAAC_y-lSQjfe6npxGWXg7eDvHCLxEA-1CQ2mTYPYQu4d_WHo8ubIgy1k5l_6ON_PkuQoJn11jNma2IBsK5ZQZJ-VDV3tn6lTxLvA-U2xxhDhgZi8ZrhZMSf-FSYVRHmgV45pDNx9kps1i436i6oUeWI4bbDBaOWLdhWG1KQJGPNv2ZJSWFvlxSYnCHaO-snLXvnSotjxR5XR4tr58HBII1U14fT6LGm6dM5EKOMtZh97P4Y1K6zJuIIGF9pRvZDyWrpx9HY74aW5qXDzePGCQzj7
       responses:
         '200':
-          description: Successful response
+          description: 'Successful response.'
           content:
             application/json: {}
+        '400':
+          description: 'The request to change the user password was unsuccessfull.
+
+            **Future improvement**: *Change to code 401.*'
+          content:
+            application/json: {}
+
   /reservations/8:
     get:
       tags:
@@ -389,6 +549,72 @@ paths:
                 parentIdTag: 1
       responses:
         '200':
-          description: Successful response
+          description: Successful response.
           content:
             application/json: {}
+  /invoices/{invoiceID}:
+    get:
+      tags:
+        - Invoices
+      summary: Get invoice by ID.
+      description: >-
+        Will get the invoice requested by the parameter {invoiceID}.
+        Currently there is only one particular PDF being and it 
+        belongs to Nisse Hult.
+
+
+        **NOTE**: Using the "Execute" function in swagger is weird.
+        Instead try this with "{baseuri:8080}/invoices/1234"
+
+
+        *Future improvements*: 
+
+          1. Check that the user of this endpoint is authorized to look 
+          at the invoice. User X should not be able to read the invoice 
+          of user Y, but currently no verification is done.
+
+          2. Code actually gets data from the database.
+      parameters:
+        - in: path
+          name: invoiceID
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the invoice to get.
+
+components:
+  schemas:
+    Charger:
+      type: object
+      properties:
+        chargerID:
+          type: integer
+          format: int64
+          example: 100011
+        location:
+          type: array
+          items:
+            type: number
+          example: 
+            - 57.777714
+            - 14.16301
+        serialNumber:
+          type: string
+          example: "testnumber15"
+        chargePointID:
+          type: integer
+          format: int64
+          example: 24
+        status:
+          type: string
+          description: Charger status
+          example: Available
+          enum:
+            - Available
+            - Reserved
+      xml:
+        name: charger
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
