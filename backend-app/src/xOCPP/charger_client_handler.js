@@ -1,6 +1,3 @@
-const { Console } = require("console")
-const { Socket } = require("dgram")
-
 module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func }) {
     const c = constants.get()
     

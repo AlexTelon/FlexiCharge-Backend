@@ -1,7 +1,3 @@
-const { Socket } = require("dgram")
-const { stringify } = require("querystring")
-
-
 module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
