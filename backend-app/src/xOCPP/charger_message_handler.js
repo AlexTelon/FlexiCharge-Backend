@@ -87,9 +87,6 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         const uniqueID = request[1]
         const userID = v.getUserIDWithTransactionID(transactionID)
 
-        console.log('handleMeterValues(), transactionID: ', transactionID)
-        console.log('handleMeterValues(), userID: ', userID)
-
         const socket = v.getConnectedChargerSocket(chargerID)
         if(userID){
             broker.publishToLiveMetrics(userID, request, function(){
