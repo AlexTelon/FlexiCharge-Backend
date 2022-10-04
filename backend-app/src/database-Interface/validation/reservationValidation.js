@@ -1,22 +1,34 @@
 module.exports = function({}) {
-
     //Validation for Start
-    START_MIN_VALUE = 0
-    //Validation for Stop
-    END_MIN_VALUE = 0
+    START_MIN_VALUE = Date.now()
+    END_MIN_VALUE = START_MIN_VALUE+1
 
     const exports = {}
 
     exports.getAddReservationValidation = function(start, end){
         const validationErrors = []
-
-        if(start < START_MIN_VALUE){
+        if(start == undefined || start == null){
             validationErrors.push("invalidStartValue")
+        } else {
+            if(typeof start !== 'number'){
+                validationErrors.push("invalidStartValue")
+            }
         }
-        if(end < END_MIN_VALUE){
+        if(end == undefined || end == null){
+            validationErrors.push("invalidEndValue")
+        } else {
+            if(typeof end !== 'number')
+            validationErrors.push("invalidEndValue")
+        }       
+        if(start <= START_MIN_VALUE){
+            validationErrors.push("invalidStartValue")
+            
+        }
+        if(end <= END_MIN_VALUE){
             validationErrors.push("invalidEndValue")
         }
         if(end < start){
+            console.log("går in här")
             validationErrors.push("startGreaterThenEnd")
         }
 
