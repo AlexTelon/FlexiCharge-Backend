@@ -28,3 +28,22 @@ describe('Transaction by pricePerKwh with input:', () => {
     });
 
 });
+
+describe('Update Charger by chargeMeterValue input', () => {
+    
+    test('null', () => {
+        const errors = transactionValidation.getUpdateTransactionChargingStatus(null,validCurrentChargePercentageInput);
+        expect(errors.length).toBe(1);
+    });
+
+    test('undefined', () => {
+        const valErrors = transactionValidation.getUpdateTransactionChargingStatus(undefined,validCurrentChargePercentageInput);
+        expect(valErrors.length).toBe(1);
+    });
+
+    test('integer below 0', () => {
+        const errors = transactionValidation.getUpdateTransactionChargingStatus(-1,validCurrentChargePercentageInput);
+        expect(errors.length).toBe(1);
+    });
+
+});
