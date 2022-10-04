@@ -11,8 +11,9 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             let data = JSON.parse(message)
             let messageTypeID = data[c.MESSAGE_TYPE_INDEX]
             let uniqueID = data[c.UNIQUE_ID_INDEX]
-            
+
             var response = ""
+
             switch (messageTypeID) {
                 case c.CALL:
 
