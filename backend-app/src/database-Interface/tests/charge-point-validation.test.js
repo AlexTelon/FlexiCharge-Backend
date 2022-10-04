@@ -1,4 +1,4 @@
-const chargePointValidation = require("../validation/chargePointValidation")(
+const chargePointValidation = require("../validation/charge-point-validation")(
   {}
 );
 const { describe, expect, test } = require("@jest/globals");
