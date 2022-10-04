@@ -1,4 +1,4 @@
-const chargerValidation = require("../validation/chargerValidation")({});
+const chargerValidation = require("../validation/charger-validation")({});
 const { describe, expect, test } = require("@jest/globals");
 
 describe("Charger By SerialNumber Validation with input:", () => {
