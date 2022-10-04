@@ -1,4 +1,5 @@
 const PubSub = require('pubsub-js')
+const config = require('../config')
 
 module.exports = function ({ v, constants, func, databaseInterfaceTransactions }) {
     const c = constants.get()
@@ -28,7 +29,7 @@ module.exports = function ({ v, constants, func, databaseInterfaceTransactions }
         const currentTimestamp = metricsMessage[3].timestamp
         const lastDbTimestamp = v.getLastLiveMetricsTimestamp(transactionID)
 
-        if(lastDbTimestamp && (currentTimestamp - lastDbTimestamp) >= c.LIVEMETRICS_DB_UPDATE_INTERVAL){
+        if(lastDbTimestamp && (currentTimestamp - lastDbTimestamp) >= config.LIVEMETRICS_DB_UPDATE_INTERVAL){
             const chargingPercent = metricsMessage[3].values.chargingPercent.value
             const chargedSoFarWh = metricsMessage[3].values.chargedSoFar.value // comes in Wh instead of KWh
 
