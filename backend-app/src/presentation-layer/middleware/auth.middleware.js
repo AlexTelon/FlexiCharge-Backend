@@ -9,7 +9,7 @@ class AuthMiddleware {
 
     region = config.AWS_REGION;
     userPool = config.USER_POOL;
-    adminUserPool = config.ADMIN_POOL;
+    adminUserPool = config.USER_POOL;
 
     constructor() {
         this.setUp();
@@ -80,7 +80,7 @@ class AuthMiddleware {
         }
     }
     async setUpAdmin() {
-        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.adminUserPool}/.well-known/jwks.json`
+        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`
 
         try {
             const response = await fetch(URL);

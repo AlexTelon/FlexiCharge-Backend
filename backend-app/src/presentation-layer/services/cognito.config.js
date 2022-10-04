@@ -1,6 +1,8 @@
 const AWS = require('aws-sdk')
 const { createHmac } = require('crypto')
 const AuthMiddleware = require('../middleware/auth.middleware')
+const CognitoResponseHandler = require('./cognito-response-handler')
+const cognitoResponseHandler = new CognitoResponseHandler();
 const auth = new AuthMiddleware();
 const config = require('../../config')
 
@@ -27,7 +29,15 @@ class CognitoService {
             SecretHash: this.generateHash(username),
         }
         try {
-            const data = await this.cognitoIdentity.signUp(params).promise();
+            const data = await this.cognitoIdentity.signUp(params).promise()
+            .then(result => {
+                const paramsGroup = {
+                    "GroupName": "Users",
+                    "Username": username,
+                    "UserPoolId": config.USER_POOL
+                }
+                this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
+            })
             return true
         } catch (error) {
             return error
@@ -219,6 +229,23 @@ class CognitoService {
         } catch (error) {
             console.log(error);
             return error
+        }
+    }
+
+    async getUserByAccessToken(accessToken){
+        var params = {
+            "AccessToken": accessToken
+        }
+        try {
+            const cognitoResponse = await this.cognitoIdentity.getUser(params).promise();
+            const res = {
+                statusCode: 200,
+                data: cognitoResponseHandler.reformatUserInformationResponse(cognitoResponse)
+            }
+            return res;
+        } catch (error) {
+            console.log(error)
+            throw error;
         }
     }
 

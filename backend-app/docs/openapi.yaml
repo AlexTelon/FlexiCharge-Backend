@@ -47,6 +47,40 @@ paths:
                   statusCode: 400
                   retryable: false
                   retryDelay: 4.128536351395207
+  /auth/update-user:
+    put:
+      tags:
+        - User
+      summary: Update-information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: string
+                family_name: string
+                phone_number: string
+                street_address: string
+                zip_code: string
+                city: string
+                country: string
+      responses:
+        '204':
+          description: Successful response
+          content:
+            application/json: 
+              schema:
+                type: object
+                example:
+                  
+        '400':
+          description: Incorrect username or password
+          content: 
+            application/json:
+              schema: 
+                type: object
+                example:
   /auth/sign-up:
     post:
       tags:
@@ -307,7 +341,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /auth/admin/sign-in:
+  /admin/sign-in:
     post:
       tags:
         - Admin
@@ -334,7 +368,59 @@ paths:
 
             **Future improvement**: *Send other 4xx codes, such as 401 for 
               bad username/password.*'
-  /auth/admin/:
+  /admin/"username":
+    get:
+      tags:
+        - Admin
+      summary: Get user information by username
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users with information
+      responses:
+        '200':
+          description: List with all users
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/:
     post:
       tags:
         - Admin
@@ -368,7 +454,7 @@ paths:
           content:
             application/json: {}
 
-  /auth/admin/force-change-password:
+  /admin/force-change-password:
     post:
       tags:
         - Admin
@@ -466,7 +552,36 @@ paths:
           description: Successful response.
           content:
             application/json: {}
-            
+  /invoices/{invoiceID}:
+    get:
+      tags:
+        - Invoices
+      summary: Get invoice by ID.
+      description: >-
+        Will get the invoice requested by the parameter {invoiceID}.
+        Currently there is only one particular PDF being and it 
+        belongs to Nisse Hult.
+
+
+        **NOTE**: Using the "Execute" function in swagger is weird.
+        Instead try this with "{baseuri:8080}/invoices/1234"
+
+
+        *Future improvements*: 
+
+          1. Check that the user of this endpoint is authorized to look 
+          at the invoice. User X should not be able to read the invoice 
+          of user Y, but currently no verification is done.
+
+          2. Code actually gets data from the database.
+      parameters:
+        - in: path
+          name: invoiceID
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the invoice to get.
+
 components:
   schemas:
     Charger:
