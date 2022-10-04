@@ -2,7 +2,7 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addChargeSession = function(chargerID, userID, database, callback) {
+    exports.addChargeSession = function(chargerID, userID, startTime, database, callback) {
         if (database == null) {
             database = databaseInit.newChargeSessions
         }
@@ -11,7 +11,8 @@ module.exports = function({ databaseInit }) {
             chargerID: chargerID,
             userID: userID,
             currentChargePercentage: null,
-            kwhTransfered : null
+            kwhTransfered : null,
+            startTime: startTime
         }
 
         database.create(chargeSession)
@@ -46,6 +47,25 @@ module.exports = function({ databaseInit }) {
                 console.log(e)
                 callback(e, [])
             })
+    }
+
+    exports.updateChargingEndTime = function(chargeSessionID, endTime, database, callback) {
+        if(database == null){
+            database = databaseInit.newChargeSessions
+        }
+
+        database.update({
+            endTime: endTime
+        }, {
+            where: { chargeSessionID : chargeSessionID},
+            raw: true,
+            returning: true
+        }).then(updatedChargeSession => {
+            callback([], updatedChargeSession[1][0])
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
     }
 
     exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {

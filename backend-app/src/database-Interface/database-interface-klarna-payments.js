@@ -1,4 +1,4 @@
-module.exports = function({ dataAccessLayerKlarna, newDataAccessLayerTransactions, newDataAccessLayerChargePoints }) {
+module.exports = function({ dataAccessLayerKlarna, klarnaPayments, newDataAccessLayerTransactions, newDataAccessLayerChargePoints }) {
     const exports = {}
 
     exports.getNewKlarnaPaymentSession = async function(userID, chargerID, callback) {
@@ -17,6 +17,7 @@ module.exports = function({ dataAccessLayerKlarna, newDataAccessLayerTransaction
                         } else {
                             dataAccessLayerKlarna.getNewKlarnaPaymentSession(userID, chargerID, chargePoint, async function(error, transactionData) {
                                 if (error.length == 0) {
+                                    // TODO Move validation to new validation file! e.g klarnaPaymentsValidation...
                                     const validationError = transactionValidation.addKlarnaTransactionValidation(transactionData.session_id, transactionData.client_token)
                                     if (validationError.length > 0) {
                                         callback(validationError, [])
@@ -25,15 +26,25 @@ module.exports = function({ dataAccessLayerKlarna, newDataAccessLayerTransaction
                                         const isKlarnaPayment = true
                                         const timestamp = (Date.now() / 1000 | 0)
 
-                                        newDataAccessLayerTransactions.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
-                                            if (Object.keys(error).length > 0) {
-                                                dbErrorCheck.checkError(error, function(error) {
-                                                    callback(error, [])
-                                                })
-                                            } else {
-                                                callback([], klarnaTransaction)
-                                            }
+                                        // newDataAccessLayerTransactions.addKlarnaTransaction(userID, chargerID, chargePoint.price, transactionData.session_id, transactionData.client_token, isKlarnaPayment, timestamp, paymentConfirmed, function(error, klarnaTransaction) {
+                                        //     if (Object.keys(error).length > 0) {
+                                        //         dbErrorCheck.checkError(error, function(error) {
+                                        //             callback(error, [])
+                                        //         })
+                                        //     } else {
+                                        //         callback([], klarnaTransaction)
+                                        //     }
+                                        // })
+
+                                        const chargeSessionID = null // How are we supposed to find chargeSessionID
+                                        const payNow = null;
+                                        const paymentDueDate = null;
+                                        const totalPrice = null;
+                                        newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, totalPrice, () => {
+                                            
                                         })
+
+                                        klarnaPayments.addKlarnaPayment(transactionData.client_token, transactionData.session_id, transactionID)
                                     }
                                 } else {
                                     callback(error, [])

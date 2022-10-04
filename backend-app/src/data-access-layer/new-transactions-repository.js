@@ -99,6 +99,23 @@ module.exports = function({ databaseInit }) {
         })
     }
 
+    exports.getTransactionForChargeSession = function(chargeSessionID, database, callback){
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
+        database.newTransactions.findOne({
+            where: {
+                chargeSessionID: chargeSessionID
+            }
+        }).then(function(transaction){
+            callback([], transaction)
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
+
     // exports.getTransactionsForCharger = function(chargerID, callback) {
     //     databaseInit.newTransactions.findAll({ where: { chargerID: chargerID }, raw: true })
     //         .then(chargerTransaction => callback([], chargerTransaction))

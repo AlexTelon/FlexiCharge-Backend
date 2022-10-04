@@ -286,8 +286,7 @@ const newTransactions = sequelize.define('newTransactions', {
     },
     totalPrice: {
         type: DataTypes.FLOAT,
-        defaultValue: 20, // Default value is strictly for development, remove this.
-        allowNull: false
+        allowNull: true
     }
 }, {
     timestamps: false
@@ -339,10 +338,15 @@ const newElectricityTariffs = sequelize.define('newElectricityTariffs', {
 });
 
 const klarnaPayments = sequelize.define('KlarnaPayments', {
-    paymentID: {
-        type: DataTypes.STRING,
+    klarnaPaymentID: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false
+    },
+    order_id : {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     client_token: {
         type: DataTypes.STRING,
@@ -353,6 +357,19 @@ const klarnaPayments = sequelize.define('KlarnaPayments', {
         allowNull: false
     }
 }) 
+
+const UserInvoices = sequelize.define('UserInvoices', {
+    userID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+    invoiceUUID: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+})
 
 newElectricityTariffs.removeAttribute('id');
 
