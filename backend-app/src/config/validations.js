@@ -14,7 +14,8 @@ const validationSchema = joi.object()
         ADMIN_POOL_ID: joi.string().required(),
         ADMIN_POOL: joi.string().required(),
 
-        RUN_OCPP_TEST: joi.number().required()
+        RUN_OCPP_TEST: joi.number().required(),
+        BYPASS_KLARNA: joi.number().required()
     }).unknown();
 
 module.exports = validationSchema;
