@@ -105,16 +105,11 @@ module.exports = function({}){
             
             /** LIVE STREAM METRICS CONSTANTS */
             LIVEMETRICS_TOPIC_PREFIX: '/metrics/',
-            LIVEMETRICS_DB_UPDATE_INTERVAL: 60000, //milliseconds, the interval between MeterValues request in which the backend should update the values in DB
 
             //TEST DATA
             CHARGER_ID: 100001,
             USER_ID: "hej-123",
             TRANSACTION_ID: 1,
-            FRONTEND_TEST_USERID: "mobile-test-user-id-123"
-            
-
-
         }
 
         return constants
