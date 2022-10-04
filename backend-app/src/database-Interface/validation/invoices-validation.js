@@ -48,12 +48,13 @@ module.exports = () => {
     return validationErrors;
   };
 
-  exports.getInvoiceStatusValidation = (status) => {
+  exports.getInvoiceStatusFilterValidation = (status) => {
     const validationErrors = [];
 
     // Optional filter
     if (
       (status !== undefined || status !== null) &&
+      typeof status === "string" &&
       invoiceStatusTypes.includes(status.toUpperCase())
     ) {
       validationErrors.push("invalidStatus");
@@ -62,8 +63,7 @@ module.exports = () => {
     return validationErrors;
   };
 
-  exports.getInvoiceDateValidation = (date) => {
-    
+  exports.getInvoiceDateFilterValidation = (date) => {
     const validationErrors = [];
 
     // Optional filter
