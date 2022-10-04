@@ -1,12 +1,26 @@
 const { generateMonthlyInvoicePDF } = require("./utils/invoices");
 const dummyData = require("./invoices-dummy-data");
-const { NotFoundError } = require("./error/error-types");
+const { BadRequestError } = require("./error/error-types");
 
 module.exports = function ({ invoicesValidation }) {
   const exports = {};
 
+  exports.createUserInvoice = (userID, dateFrom, dateTo, userData) => {
+    const validationErrors = [
+      ...invoicesValidation.getInvoiceDateValidation(dateFrom, dateTo),
+      ...invoicesValidation.getUserIDValidation(userID),
+    ];
+
+    if (validationErrors.length > 0)
+      throw new BadRequestError(validationErrors);
+  };
+
   exports.getInvoiceByID = (invoiceID, userData, callback) => {
-    const validationErrors = invoicesValidation.getInvoiceIDValidation(invoiceID);
+    const validationErrors =
+      invoicesValidation.getInvoiceIDValidation(invoiceID);
+
+    if (validationErrors.length > 0)
+      throw new BadRequestError(validationErrors);
 
     callback(
       [],
@@ -21,6 +35,9 @@ module.exports = function ({ invoicesValidation }) {
       ...invoicesValidation.getInvoiceDateFilterValidation(date),
       ...invoicesValidation.getInvoiceStatusFilterValidation(status),
     ];
+
+    if (validationErrors.length > 0)
+      throw new BadRequestError(validationErrors);
   };
 
   exports.getAllInvoicesByUserID = (userID, userData, filterOptions = {}) => {
@@ -31,7 +48,8 @@ module.exports = function ({ invoicesValidation }) {
       ...invoicesValidation.getInvoiceStatusFilterValidation(status),
     ];
 
-    throw new NotFoundError()
+    if (validationErrors.length > 0)
+      throw new BadRequestError(validationErrors);
   };
 
   return exports;

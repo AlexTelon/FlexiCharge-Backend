@@ -28,7 +28,7 @@ module.exports = (err, req, res, next) => {
     res.status(401).json({
       status: err.status,
       code: "unauthorizedError",
-      message: "Unauthorized",
+      message: err.message,
     });
   } else if (err instanceof NotFoundError) {
     res
