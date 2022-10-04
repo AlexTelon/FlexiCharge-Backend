@@ -36,8 +36,11 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants, v, func 
 
             setTimeout(function(){
                 ws.terminate()
-                callback()
             }, 10000)
+
+            setTimeout(function(){
+                callback()
+            }, 11000)
         })
     }
 

@@ -182,7 +182,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
             if (error != null) {
                 console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp, +", meterStop: "+response.meterStop)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp +", meterStop: "+response.meterStop)
             }
         })
     }

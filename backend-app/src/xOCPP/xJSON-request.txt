@@ -104,13 +104,7 @@
 [
     3,
     "uniqueID",
-    "MeterValues",
-    {
-        "SoC": int (percent)
-        "Energy.Active.Import.Interval": int (Wh)
-        "Power.Active.Import": int (W)
-        "timestamp": 1234512345124123
-    }
+    "MeterValues"
 ]
 
 //active transactionIds for charger teams to test with

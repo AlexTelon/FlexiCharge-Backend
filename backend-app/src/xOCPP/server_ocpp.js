@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, userClientHandler, tester }) {
+module.exports = function ({ chargerClientHandler, v, constants, userClientHandler, tester }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")

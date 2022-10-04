@@ -9,6 +9,7 @@ const liveMetricsTokens = {}
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
+const lastLiveMetricsTimestamps = []
 
 module.exports = function ({ }) {
     
@@ -102,6 +103,9 @@ module.exports = function ({ }) {
     exports.getUserIDsLength = function(){
         return Object.keys(userIDs).length
     }
+    exports.getTransactionIDwithUserID = function(userID){
+        return userIDs.indexOf(userID)
+    }
 
     //LIVE METRICS TOKENS
     //Array with all the PubSub tokens for all subscribers, stored under userID
@@ -120,6 +124,21 @@ module.exports = function ({ }) {
     }
     exports.getLiveMetricsTokensLength = function(){
         return Object.keys(liveMetricsTokens).length
+    }
+
+    //LAST LIVE METRICS DB TIMESTAMPS
+    //Array with last live metrics timestamps, stored under a transactionID index
+    exports.updateLastLiveMetricsTimestamp = function(transactionID, lastTimestamp){
+        lastLiveMetricsTimestamps[transactionID] = lastTimestamp
+    }
+    exports.removeLastLiveMetricsTimestamp = function(transactionID){
+        delete lastLiveMetricsTimestamps[transactionID]
+    }
+    exports.getLastLiveMetricsTimestamp = function(transactionID){
+        return lastLiveMetricsTimestamps[transactionID]
+    }
+    exports.lengthLastLiveMetricsTimestamps = function(){
+        return Object.keys(lastLiveMetricsTimestamps).length
     }
 
 

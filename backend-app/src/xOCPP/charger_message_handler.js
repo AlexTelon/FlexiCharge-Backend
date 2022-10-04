@@ -87,14 +87,22 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         const uniqueID = request[1]
         const userID = v.getUserIDWithTransactionID(transactionID)
 
-        console.log('transactionID: ', transactionID)
-        console.log('userID: ', userID)
+        console.log('handleMeterValues(), transactionID: ', transactionID)
+        console.log('handleMeterValues(), userID: ', userID)
 
-        broker.publishToLiveMetrics(userID, request, function(){
-            const socket = v.getConnectedChargerSocket(chargerID)
-            socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
-            console.log("Meter values response sent!")
-        })
+        const socket = v.getConnectedChargerSocket(chargerID)
+        if(userID){
+            broker.publishToLiveMetrics(userID, request, function(){
+                socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
+                console.log("Meter values response sent to charger with ID " + chargerID)
+            })
+        } else {
+                socket.send(func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.METER_VALUES, {
+                    error: "userID not OK"
+                }]))
+                console.log("Meter values error sent to charger with ID " + chargerID)
+        }
+        
     }
 
     function handleStopTransaction(chargerID, uniqueID, request) {

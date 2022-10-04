@@ -16,7 +16,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
 
             ws.on('message', function(message){
                 parsedMessage = JSON.parse(message)
-                console.log('USER CLIENT MOCK GOT: ', parsedMessage)
+                console.log('USER CLIENT MOCK RECEIVED: ', parsedMessage)
 
                 if(parsedMessage[2] == c.METER_VALUES){
                     console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
@@ -42,7 +42,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                     {
                         "connectorId": 1,
                         "transactionId": 1,
-                        "timestamp": 1234512345124123,
+                        "timestamp": 1664881780904,
                         "values": {
                             "chargingPercent": {
                                 "value": 0,
