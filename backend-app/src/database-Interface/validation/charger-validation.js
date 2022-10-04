@@ -50,7 +50,7 @@ module.exports = function ({}) {
       validationErrors.push("invalidStatus");
     } else {
       if (typeof status !== "string") {
-        ValidationErrors.push("invalidDataType");
+        validationErrors.push("invalidDataType");
       }
       if (!statusCodes.includes(status)) {
         validationErrors.push("invalidStatus");
