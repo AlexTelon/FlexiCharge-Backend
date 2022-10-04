@@ -1,4 +1,5 @@
 const { checkPrime } = require("crypto")
+const config = require("../config")
 
 module.exports = function({ dataAccessLayerTransaction, transactionValidation, dbErrorCheck, dataAccessLayerCharger, dataAccessLayerChargePoint, dataAccessLayerKlarna, ocppInterface }) {
 
@@ -191,35 +192,39 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                     callback(errorCode, [])
                                 })
                             } else {
-                                dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, function (error, klarnaOrder) {
-                                    if (error.length == 0) {
-                                        dataAccessLayerTransaction.updateTransactionPayment(transactionId, klarnaOrder.order_id, function (error, updatedTransaction) {
-                                            if (Object.keys(error).length > 0) {
-                                                dbErrorCheck.checkError(error, function (errorCode) {
-                                                    callback(errorCode, [])
-                                                })
-                                            } else {
-                                                ocppInterface.remoteStartTransaction(charger.chargerID, transactionId, function(error, returnObject) {
-                                                    if(error != null || returnObject.status == "Rejected") {
-                                                        callback(["couldNotStartOCPPTransaction"], [])
-                                                    } else {
-                                                        dataAccessLayerTransaction.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
-                                                            if (Object.keys(error).length > 0) {
-                                                                dbErrorCheck.checkError(error, function(errorCode) {
-                                                                    callback(errorCode, [])
-                                                                })
-                                                            } else {
-                                                                callback([], updatedTransaction)
-                                                            }
-                                                        })
-                                                    }
-                                                })
-                                            }
-                                        })
-                                    } else {
-                                        callback(error, [])
-                                    }
-                                })
+                                if(config.BYPASS_KLARNA){
+                                    ocppInterface.remoteStartTransaction(charger.chargerID, transactionId, function(error, returnObject) {
+                                        if(error != null || returnObject.status == "Rejected") {
+                                            callback(["couldNotStartOCPPTransaction"], [])
+                                        } else {
+                                            dataAccessLayerTransaction.updateTransactionMeterStart(transactionId, returnObject.meterStart, function(error, updatedTransaction) {
+                                                if (Object.keys(error).length > 0) {
+                                                    dbErrorCheck.checkError(error, function(errorCode) {
+                                                        callback(errorCode, [])
+                                                    })
+                                                } else {
+                                                    callback([], updatedTransaction)
+                                                }
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    dataAccessLayerKlarna.createKlarnaOrder(transactionId, chargePoint.klarnaReservationAmount, authorization_token, function (error, klarnaOrder) {
+                                        if (error.length == 0) {
+                                            dataAccessLayerTransaction.updateTransactionPayment(transactionId, klarnaOrder.order_id, function (error, updatedTransaction) {
+                                                if (Object.keys(error).length > 0) {
+                                                    dbErrorCheck.checkError(error, function (errorCode) {
+                                                        callback(errorCode, [])
+                                                    })
+                                                } else {
+                                                    
+                                                }
+                                            })
+                                        } else {
+                                            callback(error, [])
+                                        }
+                                    })
+                                }
                             }
                         })
                     }
@@ -267,23 +272,26 @@ module.exports = function({ dataAccessLayerTransaction, transactionValidation, d
                                                                 callback(errorCode, [])
                                                             })
                                                         } else {
-                                                            dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, function(error, responseData) {
-                                                                if (error.length == 0) {
-                                                                    dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
-                                                                        if (Object.keys(error).length > 0) {
-                                                                            dbErrorCheck.checkError(error, function(errorCode) {
-                                                                                callback(errorCode, [])
-                                                                            })
-                                                                        } else {
-                                                                            callback([], transaction)
-                                                                        }
+                                                            if(config.BYPASS_KLARNA){
+                                                                callback([], updatedTransaction)
+                                                            } else {
+                                                                dataAccessLayerKlarna.finalizeKlarnaOrder(transaction, transactionId, function(error, responseData) {
+                                                                    if (error.length == 0) {
+                                                                        dataAccessLayerTransaction.updateTransactionPaymentConfirmed(transactionId, true, function(error, transaction) {
+                                                                            if (Object.keys(error).length > 0) {
+                                                                                dbErrorCheck.checkError(error, function(errorCode) {
+                                                                                    callback(errorCode, [])
+                                                                                })
+                                                                            } else {
+                                                                                callback([], transaction)
+                                                                            }
+                                                                        })
+                                                                    } else {
+                                                                        callback(error, [])
+                                                                    }
                                                                     })
-                                                                } else {
-                                                                    callback(error, [])
                                                                 }
-                        
-                                                            })
-                                                        }
+                                                            }
                                                     })
                                                 } else {
                                                     callback(["couldNotStopOCPPTransaction"], [])
