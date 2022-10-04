@@ -3,6 +3,7 @@ const {
   UnauthorizedError,
   NotFoundError,
 } = require("../../database-Interface/error/error-types");
+const jwt = require("express-jwt");
 
 module.exports = (err, req, res, next) => {
   if (err instanceof BadRequestError) {
@@ -23,6 +24,12 @@ module.exports = (err, req, res, next) => {
         message: err.message,
       })
       .end();
+  } else if (err instanceof jwt.UnauthorizedError) {
+    res.status(401).json({
+      status: err.status,
+      code: "unauthorizedError",
+      message: "Unauthorized",
+    });
   } else if (err instanceof NotFoundError) {
     res
       .status(404)

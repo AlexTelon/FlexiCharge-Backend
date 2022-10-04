@@ -1,4 +1,5 @@
 const express = require('express')
+const checkJwt = require('./middleware/jwt.middleware')
 
 module.exports = function ({databaseInterfaceInvoices}) {
     const router = express.Router()
@@ -26,8 +27,9 @@ module.exports = function ({databaseInterfaceInvoices}) {
      * Filter options: date & status 
      */
     router.get('/users', function (req, res) {
-        const { userID } = req.params
         const { status, date } = req.query
+
+        databaseInterfaceInvoices.getAllInvoices(req.user)
     })
     
     /**
@@ -36,23 +38,24 @@ module.exports = function ({databaseInterfaceInvoices}) {
      */
     router.get('/users/:userID', function (req, res) {
         const { userID } = req.params
-        const { status } = req.query
+        console.log("1keopfwej");
+        // databaseInterfaceInvoices.getAllInvoicesByUserID(userID, req.user, req.query)
+        res.json({"he": 12})
+
+
     })
     
     /**
      * Render invoice file.
      */
-    router.get('/:invoiceID', (req, res) => {
+    router.get('/:invoiceID', checkJwt, (req, res) => {
         const { invoiceID } = req.params
-        // null value will be replaced with userData
-        databaseInterfaceInvoices.getInvoiceByID(invoiceID, null, (errors, invoiceFile) => {
+
+        databaseInterfaceInvoices.getInvoiceByID(invoiceID, req.user, (errors, invoiceFile) => {
             if (errors.length == 0) {
                 invoiceFile.pipe(res)
             }
-        }) 
-
-
-
+        })
     })
 
     return router
