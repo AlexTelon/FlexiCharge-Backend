@@ -18,6 +18,10 @@ module.exports = function({}) {
 
         if(chargePointID === undefined || chargePointID === null) {
             validationErrors.push("invalidChargePointID")
+        } else {
+            if(!Number.isInteger(chargePointID)){
+                validationErrors.push('invalidDataType')
+            }
         }
         return validationErrors
     }
