@@ -3,12 +3,6 @@ module.exports = function({}) {
     //Status codes 
     const statusCodes = ["Available", "Preparing", "Charging", "SuspendedEVSE", "SuspendedEV", "Finishing", "Reserved", "Unavailable", "Faulted"]
 
-    //Validation for location
-    LONGITUDE_MIN_VALUE = -180
-    LONGITUDE_MAX_VALUE = 180
-    LATITUDE_MIN_VALUE = -90
-    LATITUDE_MAX_VALUE = 90
-
     //Validation for serial number
     SERIAL_NUMBER_MIN_VALUE = 1
     SERIAL_NUMBER_MAX_VALUE = 36
@@ -17,42 +11,21 @@ module.exports = function({}) {
 
     exports.getAddChargerValidation = function(location, serialNumber, chargePointID) {
 
-        const validationErrors = []
-
-        getLocationValidationErrors(validationErrors, location);
-        if (serialNumber === undefined || serialNumber === null) {
-            validationErrors.push("invalidSerialNumber")
-        } else {
-            if (typeof serialNumber !== 'string') {
-                validationErrors.push("invalidDataType")
-            }
-            if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
-
-                validationErrors.push("invalidSerialNumber")
-            }
-        }
+        const validationErrors = [
+            ...getLocationValidationErrors(location),
+            ...getSerialNumberValidationErrors(serialNumber)
+        ];
 
         if(chargePointID === undefined || chargePointID === null) {
             validationErrors.push("invalidChargePointID")
         }
-
         return validationErrors
     }
 
     exports.getChargerBySerialNumberValidation = function(serialNumber) {
-        const validationErrors = []
-
-        if (serialNumber === undefined || serialNumber === null) {
-            validationErrors.push("invalidSerialNumber")
-        } else {
-            if (typeof serialNumber !== 'string') {
-                validationErrors.push("invalidDataType")
-            }
-            if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
-                validationErrors.push("invalidSerialNumber")
-            }
-        }
-
+        const validationErrors = [
+            ...getSerialNumberValidationErrors(serialNumber)
+        ];
         return validationErrors
     }
 
@@ -75,4 +48,20 @@ module.exports = function({}) {
 
     return exports
 
+}
+function getSerialNumberValidationErrors(serialNumber){
+    const validationErrors = [];
+    
+    if (serialNumber === undefined || serialNumber === null) {
+        validationErrors.push("invalidSerialNumber")
+    } else {
+        if (typeof serialNumber !== 'string') {
+            validationErrors.push("invalidDataType")
+        }
+        if (serialNumber.length < SERIAL_NUMBER_MIN_VALUE || serialNumber.length > SERIAL_NUMBER_MAX_VALUE) {
+
+            validationErrors.push("invalidSerialNumber")
+        }
+    }
+    return validationErrors;
 }

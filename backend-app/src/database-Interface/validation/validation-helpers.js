@@ -1,4 +1,11 @@
-function getLocationValidationErrors(validationErrors, location) {
+//Validation for location
+LONGITUDE_MIN_VALUE = -180
+LONGITUDE_MAX_VALUE = 180
+LATITUDE_MIN_VALUE = -90
+LATITUDE_MAX_VALUE = 90
+
+function getLocationValidationErrors(location) {
+  const validationErrors = [];
   if (location === undefined || location === null) {
     validationErrors.push("invalidLocation");
   } else {
@@ -19,6 +26,7 @@ function getLocationValidationErrors(validationErrors, location) {
       validationErrors.push("invalidLongitude");
     }
   }
+  return validationErrors;
 }
 
 module.exports = { getLocationValidationErrors };
