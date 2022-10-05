@@ -47,22 +47,22 @@ paths:
                   statusCode: 400
                   retryable: false
                   retryDelay: 4.128536351395207
-  /auth/update-user:
+  /auth/user-information:
     put:
       tags:
         - User
-      summary: Update-information
+      summary: Update information
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                name: string
-                family_name: string
-                phone_number: string
-                street_address: string
-                zip_code: string
+                firstName: string
+                lastName: string
+                phoneNumber: string
+                streetAddress: string
+                zipCode: string
                 city: string
                 country: string
       responses:
@@ -81,6 +81,28 @@ paths:
               schema: 
                 type: object
                 example:
+    get:
+      tags:
+        - User
+      summary: Get user information 
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+        '400':
+          description: Bad request
   /auth/sign-up:
     post:
       tags:
@@ -581,6 +603,11 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the invoice to get.
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json: {}
 
 components:
   schemas:
