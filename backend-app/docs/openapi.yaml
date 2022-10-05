@@ -596,7 +596,7 @@ paths:
         - bearerAuth: []
       tags:
         - Invoices
-      summary: Get all users invoices
+      summary: Get a list of all users invoices
       description: Admin route to fetch all users invoices
       parameters:
         - in: query
@@ -630,7 +630,7 @@ paths:
         - bearerAuth: []
       tags:
         - Invoices
-      summary: Get all invoices for a specific user
+      summary: Get a list of invoices for a specific user
       description: Admin or the user to whom the invoices belongs to are authorized
       parameters:
         - in: path
@@ -644,12 +644,6 @@ paths:
             type: string
           required: false
           description: Filter invoices after status; paid, unpaid or all
-        - in: query
-          name: date
-          schema:
-            type: string
-          required: false
-          description: Filter invoices after date, format YYYY-MM
       responses:
         '200':
           description: Successful response
