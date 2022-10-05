@@ -28,7 +28,7 @@ describe('Reservation start input:', () => {
 
 });
 
-describe('Reservation stop input:', () => {
+describe('Reservation end input:', () => {
     
     test('endtime < starttime', () => {    
         const errors = reservationValidation.getAddReservationValidation(startTime,startTime-1000);
