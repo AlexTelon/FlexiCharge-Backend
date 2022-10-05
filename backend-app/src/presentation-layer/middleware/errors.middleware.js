@@ -40,6 +40,7 @@ module.exports = (err, req, res, next) => {
       })
       .end();
   } else {
+    console.log(err)  // Unexpected errors
     res
       .status(500)
       .json({

@@ -32,7 +32,7 @@ module.exports = () => {
     if (
       (status !== undefined || status !== null) &&
       typeof status === "string" &&
-      invoiceStatusTypes.includes(status.toUpperCase())
+      !invoiceStatusTypes.includes(status.toUpperCase())
     ) {
       validationErrors.push("invalidStatus");
     }
@@ -46,6 +46,7 @@ module.exports = () => {
     // Optional filter
     if (
       (date !== undefined || date !== null) &&
+      typeof date === "string" &&
       !dateHelper.isValidDateFormatYearAndMonth(date) // YYYY-MM
     ) {
       validationErrors.push("invalidDateFormat");

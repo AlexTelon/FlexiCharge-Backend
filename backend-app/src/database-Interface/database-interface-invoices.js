@@ -1,10 +1,11 @@
-const { generateMonthlyInvoicePDF } = require("./utils/invoices");
-const dummyData = require("./invoices-dummy-data");
-const { BadRequestError } = require("./error/error-types");
+const utils = require("./utils/invoices");
+const { BadRequestError, NotFoundError } = require("./error/error-types");
+const mockData = require("./mock/invoices");
 
 module.exports = function ({ invoicesValidation }) {
   const exports = {};
 
+  // Cannot be implemented without a database
   exports.createUserInvoice = (userID, dateFrom, dateTo, userData) => {
     const validationErrors = [
       ...invoicesValidation.getInvoiceDateValidation(dateFrom, dateTo),
@@ -15,20 +16,23 @@ module.exports = function ({ invoicesValidation }) {
       throw new BadRequestError(validationErrors);
   };
 
-  exports.getInvoiceByID = (invoiceID, userData, callback) => {
+  exports.getInvoiceByID = (invoiceID, userData) => {
     const validationErrors =
       invoicesValidation.getInvoiceIDValidation(invoiceID);
 
     if (validationErrors.length > 0)
       throw new BadRequestError(validationErrors);
 
-    callback(
-      [],
-      generateMonthlyInvoicePDF(dummyData.user, dummyData.chargeSessions)
+    const invoice = utils.generateMonthlyInvoicePDF(
+      mockData.user,
+      mockData.chargeSessions
     );
+    if (!invoice) throw new NotFoundError();
+
+    return invoice;
   };
 
-  exports.getAllInvoices = async (userData, filterOptions = {}) => {
+  exports.getAllInvoices = (userData, filterOptions = {}) => {
     const { status, date } = filterOptions;
 
     const validationErrors = [
@@ -38,6 +42,8 @@ module.exports = function ({ invoicesValidation }) {
 
     if (validationErrors.length > 0)
       throw new BadRequestError(validationErrors);
+
+    return mockData.getAllInvoices();
   };
 
   exports.getAllInvoicesByUserID = (userID, userData, filterOptions = {}) => {
@@ -50,6 +56,8 @@ module.exports = function ({ invoicesValidation }) {
 
     if (validationErrors.length > 0)
       throw new BadRequestError(validationErrors);
+
+    return mockData.getAllInvoicesByUserID(userID);
   };
 
   return exports;

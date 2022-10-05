@@ -6,14 +6,11 @@ module.exports = function ({databaseInterfaceInvoices}) {
     
     /**
      * Admin genereates an invoice. Dates should be a ISO-8601 strings; YYYY-MM-DD.
+     * 
+     * Not implemented!!
      */
     router.post('/', function (req, res) {
         const { userID, dateStart, dateEnd } = req.body
-        // 1. Validation (input format)
-        // 2. Auth check (admin check)
-        // 3. Generate PDF.
-        // 4. Insert data to Database.
-        // 5. Send confirmation response.
         
         res.status(201).json({
             statusCode: 201,
@@ -26,10 +23,9 @@ module.exports = function ({databaseInterfaceInvoices}) {
      * Get a list of invoices for all users.
      * Filter options: date & status 
      */
-    router.get('/users', function (req, res) {
-        const { status, date } = req.query
-
-        databaseInterfaceInvoices.getAllInvoices(req.user)
+    router.get('/users', (req, res) => {
+        const invoices = databaseInterfaceInvoices.getAllInvoices(req.user, req.query)
+        res.status(200).json(invoices)
     })
     
     /**
@@ -38,24 +34,19 @@ module.exports = function ({databaseInterfaceInvoices}) {
      */
     router.get('/users/:userID', function (req, res) {
         const { userID } = req.params
-        console.log("1keopfwej");
-        // databaseInterfaceInvoices.getAllInvoicesByUserID(userID, req.user, req.query)
-        res.json({"he": 12})
-
-
+        
+        const invoices = databaseInterfaceInvoices.getAllInvoicesByUserID(userID, req.user, req.query)
+        res.status(200).json(invoices)
     })
     
     /**
      * Render invoice file.
      */
-    router.get('/:invoiceID', checkJwt, (req, res) => {
+    router.get('/:invoiceID', (req, res) => {
         const { invoiceID } = req.params
 
-        databaseInterfaceInvoices.getInvoiceByID(invoiceID, req.user, (errors, invoiceFile) => {
-            if (errors.length == 0) {
-                invoiceFile.pipe(res)
-            }
-        })
+        const invoiceFile = databaseInterfaceInvoices.getInvoiceByID(invoiceID, req.user)
+        invoiceFile.pipe(res)
     })
 
     return router
