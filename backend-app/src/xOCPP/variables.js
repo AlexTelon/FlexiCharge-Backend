@@ -1,8 +1,15 @@
 const connectedChargerSockets = {}
+const connectedUserSockets = {}
 const chargerSerials = []
+
+//Stored under transactionID index
+const userIDs = []
+
+const liveMetricsTokens = {}
 const chargerIDs = {}
 const callbacks = {}
 const transactionIDs = {}
+const lastLiveMetricsTimestamps = []
 
 module.exports = function ({ }) {
     
@@ -57,6 +64,96 @@ module.exports = function ({ }) {
         return Object.keys(chargerIDs).length
     }
 
+    // CONNECTED USER SOCKETS
+    // Get user socket with userIDs 
+    exports.getConnectedUserSocket = function (userID) {
+        return connectedUserSockets[userID]
+    }
+    exports.addConnectedUserSocket = function (userID, socket) {
+        connectedUserSockets[userID] = socket
+    }
+    exports.removeConnectedUserSocket = function (userID) {
+        delete connectedUserSockets[userID]
+    }
+    exports.getLengthConnectedUserSockets = function () {
+        return Object.keys(connectedUserSockets).length
+    }
+
+    //USER IDS 
+    //Array with all the user ids under transactionIDs index
+    exports.addUserIDWIthTransactionID = function(userID, transactionID){
+        // for(const transactionIDIndex of transactionIDArray){
+        //     userIDs[transactionIDIndex] = userID
+        // }
+        userIDs[transactionID] = userID
+    }
+    exports.getUserIDWithTransactionID = function(transactionID){
+        return userIDs[transactionID]
+    }
+    exports.removeUserID = function(userID){
+        for(i = 0; i < userIDs.length; i += 1){
+            if(userIDs[i] == userID){
+                delete userIDs[i]
+            }
+        }
+    }
+    exports.isInUserIDs = function (userID) {
+        return userIDs.includes(userID)
+    }
+    exports.getUserIDsLength = function(){
+        return Object.keys(userIDs).length
+    }
+    exports.getTransactionIDwithUserID = function(userID){
+        return userIDs.indexOf(userID)
+    }
+
+    //LIVE METRICS TOKENS
+    //Array with all the PubSub tokens for all subscribers, stored under userID
+    exports.getLiveMetricsToken = function(userID){
+        return liveMetricsTokens[userID]
+    }
+    exports.addLiveMetricsToken = function(userID, token) {
+        liveMetricsTokens[userID] = token
+
+        // liveMetricsToken = {
+        //     "tjijgioerjgiore-gjruijgeruigh": token // only supports one token per userID
+        // }
+    }
+    exports.removeLiveMetricsToken = function(userID){
+        delete liveMetricsTokens[userID]
+    }
+    exports.getLiveMetricsTokensLength = function(){
+        return Object.keys(liveMetricsTokens).length
+    }
+
+    //LAST LIVE METRICS DB TIMESTAMPS
+    //Array with last live metrics timestamps, stored under a transactionID index
+    exports.updateLastLiveMetricsTimestamp = function(transactionID, lastTimestamp){
+        lastLiveMetricsTimestamps[transactionID] = lastTimestamp
+    }
+    exports.removeLastLiveMetricsTimestamp = function(transactionID){
+        delete lastLiveMetricsTimestamps[transactionID]
+    }
+    exports.getLastLiveMetricsTimestamp = function(transactionID){
+        return lastLiveMetricsTimestamps[transactionID]
+    }
+    exports.lengthLastLiveMetricsTimestamps = function(){
+        return Object.keys(lastLiveMetricsTimestamps).length
+    }
+
+
+    //USER IDS 
+    //Array with all the user ids
+    // exports.getUserIDs = function () {
+    //     return userIDs
+    // }
+    // exports.addUserID = function (userID) {
+    //     userIDs.push(userID)
+    // }
+    // exports.removeUserID = function (userID) {
+    //     const userIDIndex = userIDs.indexOf(userID)
+    //     userIDs.splice(userIDIndex)
+    // }
 
     //CALLBACKS
     //get callback with some type of id
