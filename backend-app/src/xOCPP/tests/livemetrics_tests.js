@@ -25,6 +25,13 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                 }
                     
             })
+
+            ws.on('close', function disconnection(){
+                setTimeout(function(){
+                    v.removeUserID(c.USER_ID)
+                    console.log("(TEST) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
+                }, 1000)
+            })
             
         } catch (error) {
             console.log(error)

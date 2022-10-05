@@ -6,7 +6,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
     exports.connectAsChargerSocket = function (chargerId, callback) {
         try {
             console.log('\n========= CHARGER MOCK CONNECTING... ==========\n')
-            const ws = new WebSocket("ws://localhost:1337/charger/123abc")  
+            const ws = new WebSocket("ws://localhost:1337/charger/abc113")  
 
             ws.on('open', function open() {
                 v.addConnectedChargerSockets(chargerId, ws)
@@ -178,7 +178,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
     exports.testRemoteStop = function (chargerID) {
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
-        ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
+        ocppInterface.remoteStopTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
                 console.log("\nError: "+error)
             } else {

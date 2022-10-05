@@ -107,8 +107,8 @@ module.exports = function({}){
             LIVEMETRICS_TOPIC_PREFIX: '/metrics/',
 
             //TEST DATA
-            CHARGER_ID: 100001,
-            USER_ID: "hej-123",
+            CHARGER_ID: 100002,
+            USER_ID: "1",
             TRANSACTION_ID: 1,
         }
 

@@ -94,6 +94,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     error: "userID not OK"
                 }]))
                 console.log("Meter values error sent to charger with ID " + chargerID)
+                console.log('userID not OK (userID: ' + userID + ')')
         }
         
     }
@@ -119,6 +120,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.STOP_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
                     { idTagInfo: 1 }]))
+
+                    const transactionID = v.getTransactionID(chargerID)
+                    const userID = v.getUserIDWithTransactionID(transactionID)
+
+                    if(v.isInUserIDs(userID)){
+                        v.removeUserID(userID)
+                    }
                 }
             })
 
@@ -150,7 +158,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     payload = request[c.PAYLOAD_INDEX]
                     callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
-                    transactionID = v.getTransactionID(chargerID)
+                    const transactionID = v.getTransactionID(chargerID)
 
                     databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
                         if(error.length > 0){
