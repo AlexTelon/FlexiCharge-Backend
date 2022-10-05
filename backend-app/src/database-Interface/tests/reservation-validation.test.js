@@ -1,6 +1,5 @@
 const reservationValidation = require('../validation/reservationValidation')({})
 const {describe, expect, test} = require('@jest/globals')
-const { start } = require('repl')
 
 const startTime = Date.now() + 5000
 const endTime = startTime + 10000
