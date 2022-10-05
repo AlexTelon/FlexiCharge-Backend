@@ -28,7 +28,6 @@ module.exports = function({}) {
             validationErrors.push("invalidEndValue")
         }
         if(end < start){
-            console.log("går in här")
             validationErrors.push("startGreaterThenEnd")
         }
 
