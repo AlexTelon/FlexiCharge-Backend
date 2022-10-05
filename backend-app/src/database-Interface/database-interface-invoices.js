@@ -1,6 +1,7 @@
 const utils = require("./utils/invoices");
 const { BadRequestError, NotFoundError } = require("./error/error-types");
 const mockData = require("./mock/invoices");
+const auth = require("./auth");
 
 module.exports = function ({ invoicesValidation }) {
   const exports = {};
@@ -16,13 +17,16 @@ module.exports = function ({ invoicesValidation }) {
       throw new BadRequestError(validationErrors);
   };
 
-  exports.getInvoiceByID = (invoiceID, userData) => {
+  exports.getInvoiceByID = (invoiceID) => {
     const validationErrors =
       invoicesValidation.getInvoiceIDValidation(invoiceID);
 
     if (validationErrors.length > 0)
       throw new BadRequestError(validationErrors);
 
+    /**
+     * Fetch invoice file from AWS S3 instead of generating a new one, when database and AWS S3 is up
+     */
     const invoice = utils.generateMonthlyInvoicePDF(
       mockData.user,
       mockData.chargeSessions
@@ -33,6 +37,8 @@ module.exports = function ({ invoicesValidation }) {
   };
 
   exports.getAllInvoices = (userData, filterOptions = {}) => {
+    auth.checkIfAdmin(userData);
+
     const { status, date } = filterOptions;
 
     const validationErrors = [
@@ -47,6 +53,8 @@ module.exports = function ({ invoicesValidation }) {
   };
 
   exports.getAllInvoicesByUserID = (userID, userData, filterOptions = {}) => {
+    auth.checkIfAdminOrResourceOwnerByUserID(userData, userID);
+
     const { status } = filterOptions;
 
     const validationErrors = [

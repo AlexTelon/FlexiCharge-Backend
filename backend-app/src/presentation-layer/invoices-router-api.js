@@ -9,7 +9,7 @@ module.exports = function ({databaseInterfaceInvoices}) {
      * 
      * Not implemented!!
      */
-    router.post('/', function (req, res) {
+    router.post('/', checkJwt, function (req, res) {
         const { userID, dateStart, dateEnd } = req.body
         
         res.status(201).json({
@@ -23,7 +23,7 @@ module.exports = function ({databaseInterfaceInvoices}) {
      * Get a list of invoices for all users.
      * Filter options: date & status 
      */
-    router.get('/users', (req, res) => {
+    router.get('/users', checkJwt, (req, res) => {
         const invoices = databaseInterfaceInvoices.getAllInvoices(req.user, req.query)
         res.status(200).json(invoices)
     })
@@ -32,7 +32,7 @@ module.exports = function ({databaseInterfaceInvoices}) {
      * Get a list of invoices for a specific user.
      * Filter options: status
      */
-    router.get('/users/:userID', function (req, res) {
+    router.get('/users/:userID', checkJwt, function (req, res) {
         const { userID } = req.params
         
         const invoices = databaseInterfaceInvoices.getAllInvoicesByUserID(userID, req.user, req.query)
@@ -45,7 +45,7 @@ module.exports = function ({databaseInterfaceInvoices}) {
     router.get('/:invoiceID', (req, res) => {
         const { invoiceID } = req.params
 
-        const invoiceFile = databaseInterfaceInvoices.getInvoiceByID(invoiceID, req.user)
+        const invoiceFile = databaseInterfaceInvoices.getInvoiceByID(invoiceID)
         invoiceFile.pipe(res)
     })
 
