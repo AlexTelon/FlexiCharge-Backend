@@ -6,6 +6,9 @@ services:
     ports: 
       - 8080:8080
       - 1337:1337
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     volumes:
       - ./backend-app/src:/backend-app/src
     env_file: ./backend-app/.env
