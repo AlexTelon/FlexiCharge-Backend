@@ -15,6 +15,7 @@ container.register({
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
     databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
+    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
@@ -31,6 +32,7 @@ container.register({
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),
     reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
+    invoicesRouter: awilix.asFunction(require('./presentation-layer/invoices-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
 
     //ocpp

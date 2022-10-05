@@ -11,6 +11,8 @@ const {error} = validationSchema
 if (error) throw new Error(error);
 
 module.exports = {
+  USE_LOCAL_DATABASE: process.env.USE_LOCAL_DATABASE,
+
   PORT: !parseInt(process.env.PORT) ? 8080 : process.env.PORT,
 
   AWS_REGION: process.env.AWS_REGION,
@@ -26,4 +28,5 @@ module.exports = {
   RUN_OCPP_TEST: !parseInt(process.env.RUN_OCPP_TEST) ? 0 : process.env.RUN_OCPP_TEST,
   LIVEMETRICS_DB_UPDATE_INTERVAL: !parseInt(process.env.LIVEMETRICS_DB_UPDATE_INTERVAL) ? 30000 : process.env.LIVEMETRICS_DB_UPDATE_INTERVAL,
   
+  BYPASS_KLARNA: !parseInt(process.env.BYPASS_KLARNA) ? 0 : process.env.BYPASS_KLARNA
 }
