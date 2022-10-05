@@ -11,12 +11,16 @@ jobs:
   Start-Backend-App:
 
     runs-on: ubuntu-latest
+    #Environment used to access secrets
     environment: workflow test
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout Branch
       uses: actions/checkout@v3
     
+    # Creates a .env file with the variables succeeding envkey_
+    # i.e PORT=8080
+    # in the directory backend-app/
     - name: Create .env file
       
       uses: SpicyPizza/create-envfile@v1.3.0
@@ -33,10 +37,13 @@ jobs:
         envkey_ADMIN_POOL_SECRET: ${{ secrets.ADMIN_POOL_SECRET }}
         directory: backend-app/
 
+    # Run the backend app
+    # & is used to signal that this task will keep running, as to not get stuck on this step
     - name: launch docker container
       run: docker-compose up &
       
   Run-Backend-Tests:
+    # Runs sequentially to starting the back-end app
     needs: Start-Backend-App
     runs-on: ubuntu-latest
     steps:
