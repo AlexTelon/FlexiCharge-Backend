@@ -1,0 +1,62 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  Start-Backend-App:
+
+    runs-on: ubuntu-latest
+    environment: workflow test
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout Branch
+      uses: actions/checkout@v3
+    
+    - name: Create .env file
+      
+      uses: SpicyPizza/create-envfile@v1.3.0
+      with:
+        envkey_PORT: 8080
+        envkey_RUN_OCPP_TEST: 0
+        envkey_USE_LOCAL_DATABASE: 1
+        envkey_AWS_REGION: ${{ secrets.AWS_REGION }}
+        envkey_USER_POOL: ${{ secrets.USER_POOL }}
+        envkey_USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
+        envkey_USER_POOL_SECRET: ${{ secrets.USER_POOL_SECRET }}
+        envkey_ADMIN_POOL: ${{ secrets.ADMIN_POOL }}
+        envkey_ADMIN_POOL_ID: ${{ secrets.ADMIN_POOL_ID }}
+        envkey_ADMIN_POOL_SECRET: ${{ secrets.ADMIN_POOL_SECRET }}
+        directory: backend-app/
+
+    - name: launch docker container
+      run: docker-compose up &
+      
+  Run-Backend-Tests:
+    needs: Start-Backend-App
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
+    
+    - name: Execute tests
+    
+    # Runs a set of commands using the runners shell
+      run: |
+        export PYTHONPATH=.
+        pip install -r ./test/requirements.txt
+      
+    - name: Run PyTest
+      run: |
+        python -m pytest ./test/backend_tests --junit-xml=report.xml
+      
+    - name: Publish test result
+      uses: mikepenz/action-junit-report@v3
+      if: always() # always run even if the previous step fails
+      with:
+        report_paths: '**/*.xml'
+        
