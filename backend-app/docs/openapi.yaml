@@ -581,7 +581,90 @@ paths:
             type: integer
           required: true
           description: Numeric ID of the invoice to get.
-
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/pdf: {}
+        '404':
+          description: Invoice not found
+          content:
+            application/json: {}
+  /invoices/users:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Invoices
+      summary: Get all users invoices
+      description: Admin route to fetch all users invoices
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+          required: false
+          description: Filter invoices after status; paid, unpaid or all
+        - in: query
+          name: date
+          schema:
+            type: string
+          required: false
+          description: Filter invoices after date, format YYYY-MM
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: Bad request
+          content:
+            application/json: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+  /invoices/users/{userID}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Invoices
+      summary: Get all invoices for a specific user
+      description: Admin or the user to whom the invoices belongs to are authorized
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: status
+          schema:
+            type: string
+          required: false
+          description: Filter invoices after status; paid, unpaid or all
+        - in: query
+          name: date
+          schema:
+            type: string
+          required: false
+          description: Filter invoices after date, format YYYY-MM
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: Bad request
+          content:
+            application/json: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        
+            
 components:
   schemas:
     Charger:
