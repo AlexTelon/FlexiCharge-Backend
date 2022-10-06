@@ -1,7 +1,4 @@
-const { Console } = require("console")
-const { Socket } = require("dgram")
-
-module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func, test }) {
+module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func }) {
     const c = constants.get()
     
     exports.handleClient = function (clientSocket, chargerSerial) {
@@ -34,6 +31,19 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
                 chargerMessageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
             } else {
                 messageCache = message
+            }
+        })
+
+        clientSocket.on('close', function disconnection() {
+            if (v.isInChargerSerials(chargerSerial)) {
+
+                const chargerID = v.getChargerID(chargerSerial)
+
+                v.removeConnectedChargerSockets(chargerID)
+                v.removeChargerSerials(chargerSerial)
+                v.removeChargerIDs(chargerSerial)
+                console.log("Disconnected from charger with ID: " + chargerID)
+                console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
             }
         })
     }

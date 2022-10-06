@@ -100,9 +100,16 @@ module.exports = function({}){
             WEAK_SIGNAL: "WeakSignal",
             INVALID_UNIQUE_ID: "InvalidUniqueID",
             RESPONSE_STATUS_REJECTED: "ResponseStatusRejected",
+            INVALID_USER_ID: "InvalidUserID",
 
+            
+            /** LIVE STREAM METRICS CONSTANTS */
+            LIVEMETRICS_TOPIC_PREFIX: '/metrics/',
 
-
+            //TEST DATA
+            CHARGER_ID: 100002,
+            USER_ID: "1",
+            TRANSACTION_ID: 1,
         }
 
         return constants

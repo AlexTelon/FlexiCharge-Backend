@@ -2,41 +2,11 @@ const WebSocket = require('ws')
 
 module.exports = function ({ ocppInterface, constants, v, func }) {
     const c = constants.get()  
-
-    exports.runTests = function(){ /** PLEASE NOTE THAT THIS ONLY WORKS WITH LOCAL DATABASE AND THE CORRECT TEST DATA IN THE LOCAL DATABASE */
-        console.log('\n========= RUNNING TESTS ==========\n')
-        const chargerId = 100001
-        connectAsChargerSocket(chargerId, function(ws){
-            setTimeout(function(){
-                testBootNotification(ws)
-            }, 2000)
-            
-            setTimeout(function(){
-                testRemoteStart(chargerId)
-            }, 4000)
-            
-            setTimeout(function(){
-                testRemoteStop(chargerId)
-            }, 6000)
-            
-            setTimeout(function(){
-                testReserveNow(chargerId)
-            }, 8000)
-
-            setTimeout(function(){
-                console.log('\n========= CHARGER MOCK DISCONNECTING... ==========\n')
-                ws.terminate()
-            }, 10000)
-            
-            
-        })
-        
-    }
     
-    connectAsChargerSocket = function (chargerId, callback) {
+    exports.connectAsChargerSocket = function (chargerId, callback) {
         try {
             console.log('\n========= CHARGER MOCK CONNECTING... ==========\n')
-            const ws = new WebSocket("ws://localhost:1337/123abc")  
+            const ws = new WebSocket("ws://localhost:1337/charger/abc113")  
 
             ws.on('open', function open() {
                 v.addConnectedChargerSockets(chargerId, ws)
@@ -172,7 +142,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         }
     }
 
-    testBootNotification = function (ws) {
+    exports.testBootNotification = function (ws) {
         console.log("\n========= TESTING BOOT NOTIFICATION... ==========\n")
         
         const jsonBootNotification = func.buildJSONMessage([ 
@@ -195,7 +165,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         ws.send(jsonBootNotification)
     }
     
-    testRemoteStart = function (chargerID) {
+    exports.testRemoteStart = function (chargerID) {
         console.log("\n========= TESTING REMOTE START... ==========\n")
         ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
@@ -206,18 +176,18 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         })
     }
 
-    testRemoteStop = function (chargerID) {
+    exports.testRemoteStop = function (chargerID) {
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
-        ocppInterface.remoteStopTransaction(chargerID, 57, function (error, response) {
+        ocppInterface.remoteStopTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
                 console.log("\nError: "+error)
             } else {
-                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp, +", meterStop: "+response.meterStop)
+                console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp +", meterStop: "+response.meterStop)
             }
         })
     }
 
-    testReserveNow = function (chargerID) {
+    exports.testReserveNow = function (chargerID) {
         console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
             if (error != null) {
