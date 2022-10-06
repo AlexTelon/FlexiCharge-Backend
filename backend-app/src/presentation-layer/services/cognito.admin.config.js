@@ -225,16 +225,8 @@ class AdminCognitoService {
         let params = {
             Limit: limit,
             UserPoolId: this.userPool,
-            GroupName: 'Users'
-        }
-
-        if (paginationToken !== undefined) {
-            params = {
-                NextToken: paginationToken,
-                Limit: limit,
-                UserPoolId: this.userPool,
-                GroupName: 'Users'
-            }
+            GroupName: 'Users',
+            NextToken: paginationToken
         }
 
         try {
@@ -277,16 +269,8 @@ class AdminCognitoService {
         let params = {
             Limit: limit,
             UserPoolId: this.userPool,
-            GroupName: 'Admins'
-        }
-
-        if (paginationToken !== undefined) {
-            params = {
-                NextToken: paginationToken,
-                Limit: limit,
-                UserPoolId: this.userPool,
-                GroupName: 'Admins'
-            }
+            GroupName: 'Admins',
+            NextToken: paginationToken
         }
 
         try {
