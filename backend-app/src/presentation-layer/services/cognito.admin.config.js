@@ -273,7 +273,6 @@ class AdminCognitoService {
             UserPoolId: this.userPool,
             GroupName: 'Admins'
         };
-        
         if(paginationToken !== undefined){
             params.NextToken = paginationToken;
         };
