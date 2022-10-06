@@ -4,12 +4,47 @@
  * 
  * userID: uuid / sub from AWS Cognito
  * 
- * invoiceID: base64url strinig, encoded in format	userID:YYYY:MM
- * for example: 
+ * invoiceID: base64url strinig, encoded in format	userID:YYYY:MM OR uuid string
+ * base64url example: 
  * 	Plain Text: 796b41e6-a8df-48bb-8d38-f5274b9c3cc5:2022:04
  * 	base64url: Nzk2YjQxZTYtYThkZi00OGJiLThkMzgtZjUyNzRiOWMzY2M1OjIwMjI6MDQ
  */
+ 
 const allInvoices = [
+  {
+    type: ["Users", "Admins"],
+    userID: "1bef37f8-982a-43e9-8d6c-49e22e767a24",
+    email: "spma20pm@student.ju.se",
+    invoices: [
+      {
+        invoiceID:
+          "NDc5ZmM1NDItNDVmOC00MGEyLTk5ZTUtZjEwNGM0MjE2OTRkOjIwMjI6MDE",
+        date: "2022-01",
+        status: "Paid",
+        invoiceURL:
+          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        totalSum: 100,
+      },
+      {
+        invoiceID:
+          "NDc5ZmM1NDItNDVmOC00MGEyLTk5ZTUtZjEwNGM0MjE2OTRkOjIwMjI6MDI",
+        date: "2022-02",
+        status: "Unpaid",
+        invoiceURL:
+          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        totalSum: 200,
+      },
+      {
+        invoiceID:
+          "NDc5ZmM1NDItNDVmOC00MGEyLTk5ZTUtZjEwNGM0MjE2OTRkOjIwMjI6MDM",
+        date: "2022-03",
+        status: "Paid",
+        invoiceURL:
+          "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        totalSum: 300,
+      },
+    ],
+  },
   {
     type: ["Users", "Admins"],
     userID: "479fc542-45f8-40a2-99e5-f104c421694d",
