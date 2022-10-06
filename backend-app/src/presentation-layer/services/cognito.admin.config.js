@@ -230,7 +230,7 @@ class AdminCognitoService {
 
         if (paginationToken !== undefined) {
             params = {
-                PaginationToken: paginationToken,
+                NextToken: paginationToken,
                 Limit: limit,
                 UserPoolId: this.userPool,
                 GroupName: 'Users'
@@ -282,7 +282,7 @@ class AdminCognitoService {
 
         if (paginationToken !== undefined) {
             params = {
-                PaginationToken: paginationToken,
+                NextToken: paginationToken,
                 Limit: limit,
                 UserPoolId: this.userPool,
                 GroupName: 'Admins'
