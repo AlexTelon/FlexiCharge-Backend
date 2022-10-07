@@ -1,44 +1,62 @@
-module.exports = function({ newDataAccessLayerChargeSessions, newDataAccessLayerTransactions, newDatabaseInterfaceElectricityTariffs, dbErrorCheck, newChargeSessionValidation }) {
+module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLayerTransactions, newDatabaseInterfaceElectricityTariffs, dbErrorCheck, newChargeSessionValidation, ocppInterface }) {
 
     const exports = {}
-    
-    exports.addChargeSession = function(chargerID, userID, payNow, paymentDueDate, paymentMethod, database, callback) {
+
+    exports.startChargeSession = function (chargerID, userID, payNow, paymentDueDate, paymentMethod, database, callback) {
         const validationErrors = newChargeSessionValidation.getAddChargeSessionValidation(chargerID, userID)
-        if(validationErrors.length > 0){
+        if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
             startTime = (Date.now() / 1000 | 0)
-            newDataAccessLayerChargeSessions.addChargeSession(chargerID, userID, startTime, database, function(error, chargeSessionID) {
+            newDataAccessLayerChargeSessions.addChargeSession(chargerID, userID, startTime, database, function (error, chargeSession) {
                 if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function(errorCode) {
+                    dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
+                    // When chargeSession is added, it's started. Which in turn:
+                    // 1. Creates a new transaction
+                    // 2. Contacts OCPP interface and starts the remoteTransaction
                     // Not tested
                     totalPrice = null
-                    newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function(error, transactionID)  {
-                        if(Object.keys(error).length > 0){
-                            dbErrorCheck.checkError(error, function(errorCode) {
+                    newDataAccessLayerTransactions.addTransaction(chargeSession.chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
+                        if (Object.keys(error).length > 0) {
+                            dbErrorCheck.checkError(error, function (errorCode) {
                                 callback(errorCode, [])
                             })
                         } else {
-                            console.log(transactionID)
-                            callback([], chargeSessionID)   
+                            ocppInterface.remoteStartTransaction(chargeSession.chargerID, transaction.transactionID, function (error, returnObject) {
+                                if (error != null || returnObject.status == "Rejected") {
+                                    callback(["couldNotStartOCPPTransaction"], [])
+                                } else {
+                                    newDataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, null, (error, updatedChargeSession) => {
+                                        if (Object.keys(error).length > 0) {
+                                            dbErrorCheck.checkError(error, function (errorCode) {
+                                                callback(errorCode, [])
+                                            })
+                                        } else {
+                                            callback([], updatedChargeSession)
+                                        }
+                                    })
+                                }
+                            })
                         }
                     })
+
+
                 }
             })
         }
     }
 
-    exports.getChargeSession = function(chargeSessionID, database, callback) {
+    exports.getChargeSession = function (chargeSessionID, database, callback) {
         const validationErrors = newChargeSessionValidation.getChargeSessionValidation(chargeSessionID)
-        if(validationErrors.length > 0){
+        if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function(error, chargeSession) {
+            newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function (error, chargeSession) {
                 if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function(errorCode) {
+                    dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
@@ -52,60 +70,79 @@ module.exports = function({ newDataAccessLayerChargeSessions, newDataAccessLayer
         }
     }
 
-    exports.getChargeSessions = function(chargerID, callback) {
+    exports.getChargeSessions = function (chargerID, callback) {
         newDataAccessLayerChargeSessions.getChargeSession(chargerID, callback)
     }
 
-    exports.updateChargingState = function(chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
+    exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kwhTransfered, database, callback) {
         const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kwhTransfered)
-        if(validationErrors.length > 0){
+        if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
             newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, database, (error, updatedChargingSession) => {
                 if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function(errorCode) {
+                    dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
                     })
                 } else {
                     callback([], updatedChargingSession)
                 }
-            }) 
+            })
         }
     }
 
-    exports.endChargeSession = function(chargeSessionID, database, callback){
+    exports.endChargeSession = function (chargeSessionID, database, callback) {
         //TODO: VALIDATION
         endTime = (Date.now() / 1000 | 0)
-        newDataAccessLayerChargeSessions.updateChargingEndTime(chargeSessionID, endTime, database, function(error, chargeSession) {
-            if(Object.keys(error).length > 0){
-                dbErrorCheck.checkError(error, function(errorCode) {
+        newDataAccessLayerChargeSessions.updateChargingEndTime(chargeSessionID, endTime, database, function (error, chargeSession) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSession.chargeSessionID, null, function(error, transaction){
-                    if(Object.keys(error).length > 0){
-                        dbErrorCheck.checkError(error, function(errorCode){
+                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, null, function (error, transaction) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
                         })
                     } else {
-                        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function(error, electricityTariff){
-                            if(Object.keys(error).length > 0){
-                                dbErrorCheck.checkError(error, function(errorCode){
-                                    callback(errorCode, [])
-                                })
+                        ocppInterface.remoteStopTransaction(chargeSession.chargerID, transaction.transactionID, function (error, returnObject) {
+                            if (error != null || returnObject.status == "Rejected") {
+                                callback(["couldNotStopOCPPTransaction"])
                             } else {
-                                //Extend to check if the charge session has gone longer than an hour and then both hours have tariffs and a average might be good?
-                                const price = chargeSession.kwhTransfered * electricityTariff.price
-                                newDataAccessLayerTransactions.updateTotalPrice(transaction.transactionID, price, function(error, updatedTransaction) {
-                                    if(Object.keys(error).length > 0){
-                                        dbErrorCheck.checkError(error, function(errorCode){
-                                            callback(errorCode, [])
-                                        })
-                                    } else {
-                                        chargeSession.totalPrice = price
-                                        callback([], chargeSession)
-                                    }
-                                })
+                                const kwhTransfered = (returnObject.meterStop - chargeSession.meterStart) / 1000
+
+                                if (kwhTransfered >= 0) {
+                                    exports.updateChargingState(chargeSessionID, kwhTransfered, chargeSession.currentChargePercentage, function (error, updatedChargingSession) {
+                                        if (Object.keys(error).length > 0) {
+                                            dbErrorCheck.checkError(error, function (errorCode) {
+                                                callback(errorCode, [])
+                                            })
+                                        } else {
+                                            newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function (error, electricityTariff) {
+                                                if (Object.keys(error).length > 0) {
+                                                    dbErrorCheck.checkError(error, function (errorCode) {
+                                                        callback(errorCode, [])
+                                                    })
+                                                } else {
+                                                    //Extend to check if the charge session has gone longer than an hour and then both hours have tariffs and a average might be good?
+                                                    const totalPrice = chargeSession.kwhTransfered * electricityTariff.price
+                                                    newDataAccessLayerTransactions.updateTotalPrice(transaction.transactionID, totalPrice, function (error, updatedTransaction) {
+                                                        if (Object.keys(error).length > 0) {
+                                                            dbErrorCheck.checkError(error, function (errorCode) {
+                                                                callback(errorCode, [])
+                                                            })
+                                                        } else {
+                                                            callback([], updatedChargingSession)
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    callback(["couldNotStopOCPPTransaction"], [])
+                                }
                             }
                         })
                     }
@@ -114,27 +151,27 @@ module.exports = function({ newDataAccessLayerChargeSessions, newDataAccessLayer
         })
     }
 
-    exports.calculateTotalChargePrice = function(chargeSessionID, database, callback){
+    exports.calculateTotalChargePrice = function (chargeSessionID, database, callback) {
         // GL & HF
         // Step 1: Get kwhTransfered, startTime and endTime
         // Step 2: Get Electricity Tariff for the hours
         // Step 3: Return total Price
         // TODO: VALIDATION
-        newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function(error, chargeSession){
-            if(Object.keys(error).length > 0){
-                dbErrorCheck.checkError(error, function(errorCode) {
+        newDataAccessLayerChargeSessions.getChargeSession(chargeSessionID, database, function (error, chargeSession) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
             } else {
-                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSession.chargeSessionID, null, function(error, transaction){
-                    if(Object.keys(error).length > 0){
-                        dbErrorCheck.checkError(error, function(errorCode){
+                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSession.chargeSessionID, null, function (error, transaction) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
                         })
                     } else {
-                        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function(error, electricityTariff){
-                            if(Object.keys(error).length > 0){
-                                dbErrorCheck.checkError(error, function(errorCode){
+                        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function (error, electricityTariff) {
+                            if (Object.keys(error).length > 0) {
+                                dbErrorCheck.checkError(error, function (errorCode) {
                                     callback(errorCode, [])
                                 })
                             } else {
@@ -153,24 +190,24 @@ module.exports = function({ newDataAccessLayerChargeSessions, newDataAccessLayer
         })
     }
 
-    exports.updateMeterStart = function(chargeSessionID, meterStart, database, callback) {
+    exports.updateMeterStart = function (chargeSessionID, meterStart, database, callback) {
         // TODO Validation for updateMeterStart
         // const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kwhTransfered)
         // if(validationErrors.length > 0){
         //     callback(validationErrors, [])
         // } else {
-            
+
         // }
 
         newDataAccessLayerChargeSessions.updateMeterStart(chargeSessionID, meterStart, database, (error, updatedChargingSession) => {
             if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function(errorCode) {
+                dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
             } else {
                 callback([], updatedChargingSession)
             }
-        }) 
+        })
     }
 
 

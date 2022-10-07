@@ -4,17 +4,17 @@ module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, callback) {
+    exports.getNewKlarnaPaymentSession = async function(totalPrice, callback) {
 
-        if (chargePoint.klarnaReservationAmount > 0) {
+        if (totalPrice > 0) {
             const data = new TextEncoder().encode(
                 JSON.stringify({
                     "purchase_country": "SE",
                     "purchase_currency": "SEK",
                     "locale": "sv-SE",
-                    "order_amount": chargePoint.klarnaReservationAmount,
+                    "order_amount": totalPrice,
                     "order_tax_amount": 0,
-                    "order_lines": getOrderLines(chargePoint.klarnaReservationAmount)
+                    "order_lines": getOrderLines(totalPrice)
                 })
             )
             console.log(Buffer.from(data).toString());
@@ -63,15 +63,15 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
+    exports.createKlarnaOrder = async function(totalPrice, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
                 "purchase_currency": "SEK",
                 "status": "CHECKOUT_INCOMPLETE",
-                "order_amount": klarnaReservationAmount,
+                "order_amount": totalPrice,
                 "order_tax_amount": 0,
-                "order_lines": getOrderLines(klarnaReservationAmount)
+                "order_lines": getOrderLines(totalPrice)
             })
         )
 
@@ -121,18 +121,13 @@ module.exports = function({}) {
         request.end()
     }
 
-
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, klarnaReservationAmount, callback) {
+    exports.finalizeKlarnaOrder = async function(totalPrice, order_id, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
-        const order_lines = getOrderLines(klarnaReservationAmount)
+        const order_lines = getOrderLines(newOrderAmount)
 
-        order_lines[0].total_amount = newOrderAmount;
-        order_lines[0].unit_price = newOrderAmount;
-
-
-        updateOrder(transaction, order_lines, function(error, responseData) {
+        updateOrder(totalPrice, order_id, order_lines, function(error, responseData) {
             if (error.length == 0) {
-                captureOrder(transaction, function(error) {
+                captureOrder(totalPrice, order_id, function(error) {
                     if (error.length == 0) {
                         callback([], responseData) //capture does not response with anything so we callback the response data from the update.
                     } else {
@@ -145,8 +140,7 @@ module.exports = function({}) {
         })
     }
 
-
-    function updateOrder(transaction, order_lines, callback) {
+    function updateOrder(totalPrice, order_id, order_lines, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -154,14 +148,14 @@ module.exports = function({}) {
                 "locale": "sv-SE",
                 "order_tax_amount": 0,
                 "order_lines": order_lines,
-                "order_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
+                "order_amount": totalPrice
             })
         )
 
         const options = {
             hostname: KLARNA_URI,
             port: 443,
-            path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/authorization",
+            path: "/ordermanagement/v1/orders/" + order_id + "/authorization",
             method: "PATCH",
             headers: {
                 "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
@@ -201,17 +195,17 @@ module.exports = function({}) {
         request.end()
     }
 
-    function captureOrder(transaction, callback) {
+    function captureOrder(totalPrice, order_id, callback) {
         const captureData = new TextEncoder().encode(
             JSON.stringify({
-                "captured_amount": Math.round(transaction.pricePerKwh * transaction.kwhTransfered)
+                "captured_amount": totalPrice
             })
         )
 
         const captureOptions = {
             hostname: KLARNA_URI,
             port: 443,
-            path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/captures",
+            path: "/ordermanagement/v1/orders/" + order_id + "/captures",
             method: "POST",
             headers: {
                 "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
@@ -232,7 +226,6 @@ module.exports = function({}) {
                         break;
                     default:
                         callback(["klarnaError"], [])
-
                 }
             }
         })
@@ -246,14 +239,14 @@ module.exports = function({}) {
         request.end()
     }
 
-    function getOrderLines(klarnaReservationAmount) {
+    function getOrderLines(totalPrice) {
         const order_lines = [{
             "type": "digital",
             "name": "Electrical Vehicle Charging",
             "quantity": 1,
-            "unit_price": klarnaReservationAmount,
+            "unit_price": totalPrice,
             "tax_rate": 0,
-            "total_amount": klarnaReservationAmount,
+            "total_amount": totalPrice,
             "total_discount_amount": 0,
             "total_tax_amount": 0
         }]

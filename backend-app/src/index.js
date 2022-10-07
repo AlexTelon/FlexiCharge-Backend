@@ -17,7 +17,8 @@ container.register({
     newDataAccessLayerTransactions: awilix.asFunction(require('./data-access-layer/new-transactions-repository')),
     newDataAccessLayerChargePoints: awilix.asFunction(require('./data-access-layer/new-charge-points-repository')),
     newDataAccessLayerElectricityTariffs: awilix.asFunction(require('./data-access-layer/new-electricity-tariff-repository')),
-    klarnaPayments: awilix.asFunction(require('./data-access-layer/klarna-payments-repository')),
+    newDataAccessLayerKlarnaPayments: awilix.asFunction(require('./data-access-layer/new-klarna-payments-repository')),
+    newDataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/payment-methods/new-klarna-repository')),
     //Business logic layers
     databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
@@ -30,7 +31,7 @@ container.register({
     newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
     newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
-    databaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
+    newDatabaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     // Business logic tests
     interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),

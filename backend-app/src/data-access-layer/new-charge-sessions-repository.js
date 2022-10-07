@@ -16,7 +16,7 @@ module.exports = function({ databaseInit }) {
         }
 
         database.create(chargeSession)
-            .then(chargeSession => callback([], chargeSession.chargeSessionID))
+            .then(chargeSession => callback([], chargeSession))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
@@ -61,7 +61,7 @@ module.exports = function({ databaseInit }) {
             raw: true,
             returning: true
         }).then(updatedChargeSession => {
-            callback([], updatedChargeSession[1][0])
+            callback([], updatedChargeSession)
         }).catch(e => {
             console.log(e)
             callback(e, [])
@@ -80,7 +80,7 @@ module.exports = function({ databaseInit }) {
             raw: true,
             returning: true
         }).then(updatedChargeSession => {
-            callback([], updatedChargeSession[1][0])
+            callback([], updatedChargeSession)
         }).catch(e => {
             console.log(e)
             callback(e, [])
@@ -100,7 +100,7 @@ module.exports = function({ databaseInit }) {
             raw: true,
             returning : true
         }).then(updatedChargeSession => {
-            callback([], updatedChargeSession[1][0])
+            callback([], updatedChargeSession)
         }).catch(e => {
             console.log(e)
             callback(e, [])
@@ -119,7 +119,7 @@ module.exports = function({ databaseInit }) {
             raw: true,
             returning : true
         }).then(updatedChargeSession => {
-            callback([], updatedChargeSession[1])
+            callback([], updatedChargeSession)
         }).catch(e => {
             console.log(e)
             callback(e, [])

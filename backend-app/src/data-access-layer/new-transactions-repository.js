@@ -2,7 +2,11 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+    exports.addTransaction = function(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         const date = (Date.now() / 1000 | 0)
         const transaction = {
             userID: userID,
@@ -15,14 +19,18 @@ module.exports = function({ databaseInit }) {
         }
 
         databaseInit.newTransactions.create(transaction)
-            .then(transaction => callback([], transaction.transactionID))
+            .then(transaction => callback([], transaction))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
 
-    exports.getTransaction = function(transactionID, callback) {
+    exports.getTransaction = function(transactionID, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.findOne({ where: { transactionID: transactionID }, raw: true })
             .then(transaction => callback([], transaction))
             .catch(e => {
@@ -31,7 +39,11 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getTransactionsForUser = function(userID, callback) {
+    exports.getTransactionsForUser = function(userID, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.findAll({ where: { userID: userID }, raw: true })
             .then(userTransactions => callback([], userTransactions))
             .catch(e => {
@@ -40,7 +52,11 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.updatePaymentMethod = function(transactionID, paymentMethod, callback) {
+    exports.updatePaymentMethod = function(transactionID, paymentMethod, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.update({
             paymentMethod: paymentMethod
         }, {
@@ -55,7 +71,11 @@ module.exports = function({ databaseInit }) {
         })
     }
 
-    exports.updateIsPayed = function(transactionID, isPayed, callback) {
+    exports.updateIsPayed = function(transactionID, isPayed, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.update({
             isPayed: isPayed
         }, {
@@ -71,7 +91,11 @@ module.exports = function({ databaseInit }) {
     }
 
 
-    exports.updatePayedDate = function(transactionID, payedDate, callback) {
+    exports.updatePayedDate = function(transactionID, payedDate, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.update({
             payedDate: payedDate
         }, {
@@ -86,7 +110,11 @@ module.exports = function({ databaseInit }) {
         })
     }
 
-    exports.updateTotalPrice = function(transactionID, totalPrice, callback) {
+    exports.updateTotalPrice = function(transactionID, totalPrice, database, callback) {
+        if(database == null){
+            database = databaseInit.newTransactions
+        }
+
         databaseInit.newTransactions.update({
             totalPrice: totalPrice
         }, {
