@@ -160,12 +160,12 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         }
     }
 
-    exports.checkChargerClientsMemoryLeak = function(callback){
+    exports.checkChargerClientsMemoryLeak = function(origin, callback){
         if(v.getLengthConnectedChargerSockets() || v.getLengthChargerSerials() || v.getLengthChargerIDs()){
             console.log("(MEMORY TEST FAILED) Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
-            callback(false, c.CHARGER_MEMORY_LEAK)
+            callback(false, c.CHARGER_MEMORY_LEAK + " : " + origin)
         } else {
-            callback(true, c.CHARGER_MEMORY_LEAK)
+            callback(true, c.CHARGER_MEMORY_LEAK + " : " + origin)
         }
     }
 

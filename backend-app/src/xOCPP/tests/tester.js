@@ -18,7 +18,7 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
                         handleTestResults(userMemorySucceeded, userMemory)
                     })
                     
-                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
+                    chargerTests.checkChargerClientsMemoryLeak("LiveMetricsTests", function(chargerMemorySucceeded, chargerMemory){
                         handleTestResults(chargerMemorySucceeded, chargerMemory)
                     })
 
@@ -51,7 +51,7 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
                                 ws.terminate() 
                                 
                                 setTimeout(function(){
-                                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
+                                    chargerTests.checkChargerClientsMemoryLeak("ChargerTests", function(chargerMemorySucceeded, chargerMemory){
                                         setTimeout(function(){
                                             handleTestResults(chargerMemorySucceeded, chargerMemory)
                                             callback(failedTests, successfulTests)
