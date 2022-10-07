@@ -34,13 +34,6 @@ container.register({
     newDatabaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
     databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
-    // Business logic tests
-    interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),
-    interfaceChargersTests: awilix.asFunction(require('./database-Interface/tests/database-interface-chargers.test')),
-    interfaceChargePointsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-points.test')),
-    interfaceElectricityTariffsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-electricity-tariffs.test')),
-    interfaceTransactionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-transactions.test')),
-    interfaceReservationsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-reservations.test')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
     //Validation

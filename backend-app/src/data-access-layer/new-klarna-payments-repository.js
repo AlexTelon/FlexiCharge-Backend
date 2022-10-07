@@ -2,12 +2,8 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-    exports.getKlarnaPaymentByTransactionID = function(database, transactionID) {
-        if (database == null) {
-            database = databaseInit.klarnaPayments
-        }
-
-        database.findOne({
+    exports.getKlarnaPaymentByTransactionID = function( transactionID) {
+        databaseInit.KlarnaPayments.findOne({
             where: {
                 transactionID : transactionID
             },
@@ -19,18 +15,14 @@ module.exports = function({ databaseInit }) {
         })
     }
 
-    exports.addKlarnaPayment = function(client_token, session_id, transactionID, database, callback) {
-        if (database == null) {
-            database = databaseInit.klarnaPayments
-        }
-
+    exports.addKlarnaPayment = function(client_token, session_id, transactionID , callback) {
         const klarnaPayment = {
             client_token: client_token,
             session_id: session_id,
             transactionID: transactionID
         }
 
-        database.create(klarnaPayment)
+        databaseInit.KlarnaPayments.create(klarnaPayment)
             .then(klarnaPayment => callback([], klarnaPayment))
             .catch(e => {
                 console.log(e)
@@ -38,16 +30,12 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.updateOrderID = function(transactionID, order_id, database, callback) {
-        if (database == null) {
-            database = databaseInit.klarnaPayments
-        }
-
+    exports.updateOrderID = function(transactionID, order_id , callback) {
         const klarnaPayment = {
             order_id: order_id
         }
 
-        database.update(klarnaPayment, {
+        databaseInit.KlarnaPayments.update(klarnaPayment, {
             where: {transactionID : transactionID},
             raw: true,
             returning : true

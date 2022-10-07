@@ -1,15 +1,11 @@
 const { Client } = require('pg')
 
-module.exports = function({ databaseInit }) {
+module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.getReservation = function(reservationID, database, callback) {
-        if (database == null) {
-            database = newDataAccessLayerReservations.getReservation
-        }
-
-        database.findOne({ where: { reservationID: reservationID }, raw: true })
+    exports.getReservation = function (reservationID, callback) {
+        databaseInit.newReservations.findOne({ where: { reservationID: reservationID }, raw: true })
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
@@ -17,12 +13,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationsForCharger = function(chargerID, database, callback) {
-        if (database == null) {
-            database = newDataAccessLayerReservations.getReservation
-        }
-
-        database.findAll({ where: { chargerID: chargerID }, raw: true })
+    exports.getReservationsForCharger = function (chargerID, callback) {
+        databaseInit.newReservations.findAll({ where: { chargerID: chargerID }, raw: true })
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
                 console.log(e)
@@ -30,12 +22,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationsForUser = function(userID, database, callback) {
-        if (database == null) {
-            database = newDataAccessLayerReservations.getReservation
-        }
-
-        database.findAll({ where: { userID: userID }, raw: true })
+    exports.getReservationsForUser = function (userID, callback) {
+        databaseInit.newReservations.findAll({ where: { userID: userID }, raw: true })
             .then(userReservation => callback([], userReservation))
             .catch(e => {
                 console.log(e)
@@ -43,18 +31,14 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addReservation = function(chargerID, userID, start, end, database, callback) {
-        if (database == null) {
-            database = newDataAccessLayerReservations.getReservation
-        }
-
+    exports.addReservation = function (chargerID, userID, start, end, callback) {
         const reservation = {
             chargerID: chargerID,
             userID: userID,
             start: start,
             end: end
         }
-        database.create(reservation)
+        databaseInit.newReservations.create(reservation)
             .then(reservation => callback([], reservation.reservationID))
             .catch(e => {
                 console.log(e)
@@ -63,15 +47,11 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.removeReservation = function(reservationID, database, callback) {
-        if (database == null) {
-            database = newDataAccessLayerReservations.getReservation
-        }
-
-        database.destroy({
-                where: { reservationID: reservationID },
-                raw: true
-            })
+    exports.removeReservation = function (reservationID, callback) {
+        databaseInit.newReservations.destroy({
+            where: { reservationID: reservationID },
+            raw: true
+        })
             .then(numberOfDeletedReservations => {
                 if (numberOfDeletedReservations == 0) {
                     callback([], false)

@@ -60,7 +60,7 @@ module.exports = function ({ newDataAccessLayerKlarna, newDataAccessLayerKlarnaP
                     callback(errorCode, [])
                 })
             } else {
-                newDataAccessLayerKlarnaPayments.getKlarnaPaymentByTransactionID(transactionID, function(error, klarnaPayment) {
+                newDataAccessLayerKlarnaPayments.getKlarnaPaymentByTransactionID(transactionID, function (error, klarnaPayment) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
@@ -82,7 +82,7 @@ module.exports = function ({ newDataAccessLayerKlarna, newDataAccessLayerKlarnaP
                             }
                         })
                     }
-                })                
+                })
             }
         })
     }

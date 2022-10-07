@@ -7,8 +7,7 @@ const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, invoicesRouter,
-    interfaceChargeSessionsTests, interfaceChargersTests, interfaceChargePointsTests, interfaceElectricityTariffsTests, interfaceTransactionsTests, interfaceReservationsTests }) { //authenticationRouter
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, invoicesRouter }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -28,13 +27,6 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
 
         next()
     })
-
-    //interfaceChargeSessionsTests.runTests()
-    interfaceElectricityTariffsTests.runTests()
-    interfaceChargersTests.runTests()
-    interfaceChargePointsTests.runTests()
-    // interfaceTransactionsTests.runTests()
-    interfaceReservationsTests.runTests()
 
     // TODO: Remove before production
     /*setTimeout(function(){
