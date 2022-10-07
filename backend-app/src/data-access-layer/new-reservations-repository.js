@@ -39,7 +39,7 @@ module.exports = function ({ databaseInit }) {
             end: end
         }
         databaseInit.newReservations.create(reservation)
-            .then(reservation => callback([], reservation.reservationID))
+            .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
                 callback(e, [])

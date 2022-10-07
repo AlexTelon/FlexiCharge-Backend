@@ -56,13 +56,13 @@ module.exports = function ({ databaseInit }) {
                 }
 
                 databaseInit.newChargers.create(charger)
-                    .then(createdCharger => callback([], createdCharger.chargerID))
+                    .then(createdCharger => callback([], createdCharger))
                     .catch(e => {
                         if (!e.errors === undefined) {
                             if (e.errors[0].message == "chargerID must be unique") {
                                 charger.chargerID = parseInt(e.errors[0].value) + 1;
                                 databaseInit.newChargers.create(charger)
-                                    .then(createdCharger => callback([], createdCharger.chargerID))
+                                    .then(createdCharger => callback([], createdCharger))
                                     .catch(e => {
                                         console.log(e)
                                         callback(["dbError"], [])

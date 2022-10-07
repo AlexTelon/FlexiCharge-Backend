@@ -83,8 +83,8 @@ module.exports = function ({ databaseInit }) {
             where: {
                 date: date
             }
-        }).then(callback([], []))
-            .catch(error => callback(error, []))
+        }).then(callback([], true))
+            .catch(error => callback(error, false))
     }
 
     return exports

@@ -29,7 +29,7 @@ module.exports = function({ databaseInit }) {
         }
 
         databaseInit.newChargePoints.create(chargePoint)
-            .then(chargePoint => callback([], chargePoint.chargePointID))
+            .then(chargePoint => callback([], chargePoint))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
