@@ -22,11 +22,11 @@ container.register({
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 
     //Validation
-    chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
+    chargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
     transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
-    chargePointValidation: awilix.asFunction(require("./database-Interface/validation/chargePointValidation")),
     invoicesValidation: awilix.asFunction(require('./database-Interface/validation/invoices-validation')),
+    chargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
 
     //Presentation layers
     chargePointsRouter: awilix.asFunction(require('./presentation-layer/charge-point-router-api')),

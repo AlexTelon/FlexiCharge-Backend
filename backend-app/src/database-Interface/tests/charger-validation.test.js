@@ -1,5 +1,7 @@
-const chargerValidation = require("../validation/chargerValidation")({});
+const chargerValidation = require("../validation/charger-validation")({});
 const { describe, expect, test } = require("@jest/globals");
+const VALID_LONGITUDE = 120;
+const VALID_LATITUDE = 20;
 
 describe("Charger By SerialNumber Validation with input:", () => {
   test("empty string", () => {
@@ -72,7 +74,7 @@ describe("Add Charger Validation with input:", () => {
     expect(errors.length).toBe(0);
   });
   test("location as array of int and string", () => {
-    const location = [123, "213"];
+    const location = [VALID_LATITUDE, "213"];
     const errors = chargerValidation.getAddChargerValidation(
       location,
       "serialNumber",
