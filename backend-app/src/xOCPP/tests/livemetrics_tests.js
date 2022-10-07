@@ -1,4 +1,5 @@
 const WebSocket = require('ws')
+const config = require('../../config')
 
 module.exports = function ({ chargerTests, constants, v, func }) {
     const c = constants.get()
@@ -32,7 +33,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                     v.removeUserID(c.USER_ID)
 
                     console.log("(TEST) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
-                }, 1000)
+                }, 1000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
             })
             
         } catch (error) {
@@ -88,7 +89,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
 
                 setTimeout(function(){
                     callback(chargerSocket, userSocket, testSuccessful, c.METER_VALUES)
-                }, 1500)
+                }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
             })
         })
 
@@ -97,7 +98,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
     testIsSuccesful = function(callback){
         setTimeout(function(){
             callback(testSuccessful)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     return exports

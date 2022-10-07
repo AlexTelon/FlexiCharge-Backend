@@ -1,3 +1,5 @@
+const config = require("../../config")
+
 module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     const c = constants.get()
     let failedTests = []
@@ -22,9 +24,9 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
 
                     setTimeout(function(){
                         callback()
-                    }, 1000)
-                }, 2000)
-            }, 2000)
+                    }, 1000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+                }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+            }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
             handleTestResults(meterValuesSucceeded, meterValues)
         })
@@ -53,9 +55,9 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
                                         setTimeout(function(){
                                             handleTestResults(chargerMemorySucceeded, chargerMemory)
                                             callback(failedTests, successfulTests)
-                                        }, 500)
+                                        }, 500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
                                     }) 
-                                }, 2000)
+                                }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
                             })
                         })

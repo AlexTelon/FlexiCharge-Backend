@@ -1,4 +1,5 @@
 const WebSocket = require('ws')
+const config = require('../../config')
 
 
 module.exports = function ({ ocppInterface, constants, v, func }) {
@@ -195,7 +196,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
         setTimeout(function(){
             callback(testSuccessful, c.BOOT_NOTIFICATION)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
     
     exports.testRemoteStart = function (chargerID, callback) {
@@ -213,7 +214,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
         setTimeout(function(){
             callback(testSuccessful, c.REMOTE_START_TRANSACTION)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     exports.testRemoteStop = function (chargerID, callback) {
@@ -231,7 +232,7 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
         setTimeout(function(){
             callback(testSuccessful, c.REMOTE_STOP_TRANSACTION)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
     }
 
@@ -253,14 +254,14 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
         setTimeout(function(){
             callback(testSuccessful, c.RESERVE_NOW)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
     }
 
     testIsSuccesful = function(callback){
         setTimeout(function(){
             callback(testSuccessful)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     return exports
