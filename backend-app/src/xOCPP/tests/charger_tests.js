@@ -2,7 +2,7 @@ const { default: test } = require('node:test')
 const WebSocket = require('ws')
 
 
-module.exports = function ({ ocppInterface, constants, v, func }) {
+module.exports = function ({ ocppInterface, constants, v, func, messageValidations }) {
     const c = constants.get()  
 
     let currentTest = ""
@@ -149,7 +149,8 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 }
                 
                 break
-            case c.BOOT_NOTIFICATION:         
+            case c.BOOT_NOTIFICATION:
+                messageValidations.checkBootNotificationConf(parsedData)
                 break
 
             case c.STOP_TRANSACTION:
