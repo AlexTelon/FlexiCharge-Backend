@@ -19,10 +19,38 @@ function chargePointRepositoryMock() {
 
 const testContainer = awilix.createContainer()
 testContainer.register({
+    // DAL
     newDataAccessLayerChargePoints: awilix.asFunction(chargePointRepositoryMock),
+    newDataAccessLayerChargeSessions: "Should be mocked",
+    newDataAccessLayerChargers: "Should be mocked",
+    newDataAccessLayerReservations: "Should be mocked",
+    newDataAccessLayerTransactions: "Should be mocked",
+    newDataAccessLayerChargePoints: "Should be mocked",
+    newDataAccessLayerElectricityTariffs: "Should be mocked",
+    newDataAccessLayerKlarnaPayments: "Should be mocked",
+    newDataAccessLayerKlarna: "Should be mocked",
+
+    // BLL
+    newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/new-database-interface-chargers')),
+    newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/new-database-interface-charge-sessions')),
+    newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/new-database-interface-transaction')),
+    newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
-    dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
+    newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
+    newDatabaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
+    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
+
+    // Validation
+    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargerValidation")),
+    newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/newChargeSessionValidation")),
     newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
+    newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
+    newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
+
+    // OCPP
+    ocppInterface: "Should be mocked",
+
+    dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),    
 })
 
 module.exports = testContainer
