@@ -7,7 +7,7 @@ const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, 
+module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, ocppInterface, invoicesRouter,
     interfaceChargeSessionsTests, interfaceChargersTests, interfaceChargePointsTests, interfaceElectricityTariffsTests, interfaceTransactionsTests, interfaceReservationsTests }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
@@ -44,13 +44,13 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
 
                     setTimeout(function(){
                         newDatabaseInterfaceChargeSessions.endChargeSession(chargeSessionID, null, function(er4, updatedChargeSession){
-                        }) 
+                        })
                     }, 1000)
                 })
             })
         })
     }, 1500) */
-    
+
     app.get('/', (req, res) => {
         res.redirect('/swagger')
     })
@@ -61,7 +61,8 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/reservations', reservationsRouter)
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
-    app.use('/auth/admin', adminRouter)
+    app.use('/admin', adminRouter)
+    app.use('/invoices', invoicesRouter)
 
     return app
 }

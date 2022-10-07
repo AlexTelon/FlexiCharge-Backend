@@ -1,8 +1,4 @@
-const { Socket } = require("dgram")
-const { stringify } = require("querystring")
-const { buildJSONMessage } = require("./global_functions")
-
-module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions }) {
+module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -16,22 +12,18 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
             switch (messageTypeID) {
                 case c.CALL:
-
                     response = callSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_RESULT:
-
                     callResultSwitch(uniqueID, data, chargerID)
                     break
 
                 case c.CALL_ERROR:
-
                     response = callErrorSwitch(uniqueID, data)
                     break
 
                 default:
-
                     response = func.getGenericError(uniqueID, "MessageTypeID is invalid")
                     break
             }
@@ -66,11 +58,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 break
 
             case c.START_TRANSACTION:
-                handleStartTrasaction(chargerID, uniqueID, request)
+                handleStartTransaction(chargerID, uniqueID, request)
                 break
 
             case c.STOP_TRANSACTION:
                 handleStopTransaction(chargerID, uniqueID, request)
+                break
+            
+            case c.METER_VALUES:
+                handleMeterValues(chargerID, request)
                 break
 
             default:
@@ -79,6 +75,28 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
 
         return callResult
+    }
+
+    function handleMeterValues(chargerID, request){
+        //TODO: Add validation 
+        const transactionID = request[3].transactionId
+        const uniqueID = request[1]
+        const userID = v.getUserIDWithTransactionID(transactionID)
+
+        const socket = v.getConnectedChargerSocket(chargerID)
+        if(userID){
+            broker.publishToLiveMetrics(userID, request, function(){
+                socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
+                console.log("Meter values response sent to charger with ID " + chargerID)
+            })
+        } else {
+                socket.send(func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.METER_VALUES, {
+                    error: "userID not OK"
+                }]))
+                console.log("Meter values error sent to charger with ID " + chargerID)
+                console.log('userID not OK (userID: ' + userID + ')')
+        }
+        
     }
 
     function handleStopTransaction(chargerID, uniqueID, request) {
@@ -102,6 +120,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.STOP_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
                     { idTagInfo: 1 }]))
+
+                    const transactionID = v.getTransactionID(chargerID)
+                    const userID = v.getUserIDWithTransactionID(transactionID)
+
+                    if(v.isInUserIDs(userID)){
+                        v.removeUserID(userID)
+                    }
                 }
             })
 
@@ -115,7 +140,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
     }
 
-    function handleStartTrasaction(chargerID, uniqueID, request) {
+    function handleStartTransaction(chargerID, uniqueID, request) {
 
         let callback = v.getCallback(chargerID)
         v.removeCallback(chargerID)
@@ -133,7 +158,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     payload = request[c.PAYLOAD_INDEX]
                     callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
-                    transactionID = v.getTransactionID(chargerID)
+                    const transactionID = v.getTransactionID(chargerID)
+
+                    databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
+                        if(error.length > 0){
+                            console.log("\nError fetching transaction from DB: " + error)
+                        } else {
+                            v.addUserIDWIthTransactionID(transaction.userID, transactionID)
+                        }
+                    }) 
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
@@ -324,7 +357,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                         throw c.RESPONSE_STATUS_REJECTED
                     }
                     break
-    
+
                 default:
                     let socket = v.getConnectedChargerSocket(chargerID)
                     let message = func.getGenericError(uniqueID, "Could not interpret the response for the callcode: " + action)

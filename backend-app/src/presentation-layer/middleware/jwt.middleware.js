@@ -10,13 +10,13 @@ const checkJwt = jwt({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://cognito-idp.${config.AWS_REGION}.amazonaws.com/${config.ADMIN_POOL}/.well-known/jwks.json`,
+        jwksUri: `https://cognito-idp.${config.AWS_REGION}.amazonaws.com/${config.USER_POOL}/.well-known/jwks.json`,
         // jwksUri: `https://dev-t3vri3ge.us.auth0.com/.well-known/jwks.json`
     }),
 
     // Validate the audience and the issuer.
     // audience: 'flexicharge.app',
-    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, `https://cognito-idp.eu-west-1.amazonaws.com/${config.ADMIN_POOL}`],
+    issuer: [`https://dev-t3vri3ge.us.auth0.com/`, `https://cognito-idp.eu-west-1.amazonaws.com/${config.USER_POOL}`],
     algorithms: ['RS256']
 });
 

@@ -32,6 +32,7 @@ container.register({
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
     newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
     newDatabaseInterfaceKlarnaPayments : awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
+    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
     // Business logic tests
     interfaceChargeSessionsTests: awilix.asFunction(require('./database-Interface/tests/database-interface-charge-sessions.test')),
@@ -59,6 +60,7 @@ container.register({
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),
     reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
+    invoicesRouter: awilix.asFunction(require('./presentation-layer/invoices-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
 
     //ocpp
@@ -68,11 +70,15 @@ container.register({
     chargerClientHandler: awilix.asFunction(require('./xOCPP/charger_client_handler')),
     chargerMessageHandler: awilix.asFunction(require('./xOCPP/charger_message_handler')),
     constants: awilix.asFunction(require('./xOCPP/constants')),
+    broker: awilix.asFunction(require('./xOCPP/broker')),
+    userClientHandler: awilix.asFunction(require('./xOCPP/user_client_handler')),
+    chargerTests: awilix.asFunction(require('./xOCPP/tests/charger_tests')),
+    liveMetricsTests: awilix.asFunction(require('./xOCPP/tests/livemetrics_tests')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
     func: awilix.asFunction(require('./xOCPP/global_functions')),
-    test: awilix.asFunction(require('./xOCPP/tests/charger_tests')),
+    tester: awilix.asFunction(require('./xOCPP/tests/tester')),
 
     app: awilix.asFunction(require('./presentation-layer/app'))
 })

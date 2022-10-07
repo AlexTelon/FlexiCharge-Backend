@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon -L src/index.js"
+        "start": "nodemon -L src/index.js",
+        "test": "jest"
     },
     "author": "",
     "license": "ISC",
@@ -28,11 +29,17 @@
         "node": "^16.6.1",
         "node-fetch": "^3.0.0",
         "nodemon": "^2.0.12",
+        "pdfkit": "^0.13.0",
+        "pdfkit-table": "^0.1.99",
         "pg": "^8.7.1",
+        "pubsub-js": "^1.9.4",
         "sequelize": "^6.6.5",
         "sequelize-mock": "^0.10.2",
         "swagger-ui-express": "^4.5.0",
         "ws": "^8.2.1",
         "yamljs": "^0.3.0"
+    },
+    "devDependencies": {
+        "jest": "^29.0.3"
     }
 }

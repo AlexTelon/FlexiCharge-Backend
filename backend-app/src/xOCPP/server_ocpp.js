@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const config = require('../config')
 
-module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, test }) {
+module.exports = function ({ chargerClientHandler, v, constants, userClientHandler, tester }) {
 
     exports.startServer = function () {
         console.log("Starting OCPP server")
@@ -12,30 +12,30 @@ module.exports = function ({ chargerClientHandler, v, databaseInterfaceCharger, 
             // Get the charger's serial number:
             let origin = req.url
             let originArray = origin.split("/")
-            let chargerSerial = (originArray[originArray.length - 1]).toString()
+            let clientType = originArray[1]
+            
+            
+            switch(clientType){
+                //ws://123.123.123:1337/user/abc123-123-123
+                case 'user':
+                    const userID = originArray[originArray.length - 1].toString()
+                    console.log('UserID trying to connect: ', userID)
 
-            // Validate and handle connecting charger:
-            chargerClientHandler.handleClient(ws, chargerSerial)
-
-            ws.on('close', function disconnection() {
-                if (v.isInChargerSerials(chargerSerial)) {
-
-                    const chargerID = v.getChargerID(chargerSerial)
-
-                    v.removeConnectedChargerSockets(chargerID)
-                    v.removeChargerSerials(chargerSerial)
-                    v.removeChargerIDs(chargerSerial)
-                    console.log("Disconnected from charger with ID: " + chargerID)
-                    console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
-                }
-            })
+                    userClientHandler.handleClient(ws, userID)
+                    break
+                
+                case 'charger':
+                    let chargerSerial = (originArray[originArray.length - 1]).toString()
+                    // Validate and handle connecting charger:
+                    chargerClientHandler.handleClient(ws, chargerSerial)
+                    break 
+            }
         })
 
-        
         if(config.RUN_OCPP_TEST){
             setTimeout(function(){
-                test.runTests()
-            }, 2000);
+                tester.runTests()
+            }, 2000); 
         }
         
         
