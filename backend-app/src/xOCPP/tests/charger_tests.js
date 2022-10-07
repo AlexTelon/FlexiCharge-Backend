@@ -1,4 +1,3 @@
-const { default: test } = require('node:test')
 const WebSocket = require('ws')
 
 
@@ -197,11 +196,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         setTimeout(function(){
             callback(testSuccessful, c.BOOT_NOTIFICATION)
         }, 1500)
-
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.BOOT_NOTIFICATION 
-        //     callback(error)
-        // })
     }
     
     exports.testRemoteStart = function (chargerID, callback) {
@@ -220,11 +214,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         setTimeout(function(){
             callback(testSuccessful, c.REMOTE_START_TRANSACTION)
         }, 1500)
-
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.REMOTE_START_TRANSACTION 
-        //     callback(error)
-        // })
     }
 
     exports.testRemoteStop = function (chargerID, callback) {
@@ -244,10 +233,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
             callback(testSuccessful, c.REMOTE_STOP_TRANSACTION)
         }, 1500)
 
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.REMOTE_STOP_TRANSACTION
-        //     callback(error)
-        // })
     }
 
     exports.testReserveNow = function (chargerID, callback) {
@@ -270,10 +255,6 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
             callback(testSuccessful, c.RESERVE_NOW)
         }, 1500)
 
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.RESERVE_NOW
-        //     callback(error)
-        // })
     }
 
     testIsSuccesful = function(callback){
