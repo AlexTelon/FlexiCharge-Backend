@@ -536,19 +536,109 @@ sequelize.sync().then(function () {
             });
             newChargePoints.create({
                 name: "Airport Parking, Jönköping",
-                address: "Flygplansvägen 23",
+                address: "Flygplansvägen",
                 coordinates: [57.749812214261034,14.070100435207065]
-            }).then(function(result) {
-                newChargers.create({
-                    chargerID: 100001,
-                    coordinates: [57.777714, 14.163010],
-                    serialNumber: 'abc111',
-                    status: 'Available',
-                    chargePointID: 1 //Jönköpig University?
-                });
             });
-            
-            
+            newChargePoints.create({
+                name: 'Jönköping University',
+                address: "Gjuterigatan 5",
+                coordinates: [57.777714, 14.163010]
+            });
+            newChargePoints.create({
+                name: "Nässjö Centralstation",
+                address: "Järnvägsgatan 26",
+                coordinates: [57.652328901782795,14.694810832097543]
+            });
+            newChargePoints.create({
+                name: "Coop, Forserum",
+                address: "Jönköpingsvägen 2",
+                coordinates: [57.70022044183724,14.475150415104222]
+            });
+            newChargers.create({
+                chargerID: 100001,
+                coordinates: [57.777714, 14.163010],
+                serialNumber: 'abc111',
+                status: 'Available',
+                chargePointID: 1 //Jönköping University
+            });
+            newChargers.create({
+                chargerID: 100002,
+                coordinates: [57.777714, 14.163010],
+                serialNumber: 'abc112',
+                status: 'Available',
+                chargePointID: 1 //Jönköping University
+            });
+            newChargers.create({
+                chargerID: 100003,
+                coordinates: [57.777714, 14.163010],
+                serialNumber: 'abc113',
+                status: 'Available',
+                chargePointID: 1 //Jönköping University
+            });
+            newChargers.create({
+                chargerID: 100004,
+                coordinates: [57.652328901782795,14.694810832097543],
+                serialNumber: 'abc114',
+                status: 'Available',
+                chargePointID: 2 //Nässjö Centralstation
+            });
+            newChargers.create({
+                chargerID: 100005,
+                coordinates: [57.652328901782795,14.694810832097543],
+                serialNumber: 'abc115',
+                status: 'Available',
+                chargePointID: 2 //Nässjö Centralstation
+            });
+            newChargers.create({
+                chargerID: 100006,
+                coordinates: [57.70022044183724,14.475150415104222],
+                serialNumber: 'abc116',
+                status: 'Available',
+                chargePointID: 3 //Coop, Forserum
+            });
+            newChargers.create({
+                chargerID: 100007,
+                coordinates: [57.749812214261034,14.070100435207065],
+                serialNumber: 'abc117',
+                status: 'Available',
+                chargePointID: 4 // Airport Parking, Jönköping
+            });
+            newChargers.create({
+                chargerID: 100008,
+                coordinates: [57.749812214261034,14.070100435207065],
+                serialNumber: 'abc118',
+                status: 'Available',
+                chargePointID: 4 // Airport Parking, Jönköping
+            });
+            newChargers.create({
+                chargerID: 100009,
+                coordinates: [57.749812214261034,14.070100435207065],
+                serialNumber: 'abc119',
+                status: 'Reserved',
+                chargePointID: 4 // Airport Parking, Jönköping
+            });
+            newTransactions.create({
+                userID: "NotARealUser@gmail.com",
+                paymentMethod: "Klarna",
+                isPayed: true,
+                payNow: false,
+                transactionDate: 1664889622,
+                paymentDueDate: 1664889622,
+                payedDate: 1664889622,
+                totalPrice: 100,
+                chargerID: 100002, // Jönköping University
+            });
+            newTransactions.create({
+                userID: "NotARealUser@gmail.com",
+                paymentMethod: "Klarna",
+                isPayed: true,
+                payNow: false,
+                transactionDate: 1664889622,
+                paymentDueDate: 1664889622,
+                payedDate: 1664889622,
+                totalPrice: 151,
+                chargerID: 100005, // Nässjö centralstation
+            });
             
 
             //Fill the ElectricityTariff table with random data
