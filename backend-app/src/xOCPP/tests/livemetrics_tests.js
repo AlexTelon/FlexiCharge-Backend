@@ -43,9 +43,10 @@ module.exports = function ({ chargerTests, constants, v, func }) {
 
     exports.checkUserClientsMemoryLeak = function(callback){
         if(v.getLengthConnectedUserSockets() || v.getUserIDsLength() || v.getLiveMetricsTokensLength() || v.lengthLastLiveMetricsTimestamps()){
-            callback(c.USER_MEMORY_LEAK)
+            console.log("(MEMORY TEST FAILED) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
+            callback(false, c.USER_MEMORY_LEAK)
         } else {
-            callback(null)
+            callback(true, c.USER_MEMORY_LEAK)
         }
     }
 
@@ -85,11 +86,15 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                 ])
 
                 chargerSocket.send(meterValues)
+
+                setTimeout(function(){
+                    callback(chargerSocket, userSocket, testSuccessful, c.METER_VALUES)
+                }, 1500)
                 
-                testIsSuccesful(function(result){
-                    const error = result ? null : c.METER_VALUES 
-                    callback(chargerSocket, userSocket, error)
-                })
+                // testIsSuccesful(function(result){
+                //     const error = result ? null : c.METER_VALUES 
+                //     callback(chargerSocket, userSocket, error)
+                // })
             })
         })
 
@@ -98,7 +103,7 @@ module.exports = function ({ chargerTests, constants, v, func }) {
     testIsSuccesful = function(callback){
         setTimeout(function(){
             callback(testSuccessful)
-        }, 1000)
+        }, 1500)
     }
 
     return exports

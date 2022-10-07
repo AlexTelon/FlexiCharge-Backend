@@ -1,3 +1,4 @@
+const { default: test } = require('node:test')
 const WebSocket = require('ws')
 
 
@@ -161,9 +162,10 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
     exports.checkChargerClientsMemoryLeak = function(callback){
         if(v.getLengthConnectedChargerSockets() || v.getLengthChargerSerials() || v.getLengthChargerIDs()){
-            callback(c.CHARGER_MEMORY_LEAK)
+            console.log("(MEMORY TEST FAILED) Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+            callback(false, c.CHARGER_MEMORY_LEAK)
         } else {
-            callback(null)
+            callback(true, c.CHARGER_MEMORY_LEAK)
         }
     }
 
@@ -192,10 +194,14 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
 
         ws.send(jsonBootNotification)
 
-        testIsSuccesful(function(result){
-            const error = result ? null : c.BOOT_NOTIFICATION 
-            callback(error)
-        })
+        setTimeout(function(){
+            callback(testSuccessful, c.BOOT_NOTIFICATION)
+        }, 1500)
+
+        // testIsSuccesful(function(result){
+        //     const error = result ? null : c.BOOT_NOTIFICATION 
+        //     callback(error)
+        // })
     }
     
     exports.testRemoteStart = function (chargerID, callback) {
@@ -211,10 +217,14 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
             }
         })
 
-        testIsSuccesful(function(result){
-            const error = result ? null : c.REMOTE_START_TRANSACTION 
-            callback(error)
-        })
+        setTimeout(function(){
+            callback(testSuccessful, c.REMOTE_START_TRANSACTION)
+        }, 1500)
+
+        // testIsSuccesful(function(result){
+        //     const error = result ? null : c.REMOTE_START_TRANSACTION 
+        //     callback(error)
+        // })
     }
 
     exports.testRemoteStop = function (chargerID, callback) {
@@ -230,10 +240,14 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
             }
         })
 
-        testIsSuccesful(function(result){
-            const error = result ? null : c.REMOTE_STOP_TRANSACTION
-            callback(error)
-        })
+        setTimeout(function(){
+            callback(testSuccessful, c.REMOTE_STOP_TRANSACTION)
+        }, 1500)
+
+        // testIsSuccesful(function(result){
+        //     const error = result ? null : c.REMOTE_STOP_TRANSACTION
+        //     callback(error)
+        // })
     }
 
     exports.testReserveNow = function (chargerID, callback) {
@@ -251,16 +265,21 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 }
             }
         })
-        testIsSuccesful(function(result){
-            const error = result ? null : c.RESERVE_NOW
-            callback(error)
-        })
+
+        setTimeout(function(){
+            callback(testSuccessful, c.RESERVE_NOW)
+        }, 1500)
+
+        // testIsSuccesful(function(result){
+        //     const error = result ? null : c.RESERVE_NOW
+        //     callback(error)
+        // })
     }
 
     testIsSuccesful = function(callback){
         setTimeout(function(){
             callback(testSuccessful)
-        }, 1000)
+        }, 1500)
     }
 
     return exports

@@ -1,29 +1,32 @@
 module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     const c = constants.get()
-    let errors = []
+    let failedTests = []
+    let successfulTests = []
 
     runLiveMetricsTests = function(callback){ /** PLEASE NOTE THAT THIS ONLY WORKS WITH LOCAL DATABASE AND THE CORRECT TEST DATA IN THE LOCAL DATABASE */
         console.log('\n========= RUNNING TESTS FOR LIVE METRICS ==========\n')
-        liveMetricsTests.testMeterValues(function(chargerSocket, userSocket, error){
+        liveMetricsTests.testMeterValues(function(chargerSocket, userSocket, meterValuesSucceeded, meterValues){
             setTimeout(function(){
                 //Disconnect user- and charger sockets
                 userSocket.terminate()
                 chargerSocket.terminate()
 
                 setTimeout(function(){
-                    liveMetricsTests.checkUserClientsMemoryLeak(function(userMemoryError){
-                        handleError(userMemoryError)
+                    liveMetricsTests.checkUserClientsMemoryLeak(function(userMemorySucceeded, userMemory){
+                        handleError(userMemorySucceeded, userMemory)
                     })
                     
-                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemoryError){
-                        handleError(chargerMemoryError)
+                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
+                        handleError(chargerMemorySucceeded, chargerMemory)
                     })
-                }, 500)
 
-                callback()
+                    setTimeout(function(){
+                        callback()
+                    }, 1000)
+                }, 2000)
             }, 2000)
 
-            handleError(error)
+            handleError(meterValuesSucceeded, meterValues)
         })
         
     }
@@ -32,25 +35,27 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
         console.log('\n========= RUNNING TESTS FOR CHARGER ==========\n')
         chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(ws){
             
-                chargerTests.testBootNotification(ws, function(bootError){
-                    handleError(bootError)
+                chargerTests.testBootNotification(ws, function(bootSucceeded, bootNotification){
+                    handleError(bootSucceeded, bootNotification)
     
-                    chargerTests.testRemoteStart(c.CHARGER_ID, function(startError){
-                        handleError(startError)
+                    chargerTests.testRemoteStart(c.CHARGER_ID, function(startSucceeded, remoteStart){
+                        handleError(startSucceeded, remoteStart)
     
-                        chargerTests.testRemoteStop(c.CHARGER_ID, function(stopError){
-                            handleError(stopError)
+                        chargerTests.testRemoteStop(c.CHARGER_ID, function(stopSucceeded, remoteStop){
+                            handleError(stopSucceeded, remoteStop)
     
-                            chargerTests.testReserveNow(c.CHARGER_ID, function(reserveError){
-                                handleError(reserveError)
+                            chargerTests.testReserveNow(c.CHARGER_ID, function(reserveSucceeded, reserveNow){
+                                handleError(reserveSucceeded, reserveNow)
                                 ws.terminate() 
-    
-                                chargerTests.checkChargerClientsMemoryLeak(function(memoryError){
-                                    setTimeout(function(){
-                                        handleError(memoryError)
-                                        callback(errors)
-                                    }, 500)
-                                }) 
+                                
+                                setTimeout(function(){
+                                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
+                                        setTimeout(function(){
+                                            handleError(chargerMemorySucceeded, chargerMemory)
+                                            callback(failedTests, successfulTests)
+                                        }, 500)
+                                    }) 
+                                }, 2000)
 
                             })
                         })
@@ -62,14 +67,16 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     exports.runTests = function(callback){
         runChargerTests(function(){
             runLiveMetricsTests(function(){
-                callback(errors)
+                callback(failedTests, successfulTests)
             })
         })
     }
 
-    handleError = function(error){
-        if(error) {
-            errors.push(error) 
+    handleError = function(testSucceeded, test){
+        if(testSucceeded) {
+            successfulTests.push(test)
+        } else {
+            failedTests.push(test) 
         }
     }
 
