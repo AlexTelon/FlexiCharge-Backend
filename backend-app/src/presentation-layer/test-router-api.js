@@ -1,11 +1,12 @@
 const express = require("express");
 
-module.exports = function ({ test }) {
+module.exports = function ({ tester }) {
   const router = express.Router();
 
-  router.get("/ocpp", async (req, res) => {
-    const errors = await test.runTests();
-    res.status(200).end();
+  router.get("/ocpp", (req, res) => {
+    tester.runTests(function(testResults){
+      res.status(200).json(testResults)
+    });
   });
   return router;
 };
