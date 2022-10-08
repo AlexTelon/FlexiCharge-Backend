@@ -1,5 +1,4 @@
 const awilix = require('awilix')
-const {lifetime} = require('awilix')
 const container = awilix.createContainer()
 const config = require('./config')
 
