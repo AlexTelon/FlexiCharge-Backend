@@ -1,3 +1,5 @@
+const { updateChargingState } = require("../data-access-layer/new-charge-sessions-repository")
+
 module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLayerTransactions, newDatabaseInterfaceElectricityTariffs, dbErrorCheck, newChargeSessionValidation, ocppInterface }) {
 
     const exports = {}
@@ -17,7 +19,6 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                     // When chargeSession is added, it's started. Which in turn:
                     // 1. Creates a new transaction
                     // 2. Contacts OCPP interface and starts the remoteTransaction
-                    // Not tested
                     totalPrice = null
                     newDataAccessLayerTransactions.addTransaction(chargeSession.chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
                         if (Object.keys(error).length > 0) {
@@ -29,7 +30,7 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                                 if (error != null || returnObject.status == "Rejected") {
                                     callback(["couldNotStartOCPPTransaction"], [])
                                 } else {
-                                    newDataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, null, (error, updatedChargeSession) => {
+                                    newDataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, (error, updatedChargeSession) => {
                                         if (Object.keys(error).length > 0) {
                                             dbErrorCheck.checkError(error, function (errorCode) {
                                                 callback(errorCode, [])
@@ -71,7 +72,9 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
     }
 
     exports.getChargeSessions = function (chargerID, callback) {
-        newDataAccessLayerChargeSessions.getChargeSession(chargerID, callback)
+        // TODO Validate chargerID, if it's valid then run getChargeSessions 
+        
+        newDataAccessLayerChargeSessions.getChargeSessions(chargerID, callback)
     }
 
     exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
@@ -100,7 +103,7 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                     callback(errorCode, [])
                 })
             } else {
-                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, null, function (error, transaction) {
+                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, function (error, transaction) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
@@ -113,13 +116,13 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                                 const kwhTransfered = (returnObject.meterStop - chargeSession.meterStart) / 1000
 
                                 if (kwhTransfered >= 0) {
-                                    exports.updateChargingState(chargeSessionID, kwhTransfered, chargeSession.currentChargePercentage, function (error, updatedChargingSession) {
+                                    newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, chargeSession.currentChargePercentage, kwhTransfered, function (error, updatedChargingSession) {
                                         if (Object.keys(error).length > 0) {
                                             dbErrorCheck.checkError(error, function (errorCode) {
                                                 callback(errorCode, [])
                                             })
                                         } else {
-                                            newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function (error, electricityTariff) {
+                                            newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, electricityTariff) {
                                                 if (Object.keys(error).length > 0) {
                                                     dbErrorCheck.checkError(error, function (errorCode) {
                                                         callback(errorCode, [])
@@ -163,24 +166,20 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                     callback(errorCode, [])
                 })
             } else {
-                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSession.chargeSessionID, null, function (error, transaction) {
+                newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSession.chargeSessionID, function (error, transaction) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
                         })
                     } else {
-                        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(null, function (error, electricityTariff) {
+                        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, electricityTariff) {
                             if (Object.keys(error).length > 0) {
                                 dbErrorCheck.checkError(error, function (errorCode) {
                                     callback(errorCode, [])
                                 })
                             } else {
                                 const price = chargeSession.kwhTransfered * electricityTariff.price
-                                console.log("price: ", price)
-                                console.log(chargeSession)
-                                console.log(transaction)
-                                console.log(electricityTariff)
-
+                                callback([], price)
                             }
                         })
                     }

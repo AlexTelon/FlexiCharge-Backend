@@ -13,7 +13,7 @@ function chargePointRepositoryMock() {
         getChargePoint: function (chargePointID, callback) {
             callback([], {
                 chargePointID,
-                ...updatedProperties
+                ...defaultItem
             })
         },
         getChargePoints: function (callback) {
@@ -46,9 +46,9 @@ function chargeSessionsRepositoryMock() {
         chargeSessionID: 1,
         userID: 1,
         chargerID: 100001,
-        kwhTransfered: null,
-        currentChargePercentage: null,
-        meterStart: null,
+        kwhTransfered: 1000,
+        currentChargePercentage: 100,
+        meterStart: 100,
         startTime: null,
         endTime: null
     }
@@ -65,7 +65,7 @@ function chargeSessionsRepositoryMock() {
         getChargeSession: function (chargeSessionID, callback) {
             callback([], { ...defaultItem, chargeSessionID })
         },
-        getChargeSessions: function (callback) {
+        getChargeSessions: function (chargerID, callback) {
             callback([], [defaultItem])
         },
         updateChargeSession: function (chargeSessionID, updatedProperties, callback) {
@@ -153,7 +153,7 @@ function reservationsRepositoryMock() {
     const defaultItem = {
         reservationID: 1,
         startTime: 1,
-        endTime: "Klarna",
+        endTime: 100,
         userID: 1337,
         chargerID: 1338
     }
@@ -189,15 +189,26 @@ function transactionsRepositoryMock() {
         userID: 1,
         paymentMethod: "Klarna",
         isPayed: null,
-        payNow: null,
+        payNow: false,
         transactionDate: null,
         paymentDueDate: null,
         payedDate: null,
-        totalPrice: null,
+        totalPrice: 13.37,
         chargeSessionID: null
     }
 
     return {
+        addTransaction: function(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+            callback([], {
+                ...defaultItem,
+                chargeSessionID,
+                userID,
+                payNow,
+                paymentDueDate,
+                paymentMethod,
+                totalPrice
+            })
+        },
         getTransaction: function (transactionID, callback) {
             callback([], { ...defaultItem, transactionID })
         },
@@ -238,10 +249,18 @@ function transactionsRepositoryMock() {
                 chargeSessionID
             })
         },
+        getTransactionsForCharger: function( chargerID, callback) {
+            callback([], [{
+                ...defaultItem,
+                chargerID
+            }])
+        }
     }
 }
 
 function electricityTarriffRepositoryMock() {
+    const dateToday = new Date(new Date())
+
     const defaultItem = {
         date: dateToday.toISOString(),
         price: 3.51,
@@ -271,17 +290,16 @@ function electricityTarriffRepositoryMock() {
         updateElectricityTariff: function (oldDate, newDate, callback) {
             callback([], {
                 ...defaultItem,
-                oldDate,
                 newDate
             })
         },
-        removeElectricityTariff: function (date, callback) {
+            removeElectricityTariff: function (date, callback) {
             callback([], true)
         },
     }
 }
 
-function KlarnaPaymentsRepositoryMock() {
+function klarnaPaymentsRepositoryMock() {
     const defaultItem = {
         klarnaPaymentID: 1,
         transactionID : 1,
@@ -312,7 +330,39 @@ function KlarnaPaymentsRepositoryMock() {
     }
 }
 
+function ocppInterfaceMock() {
+    return {
+        remoteStartTransaction: function(chargerID, transactionID, callback) {
+            callback(null, {
+                meterStart: 1032
+            })
+        },
+        remoteStopTransaction: function(chargerID, transactionID, callback) {
+            callback(null, {
+                meterStop: 2000
+            })
+        }
+    }
+}
 
+function klarnaRepositoryMock() {
+    return {
+        getNewKlarnaPaymentSession: function(totalPrice, callback) {
+            callback([], {
+                session_id : "fake_session_id",
+                client_token : "fake_client_token"
+            })
+        },
+        createKlarnaOrder: function(totalPrice, authorization_token, callback) {
+            callback([], {
+                order_id: "fake_order_id"
+            })
+        }, 
+        finalizeKlarnaOrder: function(totalPrice, order_id, callback) {
+            callback([], [])
+        }
+    }
+}
 
 const testContainer = awilix.createContainer()
 testContainer.register({
@@ -323,8 +373,8 @@ testContainer.register({
     newDataAccessLayerReservations: awilix.asFunction(reservationsRepositoryMock),
     newDataAccessLayerTransactions: awilix.asFunction(transactionsRepositoryMock),
     newDataAccessLayerElectricityTariffs: awilix.asFunction(electricityTarriffRepositoryMock),
-    newDataAccessLayerKlarnaPayments: awilix.asFunction(KlarnaPaymentsRepositoryMock),
-    // newDataAccessLayerKlarna: Should be mocked, need to emulate json response data of the API calls!
+    newDataAccessLayerKlarnaPayments: awilix.asFunction(klarnaPaymentsRepositoryMock),
+    newDataAccessLayerKlarna: awilix.asFunction(klarnaRepositoryMock),
 
     // BLL
     newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/new-database-interface-chargers')),
@@ -334,7 +384,7 @@ testContainer.register({
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
     newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
     newDatabaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
-    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
+    // databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
 
     // Validation
     newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargerValidation")),
@@ -342,9 +392,9 @@ testContainer.register({
     newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
     newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
     newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
-
+    newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/newKlarnaPaymentsValidation")),
     // OCPP
-    ocppInterface: "Should be mocked",
+    ocppInterface: awilix.asFunction(ocppInterfaceMock),
 
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
 })

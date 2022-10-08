@@ -337,7 +337,7 @@ const newElectricityTariffs = sequelize.define('newElectricityTariffs', {
     timestamps: false
 });
 
-const klarnaPayments = sequelize.define('KlarnaPayments', {
+const newKlarnaPayments = sequelize.define('newKlarnaPayments', {
     klarnaPaymentID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -664,6 +664,6 @@ sequelize.sync().then(function () {
 
 module.exports = function ({ }) {
     const exports = { paymentType, Chargers, Transactions, Reservations, ChargePoints, newChargers,
-                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariffs, klarnaPayments}
+                    newTransactions, newReservations, newChargePoints, newChargeSessions, newElectricityTariffs, newKlarnaPayments}
     return exports
 }

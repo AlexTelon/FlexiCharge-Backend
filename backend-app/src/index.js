@@ -47,6 +47,7 @@ container.register({
     newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
     newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
     newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
+    newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/newKlarnaPaymentsValidation")),
     //Presentation layers
     chargePointsRouter: awilix.asFunction(require('./presentation-layer/charge-point-router-api')),
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),

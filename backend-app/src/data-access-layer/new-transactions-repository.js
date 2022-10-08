@@ -40,6 +40,15 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
+    exports.getTransactionsForCharger = function(chargerID, callback) {
+        databaseInit.newTransactions.findAll({ where: {chargerID : chargerID}, raw: true })
+            .then(transactions => callback([], transactions))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
+    }
+
     exports.updatePaymentMethod = function (transactionID, paymentMethod, callback) {
         databaseInit.newTransactions.update({
             paymentMethod: paymentMethod

@@ -114,6 +114,8 @@ module.exports = function({}) {
             validationErrors.push("invalidTotalPrice")
         }
 
+        return validationErrors
+
     }
 
     exports.getUpdateTransactionChargingStatus = function(currentMeterValue, currentChargePercentage) {

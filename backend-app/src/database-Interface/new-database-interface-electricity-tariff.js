@@ -9,7 +9,7 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
         let currentDate = new Date()
         currentDate.setMinutes(0, 0, 0)
         const queryDate = new Date(currentDate).toISOString()
-        newDataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate, function (error, tariff) {
+        newDataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate, function(error, tariff) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
