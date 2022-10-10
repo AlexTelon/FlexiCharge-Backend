@@ -27,6 +27,7 @@ module.exports = {
   
   RUN_OCPP_TEST: !parseInt(process.env.RUN_OCPP_TEST) ? 0 : process.env.RUN_OCPP_TEST,
   LIVEMETRICS_DB_UPDATE_INTERVAL: !parseInt(process.env.LIVEMETRICS_DB_UPDATE_INTERVAL) ? 30000 : process.env.LIVEMETRICS_DB_UPDATE_INTERVAL,
+  OCPP_TEST_INTERVAL_MULTIPLIER: !parseInt(process.env.OCPP_TEST_INTERVAL) ? 1 : process.env.OCPP_TEST_INTERVAL,
   
   BYPASS_KLARNA: !parseInt(process.env.BYPASS_KLARNA) ? 0 : process.env.BYPASS_KLARNA
 }

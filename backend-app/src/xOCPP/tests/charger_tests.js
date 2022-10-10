@@ -1,7 +1,12 @@
 const WebSocket = require('ws')
+const config = require('../../config')
+
 
 module.exports = function ({ ocppInterface, constants, v, func }) {
     const c = constants.get()  
+
+    let currentTest = ""
+    let testSuccessful = false
     
     exports.connectAsChargerSocket = function (chargerId, callback) {
         try {
@@ -27,10 +32,9 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                         break
                     
                     default:
-                        // Error, do nothing
+                        //Error, do nothing
                         break
-                }
-                
+                }    
             })
             
         } catch (error) {
@@ -115,6 +119,10 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 break
 
             case c.DATA_TRANSFER:
+                if(currentTest == c.BOOT_NOTIFICATION){
+                    testSuccessful = true
+                }
+                
                 jsonResponseMessage = func.buildJSONMessage([
                     3,
                     parsedData[c.UNIQUE_ID_INDEX],
@@ -133,16 +141,38 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         }
     }
 
-    callResultSwitchForClientMock = function(parsedData, ws){ // ONLY NEEDED WHEN CHARGER STARTS A CONVERSATION
+    callResultSwitchForClientMock = function(parsedData, ws){
         switch(parsedData[c.ACTION_INDEX]){
             case c.START_TRANSACTION:
+                if(currentTest == c.REMOTE_START_TRANSACTION){
+                    testSuccessful = true
+                }
+                
                 break
             case c.BOOT_NOTIFICATION:         
+                break
+
+            case c.STOP_TRANSACTION:
+                if(currentTest == c.REMOTE_STOP_TRANSACTION){
+                    testSuccessful = true
+                }
                 break
         }
     }
 
-    exports.testBootNotification = function (ws) {
+    exports.checkChargerClientsMemoryLeak = function(origin, callback){
+        if(v.getLengthConnectedChargerSockets() || v.getLengthChargerSerials() || v.getLengthChargerIDs()){
+            console.log("(MEMORY TEST FAILED) Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+            callback(false, c.CHARGER_MEMORY_LEAK + " : " + origin)
+        } else {
+            callback(true, c.CHARGER_MEMORY_LEAK + " : " + origin)
+        }
+    }
+
+    exports.testBootNotification = function (ws, callback) {
+        currentTest = c.BOOT_NOTIFICATION
+        testSuccessful = false
+
         console.log("\n========= TESTING BOOT NOTIFICATION... ==========\n")
         
         const jsonBootNotification = func.buildJSONMessage([ 
@@ -163,9 +193,16 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
         ])
 
         ws.send(jsonBootNotification)
+
+        setTimeout(function(){
+            callback(testSuccessful, c.BOOT_NOTIFICATION)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
     
-    exports.testRemoteStart = function (chargerID) {
+    exports.testRemoteStart = function (chargerID, callback) {
+        currentTest = c.REMOTE_START_TRANSACTION
+        testSuccessful = false
+
         console.log("\n========= TESTING REMOTE START... ==========\n")
         ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
@@ -174,9 +211,16 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp+", meterStart: "+response.meterStart)
             }
         })
+
+        setTimeout(function(){
+            callback(testSuccessful, c.REMOTE_START_TRANSACTION)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
-    exports.testRemoteStop = function (chargerID) {
+    exports.testRemoteStop = function (chargerID, callback) {
+        currentTest = c.REMOTE_STOP_TRANSACTION
+        testSuccessful = false
+
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
         ocppInterface.remoteStopTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
@@ -185,17 +229,39 @@ module.exports = function ({ ocppInterface, constants, v, func }) {
                 console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp +", meterStop: "+response.meterStop)
             }
         })
+
+        setTimeout(function(){
+            callback(testSuccessful, c.REMOTE_STOP_TRANSACTION)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+
     }
 
-    exports.testReserveNow = function (chargerID) {
+    exports.testReserveNow = function (chargerID, callback) {
+        currentTest = c.RESERVE_NOW
+        testSuccessful = false
+
         console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
             if (error != null) {
                 console.log("\nError updating charger status in DB: " + error)
             } else {
                 console.log("\nTest result response: " + response)
+                if(currentTest == c.RESERVE_NOW && response == c.ACCEPTED){
+                    testSuccessful = true
+                }
             }
         })
+
+        setTimeout(function(){
+            callback(testSuccessful, c.RESERVE_NOW)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+
+    }
+
+    testIsSuccesful = function(callback){
+        setTimeout(function(){
+            callback(testSuccessful)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     return exports

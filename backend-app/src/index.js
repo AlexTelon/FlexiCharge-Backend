@@ -35,6 +35,7 @@ container.register({
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     invoicesRouter: awilix.asFunction(require('./presentation-layer/invoices-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
+    testRouter: awilix.asFunction(require('./presentation-layer/test-router-api')),
     errorsMiddleware: awilix.asFunction(require('./presentation-layer/middleware/errors.middleware')),
 
     //ocpp
