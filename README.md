@@ -16,6 +16,7 @@ Needed to start app.
 - npm install "package name"
 
 # Access database
+- [Database Documentation](backend-app/src/data-access-layer/README.md)
 - Add awilix variable to the module.exports function. 
 ```
 module.exports = function({ databaseInterfaceCharger}) {
