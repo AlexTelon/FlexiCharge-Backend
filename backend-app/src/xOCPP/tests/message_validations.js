@@ -19,11 +19,13 @@ module.exports = function ({ constants }){
         if(!valid){
             console.log('======= ' + messageActionString + ' VALIDATION ERRORS: =======\n', validate.errors)
             console.log('Compared schema:', schema)
+            console.log('\n---------- ' + messageActionString + ' VALIDATION END ----------\n')
             return validate.errors
         } else {
             console.log('\n---------- ' + messageActionString + ' passed validation ----------\n')
             return []
         }
+        
     }
 
     exports.validateBootNotificationConf = function (parsedMessage) {
@@ -106,10 +108,10 @@ module.exports = function ({ constants }){
                 {
                     type: "object",
                     properties: {
-                        connectorId: {type: "integer"},
+                        connectorID: {type: "integer"}, //NOTE: "connectorID", not "connectorId" like the protocol says, it should be the latter
                         idTag: {type: "integer"},
                     },
-                    required: ["connectorId", "idTag"]
+                    required: ["connectorID", "idTag"]
                 }
             ]
         }
@@ -128,7 +130,7 @@ module.exports = function ({ constants }){
                 {
                     type: "object",
                     properties: {
-                        transactionID: {type: "integer"}
+                        transactionID: {type: "integer"} //NOTE: "transactionID", not "transactionId" like the protocol says, it should be the latter
                     },
                     required: ["transactionID"]
                 }
@@ -171,12 +173,12 @@ module.exports = function ({ constants }){
                 {
                     type: "object",
                     properties: {
-                        connectorId: {type: "integer"},
+                        connectorID: {type: "integer"}, //NOTE: "connectorID", not "connectorId" like the protocol says, it should be the latter
                         expiryDate: {type: "integer"},
                         idTag: {type: "integer"},
-                        reservationId: {type: "integer"}
+                        reservationID: {type: "string"} // This is a string, should maybe be an integer instead? //NOTE: "reservationID", not "reservationId" like the protocol says, it should be the latter
                     },
-                    required: ["connectorId", "expiryDate", "idTag", "reservationId"]
+                    required: ["connectorID", "expiryDate", "idTag", "reservationID"]
                 }
             ]
         }        
@@ -197,13 +199,7 @@ module.exports = function ({ constants }){
                     properties: {
                         vendorId: {type: "string"},
                         messageId: {type: "string"},
-                        data: {
-                            type: "object",
-                            properties: {
-                                chargerId: {type: "integer"},
-                                chargingPrice: {type: "number"}
-                            }
-                        }
+                        data: {type: "string"}
                     },
                     required: ["vendorId", "messageId", "data"]
                 }
@@ -235,32 +231,33 @@ module.exports = function ({ constants }){
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
-                                        measurand: {type: "string"
-                                    }
-                                }},
-                                required: ["value", "unit", "measurand"],
+                                        measurand: {type: "string"}
+                                    },
+                                    required: ["value", "unit", "measurand"],
+                                },
                                 chargingPower: {
                                     type: "object", 
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
-                                        measurand: {type: "string"
-                                    }
-                                }},
-                                required: ["value", "unit", "measurand"],
+                                        measurand: {type: "string"}
+                                    },
+                                    required: ["value", "unit", "measurand"],
+                                },
+                                
                                 chargedSoFar: {
                                     type: "object", 
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
-                                        measurand: {type: "string"
-                                    }
-                                }},
-                                required: ["value", "unit", "measurand"],
+                                        measurand: {type: "string"}
+                                    },
+                                    required: ["value", "unit", "measurand"]
+                                }
                             }
                         }
                     },
-                    required: ["connectorId", "transactionId", "timestamp", "values"],
+                    required: ["connectorId", "transactionId", "timestamp", "values"]
                 }
             ]
         }  
@@ -269,7 +266,7 @@ module.exports = function ({ constants }){
         return validationErrors
     }
 
-    exports.validateMeterValuesConf = function(){
+    exports.validateMeterValuesConf = function(parsedMessage){
         const meterValuesConfSchema = {
             type: "array",
             items: [

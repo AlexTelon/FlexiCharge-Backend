@@ -120,7 +120,6 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 break
 
             case c.RESERVE_NOW:
-
                 validationErrors = messageValidations.validateReserveNowReq(parsedData)
                 if(validationErrors.length){
                     testValidationSuccessful = false
@@ -185,6 +184,12 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
             case c.STOP_TRANSACTION:
                 if(currentTest == c.REMOTE_STOP_TRANSACTION && testValidationSuccessful){
                     testSuccessful = true
+                }
+                break
+            case c.METER_VALUES:
+                validationErrors = messageValidations.validateMeterValuesConf(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false //THIS WILL NOT FAIL THE TEST, BECAUSE THE TEST IS IN livemetrics_tests.js FILE!!! <3
                 }
                 break
         }

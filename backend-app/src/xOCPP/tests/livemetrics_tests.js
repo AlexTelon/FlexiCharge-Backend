@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const config = require('../../config')
 
-module.exports = function ({ chargerTests, constants, v, func }) {
+module.exports = function ({ chargerTests, constants, v, func, messageValidations }) {
     const c = constants.get()
 
     let currentTest = ""
