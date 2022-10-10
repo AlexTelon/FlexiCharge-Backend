@@ -6,8 +6,9 @@ const swaggerUi = require('swagger-ui-express')
 const path = require('path')
 const yaml = require('yamljs')
 const openApiDocument = yaml.load(path.join(__dirname, '../../docs/openapi.yaml'))
+const errorsMiddleware = require('./middleware/errors.middleware')
 
-module.exports = function({ chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, invoicesRouter, ocppInterface, testRouter }) { //authenticationRouter
+module.exports = function({chargersRouter, transactionsRouter, reservationsRouter, authenticationRouter, adminRouter, chargePointsRouter, invoicesRouter, ocppInterface }) { //authenticationRouter
 
     app.set('views', '/backend-app/src/presentation-layer/views')
     app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
@@ -41,6 +42,8 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
     app.use('/admin', adminRouter)
     app.use('/invoices', invoicesRouter)
     app.use('/tests', testRouter)
+
+    app.use(errorsMiddleware)
 
     return app
 }
