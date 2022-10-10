@@ -7,6 +7,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
 
     let currentTest = ""
     let testSuccessful = false
+    let testValidationSuccessful = true
     
     exports.connectAsChargerSocket = function (chargerId, callback) {
         try {
@@ -32,7 +33,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                         break
                     
                     default:
-                        //Error, do nothing
+                        testSuccessful = false
                         break
                 }    
             })
@@ -43,10 +44,17 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     }
 
     callSwitchForClientMock = function(parsedData, ws){
+        let validationErrors = []
         let jsonResponseMessage = ""
         let jsonRequestMessage = ""
         switch(parsedData[c.ACTION_INDEX]){
             case c.REMOTE_START_TRANSACTION:
+
+                validationErrors = messageValidations.validateRemoteStartTransactionReq(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                }
+
                 jsonResponseMessage = func.buildJSONMessage([ 
                     3,
                     parsedData[c.UNIQUE_ID_INDEX],
@@ -75,6 +83,12 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 break
 
             case c.REMOTE_STOP_TRANSACTION:
+
+                validationErrors = messageValidations.validateRemoteStopTransactionReq(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                }
+
                 jsonResponseMessage = func.buildJSONMessage([ 
                     3,
                     parsedData[c.UNIQUE_ID_INDEX],
@@ -106,6 +120,12 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 break
 
             case c.RESERVE_NOW:
+
+                validationErrors = messageValidations.validateReserveNowReq(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                }
+
                 jsonResponseMessage = func.buildJSONMessage([ 
                     3,
                     parsedData[c.UNIQUE_ID_INDEX],
@@ -119,7 +139,13 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 break
 
             case c.DATA_TRANSFER:
-                if(currentTest == c.BOOT_NOTIFICATION){
+
+                validationErrors = messageValidations.validateDataTransferReq(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                }
+
+                if(currentTest == c.BOOT_NOTIFICATION && testValidationSuccessful){
                     testSuccessful = true
                 }
                 
@@ -144,16 +170,20 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     callResultSwitchForClientMock = function(parsedData, ws){
         switch(parsedData[c.ACTION_INDEX]){
             case c.START_TRANSACTION:
-                if(currentTest == c.REMOTE_START_TRANSACTION){
+                if(currentTest == c.REMOTE_START_TRANSACTION && testValidationSuccessful){
                     testSuccessful = true
                 }
                 
                 break
             case c.BOOT_NOTIFICATION:
+                validationErrors = messageValidations.validateBootNotificationConf(parsedData)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                }
                 break
 
             case c.STOP_TRANSACTION:
-                if(currentTest == c.REMOTE_STOP_TRANSACTION){
+                if(currentTest == c.REMOTE_STOP_TRANSACTION && testValidationSuccessful){
                     testSuccessful = true
                 }
                 break
@@ -172,6 +202,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     exports.testBootNotification = function (ws, callback) {
         currentTest = c.BOOT_NOTIFICATION
         testSuccessful = false
+        testValidationSuccessful = true
 
         console.log("\n========= TESTING BOOT NOTIFICATION... ==========\n")
         
@@ -202,11 +233,12 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     exports.testRemoteStart = function (chargerID, callback) {
         currentTest = c.REMOTE_START_TRANSACTION
         testSuccessful = false
+        testValidationSuccessful = true
 
         console.log("\n========= TESTING REMOTE START... ==========\n")
         ocppInterface.remoteStartTransaction(chargerID, 1, function (error, response) {
             if (error != null) {
-                console.log("\nError: "+error)
+                console.log("\nError: "+ error)
             } else {
                 console.log("\nTest result response: " + response.status+", timestamp: "+response.timestamp+", meterStart: "+response.meterStart)
             }
@@ -220,6 +252,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     exports.testRemoteStop = function (chargerID, callback) {
         currentTest = c.REMOTE_STOP_TRANSACTION
         testSuccessful = false
+        testValidationSuccessful = true
 
         console.log("\n========= TESTING REMOTE STOP... ==========\n")
         ocppInterface.remoteStopTransaction(chargerID, 1, function (error, response) {
@@ -239,6 +272,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
     exports.testReserveNow = function (chargerID, callback) {
         currentTest = c.RESERVE_NOW
         testSuccessful = false
+        testValidationSuccessful = true
 
         console.log("\n========= TESTING RESERVE NOW... ==========\n")
         ocppInterface.reserveNow(chargerID, c.CONNECTOR_ID, c.ID_TAG, c.RESERVATION_ID, c.PARENT_ID_TAG, function (error, response) {
@@ -246,7 +280,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 console.log("\nError updating charger status in DB: " + error)
             } else {
                 console.log("\nTest result response: " + response)
-                if(currentTest == c.RESERVE_NOW && response == c.ACCEPTED){
+                if(currentTest == c.RESERVE_NOW && response == c.ACCEPTED && testValidationSuccessful){
                     testSuccessful = true
                 }
             }
