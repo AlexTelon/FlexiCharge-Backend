@@ -1,3 +1,5 @@
+const config = require("../../config")
+
 module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     const c = constants.get()
     let failedTests = []
@@ -13,20 +15,20 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
 
                 setTimeout(function(){
                     liveMetricsTests.checkUserClientsMemoryLeak(function(userMemorySucceeded, userMemory){
-                        handleError(userMemorySucceeded, userMemory)
+                        handleTestResults(userMemorySucceeded, userMemory)
                     })
                     
-                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
-                        handleError(chargerMemorySucceeded, chargerMemory)
+                    chargerTests.checkChargerClientsMemoryLeak("LiveMetricsTests", function(chargerMemorySucceeded, chargerMemory){
+                        handleTestResults(chargerMemorySucceeded, chargerMemory)
                     })
 
                     setTimeout(function(){
                         callback()
-                    }, 1000)
-                }, 2000)
-            }, 2000)
+                    }, 1000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+                }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
+            }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
-            handleError(meterValuesSucceeded, meterValues)
+            handleTestResults(meterValuesSucceeded, meterValues)
         })
         
     }
@@ -36,26 +38,26 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
         chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(ws){
             
                 chargerTests.testBootNotification(ws, function(bootSucceeded, bootNotification){
-                    handleError(bootSucceeded, bootNotification)
+                    handleTestResults(bootSucceeded, bootNotification)
     
                     chargerTests.testRemoteStart(c.CHARGER_ID, function(startSucceeded, remoteStart){
-                        handleError(startSucceeded, remoteStart)
+                        handleTestResults(startSucceeded, remoteStart)
     
                         chargerTests.testRemoteStop(c.CHARGER_ID, function(stopSucceeded, remoteStop){
-                            handleError(stopSucceeded, remoteStop)
+                            handleTestResults(stopSucceeded, remoteStop)
     
                             chargerTests.testReserveNow(c.CHARGER_ID, function(reserveSucceeded, reserveNow){
-                                handleError(reserveSucceeded, reserveNow)
+                                handleTestResults(reserveSucceeded, reserveNow)
                                 ws.terminate() 
                                 
                                 setTimeout(function(){
-                                    chargerTests.checkChargerClientsMemoryLeak(function(chargerMemorySucceeded, chargerMemory){
+                                    chargerTests.checkChargerClientsMemoryLeak("ChargerTests", function(chargerMemorySucceeded, chargerMemory){
                                         setTimeout(function(){
-                                            handleError(chargerMemorySucceeded, chargerMemory)
+                                            handleTestResults(chargerMemorySucceeded, chargerMemory)
                                             callback(failedTests, successfulTests)
-                                        }, 500)
+                                        }, 500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
                                     }) 
-                                }, 2000)
+                                }, 2000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
                             })
                         })
@@ -67,12 +69,16 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     exports.runTests = function(callback){
         runChargerTests(function(){
             runLiveMetricsTests(function(){
-                callback(failedTests, successfulTests)
+                const results = {
+                    failedTests,
+                    successfulTests
+                }
+                callback(results)
             })
         })
     }
 
-    handleError = function(testSucceeded, test){
+    handleTestResults = function(testSucceeded, test){
         if(testSucceeded) {
             successfulTests.push(test)
         } else {

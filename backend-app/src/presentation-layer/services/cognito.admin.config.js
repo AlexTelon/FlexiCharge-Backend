@@ -227,14 +227,8 @@ class AdminCognitoService {
             UserPoolId: this.userPool,
             GroupName: 'Users'
         }
-
-        if (paginationToken !== undefined) {
-            params = {
-                PaginationToken: paginationToken,
-                Limit: limit,
-                UserPoolId: this.userPool,
-                GroupName: 'Users'
-            }
+        if(paginationToken !== undefined){
+            params.NextToken = paginationToken;
         }
 
         try {
@@ -278,16 +272,10 @@ class AdminCognitoService {
             Limit: limit,
             UserPoolId: this.userPool,
             GroupName: 'Admins'
-        }
-
-        if (paginationToken !== undefined) {
-            params = {
-                PaginationToken: paginationToken,
-                Limit: limit,
-                UserPoolId: this.userPool,
-                GroupName: 'Admins'
-            }
-        }
+        };
+        if(paginationToken !== undefined){
+            params.NextToken = paginationToken;
+        };
 
         try {
             const res = await this.cognitoIdentity.listUsersInGroup(params).promise();

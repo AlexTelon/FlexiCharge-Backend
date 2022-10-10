@@ -16,6 +16,7 @@ const validationSchema = joi.object()
 
         RUN_OCPP_TEST: joi.number().required(),
         LIVEMETRICS_DB_UPDATE_INTERVAL: joi.number().required(),
+        OCPP_TEST_INTERVAL_MULTIPLIER: joi.number().required(),
         BYPASS_KLARNA: joi.number().required()
     }).unknown();
 

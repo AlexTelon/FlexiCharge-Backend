@@ -1,5 +1,5 @@
-const { default: test } = require('node:test')
 const WebSocket = require('ws')
+const config = require('../../config')
 
 
 module.exports = function ({ ocppInterface, constants, v, func, messageValidations }) {
@@ -160,12 +160,12 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
         }
     }
 
-    exports.checkChargerClientsMemoryLeak = function(callback){
+    exports.checkChargerClientsMemoryLeak = function(origin, callback){
         if(v.getLengthConnectedChargerSockets() || v.getLengthChargerSerials() || v.getLengthChargerIDs()){
             console.log("(MEMORY TEST FAILED) Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
-            callback(false, c.CHARGER_MEMORY_LEAK)
+            callback(false, c.CHARGER_MEMORY_LEAK + " : " + origin)
         } else {
-            callback(true, c.CHARGER_MEMORY_LEAK)
+            callback(true, c.CHARGER_MEMORY_LEAK + " : " + origin)
         }
     }
 
@@ -196,12 +196,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
 
         setTimeout(function(){
             callback(testSuccessful, c.BOOT_NOTIFICATION)
-        }, 1500)
-
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.BOOT_NOTIFICATION 
-        //     callback(error)
-        // })
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
     
     exports.testRemoteStart = function (chargerID, callback) {
@@ -219,12 +214,7 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
 
         setTimeout(function(){
             callback(testSuccessful, c.REMOTE_START_TRANSACTION)
-        }, 1500)
-
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.REMOTE_START_TRANSACTION 
-        //     callback(error)
-        // })
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     exports.testRemoteStop = function (chargerID, callback) {
@@ -242,12 +232,8 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
 
         setTimeout(function(){
             callback(testSuccessful, c.REMOTE_STOP_TRANSACTION)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.REMOTE_STOP_TRANSACTION
-        //     callback(error)
-        // })
     }
 
     exports.testReserveNow = function (chargerID, callback) {
@@ -268,18 +254,14 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
 
         setTimeout(function(){
             callback(testSuccessful, c.RESERVE_NOW)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
 
-        // testIsSuccesful(function(result){
-        //     const error = result ? null : c.RESERVE_NOW
-        //     callback(error)
-        // })
     }
 
     testIsSuccesful = function(callback){
         setTimeout(function(){
             callback(testSuccessful)
-        }, 1500)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     return exports

@@ -34,9 +34,9 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
 
         if(config.RUN_OCPP_TEST){
             setTimeout(function(){
-                tester.runTests(function(failedTests, successfulTests){
-                    console.log('\nFAILED OCPP TESTS: ', failedTests, '\n')
-                    console.log('\nSUCCESSFUL OCPP TESTS: ', successfulTests, '\n')
+                tester.runTests(function(results){
+                    console.log('\nFAILED OCPP TESTS: ', results.failedTests, '\n')
+                    console.log('\nSUCCESSFUL OCPP TESTS: ', results.successfulTests, '\n')
                 })
             }, 2000); 
         }
