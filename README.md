@@ -15,25 +15,9 @@ Needed to start app.
 - cd /FlexiCharge-Backend/backend-app
 - npm install "package name"
 
-# Access database
-- [Database Documentation](backend-app/src/data-access-layer/README.md)
-- Add awilix variable to the module.exports function. 
-```
-module.exports = function({ databaseInterfaceCharger}) {
+# Database
+- [Documentation](backend-app/src/data-access-layer/README.md)
 
-}
-```
-- Then you can access the methods. e.g. "getChargers". 
-```
-module.exports = function({ databaseInterfaceCharger}) {
-
-   databaseInterfaceCharger.getChargers(function(errors, chargers) {
-   
-
-   })
-
-}
-```
 # Connect to local database
   - Host: 127.0.0.1
   - Port: 5432
@@ -62,12 +46,6 @@ module.exports = function({ databaseInterfaceCharger}) {
   - getReservationForCharger(chargerId: int, function(errors, reservations))
   - removeReservation(reservationId: int, function(errors, reservationRemoved: bool))
 
-
-## Database Interface Errorcodes and explanation
-- internalError: General internal error
-- dbError: General database error
-- dbForeignKeyConstraintError: Specified foreign key doesn´t match a primary key
-- dbUniqueConstraintError: A unique constraint has been violated
 
 
 ## OCPP 
