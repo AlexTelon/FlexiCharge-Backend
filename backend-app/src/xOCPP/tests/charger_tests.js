@@ -150,7 +150,6 @@ module.exports = function ({ ocppInterface, constants, v, func, messageValidatio
                 
                 break
             case c.BOOT_NOTIFICATION:
-                messageValidations.checkBootNotificationConf(parsedData)
                 break
 
             case c.STOP_TRANSACTION:

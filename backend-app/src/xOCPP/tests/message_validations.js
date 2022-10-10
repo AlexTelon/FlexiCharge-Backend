@@ -2,41 +2,31 @@ const Ajv = require("ajv")
 const ajv = new Ajv({strict: false, strictRequired: true})
 
 module.exports = function ({ constants }){
-    let errors = [] 
 
     /**
-     * THESE VALIDATION FUNCTIONS SHOULD BE ABLE TO VALIDATE PRODUCTION MESSAGES, IF ONE WISHES TO DO SO
+     * THESE VALIDATION FUNCTIONS SHOULD BE ABLE TO VALIDATE PRODUCTION MESSAGES AS WELL, IF ONE WISHES TO DO SO
      */
 
-    
+    getMessageErrorsWithSchema = function(parsedMessage, schema, messageActionString){
+        console.log('\n---------- Validating ' + messageActionString + ' ----------')
 
-        
-        // const testSchema = {
-        //     type: "array",
-        //     items: [
-        //         {"type": "string"},
-        //         {"type": "integer"}
-        //     ],
-        //     additionalItems: false
-        // }
+        const validate = ajv.compile(schema)
+        const valid = validate(parsedMessage)
 
-        // const testObject = [
-        //     "hejsan",
-        //     2
-        // ]
+        console.log('MESSAGE: ', parsedMessage)
+        console.log('MESSAGE IS VALID: ', valid)
 
-        // const validate = ajv.compile(testSchema)
-        // const valid = validate(testObject)
+        if(!valid){
+            console.log('======= ' + messageActionString + ' VALIDATION ERRORS: =======\n', validate.errors)
+            console.log('Compared schema:', schema)
+            return validate.errors
+        } else {
+            console.log('\n---------- ' + messageActionString + ' passed validation ----------\n')
+            return []
+        }
+    }
 
-        // console.log('!!!!!!!!MESSAGE: ', testObject)
-        // console.log('RESULT IS VALID?: ', valid)
-
-        // if(!valid){
-        //     console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        // }
-    
-
-    exports.checkBootNotificationConf = function (parsedMessage) {
+    exports.validateBootNotificationConf = function (parsedMessage) {
         const bootNotificationConfSchema = {
             type: "array",
             items: [
@@ -55,19 +45,11 @@ module.exports = function ({ constants }){
             ]
         }
 
-        const validate = ajv.compile(bootNotificationConfSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID?: ', valid)
-
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
-        
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, bootNotificationConfSchema, 'BootNotificationConf')
+        return validationErrors
     }
 
-    exports.checkStartTransactionReq = function (parsedMessage) {
+    exports.validateStartTransactionReq = function (parsedMessage) {
         const StartTransactionReqSchema = {
             type: "array",
             items: [
@@ -87,18 +69,11 @@ module.exports = function ({ constants }){
             ]
         }        
 
-        const validate = ajv.compile(StartTransactionReqSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('!!!!!!!!MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID?: ', valid)
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
-
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, StartTransactionReqSchema, 'StartTransactionReq')
+        return validationErrors
     }
 
-    exports.checkStartTransactionConf = function (parsedMessage) {
+    exports.validateStartTransactionConf = function (parsedMessage) {
         const remoteStartResSchema = {
             type: "array",
             items: [
@@ -116,19 +91,12 @@ module.exports = function ({ constants }){
             ]
         }
 
-        const validate = ajv.compile(remoteStartResSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, remoteStartResSchema, 'StartTransactionConf')
+        return validationErrors
     }
 
 
-    exports.checkRemoteStartTransactionReq = function (parsedMessage) {
+    exports.validateRemoteStartTransactionReq = function (parsedMessage) {
         const remoteStartReqSchema = {
             type: "array",
             items: [
@@ -146,19 +114,12 @@ module.exports = function ({ constants }){
             ]
         }
 
-        const validate = ajv.compile(remoteStartReqSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, remoteStartReqSchema, 'RemoteStartTransactionReq')
+        return validationErrors
     }
 
-    exports.checkRemoteStopTransactionReq = function (parsedMessage) {
-        const remoteStartReqSchema = {
+    exports.validateRemoteStopTransactionReq = function (parsedMessage) {
+        const remoteStopReqSchema = {
             type: "array",
             items: [
                 {type: "integer"},
@@ -174,20 +135,11 @@ module.exports = function ({ constants }){
             ]
         }
 
-        const validate = ajv.compile(remoteStartReqSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
-        
-        //TODO: IMPLEMENT!!!!!!!
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, remoteStopReqSchema, 'RemoteStopTransactionReq')
+        return validationErrors
     }
 
-    exports.checkStopTransactionConf = function(parsedMessage){
+    exports.validateStopTransactionConf = function(parsedMessage){
         const stopTransactionConfSchema = {
             type: "array",
             items: [
@@ -204,18 +156,12 @@ module.exports = function ({ constants }){
             ]
         }
         
-        const validate = ajv.compile(stopTransactionConfSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('!!!!!!!!MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, stopTransactionConfSchema, 'StopTransactionConf')
+        return validationErrors
     }
 
 
-    exports.checkReserveNowReq = function (parsedMessage) {
+    exports.validateReserveNowReq = function (parsedMessage) {
         const ReserveNowReqSchema = {
             type: "array",
             items: [
@@ -235,17 +181,11 @@ module.exports = function ({ constants }){
             ]
         }        
 
-        const validate = ajv.compile(ReserveNowReqSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('!!!!!!!!MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, ReserveNowReqSchema, 'ReserveNowReq')
+        return validationErrors
     }
 
-    exports.checkDataTransferReq = function (parsedMessage) {
+    exports.validateDataTransferReq = function (parsedMessage) {
         const dataTransferReqSchema = {
             type: "array",
             items: [
@@ -270,18 +210,12 @@ module.exports = function ({ constants }){
             ]
         }        
 
-        const validate = ajv.compile(dataTransferReqSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('!!!!!!!!MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, dataTransferReqSchema, 'DataTransferReq')
+        return validationErrors
     }
 
-    exports.checkMeterValuesReq = function (parsedMessage) {
-        const meterValuesSchema = {
+    exports.validateMeterValuesReq = function (parsedMessage) {
+        const meterValuesReqSchema = {
             type: "array",
             items: [
                 {type: "integer"},
@@ -330,26 +264,23 @@ module.exports = function ({ constants }){
                 }
             ]
         }  
-       
 
-        const validate = ajv.compile(dataTransferConfSchema)
-        const valid = validate(parsedMessage)
-
-        console.log('!!!!!!!!MESSAGE: ', parsedMessage)
-        console.log('RESULT IS VALID: ', valid)
-        if(!valid){
-            console.log('======= MESSAGE VALIDATION ERRORS: ======= ', validate.errors)
-        }
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, meterValuesReqSchema, 'MeterValuesReq')
+        return validationErrors
     }
 
-    exports.checkMeterValuesConf = function(){
-        
-    }
-
-    handleError = function(error){
-        if(error){
-            errors.push(error)
+    exports.validateMeterValuesConf = function(){
+        const meterValuesConfSchema = {
+            type: "array",
+            items: [
+                {type: "integer"},
+                {type: "string"},
+                {type: "string"}
+            ]
         }
+
+        const validationErrors = getMessageErrorsWithSchema(parsedMessage, meterValuesConfSchema, 'MeterValuesConf')
+        return validationErrors
     }
 
     return exports
