@@ -1,11 +1,12 @@
 const WebSocket = require('ws')
 const config = require('../../config')
 
-module.exports = function ({ chargerTests, constants, v, func }) {
+module.exports = function ({ chargerTests, constants, v, func, messageValidations }) {
     const c = constants.get()
 
     let currentTest = ""
     let testSuccessful = false
+    let testValidationSuccessful = true
 
     connectAsUserSocket = function (callback) {
         try {
@@ -20,12 +21,15 @@ module.exports = function ({ chargerTests, constants, v, func }) {
             ws.on('message', function(message){
                 parsedMessage = JSON.parse(message)
                 console.log('USER CLIENT MOCK RECEIVED: ', parsedMessage)
-
-                if(parsedMessage[2] == c.METER_VALUES && currentTest == c.METER_VALUES){
-                    console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
-                    testSuccessful = true
-                }
-                    
+                const validationErrors = messageValidations.validateMeterValuesReq(parsedMessage)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
+                } else {
+                    if(parsedMessage[2] == c.METER_VALUES && currentTest == c.METER_VALUES){
+                        console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
+                        testSuccessful = true
+                    }
+                }       
             })
 
             ws.on('close', function disconnection(){

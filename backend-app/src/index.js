@@ -49,6 +49,7 @@ container.register({
     userClientHandler: awilix.asFunction(require('./xOCPP/user_client_handler')),
     chargerTests: awilix.asFunction(require('./xOCPP/tests/charger_tests')),
     liveMetricsTests: awilix.asFunction(require('./xOCPP/tests/livemetrics_tests')),
+    messageValidations: awilix.asFunction(require('./xOCPP/tests/message_validations')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),
