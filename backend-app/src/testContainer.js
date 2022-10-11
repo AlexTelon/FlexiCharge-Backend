@@ -1,5 +1,4 @@
 const awilix = require("awilix");
-const { add } = require("nodemon/lib/rules");
 
 function chargePointRepositoryMock() {
     const defaultItem = {

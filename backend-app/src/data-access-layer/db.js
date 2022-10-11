@@ -373,7 +373,7 @@ const UserInvoices = sequelize.define('UserInvoices', {
 
 newElectricityTariffs.removeAttribute('id');
 
-klarnaPayments.belongsTo(newTransactions, { foreignKey: 'transactionID' })
+newKlarnaPayments.belongsTo(newTransactions, { foreignKey: 'transactionID' })
 newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
 newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
 newChargers.belongsTo(newChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade'})
@@ -642,22 +642,22 @@ sequelize.sync().then(function () {
             
 
             //Fill the ElectricityTariff table with random data
-            const generateDays = 61; //Days to generate prices from startDate
-            const startDate = new Date(2022, 8, 1); //Sets the start point
+            // const generateDays = 61; //Days to generate prices from startDate
+            // const startDate = new Date(2022, 8, 1); //Sets the start point
 
-            let iterTime = startDate.getTime() //Iteration time
-            function randomPrice(min, max) {
-                return (Math.random() * (max - min) + min).toFixed(2)
-            }
-            // Iterates through each hour and sets price+currency from startDate
-            for (let hour = 0; hour < 24 * generateDays; hour++) {
-                iterTime += 1*60*60*1000
-                newElectricityTariffs.create({
-                    date: iterTime,
-                    price: randomPrice(1, 6),
-                    currency: "SEK"
-                })
-            }
+            // let iterTime = startDate.getTime() //Iteration time
+            // function randomPrice(min, max) {
+            //     return (Math.random() * (max - min) + min).toFixed(2)
+            // }
+            // // Iterates through each hour and sets price+currency from startDate
+            // for (let hour = 0; hour < 24 * generateDays; hour++) {
+            //     iterTime += 1*60*60*1000
+            //     newElectricityTariffs.create({
+            //         date: iterTime,
+            //         price: randomPrice(1, 6),
+            //         currency: "SEK"
+            //     })
+            // }
         }
     })
 })
