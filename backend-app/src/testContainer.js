@@ -283,9 +283,6 @@ function electricityTarriffRepositoryMock() {
         getElectricityTariffsOrderByDate: function (callback) {
             callback([], [defaultItem])
         },
-        generateElectricityTariffs: function (offset, callback) {
-            callback([], [defaultItem])
-        },
         updateElectricityTariff: function (oldDate, newDate, callback) {
             callback([], {
                 ...defaultItem,

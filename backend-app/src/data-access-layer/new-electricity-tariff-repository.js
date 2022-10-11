@@ -39,34 +39,6 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.generateElectricityTariffs = function (offset, callback) {
-        const generateDays = 30
-        const maxPrice = 6.0
-        const minPrice = 0.5
-        offsetDate = new Date()
-        offsetDate.setTime(offsetDate.getTime() + offset * 60 * 60 * 1000)
-        const startDate = new Date(offsetDate)
-        startDate.setMinutes(0, 0, 0)
-        let iterationTime = startDate.getTime()
-        const promises = []
-
-        for (var hour = startDate.getHours(); hour < 24 * generateDays; hour++) {
-            price = (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2)
-            promises.push(databaseInit.newElectricityTarriff.create({
-                date: new Date(iterationTime).toISOString(),
-                price: price,
-                currency: "SEK"
-            }))
-            iterationTime += 1 * 60 * 60 * 1000
-        }
-        Promise.all(promises).then(function (tariffs) {
-            callback([], tariffs)
-        }).catch(e => {
-            console.log(e)
-            callback(e, [])
-        })
-    }
-
     exports.updateElectricityTariff = function (oldDate, newDate, callback) {
         databaseInit.newElectricityTarriff.update({
             date: newDate

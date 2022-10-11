@@ -5,6 +5,34 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
         newDataAccessLayerElectricityTariffs.getElectricityTariffsOrderByDate(callback)
     }
 
+    exports.generateElectricityTariffs = function (offset, callback) {
+        const generateDays = 30
+        const maxPrice = 6.0
+        const minPrice = 0.5
+        offsetDate = new Date()
+        offsetDate.setTime(offsetDate.getTime() + offset * 60 * 60 * 1000)
+        const startDate = new Date(offsetDate)
+        startDate.setMinutes(0, 0, 0)
+        let iterationTime = startDate.getTime()
+        const promises = []
+
+        for (var hour = startDate.getHours(); hour < 24 * generateDays; hour++) {
+            price = (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2)
+            promises.push(newDataAccessLayerElectricityTariffs.addElectricityTariff({
+                date: new Date(iterationTime).toISOString(),
+                price: price,
+                currency: "SEK"
+            }))
+            iterationTime += 1 * 60 * 60 * 1000
+        }
+        Promise.all(promises).then(function (tariffs) {
+            callback([], tariffs)
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
+
     exports.getCurrentElectricityTariff = function (callback) {
         let currentDate = new Date()
         currentDate.setMinutes(0, 0, 0)
@@ -19,7 +47,7 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
                     callback([], tariff)
                 } else {
                     //No tariffs found for this date, call the function to generate a new set.
-                    newDataAccessLayerElectricityTariffs.generateElectricityTariffs(0, function (error, result) {
+                    exports.generateElectricityTariffs(0, function (error, result) {
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function (errorCode) {
                                 callback(errorCode, [])
@@ -45,6 +73,8 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
             }
         })
     }
+
+    
 
     exports.updateElectricityTariff = function (oldDate, newDate, callback) {
         // TODO add validation for Dates!
