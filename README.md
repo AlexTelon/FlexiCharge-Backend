@@ -83,6 +83,13 @@ module.exports = function({ databaseInterfaceCharger}) {
 
   Both the charger tests and live metrics tests are fully automated, meaning that before the tests run, corresponding "charger client socket mock" and "user client socket mock" are created with hardcoded responses for the server.
 
+  testBootNotificaiton is a request sent from the charger containing information about that charger.
+  test RemoteStart/RemoteStop/ReserveNow are conversations iniated by the server.
+
   - testBootNotificaiton is a request sent from the charger containing information about that charger.
   - test RemoteStart/RemoteStop/ReserveNow are conversations iniated by the server.
   - testMeterValues is a request initiated by a charger (in practice this is always prefaced with a StartTransaction request and confirmation). The request is then passed on to a user socket, and the charger also gets a MeterValues confirmation in return.
+  
+## HTTP
+
+[HTTP documentation](./backend-app/docs/http/README.md)
