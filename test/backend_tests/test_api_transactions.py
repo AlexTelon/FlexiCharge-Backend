@@ -4,7 +4,7 @@ import pytest
 #TRANSACTIONS_API_URL = "http://18.202.253.30:8080/transactions/"
 
 # Local Hosted URL
-TRANSACTIONS_API_URL = "http://host.docker.internal:8080/transactions/"
+TRANSACTIONS_API_URL = "http://localhost:8080/transactions/"
 
 
 class TestApiTransactions:

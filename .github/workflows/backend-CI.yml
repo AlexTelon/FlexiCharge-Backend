@@ -1,6 +1,9 @@
 name: Backend CI
 
 on:
+ # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# Automatically on push or pull request to main
   push:
     branches: [ "main" ]
   pull_request:
@@ -8,11 +11,11 @@ on:
 
 jobs:
 
-  Start-Backend-App:
+  Test-Backend-App:
 
     runs-on: ubuntu-latest
     #Environment used to access secrets
-    environment: ENVIRONMENT_NAME_GOES_HERE
+    #environment: ENVIRONMENT_NAME_GOES_HERE
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout Branch
@@ -29,7 +32,9 @@ jobs:
         envkey_PORT: 8080
         envkey_RUN_OCPP_TEST: 0
         envkey_USE_LOCAL_DATABASE: 1
-        
+        envkey_OCPP_TEST_INTERVAL_MULTIPLIER: 1
+        envkey_BYPASS_KLARNA: 1
+        envkey_LIVEMETRICS_DB_UPDATE_INTERVAL: 10000
         directory: backend-app/
         
         # When secrets exist use these calls to obfuscate
@@ -49,34 +54,29 @@ jobs:
         envkey_ADMIN_POOL: eu-west-1_tPq5id1uh
         envkey_ADMIN_POOL_ID: mq90k6fets8944tapp6tjgme8
         envkey_ADMIN_POOL_SECRET: 1nqmrsp2rmf6dfplcu5v9sfho8sque1pn2a33b9vr147bkobpr2v
-
+    
     # Run the backend app
     # & is used to signal that this task will keep running, as to not get stuck on this step
     - name: launch docker container
-      run: docker-compose up &
+      run: | 
+       docker-compose build
+       docker-compose up &
+       
       
-  Run-Backend-Tests:
-    # Runs sequentially to starting the back-end app
-    needs: Start-Backend-App
-    runs-on: ubuntu-latest
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
-    
-    - name: Execute tests
-    
-    # Runs a set of commands using the runners shell
+    # Runs sequentially to starting the back-end app    
+    - name: Install requirements
+    # Installs the requirements
       run: |
         export PYTHONPATH=.
         pip install -r ./test/requirements.txt
       
+    # Executes the tests within the /backend_tests folder 
     - name: Run PyTest
-      run: |
-        python -m pytest ./test/backend_tests --junit-xml=report.xml
+      run: python -m pytest ./test/backend_tests --junit-xml=report.xml
       
+    # Displays a summary and overlook of test cases
     - name: Publish test result
       uses: mikepenz/action-junit-report@v3
       if: always() # always run even if the previous step fails
       with:
         report_paths: '**/*.xml'
-        
