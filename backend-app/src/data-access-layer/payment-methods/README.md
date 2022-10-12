@@ -25,7 +25,7 @@ authorization_token can only be accessed via the Klarna Widget (Postman requests
 ### How to add payment methods
 In the event that a new payment method is to be added to FlexiCharge, we strongly advise following the architecture structure <a href="#architecture">shown above</a>.
 
-Below is an example of implmenting Swish as a new payment method:
+Below is an example of implementing Swish as a new payment method:
  1. Create a new SwishPayments table, which holds Swish related information, e.g "order_id" of a Swish transaction, or perhaps the "user_id" of the Swish user (This all depends on how how Swish's API is built). 
  2. Create a .js file inside the "/payment-methods/" folder that handles all Swish API calls.
  3. Create a repository file inside "/data-access-layer/" folder communicates with the new SwishPayments table.
@@ -37,7 +37,7 @@ To implement:
 
 1. What if Klarna is not available
 
-- Double check with PM for requirements
+    - Double check with PM for requirements
 
   
 
