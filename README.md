@@ -78,3 +78,7 @@ module.exports = function({ databaseInterfaceCharger}) {
 
   testBootNotificaiton is a request sent from the charger containing information about that charger.
   test RemoteStart/RemoteStop/ReserveNow are conversations iniated by the server.
+
+## HTTP
+
+[HTTP documentation](./backend-app/docs/http/README.md)
