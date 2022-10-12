@@ -30,14 +30,14 @@ Details from Cognito should be hidden from front-end teams. This means marshalli
 
 ## HTTP Responses
 
-There was technical debt. Lots of responses are 400 when they instead should be 401, 402 etc. To improve the error responses we have created error classes that can be used in `database-interface` layer. For now they are used in invoices interface, but should also be added to the rest.
+There was technical debt. Lots of responses are 400 when they instead should be 401, 404 etc. To improve the error responses we have created error classes that can be used in `database-interface` layer. For now they are used in invoices interface, but should also be added to the rest.
 
 
 
 ## Invoices
 
 ### What we achieved
-  * Invoices are manually generated from a [template javascript file](../src/database-Interface/utils/invoices.js), using [pdfkit-table](https://www.npmjs.com/package/pdfkit-table). 
+  * Invoices are manually generated from a [template javascript file](https://github.com/knowitrickard/FlexiCharge-Backend/blob/http-team-docs/backend-app/src/database-Interface/utils/invoices.js), using [pdfkit-table](https://www.npmjs.com/package/pdfkit-table). 
   * The required endpoints for fetching invoices.
 
 | Method and URI                | Description   |
