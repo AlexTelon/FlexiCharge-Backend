@@ -74,21 +74,5 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
         })
     }
 
-    
-
-    exports.updateElectricityTariff = function (oldDate, newDate, callback) {
-        // TODO add validation for Dates!
-
-        newDataAccessLayerElectricityTariffs.updateElectricityTariff(oldDate, newDate, function (error, electricityTariff) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function (errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], electricityTariff)
-            }
-        })
-    }
-
     return exports
 }

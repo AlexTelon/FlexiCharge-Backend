@@ -63,8 +63,6 @@
 	- Purpose : Generates random price for each hour of a month.
 - getCurrentElectricityTariff
 	- Purpose : Looks for ElectricityTariff price, if no price has been generated for the current time, then we run generateElectricityTariff().
-- updateElectricityTariff 
-		- Purpose : Updates the date of a ElectricityTariff.
   ### new-database-interface-klarna-payments.js
   - getNewKlarnaPaymentSession
 	  - Purpose : Creates a new Klarna payment session by contacting the Klarna API. Both the returned session_id and client_token will be saved to the database by calling addKlarnaPayment().

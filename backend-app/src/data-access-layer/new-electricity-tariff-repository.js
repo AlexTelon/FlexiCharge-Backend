@@ -39,17 +39,6 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.updateElectricityTariff = function (oldDate, newDate, callback) {
-        databaseInit.newElectricityTarriff.update({
-            date: newDate
-        }, {
-            where: {
-                date: oldDate
-            }
-        }).then(electricityTariff => callback([], electricityTariff))
-            .catch(error => callback(error, []))
-    }
-
     exports.removeElectricityTariff = function (date, callback) {
         databaseInit.newElectricityTarriff.destroy({
             where: {

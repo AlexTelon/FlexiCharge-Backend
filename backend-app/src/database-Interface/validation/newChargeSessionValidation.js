@@ -45,5 +45,49 @@ module.exports = function({}){
         return validationErrors
     }
 
+    exports.getChargeSessionsValidation = function(chargerID) {
+        const validationErrors = []
+        
+        if(chargerID == null || chargerID == undefined){
+            validationErrors.push("invalidChargeSessionID")
+        }
+
+        return validationErrors
+    }
+
+    exports.endChargeSessionValidation = function(chargeSessionID) {
+        const validationErrors = []
+        
+        if(chargeSessionID == null || chargeSessionID == undefined){
+            validationErrors.push("invalidChargeSessionID")
+        }
+
+        return validationErrors
+    }
+
+    exports.calculateTotalChargePriceValidation = function(chargeSessionID) {
+        const validationErrors = []
+        
+        if(chargeSessionID == null || chargeSessionID == undefined){
+            validationErrors.push("invalidChargeSessionID")
+        }
+
+        return validationErrors
+    }
+
+    exports.updateMeterStartValidation = function(chargeSessionID, meterStart) {
+        const validationErrors = []
+        
+        if(chargeSessionID == null || chargeSessionID == undefined){
+            validationErrors.push("invalidChargeSessionID")
+        }
+
+        if (meterStart == null || meterStart == undefined || typeof meterStart !== 'number') {
+            validationErrors.push("invalidMeterValue")
+        }
+
+        return validationErrors
+    }
+
     return exports
 }

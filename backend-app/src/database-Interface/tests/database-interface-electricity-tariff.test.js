@@ -29,21 +29,3 @@ describe("getCurrentElectricityTariff", () => {
         })
     });
 });
-
-describe("updateElectricityTariff", () => {
-    test("Update electricityTariff", (done) => {
-        const dateToday = new Date(new Date())
-        const oldDate = null
-        const newDate = dateToday
-        newDatabaseInterfaceElectricityTariffs.updateElectricityTariff(oldDate, newDate, (error, tariffs) => {
-            if (Object.keys(error).length > 0) {
-                done(error);
-                return;
-            }
-
-            expect(tariffs.newDate).toBe(newDate)
-            done()
-        })
-    });
-});
-
