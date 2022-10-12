@@ -47,6 +47,7 @@ exports.isValidDateFormatYearAndMonth = (date) => {
   ];
 
   return (
+    invoiceDate.length === 2 &&
     invoiceDate.at(0).length === 4 &&
     invoiceDate.at(0).match(/^[0-9]+$/) != null &&
     months.includes(invoiceDate.at(1))
