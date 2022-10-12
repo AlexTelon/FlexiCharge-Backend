@@ -28,21 +28,6 @@ module.exports = function({ chargersRouter, transactionsRouter, reservationsRout
         next()
     })
 
-    // TODO: Remove before production
-    /*setTimeout(function(){
-        newDatabaseInterfaceChargeSessions.addChargeSession(100001, "testing@gmail.com", true, null, "Klarna", null, function(er1, chargeSessionID){
-            newDatabaseInterfaceTransactions.getTransactionForChargeSession(chargeSessionID, null, function(er2, transaction){
-                newDatabaseInterfaceChargeSessions.updateChargingState(chargeSessionID, 80, 15, null, function(er3, updated){
-
-                    setTimeout(function(){
-                        newDatabaseInterfaceChargeSessions.endChargeSession(chargeSessionID, null, function(er4, updatedChargeSession){
-                        })
-                    }, 1000)
-                })
-            })
-        })
-    }, 1500) */
-
     app.get('/', (req, res) => {
         res.redirect('/swagger')
     })
