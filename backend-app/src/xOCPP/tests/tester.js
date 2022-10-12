@@ -67,6 +67,8 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     }
 
     exports.runTests = function(callback){
+        failedTests = []
+        successfulTests = []
         runChargerTests(function(){
             runLiveMetricsTests(function(){
                 const results = {
