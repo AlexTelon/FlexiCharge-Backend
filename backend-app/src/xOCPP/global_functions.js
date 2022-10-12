@@ -19,7 +19,9 @@ module.exports = function ({ v, constants }) {
         }
     }
     
-    
+    /**
+     * uniqueID is only meant for the server to keep track of its conversations, and is not something meand for authentication
+     */
     exports.getUniqueId = function (chargerID, action) {
         
         return chargerID.toString() + action.toString() + Date.now().toString()

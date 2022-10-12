@@ -82,9 +82,6 @@ module.exports = function ({ }) {
     //USER IDS 
     //Array with all the user ids under transactionIDs index
     exports.addUserIDWIthTransactionID = function(userID, transactionID){
-        // for(const transactionIDIndex of transactionIDArray){
-        //     userIDs[transactionIDIndex] = userID
-        // }
         userIDs[transactionID] = userID
     }
     exports.getUserIDWithTransactionID = function(transactionID){
@@ -142,21 +139,19 @@ module.exports = function ({ }) {
     }
 
 
-    //USER IDS 
-    //Array with all the user ids
-    // exports.getUserIDs = function () {
-    //     return userIDs
-    // }
-    // exports.addUserID = function (userID) {
-    //     userIDs.push(userID)
-    // }
-    // exports.removeUserID = function (userID) {
-    //     const userIDIndex = userIDs.indexOf(userID)
-    //     userIDs.splice(userIDIndex)
-    // }
-
     //CALLBACKS
     //get callback with some type of id
+    /**
+     * These functions store actual callbacks. This is because 
+     * when an API endpoint is called (start transaction, for example), 
+     * the corrosponding ocpp code will eventually be called. When this happens,
+     * the server send something to the corrosponding charger (i.e remote start transaction).
+     * When this happens, the "trail" for the callback will end there when that
+     * specific message is sent. Since we dont want to call the callback 
+     * until the message conversation between charger and server is finished, 
+     * we store the callback instead, under a uniqueID. Then, when the conversation is finished, 
+     * the callback is retrieved and called.
+     */
     exports.getCallback = function (id) {
         return callbacks[id]
     }
