@@ -30,7 +30,7 @@ Details from Cognito should be hidden from front-end teams. This means marshalli
 
 ## HTTP Responses
 
-There was technical debt. Lots of responses are 400 when they instead should be 401, 402 etc. To improve the error responses we have created error classes that can be used in `databasebase-interface` layer. For now they are used in invoices interface, but should also be added to the rest.
+There was technical debt. Lots of responses are 400 when they instead should be 401, 402 etc. To improve the error responses we have created error classes that can be used in `database-interface` layer. For now they are used in invoices interface, but should also be added to the rest.
 
 
 
