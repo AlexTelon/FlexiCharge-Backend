@@ -83,7 +83,6 @@ jobs:
       run:
         npm test --prefix ./backend-app
 
-      
     # Displays a summary and overlook of test cases
     - name: Publish test result
       uses: mikepenz/action-junit-report@v3
