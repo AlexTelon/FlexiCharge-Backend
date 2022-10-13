@@ -77,7 +77,9 @@ jobs:
     #  run: python -m pytest ./test/backend_tests --junit-xml=report.xml
 
     - name: Install Jest
-      run: npm i jest
+      run: |
+       npm i jest
+       npm i jest-junit
 
     - name: Run unit tests
       run:
