@@ -57,3 +57,18 @@ There was technical debt. Lots of responses are 400 when they instead should be 
   2. Implement endpoints for creating and updating invoices. Should be straightforward if the database team adds convenient queries for creating and updating invoices.
   3. Store invoices in [AWS S3 Bucket](https://aws.amazon.com/s3/) in PDF format. Store an invoice once on creation and render the file in `GET /invoices/:invoiceID`
   4. Keep in mind that an admin should be able to modify an existing invoice. It is up to you and Knowit to decide if you want to keep the old invoice file or replace it with the modified one.
+
+  ## Testing
+
+  ### Jest
+  The testing framework that is used for unit testing is Jest. In order to use this framework you need to do the following:
+  * Install Jest by running **npm install --save-dev jest**
+  * Run a terminal and stand in the folder **FlexiCharge-Backend/backend-app**.
+  * Run the command **npm test**
+
+  Another way is to use the command **npm test --prefix backend-app**. This prefixes the **npm test** with a path where it should be run, you can read more about this [here](https://docs.npmjs.com/cli/v7/using-npm/config#prefix). 
+  
+  [Jest - Getting started](https://jestjs.io/docs/getting-started).
+  
+  Regression tests have been written for the Database Validation functions. 
+  A GitHub action is set up to run our full test suite when 
