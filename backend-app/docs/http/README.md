@@ -14,8 +14,7 @@ During the fall of 2022 we used this DoD:
 
 ## Swagger Docs
 
-Other teams will constantly be harassing you. To avoid this, Swagger is used. Make sure that the documentation there (live server) is correct so that any front-end teams can use the "Try It Out" functionality.
-This avoids many meeting hours.
+Swagger is used, it's important that the documentation there (live server) is correct so that any front-end teams can use the "Try It Out" functionality.
 
 
 
