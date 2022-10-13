@@ -6,7 +6,7 @@ on:
 # Automatically on push or pull request to main
 # Add more branches by separating with comma
   push:
-    branches: [ "main", "tests-workflow-implementation", "feature-create-junit-report" ]
+    branches: [ "main", "tests-workflow-implementation" ]
     
   pull_request:
     branches: [ "main" ]
