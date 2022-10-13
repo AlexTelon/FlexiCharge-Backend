@@ -110,6 +110,11 @@ module.exports = function({}){
             CHARGER_ID: 100002,
             USER_ID: "1",
             TRANSACTION_ID: 1,
+
+            /** TEST ERROR CODES */
+            USER_MEMORY_LEAK: 'UserMemoryLeak',
+            CHARGER_MEMORY_LEAK: 'ChargerMemoryLeak',
+
         }
 
         return constants

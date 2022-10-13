@@ -37,9 +37,10 @@ container.register({
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
     //Validation
-    chargerValidation: awilix.asFunction(require("./database-Interface/validation/chargerValidation")),
+    chargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
     transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
     reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
+    invoicesValidation: awilix.asFunction(require('./database-Interface/validation/invoices-validation')),
     chargePointValidation: awilix.asFunction(require("./database-Interface/validation/chargePointValidation")),
     //New Validation
     newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargerValidation")),
@@ -48,6 +49,7 @@ container.register({
     newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
     newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
     newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/newKlarnaPaymentsValidation")),
+
     //Presentation layers
     chargePointsRouter: awilix.asFunction(require('./presentation-layer/charge-point-router-api')),
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
@@ -56,6 +58,8 @@ container.register({
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     invoicesRouter: awilix.asFunction(require('./presentation-layer/invoices-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),
+    testRouter: awilix.asFunction(require('./presentation-layer/test-router-api')),
+    errorsMiddleware: awilix.asFunction(require('./presentation-layer/middleware/errors.middleware')),
 
     //ocpp
     ocpp: awilix.asFunction(require('./xOCPP/server_ocpp')),
@@ -68,6 +72,7 @@ container.register({
     userClientHandler: awilix.asFunction(require('./xOCPP/user_client_handler')),
     chargerTests: awilix.asFunction(require('./xOCPP/tests/charger_tests')),
     liveMetricsTests: awilix.asFunction(require('./xOCPP/tests/livemetrics_tests')),
+    messageValidations: awilix.asFunction(require('./xOCPP/tests/message_validations')),
 
     //v is for variables
     v: awilix.asFunction(require('./xOCPP/variables')),

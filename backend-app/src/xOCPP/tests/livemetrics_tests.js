@@ -1,8 +1,12 @@
 const WebSocket = require('ws')
-const PubSub = require('pubsub-js')
+const config = require('../../config')
 
-module.exports = function ({ chargerTests, constants, v, func }) {
+module.exports = function ({ chargerTests, constants, v, func, messageValidations }) {
     const c = constants.get()
+
+    let currentTest = ""
+    let testSuccessful = false
+    let testValidationSuccessful = true
 
     connectAsUserSocket = function (callback) {
         try {
@@ -17,20 +21,23 @@ module.exports = function ({ chargerTests, constants, v, func }) {
             ws.on('message', function(message){
                 parsedMessage = JSON.parse(message)
                 console.log('USER CLIENT MOCK RECEIVED: ', parsedMessage)
-
-                if(parsedMessage[2] == c.METER_VALUES){
-                    console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
+                const validationErrors = messageValidations.validateMeterValuesReq(parsedMessage)
+                if(validationErrors.length){
+                    testValidationSuccessful = false
                 } else {
-                    //TODO: Implement
-                }
-                    
+                    if(parsedMessage[2] == c.METER_VALUES && currentTest == c.METER_VALUES){
+                        console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
+                        testSuccessful = true
+                    }
+                }       
             })
 
             ws.on('close', function disconnection(){
                 setTimeout(function(){
                     v.removeUserID(c.USER_ID)
+
                     console.log("(TEST) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
-                }, 1000)
+                }, 1000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
             })
             
         } catch (error) {
@@ -38,10 +45,22 @@ module.exports = function ({ chargerTests, constants, v, func }) {
         }
     }
 
+    exports.checkUserClientsMemoryLeak = function(callback){
+        if(v.getLengthConnectedUserSockets() || v.getUserIDsLength() || v.getLiveMetricsTokensLength() || v.lengthLastLiveMetricsTimestamps()){
+            console.log("(MEMORY TEST FAILED) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
+            callback(false, c.USER_MEMORY_LEAK)
+        } else {
+            callback(true, c.USER_MEMORY_LEAK)
+        }
+    }
+
     exports.testMeterValues = function (callback) {
+        currentTest = c.METER_VALUES
+        testSuccessful = false
+
         console.log('\n========= TESTING METER VALUES REQUEST... ==========\n')
         connectAsUserSocket(function(userSocket){
-            chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(chargerSocket){ //TODO: IS THIS A SERVER SOCKET OR CHARGER SOCKET???
+            chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(chargerSocket){
                 meterValues = func.buildJSONMessage([ 
                     2, 
                     "100001RemoteStartTransaction1664455481548",
@@ -71,9 +90,19 @@ module.exports = function ({ chargerTests, constants, v, func }) {
                 ])
 
                 chargerSocket.send(meterValues)
-                callback(chargerSocket, userSocket)
+
+                setTimeout(function(){
+                    callback(chargerSocket, userSocket, testSuccessful, c.METER_VALUES)
+                }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
             })
         })
+
+    }
+
+    testIsSuccesful = function(callback){
+        setTimeout(function(){
+            callback(testSuccessful)
+        }, 1500*config.OCPP_TEST_INTERVAL_MULTIPLIER)
     }
 
     return exports
