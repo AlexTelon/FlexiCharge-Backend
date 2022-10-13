@@ -59,22 +59,22 @@ jobs:
     
     # Run the backend app
     # & is used to signal that this task will keep running, as to not get stuck on this step
-    #- name: launch docker container
-    #  run: | 
-    #   docker-compose build
-    #   docker-compose up &
-    #   
-    #  
-    ## Runs sequentially to starting the back-end app    
-    #- name: Install requirements
-    ## Installs the requirements
-    #  run: |
-    #    export PYTHONPATH=.
-    #    pip install -r ./test/requirements.txt
-    #  
-    ## Executes the tests within the /backend_tests folder 
-    #- name: Run PyTest
-    #  run: python -m pytest ./test/backend_tests --junit-xml=report.xml
+    - name: launch docker container
+      run: | 
+       docker-compose build
+       docker-compose up &
+       
+      
+    # Runs sequentially to starting the back-end app    
+    - name: Install requirements
+    # Installs the requirements
+      run: |
+        export PYTHONPATH=.
+        pip install -r ./test/requirements.txt
+      
+    # Executes the tests within the /backend_tests folder 
+    - name: Run PyTest
+      run: python -m pytest ./test/backend_tests --junit-xml=report.xml
 
     - name: Install Jest
       run: npm i jest
