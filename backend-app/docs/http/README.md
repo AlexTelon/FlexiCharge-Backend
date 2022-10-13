@@ -6,9 +6,9 @@
 
 During the fall of 2022 we used this DoD:
 
-> 1. The code has no *un-documented* defects.
-> 2. Pull request has been made and passed.
-> 3. Has documentation, if needed. For endpoints this means Swagger.
+> 1. The code has no known defects.
+> 2. Pull request review has been made and passed.
+> 3. If documentation is needed then documentation should be completed. 
 
 
 
@@ -23,6 +23,7 @@ This avoids many meeting hours.
 
 The project uses Amazons Cognito service for managing users. The user pool is located at Europe(Ireland)/`eu-west-1`.
 There are some old, remaining groups left, but the one to use is `FlexiChargeUsers`. To make users into admins, manage the groups under **General settings** >> **Users and groups**.
+
 
 Details from Cognito should be hidden from front-end teams. This means marshalling of data into our own JSON objects should occur.
 
