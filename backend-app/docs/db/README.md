@@ -8,7 +8,7 @@
   - ![Branch](https://img.shields.io/github/last-commit/knowitrickard/FlexiCharge-Backend/refactoring-database-structure?style=for-the-badge) 
 
 
-- **Documentation of most important parts**
+- **Documentation of most important parts** "Might not be available from main-branch"
     - Data Access Layer
       - 📚 [_Payment-methods_](../../src/data-access-layer/payment-methods/README.md)
     - Database Interface
