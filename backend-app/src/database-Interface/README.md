@@ -82,7 +82,7 @@
 - addReservation
 	- Purpose : Creates a new Reservation
 - removeReservation
-- Purpose : Removes a reservation
+	- Purpose : Removes a reservation
 ### new-database-interface-transaction.js
 - addTransaction
 	- Purpose : Adds a new Transaction.
