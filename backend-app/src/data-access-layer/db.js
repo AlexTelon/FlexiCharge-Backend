@@ -20,7 +20,7 @@ try {
     console.error('Unable to connect to the database:', error);
 }
 
-
+//START--------------------------OLD_CODE_CURRENTLY_USED
 const Chargers = sequelize.define('Chargers', {
     chargerID: {
         type: DataTypes.INTEGER,
@@ -157,8 +157,10 @@ const ChargePoints = sequelize.define('ChargePoints', {
 Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
+//END---------------------------OLD_CODE_CURRENTLY_USED
 
-/* New database structure from here on down */
+
+//START--------------------------NEW_CODE_CURRENTLY_UNUSED
 
 // Add payment methods here, create a new table for the payment method.
 const paymentType = DataTypes.ENUM('Klarna', 'Swish', 'Mastercard')
@@ -378,8 +380,11 @@ newTransactions.belongsTo(newChargeSessions, { foreignKey: 'chargeSessionID'})
 newChargeSessions.belongsTo(newChargers, { foreignKey: 'chargerID', onDelete: 'cascade'})
 newChargers.belongsTo(newChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade'})
 newReservations.belongsTo(newChargers, {foreignKey: 'chargerID', onDelete: 'cascade'})
+//END--------------------------NEW_CODE_CURRENTLY_UNUSED
+
 
 sequelize.sync().then(function () {
+    //START--------------------------TEST_DATA_OLD_CODE
     ChargePoints.findAndCountAll().then(function ({ rows, count }) {
         if (count < 1) {
             ChargePoints.create({
@@ -534,6 +539,9 @@ sequelize.sync().then(function () {
                 currentChargePercentage: 52,
                 pricePerKwh: 100000
             });
+            //END---------------------------TEST_DATA_OLD_CODE
+
+            //START--------------------------TEST_DATA_NEW_CODE
             newChargePoints.create({
                 name: "Airport Parking, Jönköping",
                 address: "Flygplansvägen",
@@ -658,6 +666,7 @@ sequelize.sync().then(function () {
                     currency: "SEK"
                 })
             }
+            //END----------------------------TEST_DATA_NEW_CODE
         }
     })
 })

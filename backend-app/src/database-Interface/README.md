@@ -41,21 +41,22 @@
 
 ### new-database-interface-chargers.js
    - getChargers 
-	   - Purpose : Gets all Chargers in the database
+       - Purpose : Gets all Chargers in the database
    - getCharger 
-	   - Purpose : Gets a Charger by chargerID
+       - Purpose : Gets a Charger by chargerID
    - getChargerBySerialNumber
-	   - Purpose : Get Charger by serialNumber
+       - Purpose : Get Charger by serialNumber
    - getAvailableChargers
-	   - Purpose : Gets all Chargers with status = "Available"
+       - Purpose : Gets all Chargers with status = "Available"
    - addCharger
-	   - Purpose : Adds a Charger
+       - Purpose : Adds a Charger
+         - At the moment all charges are marked as "Available" on creation
    - removeCharger
-	   - Purpose : Removes a Charger by chargerID
+       - Purpose : Removes a Charger by chargerID
    - updateChargerStatus
-	   - Purpose : Update status of a Charger
+       - Purpose : Update status of a Charger
    - getChargerForTransaction
-	   - Purpose : Gets a Charger by transactionID
+       - Purpose : Gets a Charger by transactionID
 ### new-database-interface-electricity-tariff.js
 - getElectricityTariffsOrderByDate
 	- Purpose : Gets all ElectricityTariffs, ordered by date.
@@ -109,7 +110,7 @@
 
 	- Be aware of the implementation of the "Timestamp" in "ElectricityTariffs"
 
-		- It differs from the dateType used by the other Teams.enter code here
+		- It differs from the dateType used by the other Teams.
 
 		- Take into consideration the UTC.
 	- authorization_token can only be accessed via the Klarna Widget (Postman requests can not get authorization_token back in responses, ONLY the Klarna widget). 
@@ -119,6 +120,9 @@
 - .....
 
 ## What is done and what is not done
+
+  - To implement
+  - 
 
   
 

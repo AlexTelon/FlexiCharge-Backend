@@ -7,13 +7,13 @@
 1. Klarna
 
 ## Klarna
-- Klarna is currently the only implmented payment method available to FlexiCharge.
-- Below is a an image showing how Klarna is implemented in the backend.
+- Klarna is currently the only implemented payment method available to FlexiCharge.
+- Below is an image showing how Klarna is implemented in the backend.
 	
 <img src="https://i.ibb.co/c3PxCMW/image.png" height="500" width="800" >
 
 ### authorization_token
-authorization_token can only be accessed via the Klarna Widget (Postman requests can **NOT** get authorization_token back in responses, **ONLY** the Klarna widget).
+- authorization_token can only be accessed via the Klarna Widget (Postman requests can **NOT** get authorization_token back in responses, **ONLY** the Klarna widget).
 
 - authorization_token is a **completely** different token from session_id and client_token, and should only live inside the client side (should not be stored on the backend).
 
@@ -38,9 +38,9 @@ To implement:
 1. What if Klarna is not available
 
     - Double check with PM for requirements
+    
 
-  
 
-###[🔙 Main Database Documentation](../README.md)
+### [🔙 Main Database Documentation](../../../docs/db/README.md)
 
-###[🔙🔙 Back To Main Documentation](../../../../README.md)
+### [🔙🔙 Back To Main Documentation](../../../../README.md)
