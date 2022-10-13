@@ -21,7 +21,7 @@ Swagger is used, it's important that the documentation there (live server) is co
 ## User Pool
 
 The project uses Amazons Cognito service for managing users. The user pool is located at Europe(Ireland)/`eu-west-1`.
-There are some old, remaining groups left, but the one to use is `FlexiChargeUsers`. To make users into admins, manage the groups under **General settings** >> **Users and groups**.
+There are some old, remaining groups left, but the one to use is `FlexiChargeUsers`. To make users into admins, manage the groups under **General settings** >> **Users and groups**. [Amazon Cognito user pools]('https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-dg.pdf#cognito-user-identity-pools')
 
 
 Details from Cognito should be hidden from front-end teams. This means marshalling of data into our own JSON objects should occur.
