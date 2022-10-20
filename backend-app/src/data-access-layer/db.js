@@ -7,7 +7,7 @@ if(config.USE_LOCAL_DATABASE == 1){
     var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
     // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
-    var sequelize = new Sequelize('postgres', 'postgres', 'postgres', {
+    var sequelize = new Sequelize('postgres', 'postgres', 'flexi2022Charge1337', {
         host: 'flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com',
         dialect: "postgres"
     });
