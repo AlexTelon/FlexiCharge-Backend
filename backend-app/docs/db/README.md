@@ -114,9 +114,10 @@
 
 
 ## Usefull links 🔗
-- 1
-- 2
-- 3
+- [**pgAdmin**](https://www.pgadmin.org/docs/pgadmin4/latest/index.html)
+- [**KlarnaAPI**](https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/)
+- [**RDS**](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+- [**Sequelize-ORM**](https://sequelize.org/docs/v6/getting-started/)
 
 
 ### [🔙 Back To Main Documentation](../../../README.md)
