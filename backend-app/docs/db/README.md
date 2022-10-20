@@ -89,10 +89,14 @@
 ## What is done in "New code"
 - **Basic Test data**
 - **Unit Tests**
-- **Some "Sceleton code" for the invoices**
+- **Some "Skeleton code" for the invoices**
 
 ## Bugs 🐞
 - **_Nothing yet!_**
+
+## Technical Debt 🐞 (Refactore code base)
+- Unclear date format in "Electricity tariff" table
+- Repositories are mocked manually, meaning if repositories are changed, their mock also has to be manually changed.
 
 ## [🔨What's next🔨](https://www.youtube.com/watch?v=dQw4w9WgXcQ) - Backlog for the Product Owner
 - Be done with implementing the interface for the invoices.
@@ -110,9 +114,10 @@
 
 
 ## Usefull links 🔗
-- 1
-- 2
-- 3
+- [**pgAdmin**](https://www.pgadmin.org/docs/pgadmin4/latest/index.html)
+- [**KlarnaAPI**](https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/)
+- [**RDS**](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
+- [**Sequelize-ORM**](https://sequelize.org/docs/v6/getting-started/)
 
 
 ### [🔙 Back To Main Documentation](../../../README.md)
