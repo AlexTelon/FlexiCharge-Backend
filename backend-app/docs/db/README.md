@@ -94,6 +94,10 @@
 ## Bugs 🐞
 - **_Nothing yet!_**
 
+## Technical Debt 🐞 (Refactore code base)
+- Unclear date format in "Electricity tariff" table
+- Repositories are mocked manually, meaning if repositories are changed, their mock also has to be manually changed.
+
 ## [🔨What's next🔨](https://www.youtube.com/watch?v=dQw4w9WgXcQ) - Backlog for the Product Owner
 - Be done with implementing the interface for the invoices.
 - Merge the branch to main
