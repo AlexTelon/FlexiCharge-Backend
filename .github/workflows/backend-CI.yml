@@ -37,9 +37,6 @@ jobs:
         envkey_OCPP_TEST_INTERVAL_MULTIPLIER: 1
         envkey_BYPASS_KLARNA: 1
         envkey_LIVEMETRICS_DB_UPDATE_INTERVAL: 10000
-        directory: backend-app/
-        
-        # When secrets exist use these calls to obfuscate
         envkey_AWS_REGION: ${{ secrets.AWS_REGION }}
         envkey_USER_POOL: ${{ secrets.USER_POOL }}
         envkey_USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
@@ -47,6 +44,9 @@ jobs:
         envkey_ADMIN_POOL: ${{ secrets.ADMIN_POOL }}
         envkey_ADMIN_POOL_ID: ${{ secrets.ADMIN_POOL_ID }}
         envkey_ADMIN_POOL_SECRET: ${{ secrets.ADMIN_POOL_SECRET }}
+        directory: backend-app/
+        
+
         
     # Run the backend app
     # & is used to signal that this task will keep running, as to not get stuck on this step
