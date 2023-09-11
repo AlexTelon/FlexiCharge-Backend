@@ -3,12 +3,14 @@
 ## Issue ticket number and preferably a link
 
 ## This change belongs to the following squad(s)
+
 - [] Database
 - [] HTTP
 - [] OCPP
 
 
 ## I have created unit tests for my code
+
 - [] Yes
 - [] No
 - [] No, I need help with this
