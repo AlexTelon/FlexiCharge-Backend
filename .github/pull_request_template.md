@@ -16,5 +16,4 @@
 ## Checklist before creating my pull request
 - [ ] My code is properly commented where needed
 - [ ] I have updated the documentation with my changes/additions
-- [ ] I have reviewed my code before creating this pull request
-
+- [ ] I have reviewed my code before creating this pull request
