@@ -185,6 +185,83 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /auth/users/{username}:
+    delete:
+      tags:
+        - User
+      summary: Delete a user
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful responese
+          content: 
+            application/json: {}
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+      description: Deletes a user based on username
+    put: 
+      tags:
+        - User
+      summary: Update user attributes
+      parameters:
+        - in: path
+          name: username
+          schema: 
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: Object
+              schema:
+                $ref: '#/components/schemas/UserAttributes' # Add schema!
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+      description: Updates a users attributes
+  /auth/users/{username}/enable:
+    put:
+      tags:
+        - User
+      summary: Enable user
+      parameters:
+        - in: path
+          name: username
+          type: string
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+  /auth/users/{username}/disable:
+    put:
+      tags:
+        - User
+      summary: Disable user
+      parameters:
+        - in: path
+          name: username
+          type: string
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+  
   /chargers/available:
     get:
       tags:
