@@ -89,7 +89,11 @@
 ## What is done in "New code"
 - **Basic Test data**
 - **Unit Tests**
+<<<<<<< HEAD
 - **Some "Sceleton code" for the invoices**
+=======
+- **Some "Skeleton code" for the invoices**
+>>>>>>> 0e26fbdccd6dceeef522e0676de0cb4c127055db
 
 ## Bugs 🐞
 - **_Nothing yet!_**
