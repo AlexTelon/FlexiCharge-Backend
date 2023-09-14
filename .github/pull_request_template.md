@@ -7,7 +7,6 @@
 - [ ] HTTP
 - [ ] OCPP
 
-
 ## I have created unit tests for my code
 * [ ] Yes
 * [ ] No
