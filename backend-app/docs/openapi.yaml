@@ -248,7 +248,7 @@ paths:
   /admin/users/{username}/disable:
     put:
       tags:
-        - User
+        - Admin
       summary: Disable user
       parameters:
         - in: path
