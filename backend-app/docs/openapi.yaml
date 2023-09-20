@@ -757,6 +757,8 @@ paths:
               userID: 1
               dateStart: 1
               dateEnd: 1
+      security:
+        - bearerAuth: []
       responses:
         "201":
           description: Successful response
