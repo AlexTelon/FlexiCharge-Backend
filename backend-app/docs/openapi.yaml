@@ -301,7 +301,7 @@ paths:
                   $ref: "#/components/schemas/Charger"
         "404":
           description: Error message
-  /transactions/:id:
+  /transactions/{id}:
     get:
       tags:
         - Transactions
@@ -339,7 +339,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/chargingStatus/:transactionId:
+  /transactions/chargingStatus/{transactionId}:
     put:
       tags:
         - Transactions
@@ -382,7 +382,7 @@ paths:
           description: Error message
         "500":
           description: Error message
-  /transactions/userTransactions/:userId:
+  /transactions/userTransactions/{userId}:
     get:
       tags:
         - Transactions
@@ -392,7 +392,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/chargerTransactions/:chargerId:
+  /transactions/chargerTransactions/{chargerId}:
     get:
       tags:
         - Transactions
@@ -402,7 +402,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/payment/:id:
+  /transactions/payment/{id}:
     put:
       tags:
         - Transactions
@@ -420,7 +420,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/stop/:id:
+  /transactions/stop/{id}:
     put:
       tags:
         - Transactions
@@ -432,7 +432,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/start/:id:
+  /transactions/start/{id}:
     put:
       tags:
         - Transactions
@@ -471,7 +471,7 @@ paths:
 
             **Future improvement**: *Send other 4xx codes, such as 401 for
             bad username/password.*"
-  /admin/:username:
+  /admin/{username}:
     get:
       tags:
         - Admin
@@ -582,7 +582,7 @@ paths:
           content:
             application/json: {}
 
-  /reservations/:id:
+  /reservations/{id}:
     get:
       tags:
         - Reservations
@@ -625,7 +625,7 @@ paths:
           description: Error message
         "500":
           description: Error message
-  /reservations/userReservation/:userId:
+  /reservations/userReservation/{userId}:
     get:
       tags:
         - Reservations
@@ -655,7 +655,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /reservations/chargerReservation/chargerId:
+  /reservations/chargerReservation/{chargerId}:
     get:
       tags:
         - Reservations
@@ -683,7 +683,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /invoices/:invoiceId:
+  /invoices/{invoiceId}:
     get:
       tags:
         - Invoices
@@ -755,7 +755,7 @@ paths:
           description: Unauthorized
           content:
             application/json: {}
-  /invoices/users/:userId:
+  /invoices/users/{userId}:
     get:
       security:
         - bearerAuth: []
