@@ -185,6 +185,83 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /admin/users/{username}:
+    delete:
+      tags:
+        - Admin
+      summary: Delete a user
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful responese
+          content: 
+            application/json: {}
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+      description: Deletes a user based on username
+    put: 
+      tags:
+        - Admin
+      summary: Update user attributes
+      parameters:
+        - in: path
+          name: username
+          schema: 
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: Object
+              schema:
+                $ref: '#/components/schemas/UserAttributes' # Add schema!
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+      description: Updates a users attributes
+  /admin/users/{username}/enable:
+    put:
+      tags:
+        - Admin
+      summary: Enable user
+      parameters:
+        - in: path
+          name: username
+          type: string
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+  /admin/users/{username}/disable:
+    put:
+      tags:
+        - Admin
+      summary: Disable user
+      parameters:
+        - in: path
+          name: username
+          type: string
+      responses:
+        '200':
+          description: Successful response
+        '400':
+          description: Error message
+        '500':
+          description: Internal server error
+  
   /chargers/available:
     get:
       tags:
@@ -572,6 +649,8 @@ paths:
                 password: zi6YrmpWZLQG^5
                 session: >-
                   AYABeAvR1_coVz0EnKxmyNJPM94AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgGS5dTNK8uczcSpkcC_8tHoAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSrBLX5nHC2z4cD9YAgEQgDs-mx5U_LlqzlXumqd9MH-drBQ4Vy3dpGqvmRcuBQEFHaSahxhSUgj863fmUSNdpS4Jhq1t8jqPaNQdKAIAAAAADAAAEAAAAAAAAAAAAAAAAADnU04jgSqDAu5p8cfXlAus_____wAAAAEAAAAAAAAAAAAAAAEAAAC_y-lSQjfe6npxGWXg7eDvHCLxEA-1CQ2mTYPYQu4d_WHo8ubIgy1k5l_6ON_PkuQoJn11jNma2IBsK5ZQZJ-VDV3tn6lTxLvA-U2xxhDhgZi8ZrhZMSf-FSYVRHmgV45pDNx9kps1i436i6oUeWI4bbDBaOWLdhWG1KQJGPNv2ZJSWFvlxSYnCHaO-snLXvnSotjxR5XR4tr58HBII1U14fT6LGm6dM5EKOMtZh97P4Y1K6zJuIIGF9pRvZDyWrpx9HY74aW5qXDzePGCQzj7
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: Successful response.
@@ -788,6 +867,135 @@ paths:
           description: Unauthorized
           content:
             application/json: {}
+  /chargePoints:
+    get:
+      tags: 
+        - ChargePoints
+      summary: Gets a list of all charge points
+      responses:
+        '200':
+          description: Sucessful response
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                  items:
+                    allOf:
+                    $ref: '#/components/schemas/ChargePoints'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - ChargePoints
+      summary: Crate a new charge point
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: name
+                location: [10, 10]
+                price: 10
+                klarnaReservationAmount: 10
+      responses:
+        '201':
+          description: Successful response
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                  items:
+                    allOf:
+                    $ref: '#/components/schemas/ChargePoints'
+        '400':
+          description: Error message 
+        '500':
+          description: Internal server error
+
+  /chargePoints/{id}:
+    get: 
+      tags: 
+        - ChargePoints
+      summary: Gets a charging station based on idTag
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content: 
+          application/json:
+            schema:
+              type: object
+                items: 
+                $ref: '#components/schema/ChargePoints'
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:
+        - ChargePoints
+      summary: Delete charge point
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      tags:
+        - ChargePoints
+      summary: Update a charge point
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: number
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: name
+                location: [10, 10]
+                price: 10
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content: 
+            application/json: 
+              schema: 
+                type: array
+                  items:
+                    allOf:
+                    $ref: '#/components/schemas/ChargePoints'
+        '400':
+          description: Error message 
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  
 components:
   schemas:
     Charger:
@@ -820,6 +1028,31 @@ components:
             - Reserved
       xml:
         name: charger
+
+    ChargePoint:
+      type: object
+      properties:
+        chargePointID:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: name
+        location:
+          type: array
+          items:
+            type: number
+          example: 
+            - 57.777714
+            - 14.16301
+        price:
+          type: string
+          example: 20
+        klarnaReservationAmount: 
+          type: number
+          example: 400
+
   securitySchemes:
     bearerAuth:
       type: http
