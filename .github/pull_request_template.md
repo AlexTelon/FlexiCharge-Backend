@@ -8,9 +8,9 @@
 - [ ] OCPP
 
 ## I have created unit tests for my code
-* [ ] Yes
-* [ ] No
-* [ ] No, I need help with this
+- [ ] Yes
+- [ ] No
+- [ ] No, I need help with this
 
 ## Checklist before creating my pull request
 - [ ] My code is properly commented where needed
