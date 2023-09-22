@@ -72,6 +72,10 @@ jobs:
        npm i jest
        npm i jest-junit
 
+    - name: Install axios
+      run: |
+        npm i axios
+       
     - name: Run unit tests
       run:
         npm test --prefix ./backend-app
