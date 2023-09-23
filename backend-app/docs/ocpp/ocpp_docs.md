@@ -9,7 +9,8 @@
 
 ## How to connect to local database
 1. Clone repo
-2. Create an .env file and set USE_LOCAL_DATABASE = 1
+2. Create an .env file and set USE_LOCAL_DATABASE = 1. set LIVEMETRICS_DB_UPDATE_INTERVAL = 10000 to update DB every 10 seconds.
+3. Get information for the rest of .env file from AWS
 
 ## How to test server-side websockets
 1. Run "docker-compose up"
@@ -58,7 +59,7 @@ Manual testing requires the use of Postman to send messages. To send a message w
 To start, connect as a charger via Postman as the desired charger you want to act as.
 
 ### Good to know
-- At index 0 in the array the number represent:
+- At index 0 in the array of the socket message the number represent:
     - 3 = Response / Answering a request
     - 2 = Request
 - Every socket conversation is initiated with a request from the server which is responded to by the charger. The conversation then ends with a request from the charger (and technically another response from the server).
@@ -66,22 +67,24 @@ To start, connect as a charger via Postman as the desired charger you want to ac
 ### Example: Remote Start Transaction
 (Starting a transaction is currently the same as starting a charging session)
 
-1. Call StartTransaction through the API (in production this will be initiated by the GUI). Make sure that the transaction has the same chargerId as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a chargerId into a specific transaction). 
+1. Connect to a charger using Websocket with the (Port 1337 Postman)
+
+2. Call StartTransaction through the API (Port 8080 Postman) (in production this will be initiated by the GUI). Make sure that the transaction has the same chargerId as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a chargerId into a specific transaction).
 `http://SERVER_IP_HERE:8080/transactions/start/TRANSACTION_ID_HERE`
 
-2. Go to to the connecter charger socket, and get uniqueID from message at index 1
+3. Go to to the connecter charger socket in Postman, get uniqueID from message at index 1
 
 ![](./images/image2.png)
 
-3. Send **Remote Start Transaction** response (with the uniqueID you got from the server)
+4. Send **Remote Start Transaction** response (with the uniqueID you got from the server)
 
 ![](./images/image3.png)
 
-4. Then immediately send **Start Transaction** request (still with the same uniqueID)
+5. Then immediately send **Start Transaction** request (still with the same uniqueID)
 
 ![](./images/image7.png)
 
-5. Check the confirmation from the server (the response from the API call should now also have come through.)
+6. Check the confirmation from the server (the response from the API call should now also have come through.)
 
 ![](./images/image1.png)
 
@@ -159,6 +162,10 @@ Here are the socket messages that can be sent by the charger
 ```
 
 **Send Live Metrics**
+
+The values in the json needs to be set accordingly:
+Timestamp value saved in transaction table must differentiate with more or equal to LIVEMETRICS_DB_UPDATE_INTERVAL (Set in .env file) from timestamp in message.
+Value "chargedSoFar" must be greater than 0.
 
 This one requires a connected user client as well. 
 `ws://18.202.253.30:1337/user/USER_ID_HERE`
