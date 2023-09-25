@@ -3,13 +3,14 @@ name: Backend CI
 on:
  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-# Automatically on push or pull request to main
+# Automatically on push to main, test-workflow-implementation or dev
+# And on pull request to main or dev
 # Add more branches by separating with comma
   push:
-    branches: [ "main", "tests-workflow-implementation" ]
+    branches: [ "main", "tests-workflow-implementation", "dev" ]
     
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 jobs:
 
