@@ -1,4 +1,5 @@
 const https = require('https')
+const config = require('../config')
 
 module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
@@ -25,7 +26,7 @@ module.exports = function({}) {
                 path: "/payments/v1/sessions",
                 method: "POST",
                 headers: {
-                    "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
+                    "Authorization": "Basic " + Buffer.from(config.KLARNA_TOKEN).toString("base64"),
                     "Content-Type": "application/json"
                 }
             }
@@ -81,7 +82,7 @@ module.exports = function({}) {
             path: `/payments/v1/authorizations/${authorization_token}/order`,
             method: "POST",
             headers: {
-                "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
+                "Authorization": "Basic " + Buffer.from(config.KLARNA_TOKEN).toString("base64"),
                 "Content-Type": "application/json"
             }
         }
@@ -158,7 +159,7 @@ module.exports = function({}) {
             path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/authorization",
             method: "PATCH",
             headers: {
-                "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
+                "Authorization": "Basic " + Buffer.from(config.KLARNA_TOKEN).toString("base64"),
                 "Content-Type": "application/json"
             }
         }
@@ -208,7 +209,7 @@ module.exports = function({}) {
             path: "/ordermanagement/v1/orders/" + transaction.paymentID + "/captures",
             method: "POST",
             headers: {
-                "Authorization": "Basic " + Buffer.from("PK44810_1f4977848b52" + ":" + "AcYW9rvNuy2YpZgX").toString("base64"),
+                "Authorization": "Basic " + Buffer.from(config.KLARNA_TOKEN).toString("base64"),
                 "Content-Type": "application/json"
             }
         }
