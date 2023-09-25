@@ -167,7 +167,6 @@ The values in the json needs to be set accordingly:
 Timestamp value saved in transaction table must differentiate with more or equal to LIVEMETRICS_DB_UPDATE_INTERVAL (Set in .env file) from timestamp in message.
 Value "chargedSoFar" must be greater than 0.
 
-This one requires a connected user client as well. 
 `ws://18.202.253.30:1337/user/USER_ID_HERE`
 ```json
 [   
