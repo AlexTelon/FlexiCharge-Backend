@@ -2,13 +2,13 @@ var express = require('express')
 const checkJwt = require('./middleware/jwt.middleware')
 const checkIfAdmin = require('./middleware/admin.middleware')
 
-module.exports = function ({ databaseInterfaceCharger }) {
+module.exports = function ({ newDatabaseInterfaceChargers }) {
 
     const router = express.Router()
 
     router.get('/', async function (request, response) {
 
-        databaseInterfaceCharger.getChargers(function (error, chargers) {
+        newDatabaseInterfaceChargers.getChargers(function (error, chargers) {
             if (error.length > 0) {
                 response.status(500).json(error)
             } else {
@@ -18,7 +18,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     })
     router.get('/available', function (request, response) {
 
-        databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
+        newDatabaseInterfaceChargers.getAvailableChargers(function (errors, chargers) {
             if (errors.length > 0) {
                 response.status(404).json(errors)
             } else {
@@ -30,7 +30,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.get('/serial/:serialNumber', function (request, response) {
 
         const serialNumber = request.params.serialNumber
-        databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
+        newDatabaseInterfaceChargers.getChargerBySerialNumber(serialNumber, function (error, charger) {
             if (error.length > 0) {
                 response.status(500).json(error)
             } else {
@@ -42,7 +42,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.get('/:id', function (request, response) {
 
         const id = request.params.id
-        databaseInterfaceCharger.getCharger(id, function (errors, charger) {
+        newDatabaseInterfaceChargers.getCharger(id, function (errors, charger) {
             if (errors.length == 0 && charger.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -59,7 +59,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
         const location = request.body.location
         const serialNumber = request.body.serialNumber;
 
-        databaseInterfaceCharger.addCharger(chargerPointId, serialNumber, location, function (errorCodes, chargerId) {
+        newDatabaseInterfaceChargers.addCharger(chargerPointId, serialNumber, location, function (errorCodes, chargerId) {
             if (errorCodes.length == 0) {
                 response.status(201).json(chargerId)
             } else {
@@ -76,7 +76,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.delete('/:id', checkJwt, checkIfAdmin, function (request, response) {
 
         const id = request.params.id
-        databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
+        newDatabaseInterfaceChargers.removeCharger(id, function (errors, isChargerDeleted) {
             if (errors.length == 0 && isChargerDeleted) {
                 response.status(204).json()
             } else if (errors.length == 0 && !isChargerDeleted) {
@@ -90,7 +90,7 @@ module.exports = function ({ databaseInterfaceCharger }) {
     router.put('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargerId = request.params.id
         const newStatus = request.body.status
-        databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
+        newDatabaseInterfaceChargers.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
             if (errors.length == 0) {
                 response.status(200).json(charger)
             } else {

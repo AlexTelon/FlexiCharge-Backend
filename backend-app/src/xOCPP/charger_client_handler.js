@@ -1,4 +1,4 @@
-module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v, constants, func }) {
+module.exports = function ({ newDatabaseInterfaceChargers, chargerMessageHandler, v, constants, func }) {
     const c = constants.get()
     
     exports.handleClient = function (clientSocket, chargerSerial) {
@@ -52,7 +52,7 @@ module.exports = function ({ databaseInterfaceCharger, chargerMessageHandler, v,
         if (chargerSerial == "") {
             callback(null, false)
         } else {
-            databaseInterfaceCharger.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
+            newDatabaseInterfaceChargers.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
     
                 if (errorCodes.length) {
                     console.log(errorCodes)

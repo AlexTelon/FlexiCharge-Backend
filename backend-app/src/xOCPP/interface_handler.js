@@ -1,4 +1,4 @@
-module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
+module.exports = function({ func, constants, v, newDatabaseInterfaceChargers }) {
     const c = constants.get()
 
     exports.interfaceHandler = function(chargerID, action, payload, callback) {
@@ -72,7 +72,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (callback != null) {
             if (status == c.ACCEPTED) {
 
-                databaseInterfaceCharger.updateChargerStatus(chargerID, c.RESERVED, function (error, charger) {
+                newDatabaseInterfaceChargers.updateChargerStatus(chargerID, c.RESERVED, function (error, charger) {
                     if (error.length > 0) {
                         console.log("\nError updating charger status in DB: " + error)
                         callback(c.INTERNAL_ERROR, null)

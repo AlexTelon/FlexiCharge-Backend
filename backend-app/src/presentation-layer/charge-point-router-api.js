@@ -2,12 +2,12 @@ var express = require('express')
 const checkJwt = require('./middleware/jwt.middleware')
 const checkIfAdmin = require('./middleware/admin.middleware')
 
-module.exports = function ({ databaseInterfaceChargePoint }) {
+module.exports = function ({ newDatabaseInterfaceChargePoints }) {
 
     const router = express.Router()
 
     router.get('/', async function (request, response) {
-        databaseInterfaceChargePoint.getChargePoints(function (error, chargePoints) {
+        newDatabaseInterfaceChargePoints.getChargePoints(function (error, chargePoints) {
             if (error.length == 0 && chargePoints.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -20,7 +20,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
 
     router.get('/:id', function (request, response) {
         const chargePointID = request.params.id
-        databaseInterfaceChargePoint.getChargePoint(chargePointID, function (error, chargePoint) {
+        newDatabaseInterfaceChargePoints.getChargePoint(chargePointID, function (error, chargePoint) {
             if (error.length == 0 && chargePoint.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -36,7 +36,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
         const location = request.body.location
         const price = request.body.price
         const klarnaReservationAmount = request.body.klarnaReservationAmount
-        databaseInterfaceChargePoint.addChargePoint(name, location, price, klarnaReservationAmount, function (errors, chargePointID) {
+        newDatabaseInterfaceChargePoints.addChargePoint(name, location, price, klarnaReservationAmount, function (errors, chargePointID) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (chargePointID) {
@@ -48,7 +48,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
     })
     router.delete('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargePointID = request.params.id;
-        databaseInterfaceChargePoint.removeChargePoint(chargePointID, function (error, chargePointRemoved) {
+        newDatabaseInterfaceChargePoints.removeChargePoint(chargePointID, function (error, chargePointRemoved) {
             if (error.length == 0 && chargePointRemoved) {
                 response.status(204).json()
             } else if (error.length == 0 && !chargePointRemoved) {
@@ -62,7 +62,7 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
     router.put('/:id', checkJwt, checkIfAdmin, function (request, response) {
         const chargePointID = request.params.id;
         const { name, location, price } = request.body;
-        databaseInterfaceChargePoint.updateChargePoint(chargePointID, name, location, price, function (error, chargePoint) {
+        newDatabaseInterfaceChargePoints.updateChargePoint(chargePointID, name, location, price, function (error, chargePoint) {
             if (error.length === 0 && chargePoint === undefined) {
                 response.status(404).json(error);
             } else if (error.length > 0) {
