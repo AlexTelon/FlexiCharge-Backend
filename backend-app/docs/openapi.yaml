@@ -22,7 +22,7 @@ paths:
                 username: username
                 password: password
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
@@ -33,7 +33,7 @@ paths:
                   email: email
                   username: username
                   user_id: user_id
-        "400":
+        '400':
           description: Incorrect username or password
           content:
             application/json:
@@ -52,6 +52,8 @@ paths:
       tags:
         - User
       summary: Update information
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -66,15 +68,14 @@ paths:
                 city: string
                 country: string
       responses:
-        "204":
+        '204':
           description: Successful response
           content:
             application/json:
               schema:
                 type: object
                 example:
-
-        "400":
+        '400':
           description: Incorrect username or password
           content:
             application/json:
@@ -85,8 +86,10 @@ paths:
       tags:
         - User
       summary: Get user information
+      security:
+        - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
@@ -101,7 +104,7 @@ paths:
                   zipCode: zipCode
                   city: city
                   country: country
-        "400":
+        '400':
           description: Bad request
   /auth/sign-up:
     post:
@@ -121,11 +124,11 @@ paths:
                 username: mustBeEmail
                 password: password
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-        "400":
+        '400':
           description: Username not email
           content:
             application/json:
@@ -150,7 +153,7 @@ paths:
                 username: username
                 code: verification_code
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
@@ -166,61 +169,63 @@ paths:
               type: object
               example:
                 username: rest-api-user
-                password: "{{rest-api-account-password}}"
+                password: '{{rest-api-account-password}}'
                 confirmationCode: email_code
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-  /auth/forgot-password/username:
+  /auth/forgot-password/{username}:
+    parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
     post:
       tags:
         - User
       summary: Forgot password
-      requestBody:
-        content: {}
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
   /admin/users/{username}:
+    parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
     delete:
       tags:
         - Admin
       summary: Delete a user
-      parameters:
-        - in: path
-          name: username
-          schema:
-            type: string
+      security:
+        - bearerAuth: [] # admin
       responses:
         '200':
           description: Successful responese
-          content: 
+          content:
             application/json: {}
         '400':
           description: Error message
         '500':
           description: Internal server error
       description: Deletes a user based on username
-    put: 
+    put:
       tags:
         - Admin
       summary: Update user attributes
-      parameters:
-        - in: path
-          name: username
-          schema: 
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: Object
-              schema:
-                $ref: '#/components/schemas/UserAttributes' # Add schema!
+      security:
+        - bearerAuth: [] # admin
+      #requestBody:
+        #content:
+          #application/json:
+            #schema:
+              #$ref: '#/components/schemas/UserAttributes' # Add schema!
       responses:
         '204':
           description: Successful response
@@ -230,14 +235,18 @@ paths:
           description: Internal server error
       description: Updates a users attributes
   /admin/users/{username}/enable:
+    parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Admin
       summary: Enable user
-      parameters:
-        - in: path
-          name: username
-          type: string
+      security:
+        - bearerAuth: [] # admin
       responses:
         '200':
           description: Successful response
@@ -246,14 +255,18 @@ paths:
         '500':
           description: Internal server error
   /admin/users/{username}/disable:
+    parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Admin
       summary: Disable user
-      parameters:
-        - in: path
-          name: username
-          type: string
+      security:
+        - bearerAuth: [] # admin
       responses:
         '200':
           description: Successful response
@@ -261,81 +274,236 @@ paths:
           description: Error message
         '500':
           description: Internal server error
-  
+  /admin/sign-in:
+    post:
+      tags:
+        - Admin
+      summary: Sign in with an administrator account.
+      description: >-
+        Sign in as an administrator. Account is created by someone
+        with administrator priveleges.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: '{{rest-api-account-password}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: 'A bad request was sent.
+            This includes an incorrect username/password.
+            **Future improvement**: *Send other 4xx codes, such as 401 for
+            bad username/password.*'
+  /admin/{username}:
+    parameters:
+      - in: path
+        name: username
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - Admin
+      summary: Get user information by username
+      security:
+        - bearerAuth: [] # admin
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users with information
+      security:
+        - bearerAuth: [] # admin
+      responses:
+        '200':
+          description: List with all users
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  username: email
+                  firstName: firstName
+                  lastName: lastName
+                  phoneNumber: phoneNumber
+                  streetAdress: streetAddress
+                  zipCode: zipCode
+                  city: city
+                  country: country
+                  userId: userId
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /admin:
+    post:
+      tags:
+        - Admin
+      summary: Creates an admin account.
+      description: 'Creates a new admin user. Sends a verification code
+        in a email to the supplied email address.
+        Use this verification code with the "Verify user" request.'
+      security:
+        - bearerAuth: [] # admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: zi6YrmpWZLQG^5
+                email: lela19so@student.ju.se
+                name: first_name
+                family_name: last_name
+      responses:
+        '200':
+          description: 'Successful response.'
+          content:
+            application/json: {}
+        '401':
+          description: 'Error: Unauthorized.
+            The supplied POST was correctly formatted but not accepted.'
+          content:
+            application/json: {}
+  /admin/force-change-password:
+    post:
+      tags:
+        - Admin
+      summary: Change a users password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: rest-api-admin
+                password: zi6YrmpWZLQG^5
+                session: >-
+                  AYABeAvR1_coVz0EnKxmyNJPM94AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgGS5dTNK8uczcSpkcC_8tHoAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSrBLX5nHC2z4cD9YAgEQgDs-mx5U_LlqzlXumqd9MH-drBQ4Vy3dpGqvmRcuBQEFHaSahxhSUgj863fmUSNdpS4Jhq1t8jqPaNQdKAIAAAAADAAAEAAAAAAAAAAAAAAAAADnU04jgSqDAu5p8cfXlAus_____wAAAAEAAAAAAAAAAAAAAAEAAAC_y-lSQjfe6npxGWXg7eDvHCLxEA-1CQ2mTYPYQu4d_WHo8ubIgy1k5l_6ON_PkuQoJn11jNma2IBsK5ZQZJ-VDV3tn6lTxLvA-U2xxhDhgZi8ZrhZMSf-FSYVRHmgV45pDNx9kps1i436i6oUeWI4bbDBaOWLdhWG1KQJGPNv2ZJSWFvlxSYnCHaO-snLXvnSotjxR5XR4tr58HBII1U14fT6LGm6dM5EKOMtZh97P4Y1K6zJuIIGF9pRvZDyWrpx9HY74aW5qXDzePGCQzj7
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json: {}
+        '400':
+          description: The request to change the user password was unsuccessfull.
+          content:
+            application/json: {}
   /chargers/available:
     get:
       tags:
         - Chargers
       summary: Available chargers
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  allOf:
-                  $ref: "#/components/schemas/Charger"
-        "404":
+                  $ref: '#/components/schemas/Charger'
+        '404':
           description: Error message
-  /chargers/:id:
+  /chargers/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Chargers
       summary: Charger by id
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Charger"
-        "404":
+                $ref: '#/components/schemas/Charger'
+        '404':
           description: Error message
-        "500":
+        '500':
           description: Error message
     delete:
       tags:
         - Chargers
       summary: Remove charger by id
       security:
-        - bearerAuth: []
+        - bearerAuth: [] # admin
       responses:
-        "204":
+        '204':
           description: Successful response
           content:
             application/json: {}
-        "404":
+        '404':
           description: Error message
-        "500":
+        '500':
           description: Error message
     put:
       tags:
         - Chargers
       summary: Update charger by id
       security:
-        - bearerAuth: []
+        - bearerAuth: [] # admin
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-        "400":
+        '400':
           description: Error message
-  /chargers/serial/:serial:
+  /chargers/serial/{serial}:
+    parameters:
+      - in: path
+        name: serial
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Chargers
       summary: Charger by serial number
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Charger"
-        "404":
+                $ref: '#/components/schemas/Charger'
+        '404':
           description: Error message
   /chargers:
     post:
@@ -354,37 +522,42 @@ paths:
                   - 14.16301
                 serialNumber: android
       security:
-        - bearerAuth: []
+        - bearerAuth: [] # admin
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-        "404":
+        '404':
           description: Error message
     get:
       tags:
         - Chargers
       summary: Chargers
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  allOf:
-                  $ref: "#/components/schemas/Charger"
-        "404":
+                  $ref: '#/components/schemas/Charger'
+        '404':
           description: Error message
-  /transactions/{id}:
+  /transactions/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Transactions
       summary: Transaction
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
@@ -407,16 +580,22 @@ paths:
             schema:
               type: object
               example:
-                userID: "1"
+                userID: '1'
                 chargerID: 100001
                 isKlarnaPayment: true
-                pricePerKwh: "333"
+                pricePerKwh: '333'
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
   /transactions/chargingStatus/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Transactions
@@ -430,13 +609,13 @@ paths:
                 kwhTransfered: 1
                 currentChargePercentage: 1
       responses:
-        "201":
+        '201':
           description: Successful response
           content:
             application/json: {}
-        "404":
+        '404':
           description: Error message
-        "500":
+        '500':
           description: Error message
   /transactions/session:
     post:
@@ -451,35 +630,53 @@ paths:
                 userID: 1
                 chargerID: 1
       responses:
-        "201":
+        '201':
           description: Successful response
           content:
             application/json: {}
-        "400":
+        '400':
           description: Error message
-        "500":
+        '500':
           description: Error message
   /transactions/userTransactions/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Transactions
       summary: Transaction by userId
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
   /transactions/chargerTransactions/{chargerId}:
+    parameters:
+      - in: path
+        name: chargerId
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Transactions
       summary: Transaction by transactions
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-  /transactions/payment/{id}:
+  /transactions/payment/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Transactions
@@ -490,14 +687,20 @@ paths:
             schema:
               type: object
               example:
-                transactionId: "1"
-                paymentId: "2"
+                transactionId: '1'
+                paymentId: '2'
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-  /transactions/stop/{id}:
+  /transactions/stop/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Transactions
@@ -505,11 +708,17 @@ paths:
       requestBody:
         content: {}
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-  /transactions/start/{id}:
+  /transactions/start/{transactionId}:
+    parameters:
+      - in: path
+        name: transactionId
+        schema:
+          type: string
+        required: true
     put:
       tags:
         - Transactions
@@ -517,163 +726,31 @@ paths:
       requestBody:
         content: {}
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-  /admin/sign-in:
-    post:
-      tags:
-        - Admin
-      summary: Sign in with an administrator account.
-      description: >-
-        Sign in as an administrator. Account is created by someone 
-        with administrator priveleges.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                username: rest-api-admin
-                password: "{{rest-api-account-password}}"
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json: {}
-        "400":
-          description: "A bad request was sent.
-            This includes an incorrect username/password.
-
-            **Future improvement**: *Send other 4xx codes, such as 401 for
-            bad username/password.*"
-  /admin/{username}:
+  /reservations/{reservationId}:
+    parameters:
+      - in: path
+        name: reservationId
+        schema:
+          type: string
+        required: true
     get:
+      deprecated: true
       tags:
-        - Admin
-      summary: Get user information by username
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  username: email
-                  firstName: firstName
-                  lastName: lastName
-                  phoneNumber: phoneNumber
-                  streetAdress: streetAddress
-                  zipCode: zipCode
-                  city: city
-                  country: country
-                  userId: userId
-        "400":
-          description: Bad request
-        "401":
-          description: Unauthorized
-  /admin/users:
-    get:
-      tags:
-        - Admin
-      summary: Get all users with information
-      responses:
-        "200":
-          description: List with all users
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
-                  username: email
-                  firstName: firstName
-                  lastName: lastName
-                  phoneNumber: phoneNumber
-                  streetAdress: streetAddress
-                  zipCode: zipCode
-                  city: city
-                  country: country
-                  userId: userId
-        "400":
-          description: Bad request
-        "401":
-          description: Unauthorized
-  /admin/:
-    post:
-      tags:
-        - Admin
-      summary: Creates an admin account.
-      description: 'Creates a new admin user. Sends a verification code
-        in a email to the supplied email address.
-
-        Use this verification code with the "Verify user" request.
-
-        '
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                username: rest-api-admin
-                password: zi6YrmpWZLQG^5
-                email: lela19so@student.ju.se
-                name: first_name
-                family_name: last_name
-      responses:
-        "200":
-          description: "Successful response."
-          content:
-            application/json: {}
-        "401":
-          description: "Error: Unauthorized.
-
-            The supplied POST was correctly formatted but not accepted."
-          content:
-            application/json: {}
-
-  /admin/force-change-password:
-    post:
-      tags:
-        - Admin
-      summary: Change a users password.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                username: rest-api-admin
-                password: zi6YrmpWZLQG^5
-                session: >-
-                  AYABeAvR1_coVz0EnKxmyNJPM94AHQABAAdTZXJ2aWNlABBDb2duaXRvVXNlclBvb2xzAAEAB2F3cy1rbXMAS2Fybjphd3M6a21zOmV1LXdlc3QtMTo0NTU0NTg0OTMwODE6a2V5L2FiN2U3M2UzLWU2NDEtNDk5Zi1iNzc0LWZkZmM1MWM3NzFhYQC4AQIBAHigzwqzlp0D8sA0ltw8SHdsZPaJakxa-4NzPukgGo7dmgGS5dTNK8uczcSpkcC_8tHoAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMSrBLX5nHC2z4cD9YAgEQgDs-mx5U_LlqzlXumqd9MH-drBQ4Vy3dpGqvmRcuBQEFHaSahxhSUgj863fmUSNdpS4Jhq1t8jqPaNQdKAIAAAAADAAAEAAAAAAAAAAAAAAAAADnU04jgSqDAu5p8cfXlAus_____wAAAAEAAAAAAAAAAAAAAAEAAAC_y-lSQjfe6npxGWXg7eDvHCLxEA-1CQ2mTYPYQu4d_WHo8ubIgy1k5l_6ON_PkuQoJn11jNma2IBsK5ZQZJ-VDV3tn6lTxLvA-U2xxhDhgZi8ZrhZMSf-FSYVRHmgV45pDNx9kps1i436i6oUeWI4bbDBaOWLdhWG1KQJGPNv2ZJSWFvlxSYnCHaO-snLXvnSotjxR5XR4tr58HBII1U14fT6LGm6dM5EKOMtZh97P4Y1K6zJuIIGF9pRvZDyWrpx9HY74aW5qXDzePGCQzj7
-      security:
-        - bearerAuth: []
-      responses:
-        "200":
-          description: Successful response.
-          content:
-            application/json: {}
-        "400":
-          description: The request to change the user password was unsuccessfull.
-          content:
-            application/json: {}
-
-  /reservations/{id}:
-    get:
-      tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Reservation by id
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
     put:
+      deprecated: true
       tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Update Reservation
       requestBody:
         content:
@@ -687,37 +764,46 @@ paths:
                 reservationId: 1
                 parentIdTag: 1
       responses:
-        "200":
+        '200':
           description: Successful response.
           content:
             application/json: {}
     delete:
+      deprecated: true
       tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Remove reservation
       responses:
-        "204":
+        '204':
           description: Successful response.
           content:
             application/json: {}
-        "404":
+        '404':
           description: Error message
-        "500":
+        '500':
           description: Error message
   /reservations/userReservation/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+        required: true
     get:
+      deprecated: true
       tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Reservation by userId
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
   /reservations:
     post:
+      deprecated: true
       tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Reservation
       requestBody:
         content:
@@ -730,17 +816,24 @@ paths:
                 start: 200
                 end: 300
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
   /reservations/chargerReservation/{chargerId}:
+    parameters:
+      - in: path
+        name: chargerId
+        schema:
+          type: string
+        required: true
     get:
+      deprecated: true
       tags:
-        - Reservations
+        - Reservations (deprecated)
       summary: Reservation by chargerId
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
@@ -751,27 +844,34 @@ paths:
       summary: Create invoice
       requestBody:
         content:
-          schema:
-            type: object
-            example:
-              userID: 1
-              dateStart: 1
-              dateEnd: 1
+          application/json:
+            schema:
+              type: object
+              example:
+                userID: 1
+                dateStart: 1
+                dateEnd: 1
       security:
         - bearerAuth: []
       responses:
-        "201":
+        '201':
           description: Successful response
           content:
             application/json: {}
   /invoices/{invoiceId}:
+    parameters:
+      - in: path
+        name: invoiceId
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - Invoices
       summary: Get invoice by ID.
       description: >-
         Will get the invoice requested by the parameter {invoiceID}.
-        Currently there is only one particular PDF being and it 
+        Currently there is only one particular PDF being and it
         belongs to Nisse Hult.
 
 
@@ -779,10 +879,10 @@ paths:
         Instead try this with "{baseuri:8080}/invoices/1234"
 
 
-        *Future improvements*: 
+        *Future improvements*:
 
-          1. Check that the user of this endpoint is authorized to look 
-          at the invoice. User X should not be able to read the invoice 
+          1. Check that the user of this endpoint is authorized to look
+          at the invoice. User X should not be able to read the invoice
           of user Y, but currently no verification is done.
 
           2. Code actually gets data from the database.
@@ -794,11 +894,11 @@ paths:
           required: true
           description: Numeric ID of the invoice to get.
       responses:
-        "200":
+        '200':
           description: Successful response.
           content:
             application/pdf: {}
-        "404":
+        '404':
           description: Invoice not found
           content:
             application/json: {}
@@ -824,19 +924,25 @@ paths:
           required: false
           description: Filter invoices after date, format YYYY-MM
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-        "400":
+        '400':
           description: Bad request
           content:
             application/json: {}
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json: {}
   /invoices/users/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+        required: true
     get:
       security:
         - bearerAuth: []
@@ -857,33 +963,32 @@ paths:
           required: false
           description: Filter invoices after status; paid, unpaid or all
       responses:
-        "200":
+        '200':
           description: Successful response
           content:
             application/json: {}
-        "400":
+        '400':
           description: Bad request
           content:
             application/json: {}
-        "401":
+        '401':
           description: Unauthorized
           content:
             application/json: {}
   /chargePoints:
     get:
-      tags: 
+      tags:
         - ChargePoints
       summary: Gets a list of all charge points
       responses:
         '200':
           description: Sucessful response
-          content: 
-            application/json: 
-              schema: 
+          content:
+            application/json:
+              schema:
                 type: array
-                  items:
-                    allOf:
-                    $ref: '#/components/schemas/ChargePoints'
+                items:
+                  $ref: '#/components/schemas/ChargePoint'
         '404':
           description: Not found
         '500':
@@ -892,6 +997,8 @@ paths:
       tags:
         - ChargePoints
       summary: Crate a new charge point
+      security:
+        - bearerAuth: [] # admin
       requestBody:
         content:
           application/json:
@@ -905,57 +1012,34 @@ paths:
       responses:
         '201':
           description: Successful response
-          content: 
-            application/json: 
-              schema: 
+          content:
+            application/json:
+              schema:
                 type: array
-                  items:
-                    allOf:
-                    $ref: '#/components/schemas/ChargePoints'
+                items:
+                  $ref: '#/components/schemas/ChargePoint'
         '400':
-          description: Error message 
+          description: Error message
         '500':
           description: Internal server error
-
-  /chargePoints/{id}:
-    get: 
-      tags: 
+  /chargePoints/{chargePointId}:
+    parameters:
+      - in: path
+        name: chargePointId
+        schema:
+          type: number
+        required: true
+    get:
+      tags:
         - ChargePoints
       summary: Gets a charging station based on idTag
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: number
-          required: true
       responses:
         '200':
           description: Successful response
-          content: 
-          application/json:
-            schema:
-              type: object
-                items: 
-                $ref: '#components/schema/ChargePoints'
-        '404':
-          description: Not found
-        '500':
-          description: Internal server error
-    delete:
-      tags:
-        - ChargePoints
-      summary: Delete charge point
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: number
-          required: true
-      security:
-        - bearerAuth: []
-      responses:
-        '204':
-          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargePoint'
         '404':
           description: Not found
         '500':
@@ -964,12 +1048,6 @@ paths:
       tags:
         - ChargePoints
       summary: Update a charge point
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: number
-          required: true
       requestBody:
         content:
           application/json:
@@ -980,24 +1058,33 @@ paths:
                 location: [10, 10]
                 price: 10
       security:
-        - bearerAuth: []
+        - bearerAuth: [] # admin
       responses:
         '200':
           description: Successful response
-          content: 
-            application/json: 
-              schema: 
-                type: array
-                  items:
-                    allOf:
-                    $ref: '#/components/schemas/ChargePoints'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargePoint'
         '400':
-          description: Error message 
+          description: Error message
         '404':
           description: Not found
         '500':
           description: Internal server error
-  
+    delete:
+      tags:
+        - ChargePoints
+      summary: Delete charge point
+      security:
+        - bearerAuth: [] # admin
+      responses:
+        '204':
+          description: Successful response
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
 components:
   schemas:
     Charger:
@@ -1016,7 +1103,7 @@ components:
             - 14.16301
         serialNumber:
           type: string
-          example: "testnumber15"
+          example: 'testnumber15'
         chargePointID:
           type: integer
           format: int64
@@ -1030,7 +1117,6 @@ components:
             - Reserved
       xml:
         name: charger
-
     ChargePoint:
       type: object
       properties:
@@ -1045,16 +1131,15 @@ components:
           type: array
           items:
             type: number
-          example: 
+          example:
             - 57.777714
             - 14.16301
         price:
           type: string
           example: 20
-        klarnaReservationAmount: 
+        klarnaReservationAmount:
           type: number
           example: 400
-
   securitySchemes:
     bearerAuth:
       type: http
