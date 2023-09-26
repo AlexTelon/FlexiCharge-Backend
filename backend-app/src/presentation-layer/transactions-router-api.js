@@ -135,38 +135,21 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         const authorization_token = request.body.authorization_token;
 
         if (transactionID == 9999) {
-            const data = [
-                {
-                    "transactionID": 1,
-                    "isKlarnaPayment": false,
-                    "kwhTransfered": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
-                    "currentChargePercentage": Math.floor(Math.random() * 101), // Random number between 0 and 100
-                    "pricePerKwh": (Math.random() * 100).toFixed(2), // Random number between 0 and 100 with 2 decimal places
-                    "timestamp": 1663663253,
-                    "paymentID": null,
-                    "userID": "1",
-                    "session_id": null,
-                    "client_token": null,
-                    "paymentConfirmed": null,
-                    "meterStart": 1,
-                    "chargerID": 100000
-                }
-            ];
-            response.status(200).json(data)
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
         }
-        else {
-            databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
-                console.log(error);
-                console.log(klarnaOrder);
-                if (error.length === 0) {
-                    response.status(201).json(klarnaOrder)
-                } else if (error.includes("internalError") || error.includes("dbError")) {
-                    response.status(500).json(error)
-                } else {
-                    response.status(400).json(error);
-                }
-            })
-        }
+        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
+            console.log(error);
+            console.log(klarnaOrder);
+            if (error.length === 0) {
+                response.status(200).json(klarnaOrder)
+            } else if (error.includes("internalError") || error.includes("dbError")) {
+                response.status(500).json(error)
+            } else {
+                response.status(400).json(error);
+            }
+        })
     })
 
     router.post('/session', function (request, response) {
