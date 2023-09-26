@@ -4,30 +4,33 @@ const authenticate = new AuthMiddleware().verifyToken;
 
 module.exports = function ({ databaseInterfaceTransactions }) {
 
-    const router = express.Router()
-    router.get('/:id', function (request, response) {
+    function getMockTransaction() {
+        return {
+            "transactionID": 9999,
+            "isKlarnaPayment": false,
+            "kwhTransfered": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
+            "currentChargePercentage": Math.floor(Math.random() * 101), // Random number between 0 and 100
+            "pricePerKwh": (Math.random() * 100).toFixed(2), // Random number between 0 and 100 with 2 decimal places
+            "timestamp": Date.now(),
+            "paymentID": null,
+            "userID": "1",
+            "session_id": null,
+            "client_token": null,
+            "paymentConfirmed": null,
+            "meterStart": 1,
+            "chargerID": 100000
+        };
+    }
 
-        const transactionID = request.params.id
+    const router = express.Router()
+    router.get('/:transactionID', function (request, response) {
+
+        const transactionID = request.params.transactionID;
 
         if (transactionID == 9999) {
-            const data = [
-                {
-                    "transactionID": 1,
-                    "isKlarnaPayment": false,
-                    "kwhTransfered": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
-                    "currentChargePercentage": Math.floor(Math.random() * 101), // Random number between 0 and 100
-                    "pricePerKwh": (Math.random() * 100).toFixed(2), // Random number between 0 and 100 with 2 decimal places
-                    "timestamp": 1663663253,
-                    "paymentID": null,
-                    "userID": "1",
-                    "session_id": null,
-                    "client_token": null,
-                    "paymentConfirmed": null,
-                    "meterStart": 1,
-                    "chargerID": 100000
-                }
-            ];
-            response.status(200).json(data)
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
         }
         databaseInterfaceTransactions.getTransaction(transactionID, function (errors, transaction) {
             if (errors.length == 0 && transaction.length == 0) {
@@ -42,7 +45,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     router.get('/userTransactions/:userID', function (request, response) {
 
-        const userID = request.params.userID
+        const userID = request.params.userID;
+
         databaseInterfaceTransactions.getTransactionsForUser(userID, function (errors, userTransaction) {
             if (errors.length == 0 && userTransaction.length == 0) {
                 response.status(404).end()
@@ -72,21 +76,22 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
         const { userID, chargerID, isKlarnaPayment, pricePerKwh } = request.body;
         if (chargerID == 100000) {
-            response.status(200).json(9999)
-        }
-        else {
-            databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transaction) {
-                if (errors.length > 0) {
-                    response.status(400).json(errors)
-                } else if (transaction) {
-                    response.status(201).json(transaction)
-                } else {
-                    response.status(500).json(errors)
-                }
+            response.status(201).json({
+                "transactionID": 9999
             })
+            return;
         }
-
-
+        databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transactionID) {
+            if (errors.length > 0) {
+                response.status(400).json(errors)
+            } else if (transactionID) {
+                response.status(201).json({
+                    "transactionID": transactionID
+                })
+            } else {
+                response.status(500).json(errors)
+            }
+        })
     })
 
 
@@ -183,36 +188,19 @@ module.exports = function ({ databaseInterfaceTransactions }) {
         const transactionID = request.params.transactionID
 
         if (transactionID == 9999) {
-            const data =
-            {
-                "transactionID": 1,
-                "isKlarnaPayment": false,
-                "kwhTransfered": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
-                "currentChargePercentage": Math.floor(Math.random() * 101), // Random number between 0 and 100
-                "pricePerKwh": (Math.random() * 100).toFixed(2), // Random number between 0 and 100 with 2 decimal places
-                "timestamp": 1663663253,
-                "paymentID": null,
-                "userID": "1",
-                "session_id": null,
-                "client_token": null,
-                "paymentConfirmed": null,
-                "meterStart": 1,
-                "chargerID": 100000
-            };
-            response.status(200).json(data)
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
         }
-        else {
-            databaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
-                if (error.length > 0) {
-                    response.status(400).json(error)
-                } else if (stoppedTransaction) {
-                    response.status(200).json(stoppedTransaction)
-                } else {
-                    response.status(500).json(error)
-                }
-            })
-        }
-
+        databaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
+            if (error.length > 0) {
+                response.status(400).json(error)
+            } else if (stoppedTransaction) {
+                response.status(200).json(stoppedTransaction)
+            } else {
+                response.status(500).json(error)
+            }
+        })
     })
 
     return router
