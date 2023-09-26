@@ -12,8 +12,7 @@ class AuthMiddleware {
     adminUserPool = config.USER_POOL;
 
     constructor() {
-        this.setUp();
-        this.setUpAdmin();
+        this.setUpFromURL(`https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`);
     }
 
     verifyToken(req, res, next) {
@@ -50,11 +49,9 @@ class AuthMiddleware {
         return decoded;
     }
 
-    async setUp() {
-        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`
-
+    async setUpFromURL(url) {
         try {
-            const response = await fetch(URL);
+            const response = await fetch(url);
             // console.log(response);
 
             if (response.status !== 200) {
@@ -79,34 +76,6 @@ class AuthMiddleware {
 
         }
     }
-    async setUpAdmin() {
-        const URL = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`
-
-        try {
-            const response = await fetch(URL);
-
-            if (response.status !== 200) {
-                throw 'request not successfull'
-            }
-            const data = await response.json();
-            const { keys } = data;
-            keys.forEach(key => {
-                const key_id = key.kid
-                const modulus = key.n;
-                const exponent = key.e;
-                const key_type = key.kty;
-                const jwk = { kty: key_type, n: modulus, e: exponent };
-                const pem = jwkToPem(jwk);
-                pems[key_id] = pem
-            });
-            // console.log('Got all admin pems.');
-
-        } catch (error) {
-            console.log(error);
-            // console.log('Could not fetch admin jwks.');
-        }
-    }
-
 }
 
 module.exports = AuthMiddleware
