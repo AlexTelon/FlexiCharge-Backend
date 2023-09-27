@@ -7,8 +7,8 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     const router = express.Router()
 
     router.get('/:id', function (request, response) {
-        const reservationId = request.params.id
-        databaseInterfaceReservations.getReservation(reservationId, function (errors, reservation) {
+        const reservationID = request.params.id
+        databaseInterfaceReservations.getReservation(reservationID, function (errors, reservation) {
             if (errors.length == 0 && reservation.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -20,13 +20,13 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.get('/userReservation/:userID', function (request, response) {
-        const userId = request.params.userID
+        const userID = request.params.userID
 
         ////////////////////////////////////////////////
         // A user can only view its own reservations? //
         ////////////////////////////////////////////////
 
-        databaseInterfaceReservations.getReservationForUser(userId, function (error, userReservation) {
+        databaseInterfaceReservations.getReservationForUser(userID, function (error, userReservation) {
             if (error.length == 0 && userReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -38,8 +38,8 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.get('/chargerReservation/:chargerID', function (request, response) {
-        const chargerId = request.params.chargerID
-        databaseInterfaceReservations.getReservationForCharger(chargerId, function (error, chargerReservation) {
+        const chargerID = request.params.chargerID
+        databaseInterfaceReservations.getReservationForCharger(chargerID, function (error, chargerReservation) {
             if (error.length == 0 && chargerReservation.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -70,8 +70,8 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         //////////////////////////////////////////////////
         // A user can only remove its own reservations? //
         //////////////////////////////////////////////////
-        const reservationId = request.params.id
-        databaseInterfaceReservations.removeReservation(reservationId, function (errors, isReservationDeleted) {
+        const reservationID = request.params.id
+        databaseInterfaceReservations.removeReservation(reservationID, function (errors, isReservationDeleted) {
             if (errors.length == 0 && isReservationDeleted) {
                 response.status(204).json()
             } else if (errors.length == 0 && !isReservationDeleted) {
@@ -83,12 +83,12 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
     })
 
     router.put('/:chargerId', function (request, response) {
-        const chargerId = request.params.chargerId
-        const connectorId = request.body.connectorId
+        const chargerID = request.params.chargerId
+        const connectorID = request.body.connectorId
         const idTag = request.body.idTag
-        const reservationId = request.body.reservationId
+        const reservationID = request.body.reservationId
         const parentIdTag = request.body.parentIdTag
-        ocppInterface.reserveNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function (error, resp) {
+        ocppInterface.reserveNow(chargerID, connectorID, idTag, reservationID, parentIdTag, function (error, resp) {
             if (error === null && resp != null) {
                 response.status(201).json(resp)
             } else {

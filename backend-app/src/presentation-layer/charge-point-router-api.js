@@ -19,8 +19,8 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
     })
 
     router.get('/:id', function (request, response) {
-        const chargePointId = request.params.id
-        databaseInterfaceChargePoint.getChargePoint(chargePointId, function (error, chargePoint) {
+        const chargePointID = request.params.id
+        databaseInterfaceChargePoint.getChargePoint(chargePointID, function (error, chargePoint) {
             if (error.length == 0 && chargePoint.length == 0) {
                 response.status(404).end()
             } else if (error.length == 0) {
@@ -47,8 +47,8 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
         })
     })
     router.delete('/:id', checkJwt, checkIfAdmin, function (request, response) {
-        const chargePointId = request.params.id;
-        databaseInterfaceChargePoint.removeChargePoint(chargePointId, function (error, chargePointRemoved) {
+        const chargePointID = request.params.id;
+        databaseInterfaceChargePoint.removeChargePoint(chargePointID, function (error, chargePointRemoved) {
             if (error.length == 0 && chargePointRemoved) {
                 response.status(204).json()
             } else if (error.length == 0 && !chargePointRemoved) {
@@ -60,9 +60,9 @@ module.exports = function ({ databaseInterfaceChargePoint }) {
     })
 
     router.put('/:id', checkJwt, checkIfAdmin, function (request, response) {
-        const chargePointId = request.params.id;
+        const chargePointID = request.params.id;
         const { name, location, price } = request.body;
-        databaseInterfaceChargePoint.updateChargePoint(chargePointId, name, location, price, function (error, chargePoint) {
+        databaseInterfaceChargePoint.updateChargePoint(chargePointID, name, location, price, function (error, chargePoint) {
             if (error.length === 0 && chargePoint === undefined) {
                 response.status(404).json(error);
             } else if (error.length > 0) {
