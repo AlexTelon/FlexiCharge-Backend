@@ -1,12 +1,10 @@
 const dotenv = require("dotenv");
 const path = require("path");
-const validationSchema = require('./validations');
+const validationSchema = require("./validations");
 
-dotenv.config({path: path.join(__dirname, '../../.env')});
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
-const {error} = validationSchema
-  .prefs({ errors: { label: 'key' } })
-  .validate(process.env);
+const { error } = validationSchema.prefs({ errors: { label: "key" } }).validate(process.env);
 
 if (error) throw new Error(error);
 
@@ -32,5 +30,8 @@ module.exports = {
   LIVEMETRICS_DB_UPDATE_INTERVAL: !parseInt(process.env.LIVEMETRICS_DB_UPDATE_INTERVAL) ? 30000 : process.env.LIVEMETRICS_DB_UPDATE_INTERVAL,
   OCPP_TEST_INTERVAL_MULTIPLIER: !parseInt(process.env.OCPP_TEST_INTERVAL) ? 1 : process.env.OCPP_TEST_INTERVAL,
 
-  BYPASS_KLARNA: !parseInt(process.env.BYPASS_KLARNA) ? 0 : process.env.BYPASS_KLARNA
-}
+  BYPASS_KLARNA: !parseInt(process.env.BYPASS_KLARNA) ? 0 : process.env.BYPASS_KLARNA,
+
+  TEST_USER_USERNAME: process.env.TEST_USER_USERNAME,
+  TEST_USER_PASSWORD: process.env.TEST_USER_PASSWORD,
+};
