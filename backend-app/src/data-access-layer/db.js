@@ -166,7 +166,7 @@ try {
 const paymentType = DataTypes.ENUM("Klarna", "Swish", "Mastercard");
 
 const newChargers = sequelize.define(
-  "newChargers",
+  "Chargers",
   {
     chargerID: {
       type: DataTypes.INTEGER,
@@ -194,7 +194,7 @@ const newChargers = sequelize.define(
 );
 
 const newReservations = sequelize.define(
-  "newReservations",
+  "Reservations",
   {
     reservationID: {
       type: DataTypes.INTEGER,
@@ -221,7 +221,7 @@ const newReservations = sequelize.define(
 );
 
 const newChargeSessions = sequelize.define(
-  "newChargeSessions",
+  "ChargeSessions",
   {
     chargeSessionID: {
       type: DataTypes.INTEGER,
@@ -260,7 +260,7 @@ const newChargeSessions = sequelize.define(
 );
 
 const newTransactions = sequelize.define(
-  "newTransactions",
+  "Transactions",
   {
     transactionID: {
       type: DataTypes.INTEGER,
@@ -311,7 +311,7 @@ const newTransactions = sequelize.define(
 );
 
 const newChargePoints = sequelize.define(
-  "newChargePoints",
+  "ChargePoints",
   {
     chargePointID: {
       type: DataTypes.INTEGER,
@@ -340,7 +340,7 @@ const newChargePoints = sequelize.define(
 );
 
 const newElectricityTariffs = sequelize.define(
-  "newElectricityTariffs",
+  "ElectricityTariffs",
   {
     date: {
       type: DataTypes.DATE,
@@ -363,7 +363,7 @@ const newElectricityTariffs = sequelize.define(
   }
 );
 
-const newKlarnaPayments = sequelize.define("newKlarnaPayments", {
+const newKlarnaPayments = sequelize.define("KlarnaPayments", {
   klarnaPaymentID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
