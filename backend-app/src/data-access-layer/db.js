@@ -165,7 +165,7 @@ try {
 // Add payment methods here, create a new table for the payment method.
 const paymentType = DataTypes.ENUM("Klarna", "Swish", "Mastercard");
 
-const newChargers = sequelize.define(
+const Chargers = sequelize.define(
   "Chargers",
   {
     chargerID: {
@@ -193,7 +193,7 @@ const newChargers = sequelize.define(
   }
 );
 
-const newReservations = sequelize.define(
+const Reservations = sequelize.define(
   "Reservations",
   {
     reservationID: {
@@ -220,7 +220,7 @@ const newReservations = sequelize.define(
   }
 );
 
-const newChargeSessions = sequelize.define(
+const ChargeSessions = sequelize.define(
   "ChargeSessions",
   {
     chargeSessionID: {
@@ -259,7 +259,7 @@ const newChargeSessions = sequelize.define(
   }
 );
 
-const newTransactions = sequelize.define(
+const Transactions = sequelize.define(
   "Transactions",
   {
     transactionID: {
@@ -310,7 +310,7 @@ const newTransactions = sequelize.define(
   }
 );
 
-const newChargePoints = sequelize.define(
+const ChargePoints = sequelize.define(
   "ChargePoints",
   {
     chargePointID: {
@@ -339,7 +339,7 @@ const newChargePoints = sequelize.define(
   }
 );
 
-const newElectricityTariffs = sequelize.define(
+const ElectricityTariffs = sequelize.define(
   "ElectricityTariffs",
   {
     date: {
@@ -397,19 +397,19 @@ const UserInvoices = sequelize.define("UserInvoices", {
   },
 });
 
-newElectricityTariffs.removeAttribute("id");
+ElectricityTariffs.removeAttribute("id");
 
-newKlarnaPayments.belongsTo(newTransactions, { foreignKey: "transactionID" });
-newTransactions.belongsTo(newChargeSessions, { foreignKey: "chargeSessionID" });
-newChargeSessions.belongsTo(newChargers, {
+newKlarnaPayments.belongsTo(Transactions, { foreignKey: "transactionID" });
+Transactions.belongsTo(ChargeSessions, { foreignKey: "chargeSessionID" });
+ChargeSessions.belongsTo(Chargers, {
   foreignKey: "chargerID",
   onDelete: "cascade",
 });
-newChargers.belongsTo(newChargePoints, {
+Chargers.belongsTo(ChargePoints, {
   foreignKey: "chargePointID",
   onDelete: "cascade",
 });
-newReservations.belongsTo(newChargers, {
+Reservations.belongsTo(Chargers, {
   foreignKey: "chargerID",
   onDelete: "cascade",
 });
@@ -417,92 +417,92 @@ newReservations.belongsTo(newChargers, {
 
 sequelize.sync().then(function () {
   //START--------------------------TEST_DATA_NEW_CODE
-  newChargePoints.findAndCountAll().then(function ({ rows, count }) {
+  ChargePoints.findAndCountAll().then(function ({ rows, count }) {
     if (count < 1) {
-      newChargePoints.create({
+      ChargePoints.create({
         name: "Airport Parking, Jönköping",
         address: "Flygplansvägen",
         coordinates: [57.749812214261034, 14.070100435207065],
       });
-      newChargePoints.create({
+      ChargePoints.create({
         name: "Jönköping University",
         address: "Gjuterigatan 5",
         coordinates: [57.777714, 14.16301],
       });
-      newChargePoints.create({
+      ChargePoints.create({
         name: "Nässjö Centralstation",
         address: "Järnvägsgatan 26",
         coordinates: [57.652328901782795, 14.694810832097543],
       });
-      newChargePoints.create({
+      ChargePoints.create({
         name: "Coop, Forserum",
         address: "Jönköpingsvägen 2",
         coordinates: [57.70022044183724, 14.475150415104222],
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100001,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc111",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100002,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc112",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100003,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc113",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100004,
         coordinates: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc114",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100005,
         coordinates: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc115",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100006,
         coordinates: [57.70022044183724, 14.475150415104222],
         serialNumber: "abc116",
         status: "Available",
         chargePointID: 3, //Coop, Forserum
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100007,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc117",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100008,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc118",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
-      newChargers.create({
+      Chargers.create({
         chargerID: 100009,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc119",
         status: "Reserved",
         chargePointID: 4, // Airport Parking, Jönköping
       });
-      newTransactions.create({
+      Transactions.create({
         userID: "NotARealUser@gmail.com",
         paymentMethod: "Klarna",
         isPayed: true,
@@ -513,7 +513,7 @@ sequelize.sync().then(function () {
         totalPrice: 100,
         chargerID: 100002, // Jönköping University
       });
-      newTransactions.create({
+      Transactions.create({
         userID: "NotARealUser@gmail.com",
         paymentMethod: "Klarna",
         isPayed: true,
@@ -535,7 +535,7 @@ sequelize.sync().then(function () {
       // Iterates through each hour and sets price+currency from startDate
       for (let hour = 0; hour < 24 * generateDays; hour++) {
         iterTime += 1 * 60 * 60 * 1000;
-        newElectricityTariffs.create({
+        ElectricityTariffs.create({
           date: iterTime,
           price: randomPrice(1, 6),
           currency: "SEK",
@@ -548,12 +548,12 @@ sequelize.sync().then(function () {
 
 module.exports = function ({}) {
   const exports = {
-    newChargers,
-    newTransactions,
-    newReservations,
-    newChargePoints,
-    newChargeSessions,
-    newElectricityTariffs,
+    Chargers,
+    Transactions,
+    Reservations,
+    ChargePoints,
+    ChargeSessions,
+    ElectricityTariffs,
     newKlarnaPayments,
   };
   return exports;

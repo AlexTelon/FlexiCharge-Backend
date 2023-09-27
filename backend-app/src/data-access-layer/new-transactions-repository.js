@@ -14,7 +14,7 @@ module.exports = function ({ databaseInit }) {
             transactionDate: date
         }
 
-        databaseInit.newTransactions.create(transaction)
+        databaseInit.Transactions.create(transaction)
             .then(transaction => callback([], transaction))
             .catch(e => {
                 console.log(e)
@@ -23,7 +23,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransaction = function (transactionID, callback) {
-        databaseInit.newTransactions.findOne({ where: { transactionID: transactionID }, raw: true })
+        databaseInit.Transactions.findOne({ where: { transactionID: transactionID }, raw: true })
             .then(transaction => callback([], transaction))
             .catch(e => {
                 console.log(e)
@@ -32,7 +32,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransactionsForUser = function (userID, callback) {
-        databaseInit.newTransactions.findAll({ where: { userID: userID }, raw: true })
+        databaseInit.Transactions.findAll({ where: { userID: userID }, raw: true })
             .then(userTransactions => callback([], userTransactions))
             .catch(e => {
                 console.log(e)
@@ -41,7 +41,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransactionsForCharger = function(chargerID, callback) {
-        databaseInit.newTransactions.findAll({ where: {chargerID : chargerID}, raw: true })
+        databaseInit.Transactions.findAll({ where: {chargerID : chargerID}, raw: true })
             .then(transactions => callback([], transactions))
             .catch(e => {
                 console.log(e)
@@ -50,7 +50,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updatePaymentMethod = function (transactionID, paymentMethod, callback) {
-        databaseInit.newTransactions.update({
+        databaseInit.Transactions.update({
             paymentMethod: paymentMethod
         }, {
             where: { transactionID: transactionID },
@@ -65,7 +65,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateIsPayed = function (transactionID, isPayed, callback) {
-        databaseInit.newTransactions.update({
+        databaseInit.Transactions.update({
             isPayed: isPayed
         }, {
             where: { transactionID: transactionID },
@@ -81,7 +81,7 @@ module.exports = function ({ databaseInit }) {
 
 
     exports.updatePayedDate = function (transactionID, payedDate, callback) {
-        databaseInit.newTransactions.update({
+        databaseInit.Transactions.update({
             payedDate: payedDate
         }, {
             where: { transactionID: transactionID },
@@ -96,7 +96,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateTotalPrice = function (transactionID, totalPrice, callback) {
-        databaseInit.newTransactions.update({
+        databaseInit.Transactions.update({
             totalPrice: totalPrice
         }, {
             where: { transactionID: transactionID },
@@ -111,7 +111,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransactionForChargeSession = function (chargeSessionID, callback) {
-        databaseInit.newTransactions.findOne({
+        databaseInit.Transactions.findOne({
             where: {
                 chargeSessionID: chargeSessionID
             }

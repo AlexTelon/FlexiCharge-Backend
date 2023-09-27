@@ -5,7 +5,7 @@ module.exports = function ({ databaseInit }) {
     const exports = {}
 
     exports.getReservation = function (reservationID, callback) {
-        databaseInit.newReservations.findOne({ where: { reservationID: reservationID }, raw: true })
+        databaseInit.Reservations.findOne({ where: { reservationID: reservationID }, raw: true })
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
@@ -14,7 +14,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getReservationsForCharger = function (chargerID, callback) {
-        databaseInit.newReservations.findAll({ where: { chargerID: chargerID }, raw: true })
+        databaseInit.Reservations.findAll({ where: { chargerID: chargerID }, raw: true })
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
                 console.log(e)
@@ -23,7 +23,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getReservationsForUser = function (userID, callback) {
-        databaseInit.newReservations.findAll({ where: { userID: userID }, raw: true })
+        databaseInit.Reservations.findAll({ where: { userID: userID }, raw: true })
             .then(userReservation => callback([], userReservation))
             .catch(e => {
                 console.log(e)
@@ -38,7 +38,7 @@ module.exports = function ({ databaseInit }) {
             start: start,
             end: end
         }
-        databaseInit.newReservations.create(reservation)
+        databaseInit.Reservations.create(reservation)
             .then(reservation => callback([], reservation))
             .catch(e => {
                 console.log(e)
@@ -48,7 +48,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.removeReservation = function (reservationID, callback) {
-        databaseInit.newReservations.destroy({
+        databaseInit.Reservations.destroy({
             where: { reservationID: reservationID },
             raw: true
         })

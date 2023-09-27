@@ -3,7 +3,7 @@ module.exports = function ({ databaseInit }) {
     const exports = {}
 
     exports.getChargers = function (callback) {
-        databaseInit.newChargers.findAll({ raw: true })
+        databaseInit.Chargers.findAll({ raw: true })
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
@@ -12,7 +12,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getCharger = function (chargerID, callback) {
-        databaseInit.newChargers.findOne({ where: { chargerID: chargerID }, raw: true })
+        databaseInit.Chargers.findOne({ where: { chargerID: chargerID }, raw: true })
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
@@ -21,7 +21,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getChargerBySerialNumber = function (serialNumber, callback) {
-        databaseInit.newChargers.findOne({ where: { serialNumber: serialNumber }, raw: true })
+        databaseInit.Chargers.findOne({ where: { serialNumber: serialNumber }, raw: true })
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
@@ -30,7 +30,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getAvailableChargers = function (callback) {
-        databaseInit.newChargers.findAll({ where: { status: 'Available' }, raw: true })
+        databaseInit.Chargers.findAll({ where: { status: 'Available' }, raw: true })
             .then(chargers => callback([], chargers))
             .catch(e => {
                 console.log(e)
@@ -47,7 +47,7 @@ module.exports = function ({ databaseInit }) {
         }
 
         // Chargers does not use auto increment for chargeID, instead auto increments manually starting from 100 000.
-        databaseInit.newChargers.max("chargerID")
+        databaseInit.Chargers.max("chargerID")
             .then(function (biggestChargerID) {
                 if (biggestChargerID != undefined && biggestChargerID != null && biggestChargerID != NaN && biggestChargerID >= 100000) {
                     charger.chargerID = biggestChargerID + 1;
@@ -55,13 +55,13 @@ module.exports = function ({ databaseInit }) {
                     charger.chargerID = 100000;
                 }
 
-                databaseInit.newChargers.create(charger)
+                databaseInit.Chargers.create(charger)
                     .then(createdCharger => callback([], createdCharger))
                     .catch(e => {
                         if (!e.errors === undefined) {
                             if (e.errors[0].message == "chargerID must be unique") {
                                 charger.chargerID = parseInt(e.errors[0].value) + 1;
-                                databaseInit.newChargers.create(charger)
+                                databaseInit.Chargers.create(charger)
                                     .then(createdCharger => callback([], createdCharger))
                                     .catch(e => {
                                         console.log(e)
@@ -84,7 +84,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.removeCharger = function (chargerID, callback) {
-        databaseInit.newChargers.destroy({
+        databaseInit.Chargers.destroy({
             where: { chargerID: chargerID },
             raw: true
         })
@@ -103,7 +103,7 @@ module.exports = function ({ databaseInit }) {
             })
     }
     exports.updateChargerStatus = function (chargerID, status, callback) {
-        databaseInit.newChargers.update({
+        databaseInit.Chargers.update({
             status: status
         }, {
             where: { chargerID: chargerID },

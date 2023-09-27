@@ -11,7 +11,7 @@ module.exports = function ({ databaseInit }) {
             startTime: startTime
         }
 
-        databaseInit.newChargeSessions.create(chargeSession)
+        databaseInit.ChargeSessions.create(chargeSession)
             .then(chargeSession => callback([], chargeSession))
             .catch(e => {
                 console.log(e)
@@ -20,7 +20,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getChargeSession = function (chargeSessionID, callback) {
-        databaseInit.newChargeSessions.findOne({ where: { chargeSessionID: chargeSessionID }, raw: true })
+        databaseInit.ChargeSessions.findOne({ where: { chargeSessionID: chargeSessionID }, raw: true })
             .then(chargeSession => callback([], chargeSession))
             .catch(e => {
                 console.log(e)
@@ -29,7 +29,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getChargeSessions = function (chargerID, callback) {
-        databaseInit.newChargeSessions.findAll({ where: { chargerID: chargerID }, raw: true })
+        databaseInit.ChargeSessions.findAll({ where: { chargerID: chargerID }, raw: true })
             .then(ChargeSessions => callback([], ChargeSessions))
             .catch(e => {
                 console.log(e)
@@ -38,7 +38,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateChargeSession = function (chargeSessionID, updatedProperties, callback) {
-        databaseInit.newChargeSessions.update(updatedProperties, {
+        databaseInit.ChargeSessions.update(updatedProperties, {
             where: {
                 chargeSessionID: chargeSessionID
             },
@@ -53,7 +53,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateChargingEndTime = function (chargeSessionID, endTime, callback) {
-        databaseInit.newChargeSessions.update({
+        databaseInit.ChargeSessions.update({
             endTime: endTime
         }, {
             where: { chargeSessionID: chargeSessionID },
@@ -68,7 +68,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
-        databaseInit.newChargeSessions.update({
+        databaseInit.ChargeSessions.update({
             kwhTransfered: kwhTransfered,
             currentChargePercentage: currentChargePercentage
         }, {
@@ -84,7 +84,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.updateMeterStart = function (chargeSessionID, meterStart, callback) {
-        databaseInit.newChargeSessions.update({
+        databaseInit.ChargeSessions.update({
             meterStart: meterStart,
         }, {
             where: { chargeSessionID: chargeSessionID },
