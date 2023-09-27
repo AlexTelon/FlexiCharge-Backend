@@ -80,7 +80,7 @@ try {
 //         type: DataTypes.BOOLEAN,
 //         allowNull: false
 //     },
-//     kwhTransfered: {
+//     kWhTransferred: {
 //         type: DataTypes.FLOAT,
 //         allowNull: true
 //     },
@@ -233,7 +233,7 @@ const ChargeSessions = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    kwhTransfered: {
+    kWhTransferred: {
       type: DataTypes.FLOAT,
       allowNull: true,
     },
@@ -276,7 +276,7 @@ const Transactions = sequelize.define(
       type: paymentType,
       allowNull: false,
     },
-    isPayed: {
+    isPaid: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
@@ -295,7 +295,7 @@ const Transactions = sequelize.define(
       unique: false,
       allowNull: true,
     },
-    payedDate: {
+    paidDate: {
       type: DataTypes.DATE,
       unique: false,
       allowNull: true,
@@ -505,22 +505,22 @@ sequelize.sync().then(function () {
       Transactions.create({
         userID: "NotARealUser@gmail.com",
         paymentMethod: "Klarna",
-        isPayed: true,
+        isPaid: true,
         payNow: false,
         transactionDate: 1664889622,
         paymentDueDate: 1664889622,
-        payedDate: 1664889622,
+        paidDate: 1664889622,
         totalPrice: 100,
         chargerID: 100002, // Jönköping University
       });
       Transactions.create({
         userID: "NotARealUser@gmail.com",
         paymentMethod: "Klarna",
-        isPayed: true,
+        isPaid: true,
         payNow: false,
         transactionDate: 1664889622,
         paymentDueDate: 1664889622,
-        payedDate: 1664889622,
+        paidDate: 1664889622,
         totalPrice: 151,
         chargerID: 100005, // Nässjö centralstation
       });

@@ -7,7 +7,7 @@ module.exports = function ({ databaseInit }) {
             chargerID: chargerID,
             userID: userID,
             currentChargePercentage: null,
-            kwhTransfered: null,
+            kWhTransferred: null,
             startTime: startTime
         }
 
@@ -67,9 +67,9 @@ module.exports = function ({ databaseInit }) {
         })
     }
 
-    exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
+    exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kWhTransferred, callback) {
         databaseInit.ChargeSessions.update({
-            kwhTransfered: kwhTransfered,
+            kWhTransferred: kWhTransferred,
             currentChargePercentage: currentChargePercentage
         }, {
             where: { chargeSessionID: chargeSessionID },

@@ -80,12 +80,12 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
         }
     }
 
-    exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
-        const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kwhTransfered)
+    exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kWhTransferred, callback) {
+        const validationErrors = newChargeSessionValidation.getUpdateChargingStateValidation(currentChargePercentage, kWhTransferred)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kwhTransfered, (error, updatedChargingSession) => {
+            newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, currentChargePercentage, kWhTransferred, (error, updatedChargingSession) => {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -119,10 +119,10 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                                 if (error != null || returnObject.status == "Rejected") {
                                     callback(["couldNotStopOCPPTransaction"])
                                 } else {
-                                    const kwhTransfered = (returnObject.meterStop - chargeSession.meterStart) / 1000
+                                    const kWhTransferred = (returnObject.meterStop - chargeSession.meterStart) / 1000
     
-                                    if (kwhTransfered >= 0) {
-                                        newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, chargeSession.currentChargePercentage, kwhTransfered, function (error, updatedChargingSession) {
+                                    if (kWhTransferred >= 0) {
+                                        newDataAccessLayerChargeSessions.updateChargingState(chargeSessionID, chargeSession.currentChargePercentage, kWhTransferred, function (error, updatedChargingSession) {
                                             if (Object.keys(error).length > 0) {
                                                 dbErrorCheck.checkError(error, function (errorCode) {
                                                     callback(errorCode, [])
@@ -135,7 +135,7 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                                                         })
                                                     } else {
                                                         //Extend to check if the charge session has gone longer than an hour and then both hours have tariffs and a average might be good?
-                                                        const totalPrice = chargeSession.kwhTransfered * electricityTariff.price
+                                                        const totalPrice = chargeSession.kWhTransferred * electricityTariff.price
                                                         newDataAccessLayerTransactions.updateTotalPrice(transaction.transactionID, totalPrice, function (error, updatedTransaction) {
                                                             if (Object.keys(error).length > 0) {
                                                                 dbErrorCheck.checkError(error, function (errorCode) {
@@ -186,7 +186,7 @@ module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLaye
                                         callback(errorCode, [])
                                     })
                                 } else {
-                                    const price = chargeSession.kwhTransfered * electricityTariff.price
+                                    const price = chargeSession.kWhTransferred * electricityTariff.price
                                     callback([], price)
                                 }
                             })

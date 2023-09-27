@@ -38,7 +38,7 @@ describe("finalizeKlarnaOrder", () => {
                 return;
             }
 
-            expect(transaction.isPayed).toBe(true)
+            expect(transaction.isPaid).toBe(true)
             done()
         })
     });

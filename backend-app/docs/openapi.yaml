@@ -606,7 +606,7 @@ paths:
             schema:
               type: object
               example:
-                kwhTransfered: 1
+                kWhTransferred: 1
                 currentChargePercentage: 1
       responses:
         '201':

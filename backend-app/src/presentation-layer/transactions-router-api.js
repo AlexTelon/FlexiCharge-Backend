@@ -81,9 +81,9 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
 
     router.put('/chargingStatus/:transactionID', function (request, response) {
         const transactionId = request.params.transactionID
-        const kwhTransfered = request.body.kwhTransfered
+        const kWhTransferred = request.body.kWhTransferred
         const currentChargePercentage = request.body.currentChargePercentage
-        newDatabaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kwhTransfered, currentChargePercentage, function (error, updatedTransaction) {
+        newDatabaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kWhTransferred, currentChargePercentage, function (error, updatedTransaction) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransaction)
             } else {

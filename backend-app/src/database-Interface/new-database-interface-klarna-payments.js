@@ -78,7 +78,7 @@ module.exports = function ({ newDataAccessLayerKlarna, newDataAccessLayerKlarnaP
                     } else {
                         newDataAccessLayerKlarna.finalizeKlarnaOrder(transaction.totalPrice, klarnaPayment.order_id, function (error, responseData) {
                             if (error.length == 0) {
-                                newDataAccessLayerTransactions.updateIsPayed(transactionID, true, function (error, transaction) {
+                                newDataAccessLayerTransactions.updateisPaid(transactionID, true, function (error, transaction) {
                                     if (Object.keys(error).length > 0) {
                                         dbErrorCheck.checkError(error, function (errorCode) {
                                             callback(errorCode, [])

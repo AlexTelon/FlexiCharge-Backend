@@ -65,16 +65,16 @@ describe("updatePaymentMethod", () => {
     });
 });
 
-describe("updatePayedDate", () => {
-    test("Update payedDate for Transaction", (done) => {
-        const payedDate = new Date(new Date())
-        newDatabaseInterfaceTransactions.updatePayedDate(1, payedDate, (error, updatedTransaction) => {
+describe("updatepaidDate", () => {
+    test("Update paidDate for Transaction", (done) => {
+        const paidDate = new Date(new Date())
+        newDatabaseInterfaceTransactions.updatepaidDate(1, paidDate, (error, updatedTransaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
             }
 
-            expect(updatedTransaction.payedDate).toBe(payedDate)
+            expect(updatedTransaction.paidDate).toBe(paidDate)
             done()
         })
     });

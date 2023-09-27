@@ -64,9 +64,9 @@ module.exports = function ({ databaseInit }) {
         })
     }
 
-    exports.updateIsPayed = function (transactionID, isPayed, callback) {
+    exports.updateisPaid = function (transactionID, isPaid, callback) {
         databaseInit.Transactions.update({
-            isPayed: isPayed
+            isPaid: isPaid
         }, {
             where: { transactionID: transactionID },
             returning: true,
@@ -80,9 +80,9 @@ module.exports = function ({ databaseInit }) {
     }
 
 
-    exports.updatePayedDate = function (transactionID, payedDate, callback) {
+    exports.updatepaidDate = function (transactionID, paidDate, callback) {
         databaseInit.Transactions.update({
-            payedDate: payedDate
+            paidDate: paidDate
         }, {
             where: { transactionID: transactionID },
             returning: true,

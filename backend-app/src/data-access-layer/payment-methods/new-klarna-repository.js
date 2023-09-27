@@ -122,7 +122,7 @@ module.exports = function({}) {
     }
 
     exports.finalizeKlarnaOrder = async function(totalPrice, order_id, callback) {
-        const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
+        const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kWhTransferred);
         const order_lines = getOrderLines(newOrderAmount)
 
         updateOrder(totalPrice, order_id, order_lines, function(error, responseData) {

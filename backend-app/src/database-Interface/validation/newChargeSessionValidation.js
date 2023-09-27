@@ -21,15 +21,15 @@ module.exports = function({}){
         return validationErrors
     }
 
-    exports.getUpdateChargingStateValidation = function(currentChargePercentage, kwhTransfered){
+    exports.getUpdateChargingStateValidation = function(currentChargePercentage, kWhTransferred){
         const validationErrors = []
         
         if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PERCENTAGE || currentChargePercentage > MAX_CHARGE_PERCENTAGE) {
             validationErrors.push("invalidChargePercentage")
         }
 
-        if (kwhTransfered == null || kwhTransfered == undefined || kwhTransfered < MIN_TRANSFERED_KWH) {
-            validationErrors.push("invalidkwhTransferedValue")
+        if (kWhTransferred == null || kWhTransferred == undefined || kWhTransferred < MIN_TRANSFERED_KWH) {
+            validationErrors.push("invalidkWhTransferredValue")
         }
 
         return validationErrors

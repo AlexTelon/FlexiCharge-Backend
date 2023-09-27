@@ -25,7 +25,7 @@
 - getChargeSessions
 	- Purpose : Gets all ChargeSessions that belong to a specific chargerID.
 - updateChargingState
-	- Purpose : Updates the properties currentChargePercentage and kwhTransfered.
+	- Purpose : Updates the properties currentChargePercentage and kWhTransferred.
 - startChargeSession (When a user wants to start charging his car)
 	- Purpose : Starts a ChargeSession.
 	- Extra Information : 
@@ -34,8 +34,8 @@
 - endChargeSession (When a user is finished charging his car)
 	- Purpose : Ends a ChargingSession.
 	- Extra Information :
-		1. Contacts OCPP and use remoteStopTransaction(), which returns the kwhTransfered during the full ChargeSession. 
-		2. totalPrice = (kwhTransfered * pricePerKwh).
+		1. Contacts OCPP and use remoteStopTransaction(), which returns the kWhTransferred during the full ChargeSession. 
+		2. totalPrice = (kWhTransferred * pricePerKwh).
 			- Currently pricePerKwh is retrieved by the electricityTariffs table, however it should be retrieved by "Live Metrics" done by the OCPP team.
 		3. The Transaction connected to this ChargeSession is finally updated with the totalPrice.
 
@@ -72,7 +72,7 @@
 	  - Extra Information : authorization_token can only be accessed via the Klarna Widget (Postman requests can not get authorization_token back in responses, ONLY the Klarna widget). 
 	  - More information regarding **how to get authorization token** can be found here(Step 1 -> 3 under "Integrate with Klarna Payment" are important): https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/
   - finalizeKlarnaOrder
-	  - Purpose : Finalize the Klarna order and update isPayed to **true**.
+	  - Purpose : Finalize the Klarna order and update isPaid to **true**.
 ### new-database-interface-reservations.js
 - getReservation 
 	- Purpose : Get a Reservation by reservationID
@@ -93,8 +93,8 @@
 	- Purpose : Gets all Transactions for a user.
 - updatePaymentMethod
 	- Purpose : Update paymentMethod property.
-- updatePayedDate
-	- Purpose : Update payedDate property.
+- updatepaidDate
+	- Purpose : Update paidDate property.
 - updateTotalPrice
 	- Purpose : Update totalPrice property.
 - getTransactionForChargeSession

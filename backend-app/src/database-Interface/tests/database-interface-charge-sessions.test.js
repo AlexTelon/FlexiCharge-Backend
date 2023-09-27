@@ -54,14 +54,14 @@ describe("getChargeSessions", () => {
 describe("updateChargingState", () => {
     test("Update ChargingState", (done) => {
         const currentChargePercentage = 10
-        const kwhTransfered = 1026
-        newDatabaseInterfaceChargeSessions.updateChargingState(1, currentChargePercentage, kwhTransfered, (error, updatedChargeSession) => {
+        const kWhTransferred = 1026
+        newDatabaseInterfaceChargeSessions.updateChargingState(1, currentChargePercentage, kWhTransferred, (error, updatedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
             }
 
-            expect(updatedChargeSession.kwhTransfered).toBe(kwhTransfered)
+            expect(updatedChargeSession.kWhTransferred).toBe(kWhTransferred)
             done()
         })
     });
@@ -75,7 +75,7 @@ describe("endChargeSession", () => {
                 return;
             }
 
-            expect(updatedChargeSession.kwhTransfered).toBe(1.9) // This is gonna fail since endtime will always change.... need expect other thingy i think!
+            expect(updatedChargeSession.kWhTransferred).toBe(1.9) // This is gonna fail since endtime will always change.... need expect other thingy i think!
             done()
         })
     });

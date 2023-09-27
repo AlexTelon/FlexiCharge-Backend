@@ -74,12 +74,12 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
         }
     }
 
-    exports.updatePayedDate = function (transactionID, payedDate, callback) {
-        const validationErrors = newTransactionValidation.getUpdatePayedDateValidation(transactionID, payedDate)
+    exports.updatepaidDate = function (transactionID, paidDate, callback) {
+        const validationErrors = newTransactionValidation.getUpdatepaidDateValidation(transactionID, paidDate)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.updatePayedDate(transactionID, payedDate, function (error, transaction) {
+            newDataAccessLayerTransactions.updatepaidDate(transactionID, paidDate, function (error, transaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])

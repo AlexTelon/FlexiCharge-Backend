@@ -45,7 +45,7 @@ function chargeSessionsRepositoryMock() {
         chargeSessionID: 1,
         userID: 1,
         chargerID: 100001,
-        kwhTransfered: 1000,
+        kWhTransferred: 1000,
         currentChargePercentage: 100,
         meterStart: 100,
         startTime: null,
@@ -80,12 +80,12 @@ function chargeSessionsRepositoryMock() {
                 endTime,
             })
         },
-        updateChargingState: function (chargeSessionID, currentChargePercentage, kwhTransfered, callback) {
+        updateChargingState: function (chargeSessionID, currentChargePercentage, kWhTransferred, callback) {
             callback([], {
                 ...defaultItem,
                 chargeSessionID,
                 currentChargePercentage,
-                kwhTransfered
+                kWhTransferred
             })
         },
         updateMeterStart: function (chargeSessionID, meterStart, callback) {
@@ -187,11 +187,11 @@ function transactionsRepositoryMock() {
         transactionID: 1,
         userID: 1,
         paymentMethod: "Klarna",
-        isPayed: null,
+        isPaid: null,
         payNow: false,
         transactionDate: null,
         paymentDueDate: null,
-        payedDate: null,
+        paidDate: null,
         totalPrice: 13.37,
         chargeSessionID: null
     }
@@ -221,18 +221,18 @@ function transactionsRepositoryMock() {
                 paymentMethod
             })
         },
-        updateIsPayed: function (transactionID, isPayed, callback) {
+        updateisPaid: function (transactionID, isPaid, callback) {
             callback([], {
                 ...defaultItem,
                 transactionID,
-                isPayed
+                isPaid
             })
         },
-        updatePayedDate: function (transactionID, payedDate, callback) {
+        updatepaidDate: function (transactionID, paidDate, callback) {
             callback([], {
                 ...defaultItem,
                 transactionID,
-                payedDate
+                paidDate
             })
         },
         updateTotalPrice: function (transactionID, totalPrice, callback) {

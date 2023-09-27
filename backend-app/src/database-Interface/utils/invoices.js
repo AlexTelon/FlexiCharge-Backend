@@ -14,7 +14,7 @@ const calculateChargeSessions = (chargeSessions) => {
         
         chargeSessionRow.push(convertUnixToIso8601(chargeSession.startTime))
         chargeSessionRow.push(convertUnixToIso8601(chargeSession.endTime))
-        chargeSessionRow.push(chargeSession.kwhTransfered)
+        chargeSessionRow.push(chargeSession.kWhTransferred)
         
         tableRows.push(chargeSessionRow)
         totalSum += sessionPrice

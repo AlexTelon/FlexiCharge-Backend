@@ -80,23 +80,23 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getUpdatePayedDateValidation = function(transactionID, payedDate){
+    exports.getUpdatepaidDateValidation = function(transactionID, paidDate){
         const validationErrors = []
 
         if(transactionID == null || transactionID == undefined){
             validationErrors.push("invalidTransactionID")
         }
 
-        if(payedDate == null || payedDate == undefined){
-            validationErrors.push("invalidPayedDate")
+        if(paidDate == null || paidDate == undefined){
+            validationErrors.push("invalidpaidDate")
         } else {
-            let dateObject = new Date(payedDate)
+            let dateObject = new Date(paidDate)
             if(dateObject == null || dateObject == undefined ){
-                validationErrors.push("invalidPayedDate")
+                validationErrors.push("invalidpaidDate")
             }
             if(isNaN(dateObject.getMonth())){
                 //String recieved tried to convert to a date object and failed. 
-                validationErrors.push("invalidPayedDate")
+                validationErrors.push("invalidpaidDate")
             }
         }
 
