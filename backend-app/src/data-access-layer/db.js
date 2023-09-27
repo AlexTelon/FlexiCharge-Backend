@@ -416,7 +416,9 @@ newReservations.belongsTo(newChargers, {
 //END--------------------------NEW_CODE_CURRENTLY_UNUSED
 
 sequelize.sync().then(function () {
-      //START--------------------------TEST_DATA_NEW_CODE
+  //START--------------------------TEST_DATA_NEW_CODE
+  newChargePoints.findAndCountAll().then(function ({ rows, count }) {
+    if (count < 1) {
       newChargePoints.create({
         name: "Airport Parking, Jönköping",
         address: "Flygplansvägen",
@@ -522,7 +524,6 @@ sequelize.sync().then(function () {
         totalPrice: 151,
         chargerID: 100005, // Nässjö centralstation
       });
-
       // Fill the ElectricityTariff table with random data
       const generateDays = 61; //Days to generate prices from startDate
       const startDate = new Date(2022, 8, 1); //Sets the start point
@@ -541,7 +542,9 @@ sequelize.sync().then(function () {
         });
       }
       //END----------------------------TEST_DATA_NEW_CODE
-    });
+    }
+  });
+});
 
 module.exports = function ({}) {
   const exports = {
