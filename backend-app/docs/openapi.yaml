@@ -558,18 +558,14 @@ paths:
             schema:
               type: object
               properties:
-                userID:
-                  type: string
-                  example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
                 chargerID:
                   type: integer
-                  example: 100001
+                  example: 100000
                 isKlarnaPayment:
                   type: boolean
                   example: true
-                pricePerKwh:
-                  type: number
-                  example: 333
+      security:
+        - bearerAuth: []
       responses:
         '201':
           description: Successful response
@@ -587,6 +583,7 @@ paths:
         name: transactionID
         schema:
           type: integer
+          example: 100000
         required: true
     put:
       tags:
@@ -594,6 +591,8 @@ paths:
       summary: Start a transaction
       description: |-
         Starts a transaction
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Successful response
@@ -611,6 +610,7 @@ paths:
         name: transactionID
         schema:
           type: integer
+          example: 100000
         required: true
     get:
       tags:
@@ -618,6 +618,8 @@ paths:
       summary: Get status of a transaction
       description: |-
         Gets the status of a transaction
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Successful response
@@ -635,6 +637,7 @@ paths:
         name: transactionID
         schema:
           type: integer
+          example: 100000
         required: true
     put:
       tags:
@@ -642,6 +645,8 @@ paths:
       summary: Stop a transaction
       description: |-
         Stops a transaction
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Successful response
@@ -650,58 +655,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction'
         '400':
-          description: Error message
-        '500':
-          description: Error message
-  /transactions/payment/{transactionID}:
-    parameters:
-      - in: path
-        name: transactionID
-        schema:
-          type: integer
-        required: true
-    put:
-      tags:
-        - Transactions
-      summary: Update payment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                transactionID: '1'
-                paymentId: '2'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /transactions/chargingStatus/{transactionID}:
-    parameters:
-      - in: path
-        name: transactionID
-        schema:
-          type: integer
-        required: true
-    put:
-      tags:
-        - Transactions
-      summary: Update transaction status
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                kwhTransfered: 1
-                currentChargePercentage: 1
-      responses:
-        '201':
-          description: Successful response
-          content:
-            application/json: {}
-        '404':
           description: Error message
         '500':
           description: Error message
@@ -716,11 +669,17 @@ paths:
       tags:
         - Transactions
       summary: Transaction by userID
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
   /transactions/chargerTransactions/{chargerID}:
     parameters:
       - in: path
@@ -732,11 +691,17 @@ paths:
       tags:
         - Transactions
       summary: Transaction by transactions
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
   /reservations/{reservationID}:
     parameters:
       - in: path
@@ -1152,7 +1117,7 @@ components:
       properties:
         transactionID:
           type: integer
-          example: 1
+          example: 9999
         isKlarnaPayment:
           type: boolean
           example: false
@@ -1188,7 +1153,7 @@ components:
           example: 1
         chargerID:
           type: integer
-          example: 100002
+          example: 100000
 
   securitySchemes:
     bearerAuth:
