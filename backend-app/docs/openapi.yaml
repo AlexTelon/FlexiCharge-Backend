@@ -576,11 +576,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  transactionID:
-                    type: integer
-                    example: 9999
+                $ref: '#/components/schemas/Transaction'
         '400':
           description: Error message
         '500':
@@ -706,27 +702,6 @@ paths:
           content:
             application/json: {}
         '404':
-          description: Error message
-        '500':
-          description: Error message
-  /transactions/session:
-    post:
-      tags:
-        - Transactions
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                userID: 1
-                chargerID: 1
-      responses:
-        '201':
-          description: Successful response
-          content:
-            application/json: {}
-        '400':
           description: Error message
         '500':
           description: Error message
@@ -1202,7 +1177,7 @@ components:
         session_id:
           type: string
           example: null
-        client_token:
+        klarna_consumer_token:
           type: string
           example: null
         paymentConfirmed:
