@@ -50,11 +50,31 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     router.post('/', function (request, response) {
 
         const { userID, chargerID, isKlarnaPayment, pricePerKwh } = request.body;
-        databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transaction) {
+        if (chargerID == 100000) {
+            const data = getMockTransaction();
+            const authorization_token = request.body.authorization_token; // Needed to call the function below. Not needed. To Enable testing for mobiles squad and "fix" error.
+            databaseInterfaceTransactions.createKlarnaOrder(9999, authorization_token, function (error, klarnaOrder) {
+                console.log(error);
+                console.log(klarnaOrder);
+                if (error.length === 0) {
+                    data.klarna_consumer_token = klarnaOrder
+                    response.status(200).json(klarnaOrder)
+                } else if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error)
+                } else {
+                    response.status(400).json(error);
+                }
+            })
+            response.status(200).json(data);
+            return;
+        }
+        databaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transactionID) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
-            } else if (transaction) {
-                response.status(201).json(transaction)
+            } else if (transactionID) {
+                response.status(201).json({
+                    "transactionID": transactionID
+                })
             } else {
                 response.status(500).json(errors)
             }
