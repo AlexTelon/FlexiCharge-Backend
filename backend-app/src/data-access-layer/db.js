@@ -363,7 +363,7 @@ const ElectricityTariffs = sequelize.define(
   }
 );
 
-const newKlarnaPayments = sequelize.define("KlarnaPayments", {
+const KlarnaPayments = sequelize.define("KlarnaPayments", {
   klarnaPaymentID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -399,7 +399,7 @@ const UserInvoices = sequelize.define("UserInvoices", {
 
 ElectricityTariffs.removeAttribute("id");
 
-newKlarnaPayments.belongsTo(Transactions, { foreignKey: "transactionID" });
+KlarnaPayments.belongsTo(Transactions, { foreignKey: "transactionID" });
 Transactions.belongsTo(ChargeSessions, { foreignKey: "chargeSessionID" });
 ChargeSessions.belongsTo(Chargers, {
   foreignKey: "chargerID",
@@ -554,7 +554,7 @@ module.exports = function ({}) {
     ChargePoints,
     ChargeSessions,
     ElectricityTariffs,
-    newKlarnaPayments,
+    KlarnaPayments,
   };
   return exports;
 };
