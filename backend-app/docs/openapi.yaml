@@ -329,7 +329,7 @@ paths:
                   zipCode: zipCode
                   city: city
                   country: country
-                  userId: userId
+                  userID: userID
         '400':
           description: Bad request
         '401':
@@ -357,7 +357,7 @@ paths:
                   zipCode: zipCode
                   city: city
                   country: country
-                  userId: userId
+                  userID: userID
         '400':
           description: Bad request
         '401':
@@ -545,56 +545,144 @@ paths:
                   $ref: '#/components/schemas/Charger'
         '404':
           description: Error message
-  /transactions/{transactionId}:
-    parameters:
-      - in: path
-        name: transactionId
-        schema:
-          type: string
-        required: true
-    get:
-      tags:
-        - Transactions
-      summary: Transaction
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
   /transactions:
     post:
       tags:
         - Transactions
-      summary: Transaction
+      summary: Create a transaction
       description: |-
-        userID = string,
-
-        chargerID = int
-
-        isKlarnaPayment = bool
-
-        pricePerKwh = string
+        Creates a transaction that can be started using the `transactionID` returned
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userID:
+                  type: string
+                  example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                chargerID:
+                  type: integer
+                  example: 100001
+                isKlarnaPayment:
+                  type: boolean
+                  example: true
+                pricePerKwh:
+                  type: number
+                  example: 333
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transactions/start/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+        required: true
+    put:
+      tags:
+        - Transactions
+      summary: Start a transaction
+      description: |-
+        Starts a transaction
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transactions/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Transactions
+      summary: Get status of a transaction
+      description: |-
+        Gets the status of a transaction
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '404':
+          description: Transaction not found
+        '500':
+          description: Error message
+  /transactions/stop/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+        required: true
+    put:
+      tags:
+        - Transactions
+      summary: Stop a transaction
+      description: |-
+        Stops a transaction
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transactions/payment/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+        required: true
+    put:
+      tags:
+        - Transactions
+      summary: Update payment
       requestBody:
         content:
           application/json:
             schema:
               type: object
               example:
-                userID: '1'
-                chargerID: 100001
-                isKlarnaPayment: true
-                pricePerKwh: '333'
+                transactionID: '1'
+                paymentId: '2'
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
-  /transactions/chargingStatus/{transactionId}:
+  /transactions/chargingStatus/{transactionID}:
     parameters:
       - in: path
-        name: transactionId
+        name: transactionID
         schema:
-          type: string
+          type: integer
         required: true
     put:
       tags:
@@ -617,49 +705,28 @@ paths:
           description: Error message
         '500':
           description: Error message
-  /transactions/session:
-    post:
-      tags:
-        - Transactions
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                userID: 1
-                chargerID: 1
-      responses:
-        '201':
-          description: Successful response
-          content:
-            application/json: {}
-        '400':
-          description: Error message
-        '500':
-          description: Error message
-  /transactions/userTransactions/{userId}:
+  /transactions/userTransactions/{userID}:
     parameters:
       - in: path
-        name: userId
+        name: userID
         schema:
-          type: string
+          type: integer
         required: true
     get:
       tags:
         - Transactions
-      summary: Transaction by userId
+      summary: Transaction by userID
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
-  /transactions/chargerTransactions/{chargerId}:
+  /transactions/chargerTransactions/{chargerID}:
     parameters:
       - in: path
-        name: chargerId
+        name: chargerID
         schema:
-          type: string
+          type: integer
         required: true
     get:
       tags:
@@ -670,70 +737,10 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /transactions/payment/{transactionId}:
+  /reservations/{reservationID}:
     parameters:
       - in: path
-        name: transactionId
-        schema:
-          type: string
-        required: true
-    put:
-      tags:
-        - Transactions
-      summary: Update payment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                transactionId: '1'
-                paymentId: '2'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /transactions/stop/{transactionId}:
-    parameters:
-      - in: path
-        name: transactionId
-        schema:
-          type: string
-        required: true
-    put:
-      tags:
-        - Transactions
-      summary: Stop
-      requestBody:
-        content: {}
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /transactions/start/{transactionId}:
-    parameters:
-      - in: path
-        name: transactionId
-        schema:
-          type: string
-        required: true
-    put:
-      tags:
-        - Transactions
-      summary: Start
-      requestBody:
-        content: {}
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-  /reservations/{reservationId}:
-    parameters:
-      - in: path
-        name: reservationId
+        name: reservationID
         schema:
           type: string
         required: true
@@ -741,7 +748,7 @@ paths:
       deprecated: true
       tags:
         - Reservations (deprecated)
-      summary: Reservation by id
+      summary: Reservation by ID
       responses:
         '200':
           description: Successful response
@@ -758,10 +765,10 @@ paths:
             schema:
               type: object
               example:
-                chargerId: 1
+                chargerID: 1
                 connectorId: 1
                 idTag: 1
-                reservationId: 1
+                reservationID: 1
                 parentIdTag: 1
       responses:
         '200':
@@ -782,10 +789,10 @@ paths:
           description: Error message
         '500':
           description: Error message
-  /reservations/userReservation/{userId}:
+  /reservations/userReservation/{userID}:
     parameters:
       - in: path
-        name: userId
+        name: userID
         schema:
           type: string
         required: true
@@ -793,7 +800,7 @@ paths:
       deprecated: true
       tags:
         - Reservations (deprecated)
-      summary: Reservation by userId
+      summary: Reservation by userID
       responses:
         '200':
           description: Successful response
@@ -820,10 +827,10 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /reservations/chargerReservation/{chargerId}:
+  /reservations/chargerReservation/{chargerID}:
     parameters:
       - in: path
-        name: chargerId
+        name: chargerID
         schema:
           type: string
         required: true
@@ -831,7 +838,7 @@ paths:
       deprecated: true
       tags:
         - Reservations (deprecated)
-      summary: Reservation by chargerId
+      summary: Reservation by chargerID
       responses:
         '200':
           description: Successful response
@@ -936,10 +943,10 @@ paths:
           description: Unauthorized
           content:
             application/json: {}
-  /invoices/users/{userId}:
+  /invoices/users/{userID}:
     parameters:
       - in: path
-        name: userId
+        name: userID
         schema:
           type: string
         required: true
@@ -1140,6 +1147,49 @@ components:
         klarnaReservationAmount:
           type: number
           example: 400
+    Transaction:
+      type: object
+      properties:
+        transactionID:
+          type: integer
+          example: 1
+        isKlarnaPayment:
+          type: boolean
+          example: false
+        kwhTransfered:
+          type: number
+          example: 50
+        currentChargePercentage:
+          type: number
+          example: 79
+        pricePerKwh:
+          type: string
+          example: '123.00'
+        timestamp:
+          type: integer
+          example: 1663663253
+        paymentID:
+          type: string
+          example: null
+        userID:
+          type: string
+          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+        session_id:
+          type: string
+          example: null
+        klarna_consumer_token:
+          type: string
+          example: null
+        paymentConfirmed:
+          type: boolean
+          example: null
+        meterStart:
+          type: integer
+          example: 1
+        chargerID:
+          type: integer
+          example: 100002
+
   securitySchemes:
     bearerAuth:
       type: http
