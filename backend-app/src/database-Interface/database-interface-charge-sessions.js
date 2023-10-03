@@ -1,5 +1,3 @@
-const { updateChargingState } = require("../data-access-layer/new-charge-sessions-repository")
-
 module.exports = function ({ newDataAccessLayerChargeSessions, newDataAccessLayerTransactions, newDatabaseInterfaceElectricityTariffs, dbErrorCheck, newChargeSessionValidation, ocppInterface }) {
 
     const exports = {}

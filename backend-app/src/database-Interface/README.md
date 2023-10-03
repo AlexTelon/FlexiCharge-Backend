@@ -5,7 +5,7 @@
 
 ## Functions - Overview
 
-### new-database-interface-charge-points.js
+### database-interface-charge-points.js
 
 - getChargePoint
 	- Purpose : Get ChargePoint by the chargePointID.
@@ -18,7 +18,7 @@
 - updateChargePoint
 	- Purpose : Updates a ChargePoint.
 
-### new-database-interface-charge-sessions.js
+### database-interface-charge-sessions.js
 
 - getChargeSession
 	- Purpose : Get a ChargeSession by the chargeSessionID.
@@ -39,7 +39,7 @@
 			- Currently pricePerKwh is retrieved by the electricityTariffs table, however it should be retrieved by "Live Metrics" done by the OCPP team.
 		3. The Transaction connected to this ChargeSession is finally updated with the totalPrice.
 
-### new-database-interface-chargers.js
+### database-interface-chargers.js
    - getChargers 
        - Purpose : Gets all Chargers in the database
    - getCharger 
@@ -57,14 +57,14 @@
        - Purpose : Update status of a Charger
    - getChargerForTransaction
        - Purpose : Gets a Charger by transactionID
-### new-database-interface-electricity-tariff.js
+### database-interface-electricity-tariff.js
 - getElectricityTariffsOrderByDate
 	- Purpose : Gets all ElectricityTariffs, ordered by date.
 - generateElectricityTariffs
 	- Purpose : Generates random price for each hour of a month.
 - getCurrentElectricityTariff
 	- Purpose : Looks for ElectricityTariff price, if no price has been generated for the current time, then we run generateElectricityTariff().
-  ### new-database-interface-klarna-payments.js
+  ### database-interface-klarna-payments.js
   - getNewKlarnaPaymentSession
 	  - Purpose : Creates a new Klarna payment session by contacting the Klarna API. Both the returned session_id and client_token will be saved to the database by calling addKlarnaPayment().
   - createKlarnaOrder
@@ -73,7 +73,7 @@
 	  - More information regarding **how to get authorization token** can be found here(Step 1 -> 3 under "Integrate with Klarna Payment" are important): https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/
   - finalizeKlarnaOrder
 	  - Purpose : Finalize the Klarna order and update isPaid to **true**.
-### new-database-interface-reservations.js
+### database-interface-reservations.js
 - getReservation 
 	- Purpose : Get a Reservation by reservationID
 - getReservationsForCharger 
@@ -84,7 +84,7 @@
 	- Purpose : Creates a new Reservation
 - removeReservation
 	- Purpose : Removes a reservation
-### new-database-interface-transaction.js
+### database-interface-transaction.js
 - addTransaction
 	- Purpose : Adds a new Transaction.
 - getTransaction

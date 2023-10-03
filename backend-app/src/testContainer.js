@@ -367,22 +367,22 @@ testContainer.register({
     newDataAccessLayerKlarna: awilix.asFunction(klarnaRepositoryMock),
 
     // BLL
-    newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/new-database-interface-chargers')),
-    newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/new-database-interface-charge-sessions')),
-    newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/new-database-interface-transaction')),
-    newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/new-database-interface-reservations')),
-    newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/new-database-interface-charge-points')),
-    newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/new-database-interface-electricity-tariff')),
-    newDatabaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/new-database-interface-klarna-payments')),
+    newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/database-interface-chargers')),
+    newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/database-interface-charge-sessions')),
+    newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
+    newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
+    newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/database-interface-charge-points')),
+    newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/database-interface-electricity-tariff')),
+    newDatabaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
     // databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
 
     // Validation
-    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/newChargerValidation")),
-    newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/newChargeSessionValidation")),
-    newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/newChargePointValidation")),
-    newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/newTransactionValidation")),
-    newReservationValidation: awilix.asFunction(require("./database-Interface/validation/newReservationValidation")),
-    newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/newKlarnaPaymentsValidation")),
+    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/ChargerValidation")),
+    newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/ChargeSessionValidation")),
+    newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/ChargePointValidation")),
+    newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/TransactionValidation")),
+    newReservationValidation: awilix.asFunction(require("./database-Interface/validation/ReservationValidation")),
+    newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/KlarnaPaymentsValidation")),
     // OCPP
     ocppInterface: awilix.asFunction(ocppInterfaceMock),
 

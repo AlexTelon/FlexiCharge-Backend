@@ -19,7 +19,7 @@
 
 - More information regarding **how to get authorization token** can be found here(Step 1 -> 3 under “Integrate with Klarna Payment” are important): [https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/](https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/)
 
-### new-klarna-repository vs new-klarna-payments-repository.js
+### klarna-repository vs klarna-payments-repository.js
 <img name="architecture" src="https://i.ibb.co/tMKmPX8/image.png" height="400" width="600"> 
 
 ### How to add payment methods
