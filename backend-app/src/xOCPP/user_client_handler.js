@@ -14,7 +14,7 @@ module.exports = function ({ constants, func, broker, v }) {
             
             /** v.removeUserID(userID) is only called when StopTransaction is called, so if a charger crashes, or a transaction is never stops; we will have a memory leak.
              ** However, in that case, a memory leak is not the  biggest problem ;) */ 
-           
+        
 
             console.log("Disconnected from client with ID: " + userID)
             console.log("Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')

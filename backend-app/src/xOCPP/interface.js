@@ -29,10 +29,8 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
     }
 
 
-    //Need a callback function with the parameters "response" and "error", it will callback when the server got a response from the charger. 
-    //The response have 1 error as of now, "InvalidId". if error occur the response will be null. If no errors occours the erro will be null.
-    //If the chareger accepts the reservation the response will be "Accepted" if the reservation went through
-    //othervise it will be one of this responses: "Faulted", "Occupied", "Rejected" or "Unavailable".
+    //A callback function is implemented with the parameters "response" and "error.".
+    //This callback function is designed to be invoked when a response is received from  the charger server.
     exports.reserveNow = function(chargerID, connectorID, idTag, reservationID, parentIdTag, callback){
 
         console.log("Incoming request from API: reserveNow -> chargerId:"+chargerID)
@@ -43,8 +41,14 @@ module.exports = function({ v, constants, interfaceHandler, func }) {
             reservationID: func.getReservationID(chargerID, 1, 1),
             parentIdTag: 1
         }
-        interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, callback)
-    }
+        interfaceHandler.interfaceHandler(chargerID, c.RESERVE_NOW, payload, function(response, error) {
+            if (error === "InvalidId") {
+                console.error("Reservation Error: Invalid ID");
+                response = null;
+            }
+            callback(response, error);
+        });
+    };
 
     return exports
 }
