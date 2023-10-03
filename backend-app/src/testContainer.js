@@ -148,40 +148,6 @@ function chargersRepositoryMock() {
     }
 }
 
-function reservationsRepositoryMock() {
-    const defaultItem = {
-        reservationID: 1,
-        startTime: 1,
-        endTime: 100,
-        userID: 1337,
-        chargerID: 1338
-    }
-
-    return {
-        getReservation: function (reservationID, callback) {
-            callback([], defaultItem)
-        },
-        getReservationsForCharger: function (chargerID, callback) {
-            callback([], [{ ...defaultItem, chargerID }])
-        },
-        getReservationsForUser: function (userID, callback) {
-            callback([], [{ ...defaultItem, userID }])
-        },
-        addReservation: function (chargerID, userID, start, end, callback) {
-            callback([], {
-                reservationID: 2,
-                chargerID,
-                userID,
-                start,
-                end
-            })
-        },
-        removeReservation: function (reservationID, callback) {
-            callback([], true)
-        },
-    }
-}
-
 function transactionsRepositoryMock() {
     const defaultItem = {
         transactionID: 1,
@@ -360,7 +326,6 @@ testContainer.register({
     newDataAccessLayerChargePoints: awilix.asFunction(chargePointRepositoryMock),
     newDataAccessLayerChargeSessions: awilix.asFunction(chargeSessionsRepositoryMock),
     newDataAccessLayerChargers: awilix.asFunction(chargersRepositoryMock),
-    newDataAccessLayerReservations: awilix.asFunction(reservationsRepositoryMock),
     newDataAccessLayerTransactions: awilix.asFunction(transactionsRepositoryMock),
     newDataAccessLayerElectricityTariffs: awilix.asFunction(electricityTarriffRepositoryMock),
     newDataAccessLayerKlarnaPayments: awilix.asFunction(klarnaPaymentsRepositoryMock),
@@ -370,7 +335,6 @@ testContainer.register({
     newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/database-interface-chargers')),
     newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/database-interface-charge-sessions')),
     newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
-    newDatabaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
     newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/database-interface-charge-points')),
     newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/database-interface-electricity-tariff')),
     newDatabaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
@@ -381,7 +345,6 @@ testContainer.register({
     newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/charge-session-validation")),
     newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
     newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/transaction-validation")),
-    newReservationValidation: awilix.asFunction(require("./database-Interface/validation/reservation-validation")),
     newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/klarna-payments-validation")),
     // OCPP
     ocppInterface: awilix.asFunction(ocppInterfaceMock),

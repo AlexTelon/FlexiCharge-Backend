@@ -73,17 +73,6 @@
 	  - More information regarding **how to get authorization token** can be found here(Step 1 -> 3 under "Integrate with Klarna Payment" are important): https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/
   - finalizeKlarnaOrder
 	  - Purpose : Finalize the Klarna order and update isPaid to **true**.
-### database-interface-reservations.js
-- getReservation 
-	- Purpose : Get a Reservation by reservationID
-- getReservationsForCharger 
-	- Purpose : Gets all Reservations for a Charger
-- getReservationsForUser
-	- Purpose : Gets all Reservations for a user
-- addReservation
-	- Purpose : Creates a new Reservation
-- removeReservation
-	- Purpose : Removes a reservation
 ### database-interface-transaction.js
 - addTransaction
 	- Purpose : Adds a new Transaction.

@@ -52,33 +52,6 @@ const Chargers = sequelize.define(
   }
 );
 
-const Reservations = sequelize.define(
-  "Reservations",
-  {
-    reservationID: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    startTime: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    endTime: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    userID: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    timestamps: false,
-  }
-);
-
 const ChargeSessions = sequelize.define(
   "ChargeSessions",
   {
@@ -268,10 +241,6 @@ Chargers.belongsTo(ChargePoints, {
   foreignKey: "chargePointID",
   onDelete: "cascade",
 });
-Reservations.belongsTo(Chargers, {
-  foreignKey: "chargerID",
-  onDelete: "cascade",
-});
 
 sequelize.sync().then(function () {
   //START--------------------------TEST_DATA
@@ -408,7 +377,6 @@ module.exports = function ({}) {
   const exports = {
     Chargers,
     Transactions,
-    Reservations,
     ChargePoints,
     ChargeSessions,
     ElectricityTariffs,
