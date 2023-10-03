@@ -21,147 +21,6 @@ try {
   console.error("Unable to connect to the database:", error);
 }
 
-// //START--------------------------OLD_CODE_CURRENTLY_USED
-// const Chargers = sequelize.define('Chargers', {
-//     chargerID: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         allowNull: false
-//     },
-//     location: {
-//         type: DataTypes.ARRAY(DataTypes.FLOAT),
-//         unique: false,
-//         allowNull: false
-//     },
-//     serialNumber: {
-//         type: DataTypes.STRING,
-//         unique: true,
-//         allowNull: false
-//     },
-//     status: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// }, {
-//     timestamps: false
-// });
-
-// const Reservations = sequelize.define('Reservations', {
-//     reservationID: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true,
-//         allowNull: false
-//     },
-//     start: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//     },
-//     end: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//     },
-//     userID: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// }, {
-//     timestamps: false
-// });
-
-// const Transactions = sequelize.define('Transactions', {
-//     transactionID: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true,
-//         allowNull: false
-//     },
-//     isKlarnaPayment: {
-//         type: DataTypes.BOOLEAN,
-//         allowNull: false
-//     },
-//     kWhTransferred: {
-//         type: DataTypes.FLOAT,
-//         allowNull: true
-//     },
-//     currentChargePercentage: {
-//         type: DataTypes.FLOAT,
-//         allowNull: true
-//     },
-//     pricePerKwh: {
-//         type: DataTypes.DECIMAL(10, 2),
-//         allowNull: false
-//     },
-//     timestamp: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//     },
-//     paymentID: {
-//         type: DataTypes.STRING,
-//         allowNull: true
-//     },
-//     userID: {
-//         type: DataTypes.STRING,
-//         allowNull: true
-//     },
-//     session_id: {
-//         type: DataTypes.STRING,
-//         allowNull: true
-//     },
-//     client_token: {
-//         type: DataTypes.TEXT,
-//         allowNull: true
-//     },
-//     paymentConfirmed: {
-//         type: DataTypes.BOOLEAN,
-//         allowNull: true
-//     },
-//     meterStart: {
-//         type: DataTypes.INTEGER,
-//         allowNull: true
-//     }
-// }, {
-//     timestamps: false
-// });
-
-// const ChargePoints = sequelize.define('ChargePoints', {
-//     chargePointID: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true,
-//         allowNull: false
-//     },
-//     name: {
-//         type: DataTypes.STRING,
-//         unique: true,
-//         allowNull: false
-//     },
-//     location: {
-//         type: DataTypes.ARRAY(DataTypes.FLOAT),
-//         unique: false,
-//         allowNull: false
-//     },
-//     price: {
-//         type: DataTypes.DECIMAL(10, 2),
-//         unique: false,
-//         allowNull: false
-//     },
-//     klarnaReservationAmount: {
-//         type: DataTypes.INTEGER,
-//         unique: false,
-//         allowNull: false
-//     },
-// }, {
-//     timestamps: false
-// });
-
-// Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
-// Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
-// Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
-// //END---------------------------OLD_CODE_CURRENTLY_USED
-
-//START--------------------------NEW_CODE_CURRENTLY_UNUSED
-
 // Add payment methods here, create a new table for the payment method.
 const paymentType = DataTypes.ENUM("Klarna", "Swish", "Mastercard");
 
@@ -413,10 +272,9 @@ Reservations.belongsTo(Chargers, {
   foreignKey: "chargerID",
   onDelete: "cascade",
 });
-//END--------------------------NEW_CODE_CURRENTLY_UNUSED
 
 sequelize.sync().then(function () {
-  //START--------------------------TEST_DATA_NEW_CODE
+  //START--------------------------TEST_DATA
   ChargePoints.findAndCountAll().then(function ({ rows, count }) {
     if (count < 1) {
       ChargePoints.create({
@@ -541,7 +399,7 @@ sequelize.sync().then(function () {
           currency: "SEK",
         });
       }
-      //END----------------------------TEST_DATA_NEW_CODE
+      //END----------------------------TEST_DATA
     }
   });
 });
