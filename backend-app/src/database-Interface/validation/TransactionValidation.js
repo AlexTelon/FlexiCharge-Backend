@@ -121,7 +121,7 @@ module.exports = function({}) {
     exports.getUpdateTransactionChargingStatus = function(currentMeterValue, currentChargePercentage) {
         const validationErrors = []
 
-        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PERCENTAGE || currentChargePercentage > MAX_CHARGE_PERCENTAGE) {
+        if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PERCENTAGE || currentChargePercentage > MAX_CHARGE_PERCENTAGE || currentChargePercentage % 1 != 0) {
             validationErrors.push("invalidChargePercentage")
         }
 

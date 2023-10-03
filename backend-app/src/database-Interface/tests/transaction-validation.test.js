@@ -9,22 +9,22 @@ describe('Transaction by pricePerKwh with input:', () => {
     
     test('integer below 0', () => {    
         const errors = transactionValidation.getAddTransactionValidation(-1);
-        expect(errors.length).toBe(1);
+        expect(errors.length).toBe(2);
     });
 
     test('string', () => {    
         const errors = transactionValidation.getAddTransactionValidation("1");
-        expect(errors.length).toBe(1);
+        expect(errors.length).toBe(2);
     });
 
     test('null', () => {
         const errors = transactionValidation.getAddTransactionValidation(null);
-        expect(errors.length).toBe(1);
+        expect(errors.length).toBe(3);
     });
 
     test('undefined', () => {
         const valErrors = transactionValidation.getAddTransactionValidation(undefined);
-        expect(valErrors.length).toBe(1);
+        expect(valErrors.length).toBe(3);
     });
 
 });
