@@ -10,7 +10,7 @@ const ROUTES_TO_CHECK = [
   },
   {
     method: "GET",
-    route: "/chargers/" + 100000,
+    route: "/chargers/" + 100001,
     successStatus: 200,
   },
   {

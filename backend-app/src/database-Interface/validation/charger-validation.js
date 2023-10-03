@@ -28,7 +28,7 @@ module.exports = function({}) {
 
         const validationErrors = []
 
-        if (coordinates === undefined || coordinates === null) {
+        if (coordinates === undefined || coordinates === null || coordinates.length !== 2) {
             validationErrors.push("invalidCoordinates")
         } else {
             if ((coordinates instanceof Array) == false || (typeof coordinates[0] !== 'number') || (typeof coordinates[1] !== 'number')) {
@@ -53,7 +53,7 @@ module.exports = function({}) {
             }
         }
 
-        if(chargePointID === undefined || chargePointID === null) {
+        if(chargePointID === undefined || chargePointID === null || (typeof chargePointID !== 'number')) {
             validationErrors.push("invalidChargePointID")
         }
 
@@ -84,7 +84,7 @@ module.exports = function({}) {
             validationErrors.push("invalidStatus")
         } else {
             if (typeof status !== 'string') {
-                ValidationErrors.push("invalidDataType")
+                validationErrors.push("invalidDataType")
             }
             if (!statusCodes.includes(status)) {
                 validationErrors.push("invalidStatus")
