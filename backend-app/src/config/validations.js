@@ -10,9 +10,12 @@ const validationSchema = joi.object()
         USER_POOL_ID: joi.string().required(),
         USER_POOL: joi.string().required(),
 
-        ADMIN_POOL_SECRET: joi.string().required(),
-        ADMIN_POOL_ID: joi.string().required(),
-        ADMIN_POOL: joi.string().required(),
+        DATABASE_NAME: joi.string().required(),
+        DATABASE_USERNAME: joi.string().required(),
+        DATABASE_PASSWORD: joi.string().required(),
+        DATABASE_HOST: joi.string().required(),
+
+        KLARNA_TOKEN: joi.string().required(),
 
         RUN_OCPP_TEST: joi.number().required(),
         LIVEMETRICS_DB_UPDATE_INTERVAL: joi.number().required(),

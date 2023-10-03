@@ -4,8 +4,23 @@ const authenticate = new AuthMiddleware().verifyToken;
 
 module.exports = function ({ newDatabaseInterfaceTransactions }) {
 
-    const router = express.Router()
-    router.get('/:id', function (request, response) {
+    function getMockTransaction() {
+        return {
+            "transactionID": 9999,
+            "isKlarnaPayment": false,
+            "kwhTransfered": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
+            "currentChargePercentage": Math.floor(Math.random() * 101), // Random number between 0 and 100
+            "pricePerKwh": (Math.random() * 100).toFixed(2), // Random number between 0 and 100 with 2 decimal places
+            "timestamp": Date.now(),
+            "paymentID": null,
+            "userID": "1",
+            "session_id": null,
+            "client_token": null,
+            "paymentConfirmed": null,
+            "meterStart": 1,
+            "chargerID": 100000
+        };
+    }
 
         const transactionId = request.params.id
         newDatabaseInterfaceTransactions.getTransaction(transactionId, function (errors, transaction) {
@@ -17,7 +32,7 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
                 response.status(500).json(errors)
             }
         })
-    })
+    
 
     router.get('/userTransactions/:userID', function (request, response) {
 
@@ -53,8 +68,10 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
         newDatabaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transaction) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
-            } else if (transaction) {
-                response.status(201).json(transaction)
+            } else if (transactionID) {
+                response.status(201).json({
+                    "transactionID": transactionID
+                })
             } else {
                 response.status(500).json(errors)
             }
@@ -105,7 +122,7 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
             console.log(error);
             console.log(klarnaOrder);
             if (error.length === 0) {
-                response.status(201).json(klarnaOrder)
+                response.status(200).json(klarnaOrder)
             } else if (error.includes("internalError") || error.includes("dbError")) {
                 response.status(500).json(error)
             } else {

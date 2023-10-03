@@ -1,6 +1,6 @@
-const { truncate } = require("fs/promises");
-const { Sequelize, DataTypes } = require("sequelize");
-const config = require("../config");
+const { truncate } = require('fs/promises');
+const { Sequelize, DataTypes } = require('sequelize');
+const config = require('../config');
 
 if (config.USE_LOCAL_DATABASE == 1) {
   var sequelize = new Sequelize(
@@ -8,10 +8,10 @@ if (config.USE_LOCAL_DATABASE == 1) {
   );
   // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
-  var sequelize = new Sequelize("postgres", "postgres", "flexi2022Charge1337", {
-    host: "flexicharge.cqjgliexpw2a.eu-west-1.rds.amazonaws.com",
-    dialect: "postgres",
-  });
+    var sequelize = new Sequelize(config.DATABASE_NAME, config.DATABASE_USERNAME, config.DATABASE_PASSWORD, {
+        host: config.DATABASE_HOST,
+        dialect: "postgres"
+    });
 }
 
 try {

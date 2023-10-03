@@ -20,7 +20,7 @@ module.exports = function ({ newDatabaseInterfaceReservations, ocppInterface }) 
     })
 
     router.get('/userReservation/:userID', function (request, response) {
-        const userId = request.params.userID
+        const userID = request.params.userID
 
         ////////////////////////////////////////////////
         // A user can only view its own reservations? //
@@ -83,12 +83,12 @@ module.exports = function ({ newDatabaseInterfaceReservations, ocppInterface }) 
     })
 
     router.put('/:chargerId', function (request, response) {
-        const chargerId = request.params.chargerId
-        const connectorId = request.body.connectorId
+        const chargerID = request.params.chargerId
+        const connectorID = request.body.connectorId
         const idTag = request.body.idTag
-        const reservationId = request.body.reservationId
+        const reservationID = request.body.reservationId
         const parentIdTag = request.body.parentIdTag
-        ocppInterface.reserveNow(chargerId, connectorId, idTag, reservationId, parentIdTag, function (error, resp) {
+        ocppInterface.reserveNow(chargerID, connectorID, idTag, reservationID, parentIdTag, function (error, resp) {
             if (error === null && resp != null) {
                 response.status(201).json(resp)
             } else {
