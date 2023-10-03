@@ -22,8 +22,17 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
         };
     }
 
-        const transactionId = request.params.id
-        newDatabaseInterfaceTransactions.getTransaction(transactionId, function (errors, transaction) {
+    const router = express.Router()
+    router.get('/:transactionID', function (request, response) {
+
+        const transactionID = request.params.transactionID;
+
+        if (transactionID == 9999) {
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
+        }
+        newDatabaseInterfaceTransactions.getTransaction(transactionID, function (errors, transaction) {
             if (errors.length == 0 && transaction.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -32,12 +41,13 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
                 response.status(500).json(errors)
             }
         })
-    
+    })
 
     router.get('/userTransactions/:userID', function (request, response) {
 
-        const userId = request.params.userID
-        newDatabaseInterfaceTransactions.getTransactionsForUser(userId, function (errors, userTransaction) {
+        const userID = request.params.userID;
+
+        newDatabaseInterfaceTransactions.getTransactionsForUser(userID, function (errors, userTransaction) {
             if (errors.length == 0 && userTransaction.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -50,8 +60,8 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
 
     router.get('/chargerTransactions/:chargerID', function (request, response) {
 
-        const chargerId = request.params.chargerID
-        newDatabaseInterfaceTransactions.getTransactionsForCharger(chargerId, function (errors, chargerTransaction) {
+        const chargerID = request.params.chargerID
+        newDatabaseInterfaceTransactions.getTransactionsForCharger(chargerID, function (errors, chargerTransaction) {
             if (errors.length == 0 && chargerTransaction.length == 0) {
                 response.status(404).end()
             } else if (errors.length == 0) {
@@ -65,7 +75,13 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
     router.post('/', function (request, response) {
 
         const { userID, chargerID, isKlarnaPayment, pricePerKwh } = request.body;
-        newDatabaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transaction) {
+        if (chargerID == 100000) {
+            response.status(201).json({
+                "transactionID": 9999
+            })
+            return;
+        }
+        newDatabaseInterfaceTransactions.addTransaction(userID, chargerID, isKlarnaPayment, pricePerKwh, function (errors, transactionID) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (transactionID) {
@@ -81,9 +97,9 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
 
     router.put('/payment/:transactionID', function (request, response) {
 
-        const transactionId = request.params.transactionID
-        const paymentId = request.body.paymentID
-        newDatabaseInterfaceTransactions.updateTransactionPayment(transactionId, paymentId, function (error, updatedTransactionPayment) {
+        const transactionID = request.params.transactionID
+        const paymentID = request.body.paymentID
+        newDatabaseInterfaceTransactions.updateTransactionPayment(transactionID, paymentID, function (error, updatedTransactionPayment) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransactionPayment)
             } else {
@@ -97,10 +113,10 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
     })
 
     router.put('/chargingStatus/:transactionID', function (request, response) {
-        const transactionId = request.params.transactionID
-        const kWhTransferred = request.body.kWhTransferred
+        const transactionID = request.params.transactionID
+        const kwhTransfered = request.body.kwhTransfered
         const currentChargePercentage = request.body.currentChargePercentage
-        newDatabaseInterfaceTransactions.updateTransactionChargingStatus(transactionId, kWhTransferred, currentChargePercentage, function (error, updatedTransaction) {
+        newDatabaseInterfaceTransactions.updateTransactionChargingStatus(transactionID, kwhTransfered, currentChargePercentage, function (error, updatedTransaction) {
             if (error.length == 0) {
                 response.status(201).json(updatedTransaction)
             } else {
@@ -118,6 +134,11 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
         const transactionID = request.params.transactionID
         const authorization_token = request.body.authorization_token;
 
+        if (transactionID == 9999) {
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
+        }
         newDatabaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
             console.log(error);
             console.log(klarnaOrder);
@@ -148,6 +169,12 @@ module.exports = function ({ newDatabaseInterfaceTransactions }) {
 
     router.put('/stop/:transactionID', function (request, response) {
         const transactionID = request.params.transactionID
+
+        if (transactionID == 9999) {
+            const data = getMockTransaction();
+            response.status(200).json(data);
+            return;
+        }
         newDatabaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
             if (error.length > 0) {
                 response.status(400).json(error)

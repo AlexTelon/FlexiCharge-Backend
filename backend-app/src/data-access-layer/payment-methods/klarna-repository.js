@@ -1,5 +1,5 @@
 const https = require('https')
-const config = require('../config')
+const config = require('../../config')
 
 module.exports = function({}) {
     const KLARNA_URI = "api.playground.klarna.com"
