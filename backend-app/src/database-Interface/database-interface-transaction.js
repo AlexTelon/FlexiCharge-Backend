@@ -1,13 +1,13 @@
-module.exports = function ({ newDataAccessLayerTransactions, newTransactionValidation, dbErrorCheck }) {
+module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck }) {
 
     const exports = {}
 
     exports.addTransaction = function (chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
-        const validationErrors = newTransactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
+        const validationErrors = transactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transactionID) {
+            dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transactionID) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -20,11 +20,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.getTransaction = function (transactionID, callback) {
-        const validationErrors = newTransactionValidation.getTransactionValidation(transactionID)
+        const validationErrors = transactionValidation.getTransactionValidation(transactionID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
+            dataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -41,11 +41,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.getTransactionsForUser = function (userID, callback) {
-        const validationErrors = newTransactionValidation.getTransactionsForUserValidation(userID)
+        const validationErrors = transactionValidation.getTransactionsForUserValidation(userID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.getTransactionsForUser(userID, function (error, userTransaction) {
+            dataAccessLayerTransactions.getTransactionsForUser(userID, function (error, userTransaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -58,11 +58,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.updatePaymentMethod = function (transactionID, paymentMethod, callback) {
-        const validationErrors = newTransactionValidation.getUpdatePaymentMethodValidation(transactionID, paymentMethod)
+        const validationErrors = transactionValidation.getUpdatePaymentMethodValidation(transactionID, paymentMethod)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.updatePaymentMethod(transactionID, paymentMethod, function (error, transaction) {
+            dataAccessLayerTransactions.updatePaymentMethod(transactionID, paymentMethod, function (error, transaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -75,11 +75,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.updatepaidDate = function (transactionID, paidDate, callback) {
-        const validationErrors = newTransactionValidation.getUpdatepaidDateValidation(transactionID, paidDate)
+        const validationErrors = transactionValidation.getUpdatepaidDateValidation(transactionID, paidDate)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.updatepaidDate(transactionID, paidDate, function (error, transaction) {
+            dataAccessLayerTransactions.updatepaidDate(transactionID, paidDate, function (error, transaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -92,11 +92,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.updateTotalPrice = function (transactionID, totalPrice, callback) {
-        const validationErrors = newTransactionValidation.getUpdateTotalPriceValidation(transactionID, totalPrice)
+        const validationErrors = transactionValidation.getUpdateTotalPriceValidation(transactionID, totalPrice)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.updateTotalPrice(transactionID, totalPrice, function (error, transaction) {
+            dataAccessLayerTransactions.updateTotalPrice(transactionID, totalPrice, function (error, transaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -109,11 +109,11 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.getTransactionsForCharger = function (chargerID, callback) {
-        const validationErrors = newTransactionValidation.getTransactionsForChargerValidation(chargerID)
+        const validationErrors = transactionValidation.getTransactionsForChargerValidation(chargerID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            newDataAccessLayerTransactions.getTransactionsForCharger(chargerID, function (error, chargerTransaction) {
+            dataAccessLayerTransactions.getTransactionsForCharger(chargerID, function (error, chargerTransaction) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -126,7 +126,7 @@ module.exports = function ({ newDataAccessLayerTransactions, newTransactionValid
     }
 
     exports.getTransactionForChargeSession = function (chargeSessionID, callback) {
-        newDataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, function (error, chargeSession) {
+        dataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, function (error, chargeSession) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode)

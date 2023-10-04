@@ -1,10 +1,10 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceChargers = testContainer.resolve("newDatabaseInterfaceChargers")
+const databaseInterfaceChargers = testContainer.resolve("databaseInterfaceChargers")
 
 describe("getChargers", () => {
     test("Get all Chargers", (done) => {
-        newDatabaseInterfaceChargers.getChargers((error, chargers) => {
+        databaseInterfaceChargers.getChargers((error, chargers) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -18,7 +18,7 @@ describe("getChargers", () => {
 
 describe("getCharger", () => {
     test("Get Charger", (done) => {
-        newDatabaseInterfaceChargers.getCharger(1, (error, charger) => {
+        databaseInterfaceChargers.getCharger(1, (error, charger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -33,7 +33,7 @@ describe("getCharger", () => {
 describe("getChargerBySerialNumber", () => {
     test("Get Charger by serial number", (done) => {
         const serialNumber = "321cba"
-        newDatabaseInterfaceChargers.getChargerBySerialNumber(serialNumber, (error, charger) => {
+        databaseInterfaceChargers.getChargerBySerialNumber(serialNumber, (error, charger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -47,7 +47,7 @@ describe("getChargerBySerialNumber", () => {
 
 describe("getAvailableChargers", () => {
     test("Get all Chargers with status of 'Available'", (done) => {
-        newDatabaseInterfaceChargers.getAvailableChargers((error, chargers) => {
+        databaseInterfaceChargers.getAvailableChargers((error, chargers) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -64,7 +64,7 @@ describe("addCharger", () => {
     const serialNumber = "bca245"
     const coordinates = [23.12, 55.43]
     test("Get all Chargers with status of 'Available'", (done) => {
-        newDatabaseInterfaceChargers.addCharger(chargePointID, serialNumber, coordinates, (error, charger) => {
+        databaseInterfaceChargers.addCharger(chargePointID, serialNumber, coordinates, (error, charger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -78,7 +78,7 @@ describe("addCharger", () => {
 
 describe("removeCharger", () => {
     test("Remove Charger with id of 1", (done) => {
-        newDatabaseInterfaceChargers.removeCharger(1, (error, didRemoveCharger) => {
+        databaseInterfaceChargers.removeCharger(1, (error, didRemoveCharger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -92,7 +92,7 @@ describe("removeCharger", () => {
 
 describe("updateChargerStatus", () => {
     test("Update status of a Charger", (done) => {
-        newDatabaseInterfaceChargers.updateChargerStatus(1, "Reserved", (error, updatedCharger) => {
+        databaseInterfaceChargers.updateChargerStatus(1, "Reserved", (error, updatedCharger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -106,7 +106,7 @@ describe("updateChargerStatus", () => {
 
 describe("getChargerForTransaction", () => {
     test("Get Charger for a transaction", (done) => {
-        newDatabaseInterfaceChargers.getChargerForTransaction(1, (error, charger) => {
+        databaseInterfaceChargers.getChargerForTransaction(1, (error, charger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

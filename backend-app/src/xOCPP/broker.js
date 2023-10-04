@@ -1,7 +1,7 @@
 const PubSub = require('pubsub-js')
 const config = require('../config')
 
-module.exports = function ({ v, constants, func, newDatabaseInterfaceTransactions }) {
+module.exports = function ({ v, constants, func, databaseInterfaceTransactions }) {
     const c = constants.get()
 
     exports.subcribeToLiveMetrics = function(userID, callback){
@@ -33,7 +33,7 @@ module.exports = function ({ v, constants, func, newDatabaseInterfaceTransaction
             const chargingPercent = metricsMessage[3].values.chargingPercent.value
             const chargedSoFarWh = metricsMessage[3].values.chargedSoFar.value // comes in Wh instead of KWh
 
-            newDatabaseInterfaceTransactions.updateTransactionChargingStatus(transactionID, chargedSoFarWh, chargingPercent, function(error, updatedTransaction){
+            databaseInterfaceTransactions.updateTransactionChargingStatus(transactionID, chargedSoFarWh, chargingPercent, function(error, updatedTransaction){
                 if(error.length || !updatedTransaction){
                     console.log('Something went wrong when trying to update transaction from latest MeterValues in DB (transactionID: '+ transactionID + ')')
                 } else {

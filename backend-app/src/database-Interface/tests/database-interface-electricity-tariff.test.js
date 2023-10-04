@@ -1,10 +1,10 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceElectricityTariffs = testContainer.resolve("newDatabaseInterfaceElectricityTariffs")
+const databaseInterfaceElectricityTariffs = testContainer.resolve("databaseInterfaceElectricityTariffs")
 
 describe("getElectricityTariffsOrderByDate", () => {
     test("Get all electricityTariffs, ordered by date", (done) => {
-        newDatabaseInterfaceElectricityTariffs.getElectricityTariffsOrderByDate((error, tariffs) => {
+        databaseInterfaceElectricityTariffs.getElectricityTariffsOrderByDate((error, tariffs) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -18,7 +18,7 @@ describe("getElectricityTariffsOrderByDate", () => {
 
 describe("getCurrentElectricityTariff", () => {
     test("Get current electricityTariffs", (done) => {
-        newDatabaseInterfaceElectricityTariffs.getCurrentElectricityTariff((error, tariffs) => {
+        databaseInterfaceElectricityTariffs.getCurrentElectricityTariff((error, tariffs) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

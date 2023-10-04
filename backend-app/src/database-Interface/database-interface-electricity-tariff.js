@@ -1,8 +1,8 @@
-module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck }) {
+module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) {
     const exports = {}
 
     exports.getElectricityTariffsOrderByDate = function (callback) {
-        newDataAccessLayerElectricityTariffs.getElectricityTariffsOrderByDate(callback)
+        dataAccessLayerElectricityTariffs.getElectricityTariffsOrderByDate(callback)
     }
 
     exports.generateElectricityTariffs = function (offset, callback) {
@@ -18,7 +18,7 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
 
         for (var hour = startDate.getHours(); hour < 24 * generateDays; hour++) {
             price = (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2)
-            promises.push(newDataAccessLayerElectricityTariffs.addElectricityTariff({
+            promises.push(dataAccessLayerElectricityTariffs.addElectricityTariff({
                 date: new Date(iterationTime).toISOString(),
                 price: price,
                 currency: "SEK"
@@ -37,7 +37,7 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
         let currentDate = new Date()
         currentDate.setMinutes(0, 0, 0)
         const queryDate = new Date(currentDate).toISOString()
-        newDataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate, function(error, tariff) {
+        dataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate, function(error, tariff) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
@@ -56,7 +56,7 @@ module.exports = function ({ newDataAccessLayerElectricityTariffs, dbErrorCheck 
                             let curDate = new Date()
                             curDate.setMinutes(0, 0, 0)
                             const queryDate2 = new Date(currentDate).toISOString()
-                            newDataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate2, function (error, newTariff) {
+                            dataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate2, function (error, newTariff) {
                                 if (Object.keys(error).length > 0) {
                                     dbErrorCheck.checkError(error, function (errorCode) {
                                         callback(errorCode, [])

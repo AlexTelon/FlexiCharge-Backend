@@ -1,6 +1,6 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceTransactions = testContainer.resolve("newDatabaseInterfaceTransactions")
+const databaseInterfaceTransactions = testContainer.resolve("databaseInterfaceTransactions")
 
 describe("addTransaction", () => {
     test("Add a transaction", (done) => {
@@ -10,7 +10,7 @@ describe("addTransaction", () => {
         const paymentDueDate = null
         const paymentMethod = null
         const totalPrice = null
-        newDatabaseInterfaceTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, (error, transaction) => {
+        databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -24,7 +24,7 @@ describe("addTransaction", () => {
 
 describe("getTransaction", () => {
     test("Get transaction", (done) => {
-        newDatabaseInterfaceTransactions.getTransaction(1, (error, transaction) => {
+        databaseInterfaceTransactions.getTransaction(1, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -38,7 +38,7 @@ describe("getTransaction", () => {
 
 describe("getTransactionsForUser", () => {
     test("Get Transactions for a user", (done) => {
-        newDatabaseInterfaceTransactions.getTransactionsForUser(12, (error, transaction) => {
+        databaseInterfaceTransactions.getTransactionsForUser(12, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -53,7 +53,7 @@ describe("getTransactionsForUser", () => {
 describe("updatePaymentMethod", () => {
     test("Update payment method for Transaction", (done) => {
         const paymentMethod = "Klarna"
-        newDatabaseInterfaceTransactions.updatePaymentMethod(1, paymentMethod, (error, updatedTransaction) => {
+        databaseInterfaceTransactions.updatePaymentMethod(1, paymentMethod, (error, updatedTransaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -68,7 +68,7 @@ describe("updatePaymentMethod", () => {
 describe("updatepaidDate", () => {
     test("Update paidDate for Transaction", (done) => {
         const paidDate = new Date(new Date())
-        newDatabaseInterfaceTransactions.updatepaidDate(1, paidDate, (error, updatedTransaction) => {
+        databaseInterfaceTransactions.updatepaidDate(1, paidDate, (error, updatedTransaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -83,7 +83,7 @@ describe("updatepaidDate", () => {
 describe("updateTotalPrice", () => {
     test("Update totalPrice for Transaction", (done) => {
         const totalPrice = 255
-        newDatabaseInterfaceTransactions.updateTotalPrice(1, totalPrice, (error, updatedTransaction) => {
+        databaseInterfaceTransactions.updateTotalPrice(1, totalPrice, (error, updatedTransaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -98,7 +98,7 @@ describe("updateTotalPrice", () => {
 describe("getTransactionsForCharger", () => {
     test("Get all transactions for a charger", (done) => {
         const totalPrice = 255
-        newDatabaseInterfaceTransactions.getTransactionsForCharger(1, (error, transactions) => {
+        databaseInterfaceTransactions.getTransactionsForCharger(1, (error, transactions) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -112,7 +112,7 @@ describe("getTransactionsForCharger", () => {
 
 describe("getTransactionForChargeSession", () => {
     test("Get transaction for a charge session", (done) => {
-        newDatabaseInterfaceTransactions.getTransactionForChargeSession(2, (error, transaction) => {
+        databaseInterfaceTransactions.getTransactionForChargeSession(2, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

@@ -1,4 +1,4 @@
-module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseInterfaceChargers, newDatabaseInterfaceChargePoints, newDatabaseInterfaceTransactions, broker }) {
+module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceChargers, databaseInterfaceChargePoints, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
     exports.handleMessage = function (message, clientSocket, chargerID) {
@@ -107,7 +107,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
 
         if (callback != null && socket != null) {
 
-            newDatabaseInterfaceChargers.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
+            databaseInterfaceChargers.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
                     callback(c.INTERNAL_ERROR, null)
@@ -148,7 +148,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
 
         if (callback != null && socket != null) {
 
-            newDatabaseInterfaceChargers.updateChargerStatus(chargerID, c.CHARGING, function (error, charger) {
+            databaseInterfaceChargers.updateChargerStatus(chargerID, c.CHARGING, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
                     callback(c.INTERNAL_ERROR, null)
@@ -160,7 +160,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
 
                     const transactionID = v.getTransactionID(chargerID)
 
-                    newDatabaseInterfaceChargePoints.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
+                    databaseInterfaceChargePoints.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
                         if(error.length > 0){
                             console.log("\nError fetching transaction from DB: " + error)
                         } else {
@@ -202,7 +202,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
 
         socket = v.getConnectedChargerSocket(chargerID)
         if (socket != null) {
-            newDatabaseInterfaceTransactions.updateTransactionChargingStatus(
+            databaseInterfaceTransactions.updateTransactionChargingStatus(
                 data.transactionId, data.latestMeterValue, data.CurrentChargePercentage,
                 function (error, _) {
                     if (error.length > 0) {
@@ -266,7 +266,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
     }
 
     function getChargingPrice(chargerID, callback) {
-        newDatabaseInterfaceChargers.getCharger(chargerID, function (error, charger) {
+        databaseInterfaceChargers.getCharger(chargerID, function (error, charger) {
             if (error.length > 0) {
                 console.log(error)
                 callback(error, null)
@@ -274,7 +274,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
                 if (charger.length == 0) {
                     callback(c.INVALID_ID, null)
                 } else {
-                    newDatabaseInterfaceChargePoints.getChargePoint(charger.chargePointID, function (error, chargePoint) {
+                    databaseInterfaceChargePoints.getChargePoint(charger.chargePointID, function (error, chargePoint) {
                         if (error.length > 0) {
                             console.log(error)
                             callback(error, null)
@@ -298,7 +298,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, newDatabaseIn
         }
 
 
-        newDatabaseInterfaceChargers.updateChargerStatus(chargerID, status, function (error, charger) {
+        databaseInterfaceChargers.updateChargerStatus(chargerID, status, function (error, charger) {
             if (error.length > 0) {
                 console.log("Error updating charger status in DB: " + error)
                 v.getConnectedChargerSocket(chargerID).send(

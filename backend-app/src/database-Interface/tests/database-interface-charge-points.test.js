@@ -1,10 +1,10 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceChargePoints = testContainer.resolve("newDatabaseInterfaceChargePoints")
+const databaseInterfaceChargePoints = testContainer.resolve("databaseInterfaceChargePoints")
 
 describe("getChargePoint", () => {
     test("Fetch ChargePoint with id 1", (done) => {
-        newDatabaseInterfaceChargePoints.getChargePoint(1, (error, chargePoint) => {
+        databaseInterfaceChargePoints.getChargePoint(1, (error, chargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -18,7 +18,7 @@ describe("getChargePoint", () => {
 
 describe("getChargePoints", () => {
     test("Fetch all chargePoints", (done) => {
-        newDatabaseInterfaceChargePoints.getChargePoints((error, chargePoints) => {
+        databaseInterfaceChargePoints.getChargePoints((error, chargePoints) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -35,7 +35,7 @@ describe("addChargePoint", () => {
         const name = "SuperCharger"
         const address = "Lidl"
         const coordinates = [31.351, 124.23]
-        newDatabaseInterfaceChargePoints.addChargePoint(name, address, coordinates, (error, addedChargePoint) => {
+        databaseInterfaceChargePoints.addChargePoint(name, address, coordinates, (error, addedChargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -49,7 +49,7 @@ describe("addChargePoint", () => {
 
 describe("removeChargePoint", () => {
     test("Remove a charge point", (done) => {
-        newDatabaseInterfaceChargePoints.removeChargePoint(1, (error, didRemoveChargePoint) => {
+        databaseInterfaceChargePoints.removeChargePoint(1, (error, didRemoveChargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -67,7 +67,7 @@ describe("updateChargePoint", () => {
         const name = "SuperCharger"
         const address = "Lidl"
         const coordinates = [31.351, 124.23]
-        newDatabaseInterfaceChargePoints.updateChargePoint(chargePointID, name, address, coordinates, (error, updatedChargePoint) => {
+        databaseInterfaceChargePoints.updateChargePoint(chargePointID, name, address, coordinates, (error, updatedChargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

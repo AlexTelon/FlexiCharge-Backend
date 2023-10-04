@@ -3,7 +3,7 @@ module.exports = function ({ databaseInit }) {
     const exports = {}
 
     exports.addElectricityTariff = function (date, price, currency, callback) {
-        databaseInit.newElectricityTarriff.create({
+        databaseInit.ElectricityTariffs.create({
             date: date,
             price: price,
             currency: currency
@@ -15,7 +15,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getElectricityTariffByDate = function (date, callback) {
-        databaseInit.newElectricityTarriff.findOne({
+        databaseInit.ElectricityTariffs.findOne({
             where: {
                 date: date
             }
@@ -27,7 +27,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getElectricityTariffsOrderByDate = function (callback) {
-        databaseInit.newElectricityTarriff.findAll({
+        databaseInit.ElectricityTariffs.findAll({
             order: [['date', 'DESC']],
             limit: 10
         }).then(electricityTariffs => {
@@ -40,7 +40,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.removeElectricityTariff = function (date, callback) {
-        databaseInit.newElectricityTarriff.destroy({
+        databaseInit.ElectricityTariffs.destroy({
             where: {
                 date: date
             }

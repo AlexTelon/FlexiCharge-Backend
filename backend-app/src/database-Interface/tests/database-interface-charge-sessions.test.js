@@ -1,6 +1,6 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceChargeSessions = testContainer.resolve("newDatabaseInterfaceChargeSessions")
+const databaseInterfaceChargeSessions = testContainer.resolve("databaseInterfaceChargeSessions")
 
 describe("Start a ChargeSession", () => {
     test("Start a ChargeSession", (done) => {
@@ -10,7 +10,7 @@ describe("Start a ChargeSession", () => {
         const paymentDueDate = null
         const paymentMethod = null
 
-        newDatabaseInterfaceChargeSessions.startChargeSession(chargerID, userID, payNow, paymentDueDate, paymentMethod, (error, startedChargeSession) => {
+        databaseInterfaceChargeSessions.startChargeSession(chargerID, userID, payNow, paymentDueDate, paymentMethod, (error, startedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -24,7 +24,7 @@ describe("Start a ChargeSession", () => {
 
 describe("getChargeSession", () => {
     test("Get Charge Session with id 1", (done) => {
-        newDatabaseInterfaceChargeSessions.getChargeSession(1, (error, chargeSession) => {
+        databaseInterfaceChargeSessions.getChargeSession(1, (error, chargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -38,7 +38,7 @@ describe("getChargeSession", () => {
 
 describe("getChargeSessions", () => {
     test("Get all ChargeSessions", (done) => {
-        newDatabaseInterfaceChargeSessions.getChargeSessions(1, (error, chargeSessions) => {
+        databaseInterfaceChargeSessions.getChargeSessions(1, (error, chargeSessions) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -55,7 +55,7 @@ describe("updateChargingState", () => {
     test("Update ChargingState", (done) => {
         const currentChargePercentage = 10
         const kWhTransferred = 1026
-        newDatabaseInterfaceChargeSessions.updateChargingState(1, currentChargePercentage, kWhTransferred, (error, updatedChargeSession) => {
+        databaseInterfaceChargeSessions.updateChargingState(1, currentChargePercentage, kWhTransferred, (error, updatedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -69,7 +69,7 @@ describe("updateChargingState", () => {
 
 describe("endChargeSession", () => {
     test("End ChargingSession", (done) => {
-        newDatabaseInterfaceChargeSessions.endChargeSession(1, (error, updatedChargeSession) => {
+        databaseInterfaceChargeSessions.endChargeSession(1, (error, updatedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -83,7 +83,7 @@ describe("endChargeSession", () => {
 
 describe("calculateTotalChargePrice", () => {
     test("Calculate the total charge price", (done) => {
-        newDatabaseInterfaceChargeSessions.calculateTotalChargePrice(1, (error, totalChargePrice) => {
+        databaseInterfaceChargeSessions.calculateTotalChargePrice(1, (error, totalChargePrice) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -98,7 +98,7 @@ describe("calculateTotalChargePrice", () => {
 describe("updateMeterStart", () => {
     test("Update meterStart", (done) => {
         const meterStart = 1337
-        newDatabaseInterfaceChargeSessions.updateMeterStart(1, meterStart, (error, updatedChargeSession) => {
+        databaseInterfaceChargeSessions.updateMeterStart(1, meterStart, (error, updatedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

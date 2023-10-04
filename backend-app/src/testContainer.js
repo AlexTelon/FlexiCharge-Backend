@@ -323,29 +323,29 @@ function klarnaRepositoryMock() {
 const testContainer = awilix.createContainer()
 testContainer.register({
     // DAL
-    newDataAccessLayerChargePoints: awilix.asFunction(chargePointRepositoryMock),
-    newDataAccessLayerChargeSessions: awilix.asFunction(chargeSessionsRepositoryMock),
-    newDataAccessLayerChargers: awilix.asFunction(chargersRepositoryMock),
-    newDataAccessLayerTransactions: awilix.asFunction(transactionsRepositoryMock),
-    newDataAccessLayerElectricityTariffs: awilix.asFunction(electricityTarriffRepositoryMock),
-    newDataAccessLayerKlarnaPayments: awilix.asFunction(klarnaPaymentsRepositoryMock),
-    newDataAccessLayerKlarna: awilix.asFunction(klarnaRepositoryMock),
+    dataAccessLayerChargePoints: awilix.asFunction(chargePointRepositoryMock),
+    dataAccessLayerChargeSessions: awilix.asFunction(chargeSessionsRepositoryMock),
+    dataAccessLayerChargers: awilix.asFunction(chargersRepositoryMock),
+    dataAccessLayerTransactions: awilix.asFunction(transactionsRepositoryMock),
+    dataAccessLayerElectricityTariffs: awilix.asFunction(electricityTarriffRepositoryMock),
+    dataAccessLayerKlarnaPayments: awilix.asFunction(klarnaPaymentsRepositoryMock),
+    dataAccessLayerKlarna: awilix.asFunction(klarnaRepositoryMock),
 
     // BLL
-    newDatabaseInterfaceChargers: awilix.asFunction(require('./database-Interface/database-interface-chargers')),
-    newDatabaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/database-interface-charge-sessions')),
-    newDatabaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
-    newDatabaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/database-interface-charge-points')),
-    newDatabaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/database-interface-electricity-tariff')),
-    newDatabaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
+    databaseInterfaceChargers: awilix.asFunction(require('./database-Interface/database-interface-chargers')),
+    databaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/database-interface-charge-sessions')),
+    databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
+    databaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/database-interface-charge-points')),
+    databaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/database-interface-electricity-tariff')),
+    databaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
     // databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
 
     // Validation
-    newChargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
-    newChargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/charge-session-validation")),
-    newChargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
-    newTransactionValidation: awilix.asFunction(require("./database-Interface/validation/transaction-validation")),
-    newKlarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/klarna-payments-validation")),
+    chargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
+    chargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/charge-session-validation")),
+    chargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
+    transactionValidation: awilix.asFunction(require("./database-Interface/validation/transaction-validation")),
+    klarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/klarna-payments-validation")),
     // OCPP
     ocppInterface: awilix.asFunction(ocppInterfaceMock),
 

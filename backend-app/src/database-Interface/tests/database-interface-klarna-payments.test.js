@@ -1,10 +1,10 @@
 const { describe, expect, test } = require("@jest/globals");
 const testContainer = require("../../testContainer")
-const newDatabaseInterfaceKlarnaPayments = testContainer.resolve("newDatabaseInterfaceKlarnaPayments")
+const databaseInterfaceKlarnaPayments = testContainer.resolve("databaseInterfaceKlarnaPayments")
 
 describe("getNewKlarnaPaymentSession", () => {
     test("getNewKlarnaPaymentSession", (done) => {
-        newDatabaseInterfaceKlarnaPayments.getNewKlarnaPaymentSession(1, (error, klarnaPayment) => {
+        databaseInterfaceKlarnaPayments.getNewKlarnaPaymentSession(1, (error, klarnaPayment) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -18,7 +18,7 @@ describe("getNewKlarnaPaymentSession", () => {
 
 describe("createKlarnaOrder", () => {
     test("Create new Klarna order", (done) => {
-        newDatabaseInterfaceKlarnaPayments.createKlarnaOrder(1, "fake_authorization_token", (error, updatedKlarnaPayment) => {
+        databaseInterfaceKlarnaPayments.createKlarnaOrder(1, "fake_authorization_token", (error, updatedKlarnaPayment) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -32,7 +32,7 @@ describe("createKlarnaOrder", () => {
 
 describe("finalizeKlarnaOrder", () => {
     test("Finalize living Klarna order", (done) => {
-        newDatabaseInterfaceKlarnaPayments.finalizeKlarnaOrder(1, (error, transaction) => {
+        databaseInterfaceKlarnaPayments.finalizeKlarnaOrder(1, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
