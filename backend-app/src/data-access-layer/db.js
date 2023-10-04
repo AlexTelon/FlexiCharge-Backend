@@ -78,11 +78,11 @@ const ChargeSessions = sequelize.define(
       allowNull: true,
     },
     startTime: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATE,
       allowNull: true,
     },
     endTime: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATE,
       allowNull: true,
     },
   },
@@ -118,22 +118,22 @@ const Transactions = sequelize.define(
       allowNull: false,
     },
     transactionDate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DATEONLY,
       unique: false,
       allowNull: false,
     },
     paymentDueDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       unique: false,
       allowNull: true,
     },
     paidDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       unique: false,
       allowNull: true,
     },
     totalPrice: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },
@@ -174,7 +174,7 @@ const ChargePoints = sequelize.define(
 const ElectricityTariffs = sequelize.define(
   "ElectricityTariffs",
   {
-    date: {
+    timestamp: {
       type: DataTypes.DATE,
       unique: true,
       allowNull: false,
@@ -219,14 +219,37 @@ const KlarnaPayments = sequelize.define("KlarnaPayments", {
 const UserInvoices = sequelize.define("UserInvoices", {
   userID: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
     allowNull: false,
   },
-  invoiceUUID: {
+  uuid: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  cancelled: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  amount: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  dueDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  creationDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  transactionIDs: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    allowNull: true,
+  }
 });
 
 ElectricityTariffs.removeAttribute("id");
@@ -363,7 +386,7 @@ sequelize.sync().then(function () {
       for (let hour = 0; hour < 24 * generateDays; hour++) {
         iterTime += 1 * 60 * 60 * 1000;
         ElectricityTariffs.create({
-          date: iterTime,
+          timestamp: iterTime,
           price: randomPrice(1, 6),
           currency: "SEK",
         });

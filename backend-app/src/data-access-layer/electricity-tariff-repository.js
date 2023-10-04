@@ -2,9 +2,9 @@ module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.addElectricityTariff = function (date, price, currency, callback) {
+    exports.addElectricityTariff = function (timestamp, price, currency, callback) {
         databaseInit.ElectricityTariffs.create({
-            date: date,
+            timestamp: timestamp,
             price: price,
             currency: currency
         }).then(electricityTariff => callback([], electricityTariff))
@@ -14,10 +14,10 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.getElectricityTariffByDate = function (date, callback) {
+    exports.getElectricityTariffByDate = function (timestamp, callback) {
         databaseInit.ElectricityTariffs.findOne({
             where: {
-                date: date
+                timestamp: timestamp
             }
         }).then(electricityTariff => callback([], electricityTariff))
             .catch(e => {
@@ -28,7 +28,7 @@ module.exports = function ({ databaseInit }) {
 
     exports.getElectricityTariffsOrderByDate = function (callback) {
         databaseInit.ElectricityTariffs.findAll({
-            order: [['date', 'DESC']],
+            order: [['timestamp', 'DESC']],
             limit: 10
         }).then(electricityTariffs => {
             callback([], electricityTariffs)
@@ -39,10 +39,10 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.removeElectricityTariff = function (date, callback) {
+    exports.removeElectricityTariff = function (timestamp, callback) {
         databaseInit.ElectricityTariffs.destroy({
             where: {
-                date: date
+                timestamp: timestamp
             }
         }).then(callback([], true))
             .catch(error => callback(error, false))
