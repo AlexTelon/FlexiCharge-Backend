@@ -326,7 +326,7 @@ sequelize.sync().then(function () {
         chargerID: 100009,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc119",
-        status: "Reserved",
+        status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
       Transactions.create({
