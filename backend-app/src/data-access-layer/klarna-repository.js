@@ -1,11 +1,11 @@
 const https = require('https')
 const config = require('../config')
 
-module.exports = function({}) {
+module.exports = function ({ }) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, callback) {
+    exports.getNewKlarnaPaymentSession = async function (userID, chargerID, chargePoint, callback) {
 
         if (chargePoint.klarnaReservationAmount > 0) {
             const data = new TextEncoder().encode(
@@ -34,9 +34,17 @@ module.exports = function({}) {
             const request = https.request(options, result => {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
-                        const responseData = JSON.parse(jsonResponse);
-                        callback([], responseData)
-                    })
+                        const responseString = jsonResponse.toString();
+                        console.log('Klarna API Response:', responseString);
+
+                        try {
+                            const responseData = JSON.parse(responseString);
+                            callback([], responseData);
+                        } catch (parseError) {
+                            console.error('Error parsing Klarna API response:', parseError);
+                            callback(['klarnaResponseParseError'], []);
+                        }
+                    });
                 } else {
                     switch (result.statusCode) {
                         case 400: // 	We were unable to create a session with the provided data. Some field constraint was violated.
@@ -64,7 +72,7 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
+    exports.createKlarnaOrder = async function (transactionId, klarnaReservationAmount, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -122,13 +130,13 @@ module.exports = function({}) {
         request.end()
     }
 
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, callback) {
+    exports.finalizeKlarnaOrder = async function (transaction, transactionId, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
         const order_lines = getOrderLines(newOrderAmount)
 
-        updateOrder(transaction, order_lines, function(error, responseData) {
+        updateOrder(transaction, order_lines, function (error, responseData) {
             if (error.length == 0) {
-                captureOrder(transaction, function(error) {
+                captureOrder(transaction, function (error) {
                     if (error.length == 0) {
                         callback([], responseData) //capture does not response with anything so we callback the response data from the update.
                     } else {
