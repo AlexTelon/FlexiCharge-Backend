@@ -1,11 +1,11 @@
 const { Client } = require('pg')
 
-module.exports = function({ databaseInit, constants }) {
+module.exports = function ({ databaseInit, constants }) {
 
     const c = constants.get()
     const exports = {}
 
-    exports.getTransaction = function(transactionID, callback) {
+    exports.getTransaction = function (transactionID, callback) {
         databaseInit.Transactions.findOne({ where: { transactionID: transactionID }, raw: true })
             .then(transaction => callback([], transaction))
             .catch(e => {
@@ -14,7 +14,7 @@ module.exports = function({ databaseInit, constants }) {
             })
     }
 
-    exports.getTransactionsForUser = function(userID, callback) {
+    exports.getTransactionsForUser = function (userID, callback) {
         databaseInit.Transactions.findAll({ where: { userID: userID }, raw: true })
             .then(userTransaction => callback([], userTransaction))
             .catch(e => {
@@ -23,11 +23,11 @@ module.exports = function({ databaseInit, constants }) {
             })
     }
 
-    exports.getActiveTransactionsForUser = function(userID, callback) {
+    exports.getActiveTransactionsForUser = function (userID, callback) {
         databaseInit.Transactions.findAll({
-            where: { 
-                userID: userID 
-            }, 
+            where: {
+                userID: userID
+            },
             raw: true,
             include: [{
                 model: databaseInit.Chargers,
@@ -37,26 +37,26 @@ module.exports = function({ databaseInit, constants }) {
                 attributes: []
             }],
         })
-        .then(userTransactions => callback([], userTransactions))
-        .catch(e => {
-            console.log(e)
-            callback(e, [])
-        })
+            .then(userTransactions => callback([], userTransactions))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
     }
 
-    exports.getTransactionsForCharger = function(chargerID, callback) {
-        databaseInit.Transactions.findAll({ where: { chargerID: chargerID }, raw: true })
+    exports.getTransactionsForCharger = function (connectorID, callback) {
+        databaseInit.Transactions.findAll({ where: { connectorID: connectorID }, raw: true })
             .then(chargerTransaction => callback([], chargerTransaction))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
-    exports.addTransaction = function(userID, chargerID, isKlarnaPayment, pricePerKwh, timestamp, callback) {
+    exports.addTransaction = function (userID, connectorID, isKlarnaPayment, pricePerKwh, timestamp, callback) {
 
         const transaction = {
             userID: userID,
-            chargerID: chargerID,
+            connectorID: connectorID,
             isKlarnaPayment: isKlarnaPayment,
             pricePerKwh: pricePerKwh,
             timestamp: timestamp
@@ -70,11 +70,11 @@ module.exports = function({ databaseInit, constants }) {
             })
     }
 
-    exports.addKlarnaTransaction = function(userID, chargerID, pricePerKwh, session_id, client_token, isKlarnaPayment, timestamp, paymentConfirmed, callback){
-        
+    exports.addKlarnaTransaction = function (userID, connectorID, pricePerKwh, session_id, client_token, isKlarnaPayment, timestamp, paymentConfirmed, callback) {
+
         const klarnaTransaction = {
             userID: userID,
-            chargerID: chargerID,
+            connectorID: connectorID,
             pricePerKwh: pricePerKwh,
             session_id: session_id,
             client_token: client_token,
@@ -83,59 +83,59 @@ module.exports = function({ databaseInit, constants }) {
             timestamp: timestamp
         }
         databaseInit.Transactions.create(klarnaTransaction, {
-                returning: true,
-                raw: true
-            })
+            returning: true,
+            raw: true
+        })
             .then(klarnaTransaction => callback([], klarnaTransaction))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
-    exports.updateTransactionPayment = function(transactionID, paymentID, callback) {
+    exports.updateTransactionPayment = function (transactionID, paymentID, callback) {
         databaseInit.Transactions.update({
-                paymentID: paymentID
-            }, {
-                where: { transactionID: transactionID },
-                returning: true,
-                raw: true
-            })
+            paymentID: paymentID
+        }, {
+            where: { transactionID: transactionID },
+            returning: true,
+            raw: true
+        })
             .then(transaction => callback([], transaction[1]))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
-    exports.updateTransactionPaymentConfirmed = function(transactionID, isPaymentConfirmed, callback) {
+    exports.updateTransactionPaymentConfirmed = function (transactionID, isPaymentConfirmed, callback) {
         databaseInit.Transactions.update({
-                paymentConfirmed: isPaymentConfirmed
-            }, {
-                where: { transactionID: transactionID },
-                returning: true,
-                raw: true
-            })
+            paymentConfirmed: isPaymentConfirmed
+        }, {
+            where: { transactionID: transactionID },
+            returning: true,
+            raw: true
+        })
             .then(transaction => callback([], transaction[1]))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
-    exports.updateTransactionChargingStatus = function(transactionID, kwhTransfered, currentChargePercentage, callback) {
+    exports.updateTransactionChargingStatus = function (transactionID, kwhTransfered, currentChargePercentage, callback) {
         databaseInit.Transactions.update({
-                kwhTransfered: kwhTransfered,
-                currentChargePercentage: currentChargePercentage
-            }, {
-                where: { transactionID: transactionID },
-                returning: true,
-                raw: true
-            })
+            kwhTransfered: kwhTransfered,
+            currentChargePercentage: currentChargePercentage
+        }, {
+            where: { transactionID: transactionID },
+            returning: true,
+            raw: true
+        })
             .then(transaction => callback([], transaction[1]))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
     }
-    exports.updateTransactionMeterStart = function(transactionID, meterStart, callback) {
+    exports.updateTransactionMeterStart = function (transactionID, meterStart, callback) {
         databaseInit.Transactions.update({
             meterStart: meterStart
         }, {
@@ -143,11 +143,11 @@ module.exports = function({ databaseInit, constants }) {
             returning: true,
             raw: true
         })
-        .then(transaction => callback([], transaction[1]))
-        .catch(e => {
-            console.log(e)
-            callback(e, [])
-        })
+            .then(transaction => callback([], transaction[1]))
+            .catch(e => {
+                console.log(e)
+                callback(e, [])
+            })
     }
 
     return exports

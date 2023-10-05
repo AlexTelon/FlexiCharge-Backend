@@ -1,7 +1,7 @@
 module.exports = function ({ func, v, constants, interfaceHandler, databaseInterfaceCharger, databaseInterfaceChargePoint, databaseInterfaceTransactions, broker }) {
     const c = constants.get()
 
-    exports.handleMessage = function (message, clientSocket, chargerID) {
+    exports.handleMessage = function (message, clientSocket, connectorID) {
         try {
 
             let data = JSON.parse(message)
@@ -12,11 +12,11 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
             switch (messageTypeID) {
                 case c.CALL:
-                    response = callSwitch(uniqueID, data, chargerID)
+                    response = callSwitch(uniqueID, data, connectorID)
                     break
 
                 case c.CALL_RESULT:
-                    callResultSwitch(uniqueID, data, chargerID)
+                    callResultSwitch(uniqueID, data, connectorID)
                     break
 
                 case c.CALL_ERROR:
@@ -38,7 +38,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
     }
 
 
-    function callSwitch(uniqueID, request, chargerID) {
+    function callSwitch(uniqueID, request, connectorID) {
 
         let action = request[c.ACTION_INDEX]
         console.log("Incoming request call: " + action)
@@ -46,27 +46,27 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
         switch (action) {
             case c.BOOT_NOTIFICATION:
-                sendBootNotificationResponse(chargerID, uniqueID, c.ACCEPTED)
-                sendBootData(chargerID)
+                sendBootNotificationResponse(connectorID, uniqueID, c.ACCEPTED)
+                sendBootData(connectorID)
                 break
 
             case c.STATUS_NOTIFICATION:
-                sendStatusNotificationResponse(chargerID, uniqueID, request)
+                sendStatusNotificationResponse(connectorID, uniqueID, request)
                 break
             case c.DATA_TRANSFER:
-                handleDataTransfer(chargerID, uniqueID, request)
+                handleDataTransfer(connectorID, uniqueID, request)
                 break
 
             case c.START_TRANSACTION:
-                handleStartTransaction(chargerID, uniqueID, request)
+                handleStartTransaction(connectorID, uniqueID, request)
                 break
 
             case c.STOP_TRANSACTION:
-                handleStopTransaction(chargerID, uniqueID, request)
+                handleStopTransaction(connectorID, uniqueID, request)
                 break
-            
+
             case c.METER_VALUES:
-                handleMeterValues(chargerID, request)
+                handleMeterValues(connectorID, request)
                 break
 
             default:
@@ -77,37 +77,37 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         return callResult
     }
 
-    function handleMeterValues(chargerID, request){
+    function handleMeterValues(connectorID, request) {
         //TODO: Add validation 
         const transactionID = request[3].transactionId
         const uniqueID = request[1]
         const userID = v.getUserIDWithTransactionID(transactionID)
 
-        const socket = v.getConnectedChargerSocket(chargerID)
-        if(userID){
-            broker.publishToLiveMetrics(userID, request, function(){
+        const socket = v.getConnectedChargerSocket(connectorID)
+        if (userID) {
+            broker.publishToLiveMetrics(userID, request, function () {
                 socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.METER_VALUES]))
-                console.log("Meter values response sent to charger with ID " + chargerID)
+                console.log("Meter values response sent to charger with ID " + connectorID)
             })
         } else {
-                socket.send(func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.METER_VALUES, {
-                    error: "userID not OK"
-                }]))
-                console.log("Meter values error sent to charger with ID " + chargerID)
-                console.log('userID not OK (userID: ' + userID + ')')
+            socket.send(func.buildJSONMessage([c.CALL_ERROR, uniqueID, c.METER_VALUES, {
+                error: "userID not OK"
+            }]))
+            console.log("Meter values error sent to charger with ID " + connectorID)
+            console.log('userID not OK (userID: ' + userID + ')')
         }
-        
+
     }
 
-    function handleStopTransaction(chargerID, uniqueID, request) {
+    function handleStopTransaction(connectorID, uniqueID, request) {
 
-        let callback = v.getCallback(chargerID)
-        v.removeCallback(chargerID)
-        socket = v.getConnectedChargerSocket(chargerID)
+        let callback = v.getCallback(connectorID)
+        v.removeCallback(connectorID)
+        socket = v.getConnectedChargerSocket(connectorID)
 
         if (callback != null && socket != null) {
 
-            databaseInterfaceCharger.updateChargerStatus(chargerID, c.AVAILABLE, function (error, charger) {
+            databaseInterfaceCharger.updateChargerStatus(connectorID, c.AVAILABLE, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
                     callback(c.INTERNAL_ERROR, null)
@@ -121,10 +121,10 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     // as we have no accounts idTagInfo is 1 as standard
                     { idTagInfo: 1 }]))
 
-                    const transactionID = v.getTransactionID(chargerID)
+                    const transactionID = v.getTransactionID(connectorID)
                     const userID = v.getUserIDWithTransactionID(transactionID)
 
-                    if(v.isInUserIDs(userID)){
+                    if (v.isInUserIDs(userID)) {
                         v.removeUserID(userID)
                     }
                 }
@@ -132,7 +132,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
 
         } else {
-            console.log("getStartTransactionResponse -> No callback tied to this chargerID OR invalid chargerID")
+            console.log("getStartTransactionResponse -> No callback tied to this connectorID OR invalid connectorID")
 
             if (socket != null) {
                 socket.send(func.getGenericError(uniqueID, c.NO_ACTIVE_TRANSACTION))
@@ -140,15 +140,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
     }
 
-    function handleStartTransaction(chargerID, uniqueID, request) {
+    function handleStartTransaction(connectorID, uniqueID, request) {
 
-        let callback = v.getCallback(chargerID)
-        v.removeCallback(chargerID)
-        socket = v.getConnectedChargerSocket(chargerID)
+        let callback = v.getCallback(connectorID)
+        v.removeCallback(connectorID)
+        socket = v.getConnectedChargerSocket(connectorID)
 
         if (callback != null && socket != null) {
 
-            databaseInterfaceCharger.updateChargerStatus(chargerID, c.CHARGING, function (error, charger) {
+            databaseInterfaceCharger.updateChargerStatus(connectorID, c.CHARGING, function (error, charger) {
                 if (error.length > 0) {
                     console.log("\nError updating charger status in DB: " + error)
                     callback(c.INTERNAL_ERROR, null)
@@ -158,15 +158,15 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     payload = request[c.PAYLOAD_INDEX]
                     callback(null, { status: c.ACCEPTED, timestamp: payload.timestamp, meterStart: payload.meterStart })
 
-                    const transactionID = v.getTransactionID(chargerID)
+                    const transactionID = v.getTransactionID(connectorID)
 
-                    databaseInterfaceTransactions.getTransaction(transactionID, function(error, transaction){ // This is for live metrics
-                        if(error.length > 0){
+                    databaseInterfaceTransactions.getTransaction(transactionID, function (error, transaction) { // This is for live metrics
+                        if (error.length > 0) {
                             console.log("\nError fetching transaction from DB: " + error)
                         } else {
                             v.addUserIDWIthTransactionID(transaction.userID, transactionID)
                         }
-                    }) 
+                    })
 
                     socket.send(func.buildJSONMessage([c.CALL_RESULT, uniqueID, c.START_TRANSACTION,
                     // as we have no accounts idTagInfo is 1 as standard
@@ -176,7 +176,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
 
         } else {
-            console.log("getStartTransactionResponse -> No callback tied to this chargerID OR invalid chargerID")
+            console.log("getStartTransactionResponse -> No callback tied to this connectorID OR invalid connectorID")
 
             if (socket != null) {
                 socket.send(func.getGenericError(uniqueID, c.NO_ACTIVE_TRANSACTION))
@@ -184,13 +184,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
     }
 
-    function handleDataTransfer(chargerID, uniqueID, request) {
+    function handleDataTransfer(connectorID, uniqueID, request) {
         payload = request[3]
         data = JSON.parse(payload.data)
         switch (payload.messageId) {
 
             case c.CHARGE_LEVEL_UPDATE:
-                updateChargerLevel(chargerID, uniqueID, data)
+                updateChargerLevel(connectorID, uniqueID, data)
                 break
 
             default:
@@ -198,9 +198,9 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         }
     }
 
-    function updateChargerLevel(chargerID, uniqueID, data) {
+    function updateChargerLevel(connectorID, uniqueID, data) {
 
-        socket = v.getConnectedChargerSocket(chargerID)
+        socket = v.getConnectedChargerSocket(connectorID)
         if (socket != null) {
             databaseInterfaceTransactions.updateTransactionChargingStatus(
                 data.transactionId, data.latestMeterValue, data.CurrentChargePercentage,
@@ -215,12 +215,12 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     }
                 })
         } else {
-            console.log("updateChargerLevel -> No socket connected to this chargerID")
+            console.log("updateChargerLevel -> No socket connected to this connectorID")
         }
     }
 
-    function sendBootNotificationResponse(chargerID, uniqueID, status) {
-        socket = v.getConnectedChargerSocket(chargerID)
+    function sendBootNotificationResponse(connectorID, uniqueID, status) {
+        socket = v.getConnectedChargerSocket(connectorID)
         if (socket != null) {
             response = func.buildJSONMessage([
                 c.CALL_RESULT,
@@ -228,7 +228,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                 c.BOOT_NOTIFICATION,
                 {
                     status: status,
-                    currentTime: Math.floor(Date.now()/1000),
+                    currentTime: Math.floor(Date.now() / 1000),
                     interval: c.HEART_BEAT_INTERVALL,
                 }
             ])
@@ -236,19 +236,19 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             console.log("BootNotification response sent")
 
         } else {
-            console.log("sendBootNotificationResponse -> No socket connected to this chargerID")
+            console.log("sendBootNotificationResponse -> No socket connected to this connectorID")
         }
     }
 
-    function sendBootData(chargerID) {
-        getChargingPrice(chargerID, function (error, chargingPrice) {
-            socket = v.getConnectedChargerSocket(chargerID)
+    function sendBootData(connectorID) {
+        getChargingPrice(connectorID, function (error, chargingPrice) {
+            socket = v.getConnectedChargerSocket(connectorID)
             if (socket != null) {
                 if (error == null) {
-                    message = func.getDataTransferMessage(func.getUniqueId(chargerID, c.DATA_TRANSFER),
+                    message = func.getDataTransferMessage(func.getUniqueId(connectorID, c.DATA_TRANSFER),
                         {
                             vendorId: "com.flexicharge", messageId: "BootData",
-                            data: JSON.stringify({ chargerId: chargerID, chargingPrice: chargingPrice })
+                            data: JSON.stringify({ connectorID: connectorID, chargingPrice: chargingPrice })
                         },
                         isCall = true)
                     socket.send(message)
@@ -260,13 +260,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     socket.send(message)
                 }
             } else {
-                console.log("sendBootData -> No socket connected to this chargerID")
+                console.log("sendBootData -> No socket connected to this connectorID")
             }
         })
     }
 
-    function getChargingPrice(chargerID, callback) {
-        databaseInterfaceCharger.getCharger(chargerID, function (error, charger) {
+    function getChargingPrice(connectorID, callback) {
+        databaseInterfaceCharger.getCharger(connectorID, function (error, charger) {
             if (error.length > 0) {
                 console.log(error)
                 callback(error, null)
@@ -290,22 +290,22 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             }
         })
     }
-    function sendStatusNotificationResponse(chargerID, uniqueID, request) {
+    function sendStatusNotificationResponse(connectorID, uniqueID, request) {
         let errorCode = request[c.PAYLOAD_INDEX].errorCode
         let status = request[c.PAYLOAD_INDEX].status
         if (errorCode != c.NO_ERROR) {
-            console.log("\nCharger " + chargerID + " has sent the following error code: " + errorCode)
+            console.log("\nCharger " + connectorID + " has sent the following error code: " + errorCode)
         }
 
 
-        databaseInterfaceCharger.updateChargerStatus(chargerID, status, function (error, charger) {
+        databaseInterfaceCharger.updateChargerStatus(connectorID, status, function (error, charger) {
             if (error.length > 0) {
                 console.log("Error updating charger status in DB: " + error)
-                v.getConnectedChargerSocket(chargerID).send(
+                v.getConnectedChargerSocket(connectorID).send(
                     func.getGenericError(uniqueID, error.toString()))
             } else {
                 console.log("Charger updated in DB: " + charger.status)
-                v.getConnectedChargerSocket(chargerID).send(
+                v.getConnectedChargerSocket(connectorID).send(
                     func.buildJSONMessage([
                         c.CALL_RESULT,
                         uniqueID,
@@ -318,40 +318,40 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
 
 
-    function callResultSwitch(uniqueID, response, chargerID) {
+    function callResultSwitch(uniqueID, response, connectorID) {
 
         try {
             let action = response[c.ACTION_INDEX]
             console.log("Incoming result call: " + action)
-    
+
             switch (action) {
-    
+
                 case c.RESERVE_NOW:
-                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
-                        interfaceHandler.handleReserveNowResponse(chargerID, uniqueID, response)
+                    if (func.checkIfValidUniqueID(connectorID, uniqueID)) {
+                        interfaceHandler.handleReserveNowResponse(connectorID, uniqueID, response)
                     } else {
                         throw c.INVALID_UNIQUE_ID
                     }
                     break
-    
+
                 case c.REMOTE_START_TRANSACTION:
-                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
-                        interfaceHandler.handleRemoteStartResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(connectorID, uniqueID)) {
+                        interfaceHandler.handleRemoteStartResponse(connectorID, response)
                     } else {
                         throw c.INVALID_UNIQUE_ID
                     }
                     break
-    
+
                 case c.REMOTE_STOP_TRANSACTION:
-                    if (func.checkIfValidUniqueID(chargerID, uniqueID)) {
-                        interfaceHandler.handleRemoteStopResponse(chargerID, response)
+                    if (func.checkIfValidUniqueID(connectorID, uniqueID)) {
+                        interfaceHandler.handleRemoteStopResponse(connectorID, response)
                     } else {
                         throw c.INVALID_UNIQUE_ID
                     }
                     break
-    
+
                 case c.DATA_TRANSFER:
-                    if(response[c.PAYLOAD_INDEX].status == c.ACCEPTED){
+                    if (response[c.PAYLOAD_INDEX].status == c.ACCEPTED) {
                         console.log('DataTransfer response was OK')
                     } else {
                         throw c.RESPONSE_STATUS_REJECTED
@@ -359,16 +359,16 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
                     break
 
                 default:
-                    let socket = v.getConnectedChargerSocket(chargerID)
+                    let socket = v.getConnectedChargerSocket(connectorID)
                     let message = func.getGenericError(uniqueID, "Could not interpret the response for the callcode: " + action)
                     socket.send(message)
                     break
             }
-            
+
         } catch (error) {
-            let socket = v.getConnectedChargerSocket(chargerID)
+            let socket = v.getConnectedChargerSocket(connectorID)
             let message = ""
-            switch(error){
+            switch (error) {
                 case c.INVALID_UNIQUE_ID:
                     message = func.getGenericError(uniqueID, "Could not found a previous conversation with this unique id.")
                     socket.send(message)
@@ -380,7 +380,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
             }
         }
 
-        
+
 
     }
 
@@ -388,13 +388,13 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
         let uniqueID = response[1]
         let errorCode = response[2]
         let callCode = uniqueID.substring(0, 3)
-        let chargerID = uniqueID.substring(4, 9)
+        let connectorID = uniqueID.substring(4, 9)
 
         var callResult = new String()
 
         switch (callCode) {
             default:
-                console.log("Oops, the charger (" + chargerID + ") responded with an error: " + errorCode)
+                console.log("Oops, the charger (" + connectorID + ") responded with an error: " + errorCode)
                 break
         }
 

@@ -1,10 +1,10 @@
 const { Client } = require('pg')
 
-module.exports = function({ databaseInit }) {
+module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.getReservation = function(reservationID, callback) {
+    exports.getReservation = function (reservationID, callback) {
         databaseInit.Reservations.findOne({ where: { reservationID: reservationID }, raw: true })
             .then(reservation => callback([], reservation))
             .catch(e => {
@@ -13,8 +13,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationForCharger = function(chargerID, callback) {
-        databaseInit.Reservations.findAll({ where: { chargerID: chargerID }, raw: true })
+    exports.getReservationForCharger = function (connectorID, callback) {
+        databaseInit.Reservations.findAll({ where: { connectorID: connectorID }, raw: true })
             .then(chargerReservation => callback([], chargerReservation))
             .catch(e => {
                 console.log(e)
@@ -22,7 +22,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getReservationForUser = function(userID, callback) {
+    exports.getReservationForUser = function (userID, callback) {
         databaseInit.Reservations.findAll({ where: { userID: userID }, raw: true })
             .then(userReservation => callback([], userReservation))
             .catch(e => {
@@ -31,9 +31,9 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addReservation = function(chargerID, userID, start, end, callback) {
+    exports.addReservation = function (connectorID, userID, start, end, callback) {
         const reservation = {
-            chargerID: chargerID,
+            connectorID: connectorID,
             userID: userID,
             start: start,
             end: end
@@ -47,11 +47,11 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.removeReservation = function(reservationID, callback) {
+    exports.removeReservation = function (reservationID, callback) {
         databaseInit.Reservations.destroy({
-                where: { reservationID: reservationID },
-                raw: true
-            })
+            where: { reservationID: reservationID },
+            raw: true
+        })
             .then(numberOfDeletedReservations => {
                 if (numberOfDeletedReservations == 0) {
                     callback([], false)

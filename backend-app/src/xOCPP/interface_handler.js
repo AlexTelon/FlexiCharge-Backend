@@ -1,10 +1,10 @@
-module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
+module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     const c = constants.get()
 
-    exports.interfaceHandler = function(chargerID, action, payload, callback) {
+    exports.interfaceHandler = function (connectorID, action, payload, callback) {
 
         try {
-            const socket = v.getConnectedChargerSocket(chargerID)
+            const socket = v.getConnectedChargerSocket(connectorID)
             if (socket != null) {
 
                 var message = ""
@@ -12,22 +12,22 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
                 switch (action) {
 
                     case c.RESERVE_NOW:
-                        message = getMessageReserveNowCall(chargerID, action, payload, callback)
+                        message = getMessageReserveNowCall(connectorID, action, payload, callback)
                         break
 
                     case c.REMOTE_START_TRANSACTION:
-                        message = getMessageRemoteStartCall(chargerID, action, payload, callback)
+                        message = getMessageRemoteStartCall(connectorID, action, payload, callback)
                         break
 
                     case c.REMOTE_STOP_TRANSACTION:
-                        message = getMessageRemoteStopCall(chargerID, action, payload, callback)
+                        message = getMessageRemoteStopCall(connectorID, action, payload, callback)
                         break
                 }
-
+                console.log("This is sent: from interfaceHandler " + message)
                 socket.send(message)
 
             } else {
-                console.log("Got no valid chargerID from API.")
+                console.log("Got no valid connectorID from API.")
                 callback(c.INVALID_ID, [])
             }
 
@@ -42,15 +42,15 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
     /************************************************************
      * RESERVE NOW FUNCTIONS
      **************************************************************/
-    function getMessageReserveNowCall(chargerID, action, dataObject, callback) {
-        let uniqueID = func.getUniqueId(chargerID, action)
+    function getMessageReserveNowCall(connectorID, action, dataObject, callback) {
+        let uniqueID = func.getUniqueId(connectorID, action)
         let message = func.buildJSONMessage([
             c.CALL,
             uniqueID,
             c.RESERVE_NOW,
             {
                 connectorID: dataObject.connectorID,
-                expiryDate: Math.floor(Date.now()/1000) + c.RESERVATION_TIME,
+                expiryDate: Math.floor(Date.now() / 1000) + c.RESERVATION_TIME,
                 idTag: dataObject.idTag,
                 reservationID: dataObject.reservationID,
                 parentIdTag: dataObject.parentIdTag
@@ -61,10 +61,10 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
 
     }
 
-    exports.handleReserveNowResponse = function(chargerID, uniqueID, response) {
+    exports.handleReserveNowResponse = function (connectorID, uniqueID, response) {
 
         let status = response[c.PAYLOAD_INDEX].status
-        console.log("\nCharger " + chargerID + " responded to ReserveNow request: " + status)
+        console.log("\nCharger " + connectorID + " responded to ReserveNow request: " + status)
 
         let callback = v.getCallback(uniqueID)
         v.removeCallback(uniqueID)
@@ -72,7 +72,7 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
         if (callback != null) {
             if (status == c.ACCEPTED) {
 
-                databaseInterfaceCharger.updateChargerStatus(chargerID, c.RESERVED, function (error, charger) {
+                databaseInterfaceCharger.updateChargerStatus(connectorID, c.RESERVED, function (error, charger) {
                     if (error.length > 0) {
                         console.log("\nError updating charger status in DB: " + error)
                         callback(c.INTERNAL_ERROR, null)
@@ -85,12 +85,12 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
                 callback(null, status)
             }
         } else {
-            socket = v.getConnectedChargerSocket(chargerID)
+            socket = v.getConnectedChargerSocket(connectorID)
             if (socket != null) {
                 socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
                 console.log("handleReserveNowResponse -> No callback tied to this unuiqueID")
             } else {
-                console.log("handleReserveNowResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+                console.log("handleReserveNowResponse -> No callback tied to this unuiqueID and no socket connected to this connectorID.")
             }
         }
     }
@@ -98,36 +98,36 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
     /************************************************************
      * REMOTE START FUNCTIONS
      **************************************************************/
-    function getMessageRemoteStartCall(chargerID, action, payload, callback) {
-        let uniqueID = func.getUniqueId(chargerID, action)
+    function getMessageRemoteStartCall(connectorID, action, payload, callback) {
+        let uniqueID = func.getUniqueId(connectorID, action)
         let message = func.buildJSONMessage([
             c.CALL,
             uniqueID,
             c.REMOTE_START_TRANSACTION,
             payload
         ])
-        v.addCallback(chargerID, callback)
+        v.addCallback(connectorID, callback)
         return message
     }
 
-    exports.handleRemoteStartResponse = function(chargerID, response) {
+    exports.handleRemoteStartResponse = function (connectorID, response) {
         let status = response[c.PAYLOAD_INDEX].status
-        console.log("\nCharger " + chargerID + " responded to RemoteStartTransaction request: " + status)
+        console.log("\nCharger " + connectorID + " responded to RemoteStartTransaction request: " + status)
         if (status == c.ACCEPTED) {
             console.log("Waiting for StartTransaction...")
         } else {
-            let callback = v.getCallback(chargerID)
+            let callback = v.getCallback(connectorID)
 
             if (callback != null) {
                 callback(null, { status: status })
-                v.removeCallback(chargerID)
+                v.removeCallback(connectorID)
             } else {
-                socket = v.getConnectedChargerSocket(chargerID)
+                socket = v.getConnectedChargerSocket(connectorID)
                 if (socket != null) {
                     socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
-                    console.log("handleRemoteStartResponse -> No callback tied to this chargerID")
+                    console.log("handleRemoteStartResponse -> No callback tied to this connectorID")
                 } else {
-                    console.log("handleRemoteStartResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+                    console.log("handleRemoteStartResponse -> No callback tied to this unuiqueID and no socket connected to this connectorID.")
                 }
 
             }
@@ -137,35 +137,35 @@ module.exports = function({ func, constants, v, databaseInterfaceCharger }) {
     /************************************************************
      * REMOTE STOP FUNCTIONS
      **************************************************************/
-    function getMessageRemoteStopCall(chargerID, action, payload, callback) {
-        let uniqueID = func.getUniqueId(chargerID, action)
+    function getMessageRemoteStopCall(connectorID, action, payload, callback) {
+        let uniqueID = func.getUniqueId(connectorID, action)
         let message = func.buildJSONMessage([
             c.CALL,
             uniqueID,
             c.REMOTE_STOP_TRANSACTION,
             payload
         ])
-        v.addCallback(chargerID, callback)
+        v.addCallback(connectorID, callback)
         return message
     }
 
-    exports.handleRemoteStopResponse = function(chargerID, response) {
+    exports.handleRemoteStopResponse = function (connectorID, response) {
         let status = response[c.PAYLOAD_INDEX].status
-        console.log("\nCharger " + chargerID + " responded to RemoteStopTransaction request: " + status)
+        console.log("\nCharger " + connectorID + " responded to RemoteStopTransaction request: " + status)
         if (status == c.ACCEPTED) {
             console.log("Waiting for StopTransaction...")
         } else {
-            let callback = v.getCallback(chargerID)
+            let callback = v.getCallback(connectorID)
             if (callback != null) {
                 callback(null, { status: status })
-                v.removeCallback(chargerID)
+                v.removeCallback(connectorID)
             } else {
-                socket = v.getConnectedChargerSocket(chargerID)
+                socket = v.getConnectedChargerSocket(connectorID)
                 if (socket != null) {
                     socket.send(func.getGenericError(c.INTERNAL_ERROR, C.NOT_AN_ACTIVE_CONVERSATION))
-                    console.log("handleRemoteStopResponse -> No callback tied to this chargerID")
+                    console.log("handleRemoteStopResponse -> No callback tied to this connectorID")
                 } else {
-                    console.log("handleRemoteStopResponse -> No callback tied to this unuiqueID and no socket connected to this chargerID.")
+                    console.log("handleRemoteStopResponse -> No callback tied to this unuiqueID and no socket connected to this connectorID.")
                 }
 
             }

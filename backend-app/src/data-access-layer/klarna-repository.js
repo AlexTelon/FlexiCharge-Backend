@@ -5,7 +5,7 @@ module.exports = function ({ }) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function (userID, chargerID, chargePoint, callback) {
+    exports.getNewKlarnaPaymentSession = async function (userID, connectorID, chargePoint, callback) {
 
         if (chargePoint.klarnaReservationAmount > 0) {
             const data = new TextEncoder().encode(

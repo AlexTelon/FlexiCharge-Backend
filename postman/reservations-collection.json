@@ -1,137 +1,137 @@
 {
-	"info": {
-		"_postman_id": "3fa118eb-b18e-4cd0-9fa7-75bb79e820e5",
-		"name": "Reservations",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23211732"
-	},
-	"item": [
-		{
-			"name": "Reservation by id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/reservations/8",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations",
-						"8"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reservation by userId",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/reservations/userReservation/1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations",
-						"userReservation",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reservation",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"chargerID\": 1,\n    \"userID\":  5,\n    \"start\": 200,\n    \"end\": 300\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/reservations",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Reservation by chargerId",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/reservations/chargerReservation/1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations",
-						"chargerReservation",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Reservation",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"chargerId\": 1,\n    \"connectorId\": 1,\n    \"idTag\": 1,\n    \"reservationId\": 1,\n    \"parentIdTag\": 1\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/reservations/1",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Reservation ? Unsure if working",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/reservations/4",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"reservations",
-						"4"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+    "info": {
+        "_postman_id": "3fa118eb-b18e-4cd0-9fa7-75bb79e820e5",
+        "name": "Reservations",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "23211732"
+    },
+    "item": [
+        {
+            "name": "Reservation by id",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/reservations/8",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations",
+                        "8"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Reservation by userId",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/reservations/userReservation/1",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations",
+                        "userReservation",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Reservation",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"connectorID\": 1,\n    \"userID\":  5,\n    \"start\": 200,\n    \"end\": 300\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{url}}/reservations",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Reservation by connectorID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/reservations/chargerReservation/1",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations",
+                        "chargerReservation",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Reservation",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"connectorID\": 1,\n    \"connectorId\": 1,\n    \"idTag\": 1,\n    \"reservationId\": 1,\n    \"parentIdTag\": 1\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{url}}/reservations/1",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations",
+                        "1"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Reservation ? Unsure if working",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/reservations/4",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "reservations",
+                        "4"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
 }

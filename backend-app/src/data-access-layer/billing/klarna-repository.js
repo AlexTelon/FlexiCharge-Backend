@@ -1,10 +1,10 @@
 const https = require('https')
 
-module.exports = function({}) {
+module.exports = function ({ }) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
-    exports.getNewKlarnaPaymentSession = async function(userID, chargerID, chargePoint, callback) {
+    exports.getNewKlarnaPaymentSession = async function (userID, connectorID, chargePoint, callback) {
 
         if (chargePoint.klarnaReservationAmount > 0) {
             const data = new TextEncoder().encode(
@@ -63,7 +63,7 @@ module.exports = function({}) {
 
     }
 
-    exports.createKlarnaOrder = async function(transactionId, klarnaReservationAmount, authorization_token, callback) {
+    exports.createKlarnaOrder = async function (transactionId, klarnaReservationAmount, authorization_token, callback) {
         const data = new TextEncoder().encode(
             JSON.stringify({
                 "purchase_country": "SE",
@@ -122,7 +122,7 @@ module.exports = function({}) {
     }
 
 
-    exports.finalizeKlarnaOrder = async function(transaction, transactionId, klarnaReservationAmount, callback) {
+    exports.finalizeKlarnaOrder = async function (transaction, transactionId, klarnaReservationAmount, callback) {
         const newOrderAmount = Math.round(transaction.pricePerKwh * transaction.kwhTransfered);
         const order_lines = getOrderLines(klarnaReservationAmount)
 
@@ -130,9 +130,9 @@ module.exports = function({}) {
         order_lines[0].unit_price = newOrderAmount;
 
 
-        updateOrder(transaction, order_lines, function(error, responseData) {
+        updateOrder(transaction, order_lines, function (error, responseData) {
             if (error.length == 0) {
-                captureOrder(transaction, function(error) {
+                captureOrder(transaction, function (error) {
                     if (error.length == 0) {
                         callback([], responseData) //capture does not response with anything so we callback the response data from the update.
                     } else {

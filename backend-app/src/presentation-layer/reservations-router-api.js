@@ -82,13 +82,12 @@ module.exports = function ({ databaseInterfaceReservations, ocppInterface }) {
         })
     })
 
-    router.put('/:chargerId', function (request, response) {
-        const chargerID = request.params.chargerId
-        const connectorID = request.body.connectorId
+    router.put('/:connectorId', function (request, response) {
+        const connectorID = request.params.connectorId
         const idTag = request.body.idTag
         const reservationID = request.body.reservationId
         const parentIdTag = request.body.parentIdTag
-        ocppInterface.reserveNow(chargerID, connectorID, idTag, reservationID, parentIdTag, function (error, resp) {
+        ocppInterface.reserveNow(connectorID, idTag, reservationID, parentIdTag, function (error, resp) {
             if (error === null && resp != null) {
                 response.status(201).json(resp)
             } else {

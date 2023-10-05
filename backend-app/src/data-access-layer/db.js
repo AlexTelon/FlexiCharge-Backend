@@ -3,7 +3,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config');
 
 
-if(config.USE_LOCAL_DATABASE == 1){
+if (config.USE_LOCAL_DATABASE == 1) {
     var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
     // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
@@ -22,7 +22,7 @@ try {
 
 
 const Chargers = sequelize.define('Chargers', {
-    chargerID: {
+    connectorID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false
@@ -154,8 +154,8 @@ const ChargePoints = sequelize.define('ChargePoints', {
     timestamps: false
 });
 
-Reservations.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
-Transactions.belongsTo(Chargers, { foreignKey: 'chargerID', onDelete: 'cascade' })
+Reservations.belongsTo(Chargers, { foreignKey: 'connectorID', onDelete: 'cascade' })
+Transactions.belongsTo(Chargers, { foreignKey: 'connectorID', onDelete: 'cascade' })
 Chargers.belongsTo(ChargePoints, { foreignKey: 'chargePointID', onDelete: 'cascade' })
 
 sequelize.sync().then(function () {
@@ -169,74 +169,74 @@ sequelize.sync().then(function () {
             });
             ChargePoints.create({
                 name: "Nässjö Centralstation",
-                location: [57.652328901782795,14.694810832097543],
+                location: [57.652328901782795, 14.694810832097543],
                 price: 123,
                 klarnaReservationAmount: 500
             });
             ChargePoints.create({
                 name: "Coop, Forserum",
-                location: [57.70022044183724,14.475150415104222],
+                location: [57.70022044183724, 14.475150415104222],
                 price: 7500,
                 klarnaReservationAmount: 500
             });
             ChargePoints.create({
                 name: "Airport Parking, Jönköping",
-                location: [57.749812214261034,14.070100435207065],
+                location: [57.749812214261034, 14.070100435207065],
                 price: 100000,
                 klarnaReservationAmount: 5000
             });
             Chargers.create({
-                chargerID: 100000,
+                connectorID: 100000,
                 location: [57.777714, 14.163010],
                 serialNumber: 'abc111',
                 status: 'Available',
                 chargePointID: 1 //Jönköpig University?
             });
             Chargers.create({
-                chargerID: 100001,
+                connectorID: 100001,
                 location: [57.777714, 14.163010],
                 serialNumber: 'abc112',
                 status: 'Available',
-                chargePointID: 1 
+                chargePointID: 1
             });
             Chargers.create({
-                chargerID: 100002,
-                location: [57.652328901782795,14.694810832097543],
+                connectorID: 100002,
+                location: [57.652328901782795, 14.694810832097543],
                 serialNumber: 'abc113',
                 status: 'Available',
                 chargePointID: 2 //Nässjö Centralstation
             });
             Chargers.create({
-                chargerID: 100003,
-                location: [57.652328901782795,14.694810832097543],
+                connectorID: 100003,
+                location: [57.652328901782795, 14.694810832097543],
                 serialNumber: 'abc114',
                 status: 'Available',
                 chargePointID: 2
             });
             Chargers.create({
-                chargerID: 100004,
-                location: [57.70022044183724,14.475150415104222],
+                connectorID: 100004,
+                location: [57.70022044183724, 14.475150415104222],
                 serialNumber: 'abc115',
                 status: 'Available',
                 chargePointID: 3 //Coop, Forserum
             });
             Chargers.create({
-                chargerID: 100005,
-                location: [57.749812214261034,14.070100435207065],
+                connectorID: 100005,
+                location: [57.749812214261034, 14.070100435207065],
                 serialNumber: 'abc116',
                 status: 'Available',
                 chargePointID: 4 // Airport Parking, Jönköping
             });
             Chargers.create({
-                chargerID: 100006,
-                location: [57.749812214261034,14.070100435207065],
+                connectorID: 100006,
+                location: [57.749812214261034, 14.070100435207065],
                 serialNumber: 'abc117',
                 status: 'Available',
                 chargePointID: 4 // Airport Parking, Jönköping
             });
             Chargers.create({
-                chargerID: 100007,
-                location: [57.749812214261034,14.070100435207065],
+                connectorID: 100007,
+                location: [57.749812214261034, 14.070100435207065],
                 serialNumber: 'abc118',
                 status: 'Reserved',
                 chargePointID: 4 // Airport Parking, Jönköping
@@ -244,7 +244,7 @@ sequelize.sync().then(function () {
             Transactions.create({
                 paymentID: null,
                 userID: 1, // ?
-                chargerID: 100002, // Nässjö
+                connectorID: 100002, // Nässjö
                 timestamp: 1663663253,
                 isKlarnaPayment: false,
                 kwhTransfered: 50,
@@ -254,7 +254,7 @@ sequelize.sync().then(function () {
             Transactions.create({
                 paymentID: null,
                 userID: 1,
-                chargerID: 100004, // Coop, forserum
+                connectorID: 100004, // Coop, forserum
                 timestamp: 1663663935,
                 isKlarnaPayment: false,
                 kwhTransfered: 12,
@@ -264,7 +264,7 @@ sequelize.sync().then(function () {
             Transactions.create({
                 paymentID: null,
                 userID: 1,
-                chargerID: 100005,
+                connectorID: 100005,
                 timestamp: 1663664041,
                 isKlarnaPayment: false,
                 kwhTransfered: 36,
@@ -274,7 +274,7 @@ sequelize.sync().then(function () {
             Transactions.create({
                 paymentID: null,
                 userID: 1,
-                chargerID: 100005,
+                connectorID: 100005,
                 timestamp: 1663664109,
                 isKlarnaPayment: false,
                 kwhTransfered: 12,
@@ -282,7 +282,7 @@ sequelize.sync().then(function () {
                 pricePerKwh: 100000
             });
             Reservations.create({
-                chargerID: 100002,
+                connectorID: 100002,
                 userID: 1,
                 start: 164966755,
                 end: 164968555

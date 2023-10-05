@@ -60,9 +60,9 @@ module.exports = function ({ databaseInterfaceCharger }) {
             chargerPointID,
             serialNumber,
             location,
-            function (errorCodes, chargerId) {
+            function (errorCodes, connectorID) {
                 if (errorCodes.length == 0) {
-                    response.status(201).json(chargerId);
+                    response.status(201).json(connectorID);
                 } else {
                     if (
                         errorCodes.includes("internalError") ||
@@ -94,10 +94,10 @@ module.exports = function ({ databaseInterfaceCharger }) {
     });
 
     router.put("/:id", checkJwt, checkIfAdmin, function (request, response) {
-        const chargerID = request.params.id;
+        const connectorID = request.params.id;
         const newStatus = request.body.status;
         databaseInterfaceCharger.updateChargerStatus(
-            chargerID,
+            connectorID,
             newStatus,
             function (errors, charger) {
                 if (errors.length == 0) {
