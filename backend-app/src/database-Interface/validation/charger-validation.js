@@ -14,11 +14,11 @@ module.exports = function({}) {
 
     const exports = {}
 
-    exports.getChargerValidation = function(chargerID){
+    exports.getChargerValidation = function(connectorID){
         const validationErrors = []
 
-        if(chargerID == null || chargerID == undefined){
-            validationErrors.push("invalidChargerID")
+        if(connectorID == null || connectorID == undefined){
+            validationErrors.push("invalidconnectorID")
         }
 
         return validationErrors
@@ -94,11 +94,11 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getRemoveChargerValidation = function(chargerID){
+    exports.getRemoveChargerValidation = function(connectorID){
         const validationErrors = []
 
-        if(chargerID == null || chargerID == undefined){
-            validationErrors.push("invalidChargerID")
+        if(connectorID == null || connectorID == undefined){
+            validationErrors.push("invalidconnectorID")
         }
 
         return validationErrors

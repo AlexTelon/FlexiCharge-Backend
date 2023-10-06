@@ -16,7 +16,7 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
     }
 
     exports.getCharger = function (connectorID, callback) {
-        const validationErrors = chargerValidation.getChargerValidation(chargerID)
+        const validationErrors = chargerValidation.getChargerValidation(connectorID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
             return
@@ -59,7 +59,6 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
         }
     }
 
-
     exports.getAvailableChargers = function (callback) {
         dataAccessLayerChargers.getAvailableChargers(function (error, chargers) {
             if (Object.keys(error).length > 0) {
@@ -90,7 +89,7 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
     }
 
     exports.removeCharger = function (connectorID, callback) {
-        const validationErrors = chargerValidation.getRemoveChargerValidation(chargerID)
+        const validationErrors = chargerValidation.getRemoveChargerValidation(connectorID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
             return

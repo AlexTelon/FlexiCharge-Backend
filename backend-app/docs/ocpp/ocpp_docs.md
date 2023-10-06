@@ -66,7 +66,7 @@ To start, connect as a charger via Postman as the desired charger you want to ac
 ### Example: Remote Start Transaction
 (Starting a transaction is currently the same as starting a charging session)
 
-1. Call StartTransaction through the API (in production this will be initiated by the GUI). Make sure that the transaction has the same chargerId as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a chargerId into a specific transaction). 
+1. Call StartTransaction through the API (in production this will be initiated by the GUI). Make sure that the transaction has the same connectorID as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a connectorID into a specific transaction). 
 `http://SERVER_IP_HERE:8080/transactions/start/TRANSACTION_ID_HERE`
 
 2. Go to to the connecter charger socket, and get uniqueID from message at index 1

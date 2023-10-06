@@ -1,4 +1,4 @@
-module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
+module.exports = function ({ func, constants, v, databaseInterfaceChargers }) {
     const c = constants.get()
 
     exports.interfaceHandler = function (connectorID, action, payload, callback) {

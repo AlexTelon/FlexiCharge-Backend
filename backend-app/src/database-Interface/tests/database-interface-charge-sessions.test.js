@@ -4,13 +4,13 @@ const databaseInterfaceChargeSessions = testContainer.resolve("databaseInterface
 
 describe("Start a ChargeSession", () => {
     test("Start a ChargeSession", (done) => {
-        const chargerID = 1
+        const connectorID = 1
         const userID = 2
         const payNow = null
         const paymentDueDate = null
         const paymentMethod = null
 
-        databaseInterfaceChargeSessions.startChargeSession(chargerID, userID, payNow, paymentDueDate, paymentMethod, (error, startedChargeSession) => {
+        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, payNow, paymentDueDate, paymentMethod, (error, startedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -30,7 +30,7 @@ describe("getChargeSession", () => {
                 return;
             }
 
-            expect(chargeSession.chargerID).toBe(100001)
+            expect(chargeSession.connectorID).toBe(100001)
             done()
         })
     });

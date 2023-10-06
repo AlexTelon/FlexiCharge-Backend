@@ -108,13 +108,13 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
         })
     }
 
-    exports.getTransactionsForCharger = function (chargerID, callback) {
-        const validationErrors = transactionValidation.getTransactionsForChargerValidation(chargerID)
+    exports.getTransactionsForCharger = function (connectorID, callback) {
+        const validationErrors = transactionValidation.getTransactionsForChargerValidation(connectorID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
             return
         }
-        dataAccessLayerTransactions.getTransactionsForCharger(chargerID, function (error, chargerTransaction) {
+        dataAccessLayerTransactions.getTransactionsForCharger(connectorID, function (error, chargerTransaction) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])

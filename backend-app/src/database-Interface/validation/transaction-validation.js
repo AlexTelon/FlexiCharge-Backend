@@ -56,11 +56,11 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getTransactionsForChargerValidation = function(chargerID){
+    exports.getTransactionsForChargerValidation = function(connectorID){
         const validationErrors = []
 
-        if(chargerID == null || chargerID == undefined){
-            validationErrors.push("invalidChargerID")
+        if(connectorID == null || connectorID == undefined){
+            validationErrors.push("invalidconnectorID")
         }
 
         return validationErrors
