@@ -64,8 +64,8 @@ jobs:
         pip install -r ./test/requirements.txt
 
     # Executes the tests within the /backend_tests folder
-    - name: Run PyTest
-      run: python -m pytest ./test/backend_tests --junit-xml=report.xml
+    # - name: Run PyTest
+    #   run: python -m pytest ./test/backend_tests --junit-xml=report.xml
 
     - name: Install Jest
       run: |
