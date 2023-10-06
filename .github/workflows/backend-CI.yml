@@ -75,7 +75,7 @@ jobs:
     #   run: python -m pytest ./test/backend_tests --junit-xml=report.xml
 
     - name: Run unit tests
-      run:
+      run: |
         docker ps
         docker exec flexicharge-backend_backend-app_1 "npm" "test"
 
