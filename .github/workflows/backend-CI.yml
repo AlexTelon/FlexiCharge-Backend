@@ -56,24 +56,19 @@ jobs:
     #     export PYTHONPATH=.
     #     pip install -r ./test/requirements.txt
 
-    - name: Install Jest
-      run: |
-       npm i jest
-       npm i jest-junit
-
-    - name: Install axios
-      run: |
-        npm i axios
-
-    - name: Install awilix
-      run: |
-        npm i awilix
+    # - name: Install Dependencies
+    #   run: |
+    #     npm i jest
+    #     npm i jest-junit
+    #     npm i axios
+    #     npm i awilix
+    #     npm i sequelize
 
     # Run the backend app
     # & is used to signal that this task will keep running, as to not get stuck on this step
     - name: launch docker container
       run: |
-       docker-compose up --build -d
+        docker-compose up --build -d
 
     # Executes the tests within the /backend_tests folder
     # - name: Run PyTest
@@ -81,7 +76,7 @@ jobs:
 
     - name: Run unit tests
       run:
-        npm test --prefix ./backend-app
+        docker exec backend-app "npm test --prefix ./backend-app"
 
     # Displays a summary and overlook of test cases
     - name: Publish test result
