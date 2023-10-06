@@ -2,11 +2,10 @@ const { truncate } = require('fs/promises');
 const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config');
 
+
 if (config.USE_LOCAL_DATABASE == 1) {
-  var sequelize = new Sequelize(
-    "postgres://postgres:abc123@postgre_db:5432/postgredb"
-  );
-  // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
+    var sequelize = new Sequelize('postgres://postgres:abc123@postgre_db:5432/postgredb')
+    // sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis', { raw: true })
 } else {
     var sequelize = new Sequelize(config.DATABASE_NAME, config.DATABASE_USERNAME, config.DATABASE_PASSWORD, {
         host: config.DATABASE_HOST,
@@ -24,13 +23,11 @@ try {
 // Add payment methods here, create a new table for the payment method.
 const paymentType = DataTypes.ENUM("Klarna", "Swish", "Mastercard");
 
-const Chargers = sequelize.define(
-  "Chargers",
-  {
-    chargerID: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      allowNull: false,
+const Chargers = sequelize.define('Chargers', {
+    connectorID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false
     },
     coordinates: {
       type: DataTypes.ARRAY(DataTypes.FLOAT),
@@ -257,7 +254,7 @@ ElectricityTariffs.removeAttribute("id");
 KlarnaPayments.belongsTo(Transactions, { foreignKey: "transactionID" });
 Transactions.belongsTo(ChargeSessions, { foreignKey: "chargeSessionID" });
 ChargeSessions.belongsTo(Chargers, {
-  foreignKey: "chargerID",
+  foreignKey: "connectorID",
   onDelete: "cascade",
 });
 Chargers.belongsTo(ChargePoints, {
@@ -290,70 +287,70 @@ sequelize.sync().then(function () {
         coordinates: [57.70022044183724, 14.475150415104222],
       });
       Chargers.create({
-        chargerID: 100000,
+        connectorID: 100000,
         coordinates: [57.777714, 14.16301],
         serialNumber: "testchargeralwaysconnected",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
-        chargerID: 100001,
+        connectorID: 100001,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc111",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
-        chargerID: 100002,
+        connectorID: 100002,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc112",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
-        chargerID: 100003,
+        connectorID: 100003,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc113",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
-        chargerID: 100004,
+        connectorID: 100004,
         coordinates: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc114",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
       Chargers.create({
-        chargerID: 100005,
+        connectorID: 100005,
         coordinates: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc115",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
       Chargers.create({
-        chargerID: 100006,
+        connectorID: 100006,
         coordinates: [57.70022044183724, 14.475150415104222],
         serialNumber: "abc116",
         status: "Available",
         chargePointID: 3, //Coop, Forserum
       });
       Chargers.create({
-        chargerID: 100007,
+        connectorID: 100007,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc117",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
       Chargers.create({
-        chargerID: 100008,
+        connectorID: 100008,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc118",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
       Chargers.create({
-        chargerID: 100009,
+        connectorID: 100009,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc119",
         status: "Available",
@@ -368,7 +365,7 @@ sequelize.sync().then(function () {
         paymentDueDate: 1664889622,
         paidDate: 1664889622,
         totalPrice: 100,
-        chargerID: 100002, // Jönköping University
+        connectorID: 100002, // Jönköping University
       });
       Transactions.create({
         userID: "NotARealUser@gmail.com",
@@ -379,7 +376,7 @@ sequelize.sync().then(function () {
         paymentDueDate: 1664889622,
         paidDate: 1664889622,
         totalPrice: 151,
-        chargerID: 100005, // Nässjö centralstation
+        connectorID: 100005, // Nässjö centralstation
       });
       // Fill the ElectricityTariff table with random data
       const generateDays = 61; //Days to generate prices from startDate

@@ -1,7 +1,7 @@
 const https = require('https')
 const config = require('../../config')
 
-module.exports = function({}) {
+module.exports = function ({ }) {
     const KLARNA_URI = "api.playground.klarna.com"
     const exports = {}
 
@@ -34,9 +34,17 @@ module.exports = function({}) {
             const request = https.request(options, result => {
                 if (result.statusCode == 200) {
                     result.on('data', jsonResponse => {
-                        const responseData = JSON.parse(jsonResponse);
-                        callback([], responseData)
-                    })
+                        const responseString = jsonResponse.toString();
+                        console.log('Klarna API Response:', responseString);
+
+                        try {
+                            const responseData = JSON.parse(responseString);
+                            callback([], responseData);
+                        } catch (parseError) {
+                            console.error('Error parsing Klarna API response:', parseError);
+                            callback(['klarnaResponseParseError'], []);
+                        }
+                    });
                 } else {
                     switch (result.statusCode) {
                         case 400: // 	We were unable to create a session with the provided data. Some field constraint was violated.

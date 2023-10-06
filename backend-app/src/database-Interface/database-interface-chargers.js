@@ -1,6 +1,7 @@
-module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValidation, dataAccessLayerTransactions, dataAccessLayerChargeSessions }) {
+module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValidation }) {
 
     const exports = {}
+
 
     exports.getChargers = function (callback) {
         dataAccessLayerChargers.getChargers(function (error, chargers) {
@@ -14,26 +15,27 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
         })
     }
 
-    exports.getCharger = function (chargerID, callback) {
+    exports.getCharger = function (connectorID, callback) {
         const validationErrors = chargerValidation.getChargerValidation(chargerID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
-        } else {
-            dataAccessLayerChargers.getCharger(chargerID, function (error, charger) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    if (charger == null) {
-                        callback([], [])
-                    } else {
-                        callback([], charger)
-                    }
-                }
-            })
+            return
         }
+        dataAccessLayerChargers.getCharger(connectorID, function (error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [])
+                })
+                return
+            }
+            if (charger == null) {
+                callback([], [])
+                return
+            }
+            callback([], charger)
+        })
     }
+
 
     exports.getChargerBySerialNumber = function (serialNumber, callback) {
         const validationErrors = chargerValidation.getChargerBySerialNumberValidation(serialNumber)
@@ -64,9 +66,9 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
-            } else {
-                callback([], chargers)
+                return
             }
+            callback([], chargers)
         })
     }
 
@@ -74,81 +76,52 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
         const ValidationErrors = chargerValidation.getAddChargerValidation(coordinates, serialNumber, chargePointID)
         if (ValidationErrors.length > 0) {
             callback(ValidationErrors, [])
-        } else {
-            dataAccessLayerChargers.addCharger(chargePointID, serialNumber, coordinates, function (error, chargerID) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], chargerID)
-                }
-            })
+            return
         }
+        dataAccessLayerChargers.addCharger(chargePointID, serialNumber, coordinates, function (error, connectorID) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [])
+                })
+                return
+            }
+            callback([], connectorID)
+        })
     }
 
-    exports.removeCharger = function (chargerID, callback) {
+    exports.removeCharger = function (connectorID, callback) {
         const validationErrors = chargerValidation.getRemoveChargerValidation(chargerID)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
-        } else {
-            dataAccessLayerChargers.removeCharger(chargerID, function (error, chargerRemoved) { //chargerRemoved = bool
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, chargerRemoved)
-                    })
-                } else {
-                    callback([], chargerRemoved)
-                }
-            })
+            return
         }
+
+        dataAccessLayerChargers.removeCharger(connectorID, function (error, chargerRemoved) { //chargerRemoved = bool
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, chargerRemoved)
+                })
+            }
+            callback([], chargerRemoved)
+            return
+        })
     }
 
 
-    exports.updateChargerStatus = function (chargerID, status, callback) {
-
+    exports.updateChargerStatus = function (connectorID, status, callback) {
         const validationErrors = chargerValidation.getUpdateChargerStatusValidation(status)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
-        } else {
-            dataAccessLayerChargers.updateChargerStatus(chargerID, status, function (error, charger) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], charger)
-                }
-            })
+            return
         }
-    }
-
-    exports.getChargerForTransaction = function (transactionID, callback) {
-        dataAccessLayerTransactions.getTransaction(transactionID, (transactionError, transaction) => {
-            if (Object.keys(transactionError).length > 0) {
-                dbErrorCheck.checkError(transactionError, function (errorCode) {
+        dataAccessLayerChargers.updateChargerStatus(connectorID, status, function (error, charger) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
-            } else {
-                dataAccessLayerChargeSessions.getChargeSession(transaction.chargeSessionID, (chargeSessionError, chargeSession) => {
-                    if (Object.keys(chargeSessionError).length > 0) {
-                        dbErrorCheck.checkError(chargeSessionError, function (errorCode) {
-                            callback(errorCode, [])
-                        })
-                    } else {
-                        dataAccessLayerChargers.getCharger(chargeSession.chargerID, (chargerError, charger) => {
-                            if (Object.keys(chargerError).length > 0) {
-                                dbErrorCheck.checkError(chargerError, function (errorCode) {
-                                    callback(errorCode, [])
-                                })
-                            } else {
-                                callback([], charger)
-                            }
-                        })
-                    }
-
-                })
+                return
             }
+            callback([], charger)
         })
     }
 

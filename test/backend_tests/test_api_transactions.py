@@ -42,7 +42,7 @@ class TestApiTransactions:
 
         payload = {
             "userID": "1",
-            "chargerID": 100005,
+            "connectorID": 100005,
             "isKlarnaPayment": True,
             "pricePerKwh": 33.0
         }

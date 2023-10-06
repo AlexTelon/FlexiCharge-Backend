@@ -112,5 +112,5 @@ module.exports = function ({ databaseInterfaceChargers }) {
     );
   });
 
-  return router;
+    return router;
 };
