@@ -77,7 +77,7 @@ jobs:
     - name: Run unit tests
       run:
         docker ps
-        docker exec flexicharge-backend_backend-app_1 ["npm", "test", "--prefix", "./backend-app"]
+        docker exec flexicharge-backend_backend-app_1 "npm" "test"
 
     # Displays a summary and overlook of test cases
     - name: Publish test result
