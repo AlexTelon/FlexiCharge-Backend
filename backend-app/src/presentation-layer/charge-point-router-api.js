@@ -34,9 +34,8 @@ module.exports = function ({ databaseInterfaceChargePoints }) {
     router.post('/', checkJwt, checkIfAdmin, function (request, response) {
         const name = request.body.name
         const location = request.body.location
-        const price = request.body.price
-        const klarnaReservationAmount = request.body.klarnaReservationAmount
-        databaseInterfaceChargePoints.addChargePoint(name, location, price, klarnaReservationAmount, function (errors, chargePointID) {
+        const address = request.body.address
+        databaseInterfaceChargePoints.addChargePoint(name, address, location, function (errors, chargePointID) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (chargePointID) {

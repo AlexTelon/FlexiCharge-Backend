@@ -42,10 +42,10 @@ jobs:
         envkey_USER_POOL: ${{ secrets.USER_POOL }}
         envkey_USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
         envkey_USER_POOL_SECRET: ${{ secrets.USER_POOL_SECRET }}
-        envkey_DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        envkey_DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-        envkey_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        envkey_DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+        envkey_DATABASE_NAME: "UNNEEDED"
+        envkey_DATABASE_USERNAME: "UNNEEDED"
+        envkey_DATABASE_PASSWORD: "UNNEEDED"
+        envkey_DATABASE_HOST: "UNNEEDED"
         envkey_KLARNA_TOKEN: ${{ secrets.KLARNA_TOKEN }}
         directory: backend-app/
 

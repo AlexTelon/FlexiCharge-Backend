@@ -290,6 +290,13 @@ sequelize.sync().then(function () {
         coordinates: [57.70022044183724, 14.475150415104222],
       });
       Chargers.create({
+        chargerID: 100000,
+        coordinates: [57.777714, 14.16301],
+        serialNumber: "testchargeralwaysconnected",
+        status: "Available",
+        chargePointID: 1, //Jönköping University
+      });
+      Chargers.create({
         chargerID: 100001,
         coordinates: [57.777714, 14.16301],
         serialNumber: "abc111",
