@@ -3,16 +3,16 @@ services:
   backend-app:
     build: ./backend-app
     image: backend_app
-    ports: 
+    container_name: flexicharge-backend
+    ports:
       - 8080:8080
       - 1337:1337
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
     volumes:
       - ./backend-app/src:/backend-app/src
     env_file: ./backend-app/.env
-    depends_on: 
+    depends_on:
       - postgre_db
   postgre_db:
     build: ./postgres-db
@@ -20,6 +20,6 @@ services:
     container_name: postgre_db
     ports:
       - "5432:5432"
-    environment: 
+    environment:
       POSTGRES_DB: postgredb
       POSTGRES_PASSWORD: abc123
