@@ -5,33 +5,35 @@ const config = require('./config')
 container.register({
 
     //Data access layers
-    dataAccessLayerCharger: awilix.asFunction(require('./data-access-layer/charger-repository')),
-    dataAccessLayerReservation: awilix.asFunction(require('./data-access-layer/reservation-repository')),
-    dataAccessLayerTransaction: awilix.asFunction(require('./data-access-layer/transaction-repository')),
-    dataAccessLayerChargePoint: awilix.asFunction(require('./data-access-layer/charge-point-repository')),
-    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/klarna-repository')),
+    dataAccessLayerChargeSessions: awilix.asFunction(require('./data-access-layer/charge-sessions-repository')),
+    dataAccessLayerChargers: awilix.asFunction(require('./data-access-layer/chargers-repository')),
+    dataAccessLayerTransactions: awilix.asFunction(require('./data-access-layer/transactions-repository')),
+    dataAccessLayerChargePoints: awilix.asFunction(require('./data-access-layer/charge-points-repository')),
+    dataAccessLayerElectricityTariffs: awilix.asFunction(require('./data-access-layer/electricity-tariff-repository')),
+    dataAccessLayerKlarnaPayments: awilix.asFunction(require('./data-access-layer/klarna-payments-repository')),
+    dataAccessLayerKlarna: awilix.asFunction(require('./data-access-layer/payment-methods/klarna-repository')),
     //Business logic layers
-    databaseInterfaceCharger: awilix.asFunction(require('./database-Interface/database-interface-charger')),
+    databaseInterfaceChargers: awilix.asFunction(require('./database-Interface/database-interface-chargers')),
+    databaseInterfaceChargeSessions: awilix.asFunction(require('./database-Interface/database-interface-charge-sessions')),
     databaseInterfaceTransactions: awilix.asFunction(require('./database-Interface/database-interface-transaction')),
-    databaseInterfaceReservations: awilix.asFunction(require('./database-Interface/database-interface-reservations')),
-    databaseInterfaceChargePoint: awilix.asFunction(require('./database-Interface/database-interface-charge-point')),
-    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
+    databaseInterfaceChargePoints: awilix.asFunction(require('./database-Interface/database-interface-charge-points')),
+    databaseInterfaceElectricityTariffs: awilix.asFunction(require('./database-Interface/database-interface-electricity-tariff')),
+    databaseInterfaceKlarnaPayments: awilix.asFunction(require('./database-Interface/database-interface-klarna-payments')),
     databaseInit: awilix.asFunction(require('./data-access-layer/db')),
+    databaseInterfaceInvoices: awilix.asFunction(require('./database-Interface/database-interface-invoices')),
     //Database error
     dbErrorCheck: awilix.asFunction(require('./database-Interface/error/database-error-check')),
-
     //Validation
-    chargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
-    transactionValidation: awilix.asFunction(require("./database-Interface/validation/transactionValidation")),
-    reservationValidation: awilix.asFunction(require("./database-Interface/validation/reservationValidation")),
     invoicesValidation: awilix.asFunction(require('./database-Interface/validation/invoices-validation')),
+    chargerValidation: awilix.asFunction(require("./database-Interface/validation/charger-validation")),
+    chargeSessionValidation: awilix.asFunction(require("./database-Interface/validation/charge-session-validation")),
     chargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
-
+    transactionValidation: awilix.asFunction(require("./database-Interface/validation/transaction-validation")),
+    klarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/klarna-payments-validation")),
     //Presentation layers
     chargePointsRouter: awilix.asFunction(require('./presentation-layer/charge-point-router-api')),
     chargersRouter: awilix.asFunction(require('./presentation-layer/chargers-router-api')),
     transactionsRouter: awilix.asFunction(require('./presentation-layer/transactions-router-api')),
-    reservationsRouter: awilix.asFunction(require('./presentation-layer/reservations-router-api')),
     authenticationRouter: awilix.asFunction(require('./presentation-layer/authentication-router-api')),
     invoicesRouter: awilix.asFunction(require('./presentation-layer/invoices-router-api')),
     adminRouter: awilix.asFunction(require('./presentation-layer/admin-router-api')),

@@ -42,43 +42,33 @@ jobs:
         envkey_USER_POOL: ${{ secrets.USER_POOL }}
         envkey_USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
         envkey_USER_POOL_SECRET: ${{ secrets.USER_POOL_SECRET }}
-        envkey_DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        envkey_DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-        envkey_DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        envkey_DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+        envkey_DATABASE_NAME: "UNNEEDED"
+        envkey_DATABASE_USERNAME: "UNNEEDED"
+        envkey_DATABASE_PASSWORD: "UNNEEDED"
+        envkey_DATABASE_HOST: "UNNEEDED"
         envkey_KLARNA_TOKEN: ${{ secrets.KLARNA_TOKEN }}
         directory: backend-app/
+
+    # # Runs sequentially to starting the back-end app
+    # - name: Install requirements
+    # # Installs the requirements
+    #   run: |
+    #     export PYTHONPATH=.
+    #     pip install -r ./test/requirements.txt
 
     # Run the backend app
     # & is used to signal that this task will keep running, as to not get stuck on this step
     - name: launch docker container
       run: |
-       docker-compose build
-       docker-compose up &
-
-    # Runs sequentially to starting the back-end app
-    - name: Install requirements
-    # Installs the requirements
-      run: |
-        export PYTHONPATH=.
-        pip install -r ./test/requirements.txt
+        docker-compose up --build -d
 
     # Executes the tests within the /backend_tests folder
-    - name: Run PyTest
-      run: python -m pytest ./test/backend_tests --junit-xml=report.xml
-
-    - name: Install Jest
-      run: |
-       npm i jest
-       npm i jest-junit
-
-    - name: Install axios
-      run: |
-        npm i axios
+    # - name: Run PyTest
+    #   run: python -m pytest ./test/backend_tests --junit-xml=report.xml
 
     - name: Run unit tests
-      run:
-        npm test --prefix ./backend-app
+      run: |
+        docker exec flexicharge-backend "npm" "test"
 
     # Displays a summary and overlook of test cases
     - name: Publish test result

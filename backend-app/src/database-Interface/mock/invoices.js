@@ -151,7 +151,7 @@ exports.chargeSessions = [
   {
     chargeSessionID: 1,
     userID: "nisse.hult@riksdagen.se",
-    kwhTransfered: 12.5,
+    kWhTransferred: 12.5,
     currentChargePercentage: 50.0,
     meterStart: 1,
     startTime: 1656797460,
@@ -161,7 +161,7 @@ exports.chargeSessions = [
   {
     chargeSessionID: 2,
     userID: "nisse.hult@riksdagen.se",
-    kwhTransfered: 33.3,
+    kWhTransferred: 33.3,
     currentChargePercentage: 11.0,
     meterStart: 9,
     startTime: 1656970260,
@@ -171,7 +171,7 @@ exports.chargeSessions = [
   {
     chargeSessionID: 3,
     userID: "nisse.hult@riksdagen.se",
-    kwhTransfered: 0.9,
+    kWhTransferred: 0.9,
     currentChargePercentage: 70.0,
     meterStart: 9,
     startTime: 1657315860,
@@ -181,7 +181,7 @@ exports.chargeSessions = [
   {
     chargeSessionID: 4,
     userID: "nisse.hult@riksdagen.se",
-    kwhTransfered: 14.0,
+    kWhTransferred: 14.0,
     currentChargePercentage: 88.0,
     meterStart: 9,
     startTime: 1657920660,
@@ -191,7 +191,7 @@ exports.chargeSessions = [
   {
     chargeSessionID: 5,
     userID: "nisse.hult@riksdagen.se",
-    kwhTransfered: 69.69,
+    kWhTransferred: 69.69,
     currentChargePercentage: 69.0,
     meterStart: 9,
     startTime: 1658439060,

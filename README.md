@@ -49,14 +49,6 @@ Needed to start app.
     - updateTransactionPayment(transactionId: int, paymentId: int))
     - updateTransactionMeter(transactionId: int, meterValue: int))
 ```
-  - **databaseInterfaceReservations**
-```
-    - addReservation(chargerId: int, userId: int, start: int, stop: int, function(errors, reservation))
-    - getReservation(reservationId: int, function(errors, reservation))
-    - getReservationForUser(userId: int, function(errors, reservations))
-    - getReservationForCharger(chargerId: int, function(errors, reservations))
-    - removeReservation(reservationId: int, function(errors, reservationRemoved: bool))
-```
 
 
 
