@@ -70,7 +70,7 @@ module.exports = function({ databaseInit }) {
         if (coordinates != null) {
             updateProperties.coordinates = coordinates
         }
-       
+
         databaseInit.ChargePoints.update(updateProperties, {
                 where: { chargePointID: chargePointID },
                 returning: true,

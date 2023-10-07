@@ -11,8 +11,8 @@ module.exports = function ({ chargerTests, constants, v, func, messageValidation
     connectAsUserSocket = function (callback) {
         try {
             console.log('\n========= USER CLIENT MOCK CONNECTING... ==========\n')
-            const ws = new WebSocket("ws://localhost:1337/user/" + c.USER_ID)  
-    
+            const ws = new WebSocket("ws://localhost:1337/user/" + c.USER_ID)
+
             ws.on('open', function open() {
                 v.addUserIDWIthTransactionID(c.USER_ID, c.TRANSACTION_ID)
                 callback(ws)
@@ -29,7 +29,7 @@ module.exports = function ({ chargerTests, constants, v, func, messageValidation
                         console.log("USER RECEIVED METER VALUES, WELL DONE!!!")
                         testSuccessful = true
                     }
-                }       
+                }
             })
 
             ws.on('close', function disconnection(){
@@ -39,7 +39,6 @@ module.exports = function ({ chargerTests, constants, v, func, messageValidation
                     console.log("(TEST) Number of connected user clients: " + v.getLengthConnectedUserSockets()  + ' (' + v.getUserIDsLength() + ')' + ' (' + v.getLiveMetricsTokensLength() + ')' + ' (' + v.lengthLastLiveMetricsTimestamps() + ')')
                 }, 1000*config.OCPP_TEST_INTERVAL_MULTIPLIER)
             })
-            
         } catch (error) {
             console.log(error)
         }
@@ -61,8 +60,8 @@ module.exports = function ({ chargerTests, constants, v, func, messageValidation
         console.log('\n========= TESTING METER VALUES REQUEST... ==========\n')
         connectAsUserSocket(function(userSocket){
             chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(chargerSocket){
-                meterValues = func.buildJSONMessage([ 
-                    2, 
+                meterValues = func.buildJSONMessage([
+                    2,
                     "100001RemoteStartTransaction1664455481548",
                     "MeterValues",
                     {

@@ -78,7 +78,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
     }
 
     function handleMeterValues(connectorID, request) {
-        //TODO: Add validation 
+        //TODO: Add validation
         const transactionID = request[3].transactionId
         const uniqueID = request[1]
         const userID = v.getUserIDWithTransactionID(transactionID)

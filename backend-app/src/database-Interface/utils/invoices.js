@@ -1,21 +1,21 @@
 const PDFDocument = require('pdfkit-table')
-const { 
-    convertUnixToIso8601, 
-    getYearAndMonthFromUnix 
+const {
+    convertUnixToIso8601,
+    getYearAndMonthFromUnix
 } = require('../helpers/date')
 
 const calculateChargeSessions = (chargeSessions) => {
     const tableRows = []
     let totalSum = 0
-    
+
     for (const chargeSession of chargeSessions) {
         const chargeSessionRow = []
         const sessionPrice = 10 // kwh price * duration
-        
+
         chargeSessionRow.push(convertUnixToIso8601(chargeSession.startTime))
         chargeSessionRow.push(convertUnixToIso8601(chargeSession.endTime))
         chargeSessionRow.push(chargeSession.kWhTransferred)
-        
+
         tableRows.push(chargeSessionRow)
         totalSum += sessionPrice
     }
@@ -25,8 +25,6 @@ const calculateChargeSessions = (chargeSessions) => {
         totalSum
     }
 }
-
-
 
 exports.generateMonthlyInvoicePDF = (user, chargeSessions) => {
     const calculatedChargeSessions = calculateChargeSessions(chargeSessions)
@@ -56,13 +54,13 @@ exports.generateMonthlyInvoicePDF = (user, chargeSessions) => {
 
     const tableArrayColor = {
         headers: [
-            "Charge session start", 
-            "Charge session end", 
+            "Charge session start",
+            "Charge session end",
             "KWH transfered"
         ],
         rows: calculatedChargeSessions.tableRows,
     };
-        doc.table( tableArrayColor, { 
+        doc.table( tableArrayColor, {
             columnsSize: [150,150,100],
             prepareRow: (row, indexColumn, indexRow, rectRow) => {
                 doc.font("Helvetica").fontSize(12);
@@ -75,7 +73,7 @@ exports.generateMonthlyInvoicePDF = (user, chargeSessions) => {
     .font('Helvetica-Bold')
     .text(`Total Price (SEK): ${calculatedChargeSessions.totalSum}`)
     .text(' ')
-    
+
     doc
     .fontSize(16)
     .font('Helvetica-Bold')
@@ -85,12 +83,12 @@ exports.generateMonthlyInvoicePDF = (user, chargeSessions) => {
     .fontSize(12)
     .font('Helvetica')
     .text('    OCR: <OCR number here>')
-    
+
     doc
     .fontSize(12)
     .font('Helvetica')
     .text('    Bankgiro: <Insert Bankgiro here>')
-  
+
     doc.end();
     return doc
 }

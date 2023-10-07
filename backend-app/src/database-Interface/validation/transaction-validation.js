@@ -21,25 +21,25 @@ module.exports = function({}) {
     exports.getAddTransactionValidation = function(chargeSessionID, userID, payNow) {
         const validationErrors = []
 
-        if(chargeSessionID == null || chargeSessionID == undefined){
+        if(chargeSessionID == null || chargeSessionID == undefined) {
             validationErrors.push("invalidChargeSessionID")
         }
 
-        if(userID == null || userID == undefined){
+        if(userID == null || userID == undefined) {
             validationErrors.push("invalidUserID")
         }
 
-        if(payNow == null || payNow == undefined){
+        if(payNow == null || payNow == undefined) {
             validationErrors.push("invalidPayNow")
         }
 
         return validationErrors
     }
 
-    exports.getTransactionValidation = function(transactionID){
+    exports.getTransactionValidation = function(transactionID) {
         const validationErrors = []
 
-        if(transactionID == null || transactionID == undefined){
+        if(transactionID == null || transactionID == undefined) {
             validationErrors.push("invalidTransactionID")
         }
 
@@ -49,45 +49,45 @@ module.exports = function({}) {
     exports.getTransactionsForUserValidation = function(userID) {
         const validationErrors = []
 
-        if(userID == null || userID == undefined){
+        if(userID == null || userID == undefined) {
             validationErrors.push("invalidUserID")
         }
 
         return validationErrors
     }
 
-    exports.getTransactionsForChargerValidation = function(connectorID){
+    exports.getTransactionsForChargerValidation = function(connectorID) {
         const validationErrors = []
 
-        if(connectorID == null || connectorID == undefined){
+        if(connectorID == null || connectorID == undefined) {
             validationErrors.push("invalidconnectorID")
         }
 
         return validationErrors
     }
 
-    exports.getUpdatePaymentMethodValidation = function(transactionID, paymentMethod){
+    exports.getUpdatePaymentMethodValidation = function(transactionID, paymentMethod) {
         const validationErrors = []
 
-        if(transactionID == null || transactionID == undefined){
+        if(transactionID == null || transactionID == undefined) {
             validationErrors.push("invalidTransactionID")
         }
 
-        if(paymentMethod == null || paymentMethod == undefined){
+        if(paymentMethod == null || paymentMethod == undefined) {
             validationErrors.push("invalidPaymentMethod")
         }
 
         return validationErrors
     }
 
-    exports.getUpdatepaidDateValidation = function(transactionID, paidDate){
+    exports.getUpdatepaidDateValidation = function(transactionID, paidDate) {
         const validationErrors = []
 
-        if(transactionID == null || transactionID == undefined){
+        if(transactionID == null || transactionID == undefined) {
             validationErrors.push("invalidTransactionID")
         }
 
-        if(paidDate == null || paidDate == undefined){
+        if(paidDate == null || paidDate == undefined) {
             validationErrors.push("invalidpaidDate")
         } else {
             let dateObject = new Date(paidDate)
@@ -103,14 +103,14 @@ module.exports = function({}) {
         return validationErrors
     }
 
-    exports.getUpdateTotalPriceValidation = function(transactionID, totalPrice){
+    exports.getUpdateTotalPriceValidation = function(transactionID, totalPrice) {
         const validationErrors = []
 
         if(transactionID == null || transactionID == undefined) {
             validationErrors.push("invalidTransactionID")
         }
 
-        if(totalPrice == null || transactionID == undefined){
+        if(totalPrice == null || transactionID == undefined) {
             validationErrors.push("invalidTotalPrice")
         }
 
