@@ -1,5 +1,5 @@
 module.exports = function({}) {
-    //Status codes 
+    //Status codes
     const statusCodes = ["Available", "Preparing", "Charging", "SuspendedEVSE", "SuspendedEV", "Finishing", "Reserved", "Unavailable", "Faulted"]
 
     //Validation for coordinates

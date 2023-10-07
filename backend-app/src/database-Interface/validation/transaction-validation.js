@@ -91,11 +91,11 @@ module.exports = function({}) {
             validationErrors.push("invalidpaidDate")
         } else {
             let dateObject = new Date(paidDate)
-            if(dateObject == null || dateObject == undefined ){
+            if(dateObject == null || dateObject == undefined ) {
                 validationErrors.push("invalidpaidDate")
             }
-            if(isNaN(dateObject.getMonth())){
-                //String recieved tried to convert to a date object and failed. 
+            if(isNaN(dateObject.getMonth())) {
+                //String recieved tried to convert to a date object and failed.
                 validationErrors.push("invalidpaidDate")
             }
         }

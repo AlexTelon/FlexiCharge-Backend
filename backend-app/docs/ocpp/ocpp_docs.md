@@ -3,7 +3,7 @@
 
 ## Requirements
 - Backend repo
-- Docker 
+- Docker
 - pgAdmin
 - Postman
 
@@ -13,13 +13,13 @@
 
 ## How to test server-side websockets
 1. Run "docker-compose up"
-2. Open pgAdmin and connect to the local database: 
+2. Open pgAdmin and connect to the local database:
 - `Host: 127.0.0.1`
 - `Port: 5432`
 - `Username: postgres`
 - `Password: abc123`
 
-3. Find the Charger table 
+3. Find the Charger table
 
 ![](./images/image8.png)
 
@@ -35,13 +35,13 @@
 7.  In Postman, enter the server URL in the following format and connect
 `ws://localhost:1337/charger/YOUR_CHARGER_SERIAL_NUMBER`
 
-Example: 
+Example:
 
 ![](./images/image5.png)
 
 ![](./images/image4.png)
 
-## Testing 
+## Testing
 Web Sockets send and receive messages. With the OCPP protocol, this is how the backend communicates with the charger. To test that these messages are handled properly there are multiple methods:
 
 ## Automatic tests (console)
@@ -50,7 +50,7 @@ Web Sockets send and receive messages. With the OCPP protocol, this is how the b
 
 ## Automatic tests (API call)
 1. Get the server IP (localhost:8080 or 18.202.253.30:8080)
-2. Send an API call in the following format: 
+2. Send an API call in the following format:
 `http://SERVER_IP_HERE:8080/tests/ocpp`
 
 ## Manual testing
@@ -66,7 +66,7 @@ To start, connect as a charger via Postman as the desired charger you want to ac
 ### Example: Remote Start Transaction
 (Starting a transaction is currently the same as starting a charging session)
 
-1. Call StartTransaction through the API (in production this will be initiated by the GUI). Make sure that the transaction has the same connectorID as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a connectorID into a specific transaction). 
+1. Call StartTransaction through the API (in production this will be initiated by the GUI). Make sure that the transaction has the same connectorID as the connected charger socket (use pgAdmin to check transactions table, might need to manually insert a connectorID into a specific transaction).
 `http://SERVER_IP_HERE:8080/transactions/start/TRANSACTION_ID_HERE`
 
 2. Go to to the connecter charger socket, and get uniqueID from message at index 1
@@ -85,7 +85,7 @@ To start, connect as a charger via Postman as the desired charger you want to ac
 
 ![](./images/image1.png)
 
-## Socket messages 
+## Socket messages
 Here are the socket messages that can be sent by the charger
 
 **Reserve Now Response**
@@ -94,19 +94,19 @@ Here are the socket messages that can be sent by the charger
     3,
     "UNIQUE_ID_HERE",
     "ReserveNow",
-    { 
+    {
         "status": "Accepted"
-    } 
+    }
 ]
 ```
 
 **Remote Start Transaction Response**
 ```json
-[ 
+[
     3,
     "UNIQUE_ID_HERE",
     "RemoteStartTransaction",
-    { 
+    {
         "status": "Accepted"
     }
 ]
@@ -114,57 +114,57 @@ Here are the socket messages that can be sent by the charger
 
 **Start Transaction Request**
 ```json
-[ 
+[
     2,
     "UNIQUE_ID_HERE",
     "StartTransaction",
-    { 
+    {
         "connectorId": 1,
         "idTag": 1,
         "meterStart": 1,
         "reservationId": 1,
         "timestamp":1664957184974
-    } 
+    }
 ]
 ```
 
 **Remote Stop Transaction Response**
 ```json
-[ 
+[
     3,
     "UNIQUE_ID_HERE",
     "RemoteStopTransaction",
-    { 
+    {
         "status": "Accepted"
-    } 
+    }
 ]
 ```
 
 **Stop Transaction Request**
 ```json
-[ 
+[
     2,
     "UNIQUE_ID_HERE",
     "StopTransaction",
-    { 
+    {
         "connectorId": 1,
         "idTag": 1,
         "meterStop": 1,
         "reservationId": 1,
         "transactionId": 1,
         "timestamp":1664957184974
-    } 
+    }
 ]
 
 ```
 
 **Send Live Metrics**
 
-This one requires a connected user client as well. 
+This one requires a connected user client as well.
 `ws://18.202.253.30:1337/user/USER_ID_HERE`
 ```json
-[   
-    2, 
+[
+    2,
     "uniqueID",
     "MeterValues",
     {
@@ -173,9 +173,9 @@ This one requires a connected user client as well.
         "timestamp": 1664957184974,
         "values": {
             "chargingPercent": {
-                "value": 0, 
+                "value": 0,
                 "unit": "%",
-                "measurand": "SoC" 
+                "measurand": "SoC"
             },
             "chargingPower": {
                 "value": 0,
@@ -204,16 +204,16 @@ The status variable can be set to any of the following:
 "Reserved",
 "Unavailable",
 "Faulted",
-This can be initiated directly by the charger (requires no API call). 
+This can be initiated directly by the charger (requires no API call).
 ```json
-[ 
+[
     2,
     "UNIQUE_ID",
     "StatusNotification",
-    { 
+    {
         "errorCode": "NoError",
         "status": "Available"
-    } 
+    }
 ]
 ```
 

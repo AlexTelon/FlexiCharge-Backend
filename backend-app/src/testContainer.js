@@ -313,7 +313,7 @@ function klarnaRepositoryMock() {
             callback([], {
                 order_id: "fake_order_id"
             })
-        }, 
+        },
         finalizeKlarnaOrder: function(totalPrice, order_id, callback) {
             callback([], [])
         }
