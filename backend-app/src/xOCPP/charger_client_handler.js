@@ -1,18 +1,18 @@
 module.exports = function ({ databaseInterfaceChargers, chargerMessageHandler, v, constants, func }) {
     const c = constants.get()
-    
+
     exports.handleClient = function (clientSocket, chargerSerial) {
         var messageCache = ""
 
-        isValidClient(clientSocket, chargerSerial, function (error, chargerID) {
-            if (error == null ) {
-                if (chargerID) {
-                    console.log("Charger with ID: " + chargerID + " connected to the system.")
-                    console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+        isValidClient(clientSocket, chargerSerial, function (error, connectorID) {
+            if (error == null) {
+                if (connectorID) {
+                    console.log("Charger with ID: " + connectorID + " connected to the system.")
+                    console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthconnectorIDs() + ")")
                     if (messageCache != "") {
-                        chargerMessageHandler.handleMessage(messageCache, clientSocket, chargerID)
+                        chargerMessageHandler.handleMessage(messageCache, clientSocket, connectorID)
                     }
-    
+
                 } else {
                     console.log("Charger with serial # " + chargerSerial + " was refused connection.\nReason: Charger not found in system.")
                     let message = func.buildJSONMessage([c.CALL_ERROR, 1337, c.SECURITY_ERROR,
@@ -21,14 +21,14 @@ module.exports = function ({ databaseInterfaceChargers, chargerMessageHandler, v
                     clientSocket.terminate()
                 }
             } else {
-                func.getGenericError(func.getUniqueId(chargerID, c.INVALID_ID), error.toString())
+                func.getGenericError(func.getUniqueId(connectorID, c.INVALID_ID), error.toString())
             }
         })
 
         clientSocket.on('message', function incoming(message) {
 
             if (v.isInChargerSerials(chargerSerial)) {
-                chargerMessageHandler.handleMessage(message, clientSocket, v.getChargerID(chargerSerial))
+                chargerMessageHandler.handleMessage(message, clientSocket, v.getconnectorID(chargerSerial))
             } else {
                 messageCache = message
             }
@@ -37,13 +37,13 @@ module.exports = function ({ databaseInterfaceChargers, chargerMessageHandler, v
         clientSocket.on('close', function disconnection() {
             if (v.isInChargerSerials(chargerSerial)) {
 
-                const chargerID = v.getChargerID(chargerSerial)
+                const connectorID = v.getconnectorID(chargerSerial)
 
-                v.removeConnectedChargerSockets(chargerID)
+                v.removeConnectedChargerSockets(connectorID)
                 v.removeChargerSerials(chargerSerial)
-                v.removeChargerIDs(chargerSerial)
-                console.log("Disconnected from charger with ID: " + chargerID)
-                console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthChargerIDs() + ")")
+                v.removeconnectorIDs(chargerSerial)
+                console.log("Disconnected from charger with ID: " + connectorID)
+                console.log("Number of connected chargers: " + v.getLengthConnectedChargerSockets() + " (" + v.getLengthChargerSerials() + ")" + " (" + v.getLengthconnectorIDs() + ")")
             }
         })
     }
@@ -53,21 +53,21 @@ module.exports = function ({ databaseInterfaceChargers, chargerMessageHandler, v
             callback(null, false)
         } else {
             databaseInterfaceChargers.getChargerBySerialNumber(chargerSerial, function (errorCodes, charger) {
-    
+
                 if (errorCodes.length) {
                     console.log(errorCodes)
                     callback(errorCodes[0], false)
                 } else {
-    
+
                     if (charger.length != 0) {
-                        let chargerID = charger.chargerID
-    
+                        let connectorID = charger.connectorID
+
                         // Save the websocket with the charger's serial in array:
-                        v.addConnectedChargerSockets(chargerID, newSocket)
+                        v.addConnectedChargerSockets(connectorID, newSocket)
                         v.addChargerSerials(chargerSerial)
-                        v.addChargerIDs(chargerSerial, chargerID)
-    
-                        callback(null, chargerID)
+                        v.addconnectorIDs(chargerSerial, connectorID)
+
+                        callback(null, connectorID)
                     } else {
                         callback(null, false)
                     }

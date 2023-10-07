@@ -7,11 +7,11 @@ module.exports = function({}){
 
     MIN_TRANSFERED_KWH = 0
 
-    exports.getAddChargeSessionValidation = function(chargerID, userID){
+    exports.getAddChargeSessionValidation = function(connectorID, userID){
         const validationErrors = []
 
-        if(chargerID == null || chargerID == undefined){
-            validationErrors.push("invalidChargerID")
+        if(connectorID == null || connectorID == undefined){
+            validationErrors.push("invalidconnectorID")
         }
 
         if(userID == null || userID == undefined){
@@ -23,7 +23,7 @@ module.exports = function({}){
 
     exports.getUpdateChargingStateValidation = function(currentChargePercentage, kWhTransferred){
         const validationErrors = []
-        
+
         if (currentChargePercentage == null || currentChargePercentage == undefined || currentChargePercentage < MIN_CHARGE_PERCENTAGE || currentChargePercentage > MAX_CHARGE_PERCENTAGE) {
             validationErrors.push("invalidChargePercentage")
         }
@@ -37,7 +37,7 @@ module.exports = function({}){
 
     exports.getChargeSessionValidation = function(chargeSessionID) {
         const validationErrors = []
-        
+
         if(chargeSessionID == null || chargeSessionID == undefined){
             validationErrors.push("invalidChargeSessionID")
         }
@@ -45,10 +45,10 @@ module.exports = function({}){
         return validationErrors
     }
 
-    exports.getChargeSessionsValidation = function(chargerID) {
+    exports.getChargeSessionsValidation = function(connectorID) {
         const validationErrors = []
-        
-        if(chargerID == null || chargerID == undefined){
+
+        if(connectorID == null || connectorID == undefined){
             validationErrors.push("invalidChargeSessionID")
         }
 
@@ -57,7 +57,7 @@ module.exports = function({}){
 
     exports.endChargeSessionValidation = function(chargeSessionID) {
         const validationErrors = []
-        
+
         if(chargeSessionID == null || chargeSessionID == undefined){
             validationErrors.push("invalidChargeSessionID")
         }
@@ -67,7 +67,7 @@ module.exports = function({}){
 
     exports.calculateTotalChargePriceValidation = function(chargeSessionID) {
         const validationErrors = []
-        
+
         if(chargeSessionID == null || chargeSessionID == undefined){
             validationErrors.push("invalidChargeSessionID")
         }
@@ -77,7 +77,7 @@ module.exports = function({}){
 
     exports.updateMeterStartValidation = function(chargeSessionID, meterStart) {
         const validationErrors = []
-        
+
         if(chargeSessionID == null || chargeSessionID == undefined){
             validationErrors.push("invalidChargeSessionID")
         }

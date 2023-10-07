@@ -23,7 +23,7 @@
 - getChargeSession
 	- Purpose : Get a ChargeSession by the chargeSessionID.
 - getChargeSessions
-	- Purpose : Gets all ChargeSessions that belong to a specific chargerID.
+	- Purpose : Gets all ChargeSessions that belong to a specific connectorID.
 - updateChargingState
 	- Purpose : Updates the properties currentChargePercentage and kWhTransferred.
 - startChargeSession (When a user wants to start charging his car)
@@ -43,7 +43,7 @@
    - getChargers 
        - Purpose : Gets all Chargers in the database
    - getCharger 
-       - Purpose : Gets a Charger by chargerID
+       - Purpose : Gets a Charger by connectorID
    - getChargerBySerialNumber
        - Purpose : Get Charger by serialNumber
    - getAvailableChargers
@@ -52,7 +52,7 @@
        - Purpose : Adds a Charger
          - At the moment all charges are marked as "Available" on creation
    - removeCharger
-       - Purpose : Removes a Charger by chargerID
+       - Purpose : Removes a Charger by connectorID
    - updateChargerStatus
        - Purpose : Update status of a Charger
    - getChargerForTransaction

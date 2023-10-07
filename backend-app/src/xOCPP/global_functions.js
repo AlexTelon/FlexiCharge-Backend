@@ -1,12 +1,12 @@
 module.exports = function ({ v, constants }) {
     const c = constants.get()
-    
+
     exports.buildJSONMessage = function (messageArray) {
         const message = []
         messageArray.forEach(i => {
             message.push(i)
         })
-        
+
         return JSON.stringify(message)
     }
 
@@ -18,21 +18,21 @@ module.exports = function ({ v, constants }) {
             return exports.buildJSONMessage([c.CALL_RESULT, uniqueID, c.DATA_TRANSFER, data])
         }
     }
-    
+
     /**
      * uniqueID is only meant for the server to keep track of its conversations, and is not something meand for authentication
      */
-    exports.getUniqueId = function (chargerID, action) {
-        
-        return chargerID.toString() + action.toString() + Date.now().toString()
+    exports.getUniqueId = function (connectorID, action) {
+
+        return connectorID.toString() + action.toString() + Date.now().toString()
     }
 
-    exports.getReservationID = function (chargerID, idTag, connectorID) {
-        return chargerID.toString() + Date.now().toString() + idTag.toString() + connectorID.toString()
+    exports.getReservationID = function (connectorID, idTag, connectorID) {
+        return connectorID.toString() + Date.now().toString() + idTag.toString() + connectorID.toString()
     }
 
-    exports.checkIfValidUniqueID = function (chargerID ,uniqueID) {
-        return v.getCallback(uniqueID) != null || v.getCallback(chargerID) ? true : false
+    exports.checkIfValidUniqueID = function (connectorID, uniqueID) {
+        return v.getCallback(uniqueID) != null || v.getCallback(connectorID) ? true : false
     }
 
     exports.getCallResultNotImplemeted = function (uniqueID, operation) {

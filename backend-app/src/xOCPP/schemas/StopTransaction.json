@@ -65,7 +65,7 @@
                                         "Trigger",
                                         "Other"
                                     ]
-                                },  
+                                },
                                 "format": {
                                     "type": "string",
                                     "additionalProperties": false,

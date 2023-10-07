@@ -47,7 +47,7 @@ module.exports = function({}) {
             validationErrors.push("invalidPrice");
           }
         }
-    
+
         return validationErrors;
       };
 
@@ -87,7 +87,7 @@ module.exports = function({}) {
                 validationErrors.push("invalidLongitude")
             }
         }
-        
+
         if (address === undefined) {
             validationErrors.push("invalidAddress")
         } else {

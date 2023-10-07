@@ -2,9 +2,9 @@ module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.addChargeSession = function (chargerID, userID, startTime, callback) {
+    exports.addChargeSession = function (connectorID, userID, startTime, callback) {
         const chargeSession = {
-            chargerID: chargerID,
+            connectorID: connectorID,
             userID: userID,
             currentChargePercentage: null,
             kWhTransferred: null,
@@ -28,8 +28,8 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.getChargeSessions = function (chargerID, callback) {
-        databaseInit.ChargeSessions.findAll({ where: { chargerID: chargerID }, raw: true })
+    exports.getChargeSessions = function (connectorID, callback) {
+        databaseInit.ChargeSessions.findAll({ where: { connectorID: connectorID }, raw: true })
             .then(ChargeSessions => callback([], ChargeSessions))
             .catch(e => {
                 console.log(e)

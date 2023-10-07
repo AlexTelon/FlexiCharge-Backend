@@ -6,13 +6,13 @@ const validCurrentChargePercentageInput = 0
 const validClientId = "123"
 const validSessionId = "123"
 describe('Transaction by pricePerKwh with input:', () => {
-    
-    test('integer below 0', () => {    
+
+    test('integer below 0', () => {
         const errors = transactionValidation.getAddTransactionValidation(-1);
         expect(errors.length).toBe(2);
     });
 
-    test('string', () => {    
+    test('string', () => {
         const errors = transactionValidation.getAddTransactionValidation("1");
         expect(errors.length).toBe(2);
     });
@@ -30,7 +30,7 @@ describe('Transaction by pricePerKwh with input:', () => {
 });
 
 describe('Update Charger by chargeMeterValue input', () => {
-    
+
     test('null', () => {
         const errors = transactionValidation.getUpdateTransactionChargingStatus(null,validCurrentChargePercentageInput);
         expect(errors.length).toBe(1);
@@ -49,7 +49,7 @@ describe('Update Charger by chargeMeterValue input', () => {
 });
 
 describe('Update Charger by currentChargePercentage input', () => {
-    
+
     test('null', () => {
         const errors = transactionValidation.getUpdateTransactionChargingStatus(validChargeMeterInput,null);
         expect(errors.length).toBe(1);
@@ -83,7 +83,7 @@ describe('Update Charger by currentChargePercentage input', () => {
 });
 
 describe('Test klarna by session_id input', () => {
-    
+
     test('null', () => {
         const errors = transactionValidation.addKlarnaTransactionValidation(null, validClientId);
         expect(errors.length).toBe(1);
@@ -106,7 +106,7 @@ describe('Test klarna by session_id input', () => {
 })
 
 describe('Test klarna by client_id input', () => {
-    
+
     test('null', () => {
         const errors = transactionValidation.addKlarnaTransactionValidation(validSessionId, null);
         expect(errors.length).toBe(1);

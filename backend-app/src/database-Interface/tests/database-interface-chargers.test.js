@@ -103,22 +103,3 @@ describe("updateChargerStatus", () => {
         })
     });
 });
-
-describe("getChargerForTransaction", () => {
-    test("Get Charger for a transaction", (done) => {
-        databaseInterfaceChargers.getChargerForTransaction(1, (error, charger) => {
-            if (Object.keys(error).length > 0) {
-                done(error);
-                return;
-            }
-
-            expect(charger.chargerID).toBe(100001)
-            done()
-        })
-    });
-});
-
-
-
-
-

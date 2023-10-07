@@ -32,20 +32,20 @@ Needed to start app.
 
   - **databaseInterfaceCharger**
 ```
-    - addCharger(chargerPointId: int, function(errors, chargerId))
-    - getCharger(chargerId: int, function(errors, charger))
-    - removeCharger(chargerId: int, function(errors, chargerRemoved: bool))
-    - updateChargerStatus(chargerId: int, status: int, function(errors, updatedCharger)) //status: 0: Occupied, 1: Available, 2: Reserved, 3: Faulty
+    - addCharger(chargerPointId: int, function(errors, connectorID))
+    - getCharger(connectorID: int, function(errors, charger))
+    - removeCharger(connectorID: int, function(errors, chargerRemoved: bool))
+    - updateChargerStatus(connectorID: int, status: int, function(errors, updatedCharger)) //status: 0: Occupied, 1: Available, 2: Reserved, 3: Faulty
     - getChargers(function(errors, chargers))
     - getAvailableChargers(function(errors, availableChargers))
     - getChargerBySerialNumber(serialNumber:string,function(error, charger)) //OCPP Only
 ```
   - **databaseInterfaceTransaction**
 ```
-    - addTransaction(userId: int, chargerId: int, MeterStartValue: int, function(errors, transactionId))
+    - addTransaction(userId: int, connectorID: int, MeterStartValue: int, function(errors, transactionId))
     - getTransaction(transactionId: int, function(errors, transaction))
     - getTransactionsForUser(userId: int, function(errors, transactions))
-    - getTransactionsForCharger(chargerId: int, function(errors, transactions))
+    - getTransactionsForCharger(connectorID: int, function(errors, transactions))
     - updateTransactionPayment(transactionId: int, paymentId: int))
     - updateTransactionMeter(transactionId: int, meterValue: int))
 ```

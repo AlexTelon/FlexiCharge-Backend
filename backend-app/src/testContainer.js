@@ -44,7 +44,7 @@ function chargeSessionsRepositoryMock() {
     const defaultItem = {
         chargeSessionID: 1,
         userID: 1,
-        chargerID: 100001,
+        connectorID: 100001,
         kWhTransferred: 1000,
         currentChargePercentage: 100,
         meterStart: 100,
@@ -53,10 +53,10 @@ function chargeSessionsRepositoryMock() {
     }
 
     return {
-        addChargeSession: function (chargerID, userID, startTime, callback) {
+        addChargeSession: function (connectorID, userID, startTime, callback) {
             callback([], {
                 chargeSessionID: 2,
-                chargerID,
+                connectorID,
                 userID,
                 startTime
             })
@@ -64,7 +64,7 @@ function chargeSessionsRepositoryMock() {
         getChargeSession: function (chargeSessionID, callback) {
             callback([], { ...defaultItem, chargeSessionID })
         },
-        getChargeSessions: function (chargerID, callback) {
+        getChargeSessions: function (connectorID, callback) {
             callback([], [defaultItem])
         },
         updateChargeSession: function (chargeSessionID, updatedProperties, callback) {
@@ -100,7 +100,7 @@ function chargeSessionsRepositoryMock() {
 
 function chargersRepositoryMock() {
     const defaultItem = {
-        chargerID: 100000,
+        connectorID: 100000,
         coordinates: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc123",
         status: 'Available'
@@ -110,10 +110,10 @@ function chargersRepositoryMock() {
         getChargers: function (callback) {
             callback([], [defaultItem])
         },
-        getCharger: function (chargerID, callback) {
+        getCharger: function (connectorID, callback) {
             callback([], {
                 ...defaultItem,
-                chargerID
+                connectorID
             })
         },
         getChargerBySerialNumber: function (serialNumber, callback) {
@@ -127,7 +127,7 @@ function chargersRepositoryMock() {
         },
         addCharger: function (chargePointID, serialNumber, coordinates, callback) {
             const newCharger = {
-                chargerID: 2,
+                connectorID: 2,
                 chargePointID,
                 serialNumber,
                 coordinates,
@@ -135,13 +135,13 @@ function chargersRepositoryMock() {
 
             callback([], newCharger)
         },
-        removeCharger: function (chargerID, callback) {
+        removeCharger: function (connectorID, callback) {
             callback([], true)
         },
-        updateChargerStatus: function (chargerID, status, callback) {
+        updateChargerStatus: function (connectorID, status, callback) {
             callback([], {
                 ...defaultItem,
-                chargerID,
+                connectorID,
                 status
             })
         },
@@ -214,10 +214,10 @@ function transactionsRepositoryMock() {
                 chargeSessionID
             })
         },
-        getTransactionsForCharger: function( chargerID, callback) {
+        getTransactionsForCharger: function( connectorID, callback) {
             callback([], [{
                 ...defaultItem,
-                chargerID
+                connectorID
             }])
         }
     }
@@ -288,12 +288,12 @@ function klarnaPaymentsRepositoryMock() {
 
 function ocppInterfaceMock() {
     return {
-        remoteStartTransaction: function(chargerID, transactionID, callback) {
+        remoteStartTransaction: function(connectorID, transactionID, callback) {
             callback(null, {
                 meterStart: 1032
             })
         },
-        remoteStopTransaction: function(chargerID, transactionID, callback) {
+        remoteStopTransaction: function(connectorID, transactionID, callback) {
             callback(null, {
                 meterStop: 2000
             })
@@ -313,7 +313,7 @@ function klarnaRepositoryMock() {
             callback([], {
                 order_id: "fake_order_id"
             })
-        }, 
+        },
         finalizeKlarnaOrder: function(totalPrice, order_id, callback) {
             callback([], [])
         }
