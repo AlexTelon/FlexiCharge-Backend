@@ -100,9 +100,9 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, chargerRemoved)
                 })
+                return
             }
             callback([], chargerRemoved)
-            return
         })
     }
 

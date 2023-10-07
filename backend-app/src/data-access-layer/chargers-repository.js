@@ -87,9 +87,9 @@ module.exports = function ({ databaseInit }) {
             where: { connectorID: connectorID },
             raw: true
         })
-            .then(numberDeletedOfChargers => {
+            .then(numberOfDeletedChargers => {
 
-                if (deletedChargersAmount == 0) {
+                if (numberOfDeletedChargers == 0) {
                     callback([], false)
                 } else {
                     callback([], true)

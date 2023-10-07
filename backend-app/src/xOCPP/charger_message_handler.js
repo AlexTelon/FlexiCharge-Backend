@@ -266,7 +266,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
     }
 
     function getChargingPrice(connectorID, callback) {
-        databaseInterfaceCharger.getCharger(connectorID, function (error, charger) {
+        databaseInterfaceChargers.getCharger(connectorID, function (error, charger) {
             if (error.length > 0) {
                 console.log(error)
                 callback(error, null)
