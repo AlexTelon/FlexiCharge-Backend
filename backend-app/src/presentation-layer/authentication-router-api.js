@@ -130,11 +130,10 @@ module.exports = function () {
         try {
             const result = await cognito.getUserByAccessToken(accessToken);
             res.status(result.statusCode).json(result.data).end();
-            
         } catch (error){
             res.status(error.statusCode).json(error).end();
         }
     });
-    
+
     return router
 }

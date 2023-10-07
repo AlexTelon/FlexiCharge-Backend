@@ -1,11 +1,11 @@
 
 /**
  * Response format strcuture:
- * 
+ *
  * userID: uuid / sub from AWS Cognito
- * 
+ *
  * invoiceID: base64url strinig, encoded in format	userID:YYYY:MM OR uuid string
- * base64url example: 
+ * base64url example:
  * 	Plain Text: 796b41e6-a8df-48bb-8d38-f5274b9c3cc5:2022:04
  * 	base64url: Nzk2YjQxZTYtYThkZi00OGJiLThkMzgtZjUyNzRiOWMzY2M1OjIwMjI6MDQ
  */
