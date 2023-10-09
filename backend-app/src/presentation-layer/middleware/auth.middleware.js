@@ -1,81 +1,22 @@
-const jwt = require('jsonwebtoken');
-const jwkToPem = require('jwk-to-pem');
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-const config = require('../../config');
+const jwt = require("express-jwt");
+const jwksRsa = require("jwks-rsa");
+const config = require("../../config");
 
-let pems = {};
+module.exports = function ({}) {
+  return jwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the signing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: `https://cognito-idp.${config.AWS_REGION}.amazonaws.com/${config.USER_POOL}/.well-known/jwks.json`,
+    }),
 
-class AuthMiddleware {
-
-    region = config.AWS_REGION;
-    userPool = config.USER_POOL;
-    adminUserPool = config.USER_POOL;
-
-    constructor() {
-        this.setUpFromURL(`https://cognito-idp.${this.region}.amazonaws.com/${this.userPool}/.well-known/jwks.json`);
-    }
-
-    verifyToken(req, res, next) {
-        const bear = req.header('Authorization');
-        const token = bear.split(' ')[1];
-        console.log(token);
-
-        if (!token) res.status(401).end();
-
-        let decodeJwt = jwt.decode(token, { complete: true })
-        if (!decodeJwt) {
-            res.status(401).end()
-        }
-
-        let kid = decodeJwt.header.kid;
-        let pem = pems[kid];
-        if (!pem) {
-            res.status(401).end();
-        }
-
-        jwt.verify(token, pem, (error, payload) => {
-            if (error) {
-                res.status(401).end()
-            } else {
-                // console.log("Payload:");
-                // console.log(payload);
-            }
-            next()
-        })
-    }
-
-    async decodeToken(token) {
-        const decoded = jwt.decode(token);
-        return decoded;
-    }
-
-    async setUpFromURL(url) {
-        try {
-            const response = await fetch(url);
-            // console.log(response);
-
-            if (response.status !== 200) {
-                throw 'request not successfull'
-            }
-            const data = await response.json();
-            const { keys } = data;
-            keys.forEach(key => {
-                const key_id = key.kid
-                const modulus = key.n;
-                const exponent = key.e;
-                const key_type = key.kty;
-                const jwk = { kty: key_type, n: modulus, e: exponent };
-                const pem = jwkToPem(jwk);
-                pems[key_id] = pem
-            });
-            // console.log('Got all pems.');
-
-        } catch (error) {
-            console.log(error);
-            console.log('Could not fetch jwks.');
-
-        }
-    }
-}
-
-module.exports = AuthMiddleware
+    // Validate the audience and the issuer.
+    // audience: 'flexicharge.app',
+    issuer: [`https://cognito-idp.${config.AWS_REGION}.amazonaws.com/${config.USER_POOL}`],
+    algorithms: ["RS256"],
+  });
+};
