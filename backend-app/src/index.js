@@ -29,6 +29,7 @@ container.register({
   chargePointValidation: awilix.asFunction(require("./database-Interface/validation/charge-point-validation")),
   transactionValidation: awilix.asFunction(require("./database-Interface/validation/transaction-validation")),
   klarnaPaymentsValidation: awilix.asFunction(require("./database-Interface/validation/klarna-payments-validation")),
+  adminValidation: awilix.asFunction(require("./database-Interface/validation/admin-validation")),
   //Presentation layers
   chargePointsRouter: awilix.asFunction(require("./presentation-layer/charge-point-router-api")),
   chargersRouter: awilix.asFunction(require("./presentation-layer/chargers-router-api")),
