@@ -14,39 +14,65 @@ paths:
         - User
       summary: Sign-in
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
-              example:
-                username: username
-                password: password
+              properties:
+                username:
+                  type: string
+                  example: username
+                password:
+                  type: string
+                  example: password
       responses:
         "200":
-          description: Successful response
+          description: "**Successful response**"
           content:
             application/json:
               schema:
                 type: object
-                example:
-                  accessToken: accesToken
-                  email: email
-                  username: username
-                  user_id: user_id
+                properties:
+                  accessToken:
+                    type: string
+                    example: accessToken
+                  email:
+                    type: string
+                    example: someone@example.com
+                  username:
+                    type: string
+                    example: someone
+                  user_id:
+                    type: string
+                    example: someone123
         "400":
-          description: Incorrect username or password
+          description: "**Incorrect username or password**"
           content:
             application/json:
               schema:
                 type: object
-                example:
-                  message: message
-                  code: NotAuthorizedException
-                  time: time
-                  requestId: requestId
-                  statusCode: 400
-                  retryable: false
-                  retryDelay: 4.128536351395207
+                properties:
+                  message:
+                    type: string
+                    example: Incorrect username or password.
+                  code:
+                    type: string
+                    example: NotAuthorizedException
+                  time:
+                    type: string
+                    format: date-time
+                    example: "2023-10-09T14:02:30.866Z"
+                  statusCode:
+                    type: integer
+                    format: int64
+                    example: 400
+                  retryable:
+                    type: boolean
+                    example: false
+                  retryDelay:
+                    type: number
+                    example: 79.39423282163179
   /auth/user-information:
     put:
       tags:
@@ -55,33 +81,21 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              example:
-                firstName: string
-                lastName: string
-                phoneNumber: string
-                streetAddress: string
-                zipCode: string
-                city: string
-                country: string
+              $ref: "#/components/schemas/User"
+
       responses:
         "204":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
+          description: "**Successful response**"
         "400":
-          description: Incorrect username or password
-          content:
-            application/json:
-              schema:
-                type: object
-                example:
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
     get:
       tags:
         - User
@@ -94,18 +108,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  username: email
-                  firstName: firstName
-                  lastName: lastName
-                  phoneNumber: phoneNumber
-                  streetAdress: streetAddress
-                  zipCode: zipCode
-                  city: city
-                  country: country
-        "400":
-          description: Bad request
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /auth/sign-up:
     post:
       tags:
@@ -120,78 +129,101 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                username: mustBeEmail
-                password: password
+              properties:
+                username:
+                  type: string
+                  example: someone@example.com
+                password:
+                  type: string
+                  example: password
       responses:
         "200":
-          description: Successful response
-          content:
-            application/json: {}
+          description: "**Successful response**"
         "400":
-          description: Username not email
+          description: "**Bad request**"
           content:
             application/json:
               schema:
                 type: object
-                example:
-                  message: Username should be an email
-                  code: InvalidParameterException
-                  statusCode: 400
+                properties:
+                  message:
+                    type: string
+                    example: Username should be an email
+                  code:
+                    type: string
+                    example: InvalidParameterException
+                  statusCode:
+                    type: integer
+                    format: int64
+                    example: 400
   /auth/verify:
     post:
       tags:
         - User
       summary: Verify user
-      description: Verifies a new user account with a verification code.
+      description: Verifies a new user account with a verification code that is sent to the email specified during sign up.
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
-              example:
-                username: username
-                code: verification_code
+              properties:
+                username:
+                  type: string
+                  example: "someone@example.com"
+                code:
+                  type: integer
+                  format: int64
+                  example: 55555
       responses:
         "200":
-          description: Successful response
-          content:
-            application/json: {}
+          description: "**Successful response**"
+        "400":
+          $ref: "#/components/responses/BadRequest"
   /auth/confirm-forgot-password:
     post:
       tags:
         - User
       summary: Confirm forgot password
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               example:
-                username: rest-api-user
-                password: "{{rest-api-account-password}}"
-                confirmationCode: email_code
+                username:
+                  type: string
+                  example: "someone@example.com"
+                password:
+                  type: string
+                  example: "{{rest-api-account-password}}"
+                confirmationCode:
+                  type: string
+                  example: "email_code"
       responses:
         "200":
-          description: Successful response
-          content:
-            application/json: {}
+          description: "**Successful response**"
+        "400":
+          $ref: "#/components/responses/BadRequest"
   /auth/forgot-password/{username}:
-    parameters:
-      - in: path
-        name: username
-        schema:
-          type: string
-        required: true
     post:
       tags:
         - User
       summary: Forgot password
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
       responses:
         "200":
-          description: Successful response
-          content:
-            application/json: {}
+          description: "**Successful response**"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
   /admin/users/{username}:
     parameters:
       - in: path
@@ -1010,6 +1042,30 @@ paths:
           description: Internal server error
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        phoneNumber:
+          type: string
+          example: "07XXXXXXXX"
+        streetAddress:
+          type: string
+          example: SomeStreet 1
+        zipCode:
+          type: string
+          example: 55555
+        city:
+          type: string
+          example: "Jönköping"
+        country:
+          type: string
+          example: Sweden
     Charger:
       type: object
       properties:
