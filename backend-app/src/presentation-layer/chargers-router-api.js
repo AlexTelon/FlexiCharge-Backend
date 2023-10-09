@@ -7,6 +7,8 @@ module.exports = function ({ databaseInterfaceChargers, verifyUser, verifyAdmin 
     databaseInterfaceChargers.getChargers(function (error, chargers) {
       if (error.length > 0) {
         response.status(500).json(error);
+      } else if (chargers.length <= 0) {
+        response.status(404).end();
       } else {
         response.status(200).json(chargers);
       }
@@ -15,7 +17,9 @@ module.exports = function ({ databaseInterfaceChargers, verifyUser, verifyAdmin 
   router.get("/available", function (request, response) {
     databaseInterfaceChargers.getAvailableChargers(function (errors, chargers) {
       if (errors.length > 0) {
-        response.status(404).json(errors);
+        response.status(500).json(errors);
+      } else if (chargers.length <= 0) {
+        response.status(404).end();
       } else {
         response.status(200).json(chargers);
       }
@@ -64,7 +68,7 @@ module.exports = function ({ databaseInterfaceChargers, verifyUser, verifyAdmin 
     });
   });
 
-  router.delete("/:id", verifyUser, verifyUser, function (request, response) {
+  router.delete("/:id", verifyUser, verifyAdmin, function (request, response) {
     const id = request.params.id;
     databaseInterfaceChargers.removeCharger(id, function (errors, isChargerDeleted) {
       if (errors.length == 0 && isChargerDeleted) {

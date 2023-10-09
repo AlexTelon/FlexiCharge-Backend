@@ -434,18 +434,20 @@ paths:
                 items:
                   $ref: "#/components/schemas/Charger"
         "404":
-          description: Error message
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /chargers/{id}:
-    parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
     get:
       tags:
         - Chargers
       summary: Charger by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
       responses:
         "200":
           description: Successful response
@@ -454,37 +456,71 @@ paths:
               schema:
                 $ref: "#/components/schemas/Charger"
         "404":
-          description: Error message
+          $ref: "#/components/responses/NotFound"
         "500":
-          description: Error message
+          $ref: "#/components/responses/InternalError"
     delete:
       tags:
         - Chargers
       summary: Remove charger by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
       security:
-        - bearerAuth: [] # admin
+        - bearerAuth: []
       responses:
         "204":
-          description: Successful response
-          content:
-            application/json: {}
+          description: "**Successful response**"
         "404":
-          description: Error message
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "500":
-          description: Error message
+          $ref: "#/components/responses/InternalError"
     put:
       tags:
         - Chargers
       summary: Update charger by id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newStatus:
+                  type: string
+                  description: Charger status
+                  example: Available
+                  enum:
+                    - Available
+                    - Reserved
       security:
-        - bearerAuth: [] # admin
+        - bearerAuth: []
       responses:
         "200":
-          description: Successful response
+          description: "**Successful response**"
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Charger"
         "400":
-          description: Error message
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   /chargers/serial/{serial}:
     parameters:
       - in: path
@@ -503,8 +539,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Charger"
-        "404":
-          description: Error message
+        "500":
+          $ref: "#/components/responses/InternalError"
   /chargers:
     post:
       tags:
@@ -515,21 +551,41 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                chargerPointNumber: 23
+              properties:
+                chargerPointNumber:
+                  type: integer
+                  format: int64
+                  example: 23
                 location:
-                  - 57.777714
-                  - 14.16301
-                serialNumber: android
+                  type: array
+                  items:
+                    type: number
+                  example:
+                    - 57.777714
+                    - 14.16301
+                serialNumber:
+                  type: string
+                  example: android
       security:
-        - bearerAuth: [] # admin
+        - bearerAuth: []
       responses:
-        "200":
-          description: Successful response
+        "201":
+          description: "**Successful response**"
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: object
+                properties:
+                  connectorID:
+                    type: integer
+                    format: int64
+                    example: 23
         "404":
-          description: Error message
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
     get:
       tags:
         - Chargers
@@ -544,7 +600,9 @@ paths:
                 items:
                   $ref: "#/components/schemas/Charger"
         "404":
-          description: Error message
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
   /transactions:
     post:
       tags:
@@ -1051,6 +1109,40 @@ components:
         connectorID:
           type: integer
           example: 100000
+  responses:
+    NotFound:
+      description: >-
+        **Not found**
+
+
+        This error occures when the requested resource can't be found or don't exists.
+    InternalError:
+      description: >-
+        **Internal error**
+
+
+        Something wen't wrong on the server side.
+    Unauthorized:
+      description: >-
+        **Unauthorized**
+
+
+        This error occures when the route requires the sender to be signed in. To validate that the user is signed in, an ***accessToken*** is required in the headers.
+
+
+        ``
+        {
+          "authorization": "Bearer AYABeAvR1_coVz0EnKxmy..."
+        }
+        ``
+    Forbidden:
+      description: >-
+        **Forbidden**
+
+
+        This error occures when the route requires either admin rights, or when the route contains information regarding a specific user that is not the same user that sent the request.
+    BadRequest:
+      description: "**Bad request**"
 
   securitySchemes:
     bearerAuth:
