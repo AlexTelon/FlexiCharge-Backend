@@ -38,12 +38,12 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function (chargePointId, serialNumber, location, callback) {
+    exports.addCharger = function (chargePointID, serialNumber, coordinates, callback) {
         const charger = {
-            chargePointID: chargePointId,
+            chargePointID: chargePointID,
             serialNumber: serialNumber,
-            location: location,
-            status: 'Available'
+            coordinates: coordinates,
+            status: 'Reserved'
         }
 
         databaseInit.Chargers.max("connectorID")
@@ -54,16 +54,14 @@ module.exports = function ({ databaseInit }) {
                     charger.connectorID = 100000;
                 }
 
-                console.log(charger);
-
                 databaseInit.Chargers.create(charger)
-                    .then(createdCharger => callback([], createdCharger.connectorID))
+                    .then(createdCharger => callback([], createdCharger))
                     .catch(e => {
                         if (!e.errors === undefined) {
                             if (e.errors[0].message == "connectorID must be unique") {
                                 charger.connectorID = parseInt(e.errors[0].value) + 1;
                                 databaseInit.Chargers.create(charger)
-                                    .then(createdCharger => callback([], createdCharger.connectorID))
+                                    .then(createdCharger => callback([], createdCharger))
                                     .catch(e => {
                                         console.log(e)
                                         callback(["dbError"], [])
@@ -89,9 +87,9 @@ module.exports = function ({ databaseInit }) {
             where: { connectorID: connectorID },
             raw: true
         })
-            .then(numberDeletedOfChargers => {
+            .then(numberOfDeletedChargers => {
 
-                if (numberDeletedOfChargers == 0) {
+                if (numberOfDeletedChargers == 0) {
                     callback([], false)
                 } else {
                     callback([], true)
@@ -124,7 +122,6 @@ module.exports = function ({ databaseInit }) {
                 callback(e, [])
             })
     }
-
 
     return exports
 }

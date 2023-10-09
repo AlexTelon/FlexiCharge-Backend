@@ -39,8 +39,6 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
                 })
             }, 2000);
         }
-
-
     }
     return exports
 }

@@ -139,7 +139,7 @@
                 "required": [
                     "timestamp",
                     "sampledValue"
-                ]       
+                ]
             }
         }
     },
