@@ -25,7 +25,6 @@ module.exports = function ({ databaseInterfaceTransactions }) {
     const router = express.Router()
 
     router.post('/', function (request, response) {
-        console.log("Entering Post transactions")
         const { userID, connectorID, isKlarnaPayment, pricePerKwh } = request.body;
 
         if (connectorID == 100000) {

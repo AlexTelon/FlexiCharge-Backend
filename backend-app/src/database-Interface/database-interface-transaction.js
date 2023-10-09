@@ -58,20 +58,15 @@ module.exports = function ({ dataAccessLayerTransaction, transactionValidation, 
     }
 
     exports.addTransaction = function (userID, connectorID, isKlarnaPayment, pricePerKwh, callback) {
-        console.log("Entering  databaseInterFaceTransactions AddTransaction")
         const validationError = transactionValidation.getAddTransactionValidation(pricePerKwh)
         if (validationError.length > 0) {
             callback(validationError, [])
         } else {
-            timestamp = (Date.now() / 1000 | 0)
-
-            // Have to fix
-            connectorID = 1; // connectorID?
+            timestamp = (Date.now() / 1000 | 0);
+            connectorID = connectorID;
             idTag = 1;
             parentIdTag = 1; // Optional according to OCPP
-
             ocppInterface.reserveNow(connectorID, idTag, parentIdTag, function (error, returnObject) {
-                console.log("Entering ocppInterface reserveNow")
                 if (error != null || returnObject.status == "Rejected") {
                     callback(["couldNotReserveCharger"], [])
                 } else {

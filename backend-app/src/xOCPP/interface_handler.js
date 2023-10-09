@@ -2,9 +2,10 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
     const c = constants.get()
 
     exports.interfaceHandler = function (connectorID, action, payload, callback) {
-
         try {
+            console.log(connectorID)
             const socket = v.getConnectedChargerSocket(connectorID)
+            console.log(socket)
             if (socket != null) {
 
                 var message = ""
@@ -23,7 +24,6 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
                         message = getMessageRemoteStopCall(connectorID, action, payload, callback)
                         break
                 }
-                console.log("This is sent: from interfaceHandler " + message)
                 socket.send(message)
 
             } else {

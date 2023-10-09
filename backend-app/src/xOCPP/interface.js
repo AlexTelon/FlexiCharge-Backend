@@ -5,12 +5,10 @@ module.exports = function ({ v, constants, interfaceHandler, func }) {
     exports.remoteStartTransaction = function (connectorID, transactionID, callback) {
 
         console.log("Incoming request from API: startTransaction -> connectorID;")
-
         v.addTransactionID(connectorID, transactionID)
 
         const payload = {
-            //is set to one as we assume there is only one connector per charger
-            connectorID: 1,
+            connectorID: connectorID,
             //we don't have users so always set to 1
             idTag: 1,
         }
@@ -35,13 +33,12 @@ module.exports = function ({ v, constants, interfaceHandler, func }) {
     //othervise it will be one of this responses: "Faulted", "Occupied", "Rejected" or "Unavailable".
     exports.reserveNow = function (connectorID, idTag, parentIdTag, callback) {
 
-        console.log("Incoming request from API: reserveNow -> connectorID:" + connectorID)
-
+        console.log("Incoming request from API: reserveNow -> connectorID: " + connectorID)
         const payload = {
             connectorID: connectorID,
             idTag: 1,
             reservationID: func.getReservationID(connectorID, 1, 1),
-            parentIdTag: 1 // Optional according to OCPP
+            parentIdTag: 1, // Optional according to OCPP
         }
         interfaceHandler.interfaceHandler(connectorID, c.RESERVE_NOW, payload, callback)
     }
