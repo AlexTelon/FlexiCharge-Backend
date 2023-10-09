@@ -37,9 +37,9 @@ module.exports = function ({ v, constants, interfaceHandler, func }) {
 
         const payload = {
             connectorID: connectorID,
-            idTag: 1,
+            idTag: idTag,
             reservationID: func.getReservationID(connectorID, 1, 1),
-            parentIdTag: 1 // Optional according to OCPP
+            parentIdTag: parentIdTag // Optional according to OCPP
         }
         interfaceHandler.interfaceHandler(connectorID, c.RESERVE_NOW, payload, callback)
     }

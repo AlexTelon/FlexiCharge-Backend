@@ -1,4 +1,4 @@
-module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck }) {
+module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck, ocppInterface }) {
 
     const exports = {}
 
@@ -8,15 +8,30 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
             callback(validationErrors, [])
             return
         }
-        dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transactionID) {
-            if (Object.keys(error).length > 0) {
-                dbErrorCheck.checkError(error, function (errorCode) {
-                    callback(errorCode, [])
-                })
-                return
-            }
-            callback([], transactionID)
-        })
+        else {
+            timestamp = (Date.now() / 1000 | 0)
+            connectorID = connectorID
+            idTag = 1;
+            parentIdTag = 1; // Optional according to OCPP
+
+            ocppInterface.reserveNow(connectorID, idTag, parentIdTag, function (error, returnObject) {
+                console.log("Entering ocppInterface reserveNow")
+                if (error != null || returnObject.status == "Rejected") {
+                    callback(["couldNotReserveCharger"], [])
+                } else {
+                    dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transactionID) {
+                        if (Object.keys(error).length > 0) {
+                            dbErrorCheck.checkError(error, function (errorCode) {
+                                callback(errorCode, [])
+                            })
+                            return
+                        }
+                        callback([], transactionID)
+                    })
+                }
+            })
+        }
+
     }
 
     exports.getTransaction = function (transactionID, callback) {
