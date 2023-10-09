@@ -3,11 +3,11 @@ const checkJwt = require('./middleware/jwt.middleware')
 const CognitoService = require('./services/cognito.config')
 const { getAccessTokenFromRequestHeader } = require('./authentication-helpers');
 
-module.exports = function () {
+module.exports = function() {
     const router = express.Router()
     const cognito = new CognitoService();
 
-    router.put('/user-information', checkJwt, function (req, res) {
+    router.put('/user-information', checkJwt, function(req, res) {
         const accessToken = getAccessTokenFromRequestHeader(req);
         const { firstName, lastName, phoneNumber, streetAddress, zipCode, city, country } = req.body;
         let userAttributes = [];
@@ -30,7 +30,7 @@ module.exports = function () {
 
     })
 
-    router.post('/sign-up', function (req, res) {
+    router.post('/sign-up', function(req, res) {
 
         let { username, password } = req.body;
 
@@ -44,7 +44,7 @@ module.exports = function () {
             });
     })
 
-    router.post('/forgot-password/:username', function (req, res) {
+    router.post('/forgot-password/:username', function(req, res) {
         const username = req.params.username;
 
         cognito.forgotPassword(username)
@@ -57,7 +57,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/change-password', function (req, res) {
+    router.post('/change-password', function(req, res) {
 
         const { accessToken, previousPassword, newPassword } = req.body;
 
@@ -71,7 +71,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/confirm-forgot-password', function (req, res) {
+    router.post('/confirm-forgot-password', function(req, res) {
         const { username, password, confirmationCode } = req.body;
 
         cognito.confirmForgotPassword(username, password, confirmationCode)
@@ -85,7 +85,7 @@ module.exports = function () {
 
     })
 
-    router.post('/sign-in', function (req, res) {
+    router.post('/sign-in', function(req, res) {
 
         const { username, password } = req.body;
 
@@ -99,7 +99,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/verify', function (req, res) {
+    router.post('/verify', function(req, res) {
         const { username, code } = req.body;
 
         cognito.verifyAccount(username, code)
@@ -112,7 +112,7 @@ module.exports = function () {
             })
     })
 
-    router.post('/force-change-password', function (req, res) {
+    router.post('/force-change-password', function(req, res) {
         const { username, password, session } = req.body;
 
         cognito.respondToAuthChallenge(username, password, session)
@@ -125,16 +125,26 @@ module.exports = function () {
             })
     })
 
-    router.get('/user-information', checkJwt, async (req, res) => {
+    router.get('/user-information', checkJwt, async(req, res) => {
         const accessToken = getAccessTokenFromRequestHeader(req);
         try {
             const result = await cognito.getUserByAccessToken(accessToken);
             res.status(result.statusCode).json(result.data).end();
-            
-        } catch (error){
+
+        } catch (error) {
             res.status(error.statusCode).json(error).end();
         }
     });
-    
+
+    router.post('/delete-user', checkJwt, async(req, res) => {
+        const accessToken = getAccessTokenFromRequestHeader(req);
+        try {
+            const result = await cognito.deleteUser(accessToken);
+            res.status(result.statusCode).json(result.data).end();
+        } catch (error) {
+            res.status(error.statusCode).json(error).end();
+        }
+    });
+
     return router
 }

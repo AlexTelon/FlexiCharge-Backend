@@ -30,14 +30,14 @@ class CognitoService {
         }
         try {
             const data = await this.cognitoIdentity.signUp(params).promise()
-            .then(result => {
-                const paramsGroup = {
-                    "GroupName": "Users",
-                    "Username": username,
-                    "UserPoolId": config.USER_POOL
-                }
-                this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
-            })
+                .then(result => {
+                    const paramsGroup = {
+                        "GroupName": "Users",
+                        "Username": username,
+                        "UserPoolId": config.USER_POOL
+                    }
+                    this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
+                })
             return true
         } catch (error) {
             return error
@@ -232,12 +232,30 @@ class CognitoService {
         }
     }
 
-    async getUserByAccessToken(accessToken){
+    async getUserByAccessToken(accessToken) {
         var params = {
             "AccessToken": accessToken
         }
         try {
             const cognitoResponse = await this.cognitoIdentity.getUser(params).promise();
+            const res = {
+                statusCode: 200,
+                data: cognitoResponseHandler.reformatUserInformationResponse(cognitoResponse)
+            }
+            return res;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
+
+    // A user can delete himself
+    async deleteUser(accessToken) {
+        var params = {
+            "AccessToken": accessToken
+        }
+        try {
+            const cognitoResponse = await this.cognitoIdentity.deleteUser(params).promise();
             const res = {
                 statusCode: 200,
                 data: cognitoResponseHandler.reformatUserInformationResponse(cognitoResponse)
