@@ -28,6 +28,8 @@ module.exports = function ({ databaseInterfaceTransactions }) {
 
     if (connectorID == 100000) {
       const data = getMockTransaction();
+      response.status(201).json(data);
+      return;
       databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, connectorID, function (error, klarnaOrder) {
         console.log(error);
         console.log(klarnaOrder);
