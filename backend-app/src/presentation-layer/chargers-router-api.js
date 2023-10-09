@@ -55,12 +55,12 @@ module.exports = function ({ databaseInterfaceChargers }) {
   });
 
   router.post("/", function (request, response) {
-    const chargerPointId = request.body.chargerPointId;
+    const chargePointID = request.body.chargePointID;
     const serialNumber = request.body.serialNumber;
     const location = request.body.location;
 
     databaseInterfaceChargers.addCharger(
-      chargerPointId,
+      chargePointID,
       serialNumber,
       location,
       function (errorCodes, connectorID) {

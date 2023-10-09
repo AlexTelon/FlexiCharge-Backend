@@ -35,6 +35,6 @@ module.exports = {
   BYPASS_KLARNA: !parseInt(process.env.BYPASS_KLARNA) ? 0 : process.env.BYPASS_KLARNA,
 
   TEST_URL: process.env.TEST_URL,
-  TEST_USER_USERNAME: process.env.TEST_USERNAME,
-  TEST_USER_PASSWORD: process.env.TEST_PASSWORD,
+  TEST_USER_USERNAME: process.env.TEST_USER_USERNAME,
+  TEST_USER_PASSWORD: process.env.TEST_USER_PASSWORD,
 }
