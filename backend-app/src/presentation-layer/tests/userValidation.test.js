@@ -1,6 +1,6 @@
 const axios = require("axios");
 const assert = require("assert");
-const { describe } = require("@jest/globals");
+const { expect, describe } = require("@jest/globals");
 const config = require("../../config");
 
 describe("Authentication Verification Test", () => {
@@ -18,8 +18,8 @@ describe("Authentication Verification Test", () => {
       },
     });
 
-    console.log("Response expects status 200 and got", successExpectedResponse.status);
-    assert.strictEqual(successExpectedResponse.status, 200);
+    // console.log("Response expects status 200 and got", successExpectedResponse.status);
+    expect(successExpectedResponse.status).toBe(200);
 
     try {
       const errorExpectedResponse = await axios.get("http://localhost:8080/auth/user-information", {
@@ -28,8 +28,8 @@ describe("Authentication Verification Test", () => {
         },
       });
     } catch (error) {
-      console.log("Response expects status 401 and got", error.response.status);
-      assert.strictEqual(error.response.status, 401);
+      // console.log("Response expects status 401 and got", error.response.status);
+      expect(error.response.status).toBe(401);
     }
   });
 });
