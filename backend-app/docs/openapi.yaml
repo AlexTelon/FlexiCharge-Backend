@@ -192,6 +192,21 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /auth/delete-user:
+    delete:
+      tags:
+        - User
+      summary: Delete a user account
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: User not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+      description: Deletes an account with the access token
   /admin/users/{username}:
     parameters:
       - in: path

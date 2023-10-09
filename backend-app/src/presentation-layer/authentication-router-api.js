@@ -42,7 +42,7 @@ module.exports = function ({ cognitoService, verifyUser }) {
         });
     });
 
-    router.post('/forgot-password/:username', function (req, res) {
+    router.post('/forgot-password/:username', function(req, res) {
         const username = req.params.username;
 
         cognito.forgotPassword(username).then(result => {
@@ -66,7 +66,7 @@ module.exports = function ({ cognitoService, verifyUser }) {
         });
     });
 
-    router.post('/confirm-forgot-password', function (req, res) {
+    router.post('/confirm-forgot-password', function(req, res) {
         const { username, password, confirmationCode } = req.body;
 
         cognito.confirmForgotPassword(username, password, confirmationCode).then(result => {
@@ -90,7 +90,7 @@ module.exports = function ({ cognitoService, verifyUser }) {
         });
     });
 
-    router.post('/verify', function (req, res) {
+    router.post('/verify', function(req, res) {
         const { username, code } = req.body;
 
         cognito.verifyAccount(username, code).then(result => {
@@ -102,7 +102,7 @@ module.exports = function ({ cognitoService, verifyUser }) {
         });
     });
 
-    router.post('/force-change-password', function (req, res) {
+    router.post('/force-change-password', function(req, res) {
         const { username, password, session } = req.body;
 
         cognito.respondToAuthChallenge(username, password, session).then(result => {
@@ -120,6 +120,16 @@ module.exports = function ({ cognitoService, verifyUser }) {
             const result = await cognito.getUserByAccessToken(accessToken);
             res.status(result.statusCode).json(result.data).end();
         } catch (error){
+            res.status(error.statusCode).json(error).end();
+        }
+    });
+
+    router.post('/delete-user', verifyUser, async(req, res) => {
+        const accessToken = getAccessTokenFromRequestHeader(req);
+        try {
+            const result = await cognito.deleteUser(accessToken);
+            res.status(result.statusCode).json(result.data).end();
+        } catch (error) {
             res.status(error.statusCode).json(error).end();
         }
     });
