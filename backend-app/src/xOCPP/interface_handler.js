@@ -3,9 +3,7 @@ module.exports = function ({ func, constants, v, databaseInterfaceCharger }) {
 
     exports.interfaceHandler = function (connectorID, action, payload, callback) {
         try {
-            console.log(connectorID)
             const socket = v.getConnectedChargerSocket(connectorID)
-            console.log(socket)
             if (socket != null) {
 
                 var message = ""
