@@ -1,6 +1,4 @@
-# HTTP Team 
-
-
+# HTTP Team
 
 ## Definition of Done
 
@@ -8,9 +6,7 @@ During the fall of 2022 we used this DoD:
 
 > 1. The code has no known defects.
 > 2. Pull request review has been made and passed.
-> 3. If documentation is needed then documentation should be completed. 
-
-
+> 3. If documentation is needed then documentation should be completed.
 
 ## Swagger Docs
 
@@ -27,11 +23,11 @@ Details from Cognito should be hidden from front-end teams. This means marshalli
 ## Invoices
 
 ### What we achieved
-  * Invoices are manually generated from a [template javascript file](https://github.com/knowitrickard/FlexiCharge-Backend/blob/http-team-docs/backend-app/src/database-Interface/utils/invoices.js), using [pdfkit-table](https://www.npmjs.com/package/pdfkit-table). 
+  * Invoices are manually generated from a [template javascript file](https://github.com/knowitrickard/FlexiCharge-Backend/blob/http-team-docs/backend-app/src/database-Interface/utils/invoices.js), using [pdfkit-table](https://www.npmjs.com/package/pdfkit-table).
   * The required endpoints for fetching invoices.
 
 | Method and URI                | Description   |
-| ----------------------------- | ------------- | 
+| ----------------------------- | ------------- |
 | `GET /invoices/users`         | Get a list of invoices for all users. Filter options: date & status   |
 | `GET /invoices/users/:userID` | Get a list of invoices for a specific user. Filter options: status    |
 | `GET /invoices/:invoiceID`    | Render an invoice file                                                |
@@ -56,11 +52,11 @@ When we got this project no tests were written. We decided to write tests for th
   * Run a terminal and stand in the folder **FlexiCharge-Backend/backend-app**.
   * Run the command **npm test**.
 
-  Another way is to use the command **npm test --prefix backend-app**. This prefixes the **npm test** with a path where it should be run, you can read more about this [here](https://docs.npmjs.com/cli/v7/using-npm/config#prefix). 
+  Another way is to use the command **npm test --prefix backend-app**. This prefixes the **npm test** with a path where it should be run, you can read more about this [here](https://docs.npmjs.com/cli/v7/using-npm/config#prefix).
 
   ### GitHub Workflow
   A GitHub workflow is initiated when a push or pull request is made to the main branch. This runs the
-  unit test suites and API tests.  
+  unit test suites and API tests.
 
 ## Technical Debt
 * Unused user pools in AWS Cognito could be removed.

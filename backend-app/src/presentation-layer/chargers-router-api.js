@@ -1,10 +1,10 @@
 var express = require("express");
 
-module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }) {
+module.exports = function ({ databaseInterfaceChargers, verifyUser, verifyAdmin }) {
   const router = express.Router();
 
   router.get("/", async function (request, response) {
-    databaseInterfaceCharger.getChargers(function (error, chargers) {
+    databaseInterfaceChargers.getChargers(function (error, chargers) {
       if (error.length > 0) {
         response.status(500).json(error);
       } else {
@@ -13,7 +13,7 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
     });
   });
   router.get("/available", function (request, response) {
-    databaseInterfaceCharger.getAvailableChargers(function (errors, chargers) {
+    databaseInterfaceChargers.getAvailableChargers(function (errors, chargers) {
       if (errors.length > 0) {
         response.status(404).json(errors);
       } else {
@@ -24,7 +24,7 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
 
   router.get("/serial/:serialNumber", function (request, response) {
     const serialNumber = request.params.serialNumber;
-    databaseInterfaceCharger.getChargerBySerialNumber(serialNumber, function (error, charger) {
+    databaseInterfaceChargers.getChargerBySerialNumber(serialNumber, function (error, charger) {
       if (error.length > 0) {
         response.status(500).json(error);
       } else {
@@ -35,7 +35,7 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
 
   router.get("/:id", function (request, response) {
     const id = request.params.id;
-    databaseInterfaceCharger.getCharger(id, function (errors, charger) {
+    databaseInterfaceChargers.getCharger(id, function (errors, charger) {
       if (errors.length == 0 && charger.length == 0) {
         response.status(404).end();
       } else if (errors.length == 0) {
@@ -47,13 +47,13 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
   });
 
   router.post("/", verifyUser, verifyAdmin, function (request, response) {
-    const chargerPointId = request.body.chargePointID;
+    const chargerPointID = request.body.chargePointId;
     const location = request.body.location;
     const serialNumber = request.body.serialNumber;
 
-    databaseInterfaceCharger.addCharger(chargerPointId, serialNumber, location, function (errorCodes, chargerId) {
+    databaseInterfaceChargers.addCharger(chargerPointId, serialNumber, location, function (errorCodes, connectorID) {
       if (errorCodes.length == 0) {
-        response.status(201).json(chargerId);
+        response.status(201).json(connectorID);
       } else {
         if (errorCodes.includes("internalError") || errorCodes.includes("dbError")) {
           response.status(500).json(errorCodes);
@@ -66,7 +66,7 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
 
   router.delete("/:id", verifyUser, verifyUser, function (request, response) {
     const id = request.params.id;
-    databaseInterfaceCharger.removeCharger(id, function (errors, isChargerDeleted) {
+    databaseInterfaceChargers.removeCharger(id, function (errors, isChargerDeleted) {
       if (errors.length == 0 && isChargerDeleted) {
         response.status(204).json();
       } else if (errors.length == 0 && !isChargerDeleted) {
@@ -78,9 +78,9 @@ module.exports = function ({ databaseInterfaceCharger, verifyUser, verifyAdmin }
   });
 
   router.put("/:id", verifyUser, verifyAdmin, function (request, response) {
-    const chargerId = request.params.id;
+    const connectorID = request.params.id;
     const newStatus = request.body.status;
-    databaseInterfaceCharger.updateChargerStatus(chargerId, newStatus, function (errors, charger) {
+    databaseInterfaceChargers.updateChargerStatus(connectorID, newStatus, function (errors, charger) {
       if (errors.length == 0) {
         response.status(200).json(charger);
       } else {

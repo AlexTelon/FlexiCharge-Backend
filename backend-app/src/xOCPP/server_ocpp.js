@@ -6,15 +6,14 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
     exports.startServer = function () {
         console.log("Starting OCPP server")
         const wss = new WebSocket.Server({ port: 1337 })
-        
+
         wss.on('connection', function connection(ws, req) {
 
             // Get the charger's serial number:
             let origin = req.url
             let originArray = origin.split("/")
             let clientType = originArray[1]
-            
-            
+
             switch(clientType){
                 //ws://123.123.123:1337/user/abc123-123-123
                 case 'user':
@@ -23,12 +22,12 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
 
                     userClientHandler.handleClient(ws, userID)
                     break
-                
+
                 case 'charger':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
                     // Validate and handle connecting charger:
                     chargerClientHandler.handleClient(ws, chargerSerial)
-                    break 
+                    break
             }
         })
 
@@ -38,10 +37,8 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
                     console.log('\nFAILED OCPP TESTS: ', results.failedTests, '\n')
                     console.log('\nSUCCESSFUL OCPP TESTS: ', results.successfulTests, '\n')
                 })
-            }, 2000); 
+            }, 2000);
         }
-        
-        
     }
     return exports
 }

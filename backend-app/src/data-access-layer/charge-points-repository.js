@@ -2,9 +2,8 @@ module.exports = function({ databaseInit }) {
 
     const exports = {}
 
-
-    exports.getChargePoint = function(chargePointId, callback) {
-        databaseInit.ChargePoints.findOne({ where: { chargePointID: chargePointId }, raw: true })
+    exports.getChargePoint = function(chargePointID, callback) {
+        databaseInit.ChargePoints.findOne({ where: { chargePointID: chargePointID }, raw: true })
             .then(chargePoint => callback([], chargePoint))
             .catch(e => {
                 console.log(e)
@@ -22,33 +21,28 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.addChargePoint = function(name, location, price, klarnaReservationAmount, callback) {
-
-
+    exports.addChargePoint = function(name, address, coordinates, callback) {
         const chargePoint = {
             name: name,
-            location: location,
-            price: price,
-            klarnaReservationAmount: klarnaReservationAmount
+            address: address,
+            coordinates: coordinates
         }
 
         databaseInit.ChargePoints.create(chargePoint)
-            .then(chargePoint => callback([], chargePoint.chargePointID))
+            .then(chargePoint => callback([], chargePoint))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
             })
-
     }
 
-    exports.removeChargePoint = function(chargePointId, callback) {
+    exports.removeChargePoint = function(chargePointID, callback) {
         databaseInit.ChargePoints.destroy({
-                where: { chargePointID: chargePointId },
+                where: { chargePointID: chargePointID },
                 raw: true
             })
-            .then(numberDeletedOfChargePoints => {
-
-                if (numberDeletedOfChargePoints == 0) {
+            .then(deletedChargePointsAmount => {
+                if (deletedChargePointsAmount == 0) {
                     callback([], false)
                 } else {
                     callback([], true)
@@ -62,17 +56,27 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.updateChargePoint = function(chargePointId, name, location, price, callback) {
-        databaseInit.ChargePoints.update({
-                name: name,
-                location: location,
-                price: price
-            }, {
-                where: { chargePointID: chargePointId },
+    exports.updateChargePoint = function(chargePointID, name, address, coordinates, callback) {
+        let updateProperties = {}
+
+        if (name != null) {
+            updateProperties.name = name
+        }
+
+        if (address != null) {
+            updateProperties.address = address
+        }
+
+        if (coordinates != null) {
+            updateProperties.coordinates = coordinates
+        }
+
+        databaseInit.ChargePoints.update(updateProperties, {
+                where: { chargePointID: chargePointID },
                 returning: true,
                 raw: true
             })
-            .then(chargePoint => callback([], chargePoint[1][0]))
+            .then(chargePoint => callback([], chargePoint[1]))
             .catch(e => {
                 console.log(e)
                 callback(e, [])
@@ -80,7 +84,5 @@ module.exports = function({ databaseInit }) {
 
     }
 
-
     return exports
-
 }
