@@ -1,12 +1,10 @@
 const dotenv = require("dotenv");
 const path = require("path");
-const validationSchema = require('./validations');
+const validationSchema = require("./validations");
 
-dotenv.config({path: path.join(__dirname, '../../.env')});
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
-const {error} = validationSchema
-  .prefs({ errors: { label: 'key' } })
-  .validate(process.env);
+const { error } = validationSchema.prefs({ errors: { label: "key" } }).validate(process.env);
 
 if (error) throw new Error(error);
 
@@ -37,4 +35,4 @@ module.exports = {
   TEST_URL: process.env.TEST_URL,
   TEST_USER_USERNAME: process.env.TEST_USER_USERNAME,
   TEST_USER_PASSWORD: process.env.TEST_USER_PASSWORD,
-}
+};

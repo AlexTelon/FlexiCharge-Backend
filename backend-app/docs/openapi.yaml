@@ -43,7 +43,7 @@ paths:
                   message: message
                   code: NotAuthorizedException
                   time: time
-                  requestId: requestId
+                  requestID: requestID
                   statusCode: 400
                   retryable: false
                   retryDelay: 4.128536351395207
@@ -192,6 +192,21 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /auth/delete-user:
+    delete:
+      tags:
+        - User
+      summary: Delete a user account
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: User not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+      description: Deletes an account with the access token
   /admin/users/{username}:
     parameters:
       - in: path
@@ -723,13 +738,14 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /invoices/{invoiceId}:
+  /invoices/{invoiceID}:
     parameters:
       - in: path
-        name: invoiceId
+        name: invoiceID
         schema:
-          type: string
+          type: integer
         required: true
+        description: Numeric ID of the invoice to get.
     get:
       tags:
         - Invoices
@@ -751,13 +767,6 @@ paths:
           of user Y, but currently no verification is done.
 
           2. Code actually gets data from the database.
-      parameters:
-        - in: path
-          name: invoiceID
-          schema:
-            type: integer
-          required: true
-          description: Numeric ID of the invoice to get.
       responses:
         '200':
           description: Successful response.
@@ -887,10 +896,10 @@ paths:
           description: Error message
         '500':
           description: Internal server error
-  /chargePoints/{chargePointId}:
+  /chargePoints/{chargePointID}:
     parameters:
       - in: path
-        name: chargePointId
+        name: chargePointID
         schema:
           type: number
         required: true
