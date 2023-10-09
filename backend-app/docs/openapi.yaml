@@ -22,7 +22,7 @@ paths:
                 username: username
                 password: password
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -33,7 +33,7 @@ paths:
                   email: email
                   username: username
                   user_id: user_id
-        '400':
+        "400":
           description: Incorrect username or password
           content:
             application/json:
@@ -68,14 +68,14 @@ paths:
                 city: string
                 country: string
       responses:
-        '204':
+        "204":
           description: Successful response
           content:
             application/json:
               schema:
                 type: object
                 example:
-        '400':
+        "400":
           description: Incorrect username or password
           content:
             application/json:
@@ -89,7 +89,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -104,7 +104,7 @@ paths:
                   zipCode: zipCode
                   city: city
                   country: country
-        '400':
+        "400":
           description: Bad request
   /auth/sign-up:
     post:
@@ -124,11 +124,11 @@ paths:
                 username: mustBeEmail
                 password: password
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '400':
+        "400":
           description: Username not email
           content:
             application/json:
@@ -153,7 +153,7 @@ paths:
                 username: username
                 code: verification_code
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -169,10 +169,10 @@ paths:
               type: object
               example:
                 username: rest-api-user
-                password: '{{rest-api-account-password}}'
+                password: "{{rest-api-account-password}}"
                 confirmationCode: email_code
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -188,7 +188,7 @@ paths:
         - User
       summary: Forgot password
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
@@ -206,13 +206,13 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful responese
           content:
             application/json: {}
-        '400':
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Internal server error
       description: Deletes a user based on username
     put:
@@ -222,16 +222,16 @@ paths:
       security:
         - bearerAuth: [] # admin
       #requestBody:
-        #content:
-          #application/json:
-            #schema:
-              #$ref: '#/components/schemas/UserAttributes' # Add schema!
+      #content:
+      #application/json:
+      #schema:
+      #$ref: '#/components/schemas/UserAttributes' # Add schema!
       responses:
-        '204':
+        "204":
           description: Successful response
-        '400':
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Internal server error
       description: Updates a users attributes
   /admin/users/{username}/enable:
@@ -248,11 +248,11 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
-        '400':
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Internal server error
   /admin/users/{username}/disable:
     parameters:
@@ -268,11 +268,11 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
-        '400':
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Internal server error
   /admin/sign-in:
     post:
@@ -289,17 +289,17 @@ paths:
               type: object
               example:
                 username: rest-api-admin
-                password: '{{rest-api-account-password}}'
+                password: "{{rest-api-account-password}}"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '400':
-          description: 'A bad request was sent.
+        "400":
+          description: "A bad request was sent.
             This includes an incorrect username/password.
             **Future improvement**: *Send other 4xx codes, such as 401 for
-            bad username/password.*'
+            bad username/password.*"
   /admin/{username}:
     parameters:
       - in: path
@@ -314,7 +314,7 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
@@ -330,9 +330,9 @@ paths:
                   city: city
                   country: country
                   userID: userID
-        '400':
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
   /admin/users:
     get:
@@ -342,7 +342,7 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: List with all users
           content:
             application/json:
@@ -358,9 +358,9 @@ paths:
                   city: city
                   country: country
                   userID: userID
-        '400':
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
   /admin:
     post:
@@ -384,13 +384,13 @@ paths:
                 name: first_name
                 family_name: last_name
       responses:
-        '200':
-          description: 'Successful response.'
+        "200":
+          description: "Successful response."
           content:
             application/json: {}
-        '401':
-          description: 'Error: Unauthorized.
-            The supplied POST was correctly formatted but not accepted.'
+        "401":
+          description: "Error: Unauthorized.
+            The supplied POST was correctly formatted but not accepted."
           content:
             application/json: {}
   /admin/force-change-password:
@@ -411,11 +411,11 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response.
           content:
             application/json: {}
-        '400':
+        "400":
           description: The request to change the user password was unsuccessfull.
           content:
             application/json: {}
@@ -425,15 +425,15 @@ paths:
         - Chargers
       summary: Available chargers
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Charger'
-        '404':
+                  $ref: "#/components/schemas/Charger"
+        "404":
           description: Error message
   /chargers/{id}:
     parameters:
@@ -447,15 +447,15 @@ paths:
         - Chargers
       summary: Charger by id
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Charger'
-        '404':
+                $ref: "#/components/schemas/Charger"
+        "404":
           description: Error message
-        '500':
+        "500":
           description: Error message
     delete:
       tags:
@@ -464,13 +464,13 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '204':
+        "204":
           description: Successful response
           content:
             application/json: {}
-        '404':
+        "404":
           description: Error message
-        '500':
+        "500":
           description: Error message
     put:
       tags:
@@ -479,11 +479,11 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '400':
+        "400":
           description: Error message
   /chargers/serial/{serial}:
     parameters:
@@ -497,13 +497,13 @@ paths:
         - Chargers
       summary: Charger by serial number
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Charger'
-        '404':
+                $ref: "#/components/schemas/Charger"
+        "404":
           description: Error message
   /chargers:
     post:
@@ -524,26 +524,26 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '404':
+        "404":
           description: Error message
     get:
       tags:
         - Chargers
       summary: Chargers
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Charger'
-        '404':
+                  $ref: "#/components/schemas/Charger"
+        "404":
           description: Error message
   /transactions:
     post:
@@ -567,15 +567,15 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
-        '400':
+                $ref: "#/components/schemas/Transaction"
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Error message
   /transactions/start/{transactionID}:
     parameters:
@@ -594,15 +594,15 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
-        '400':
+                $ref: "#/components/schemas/Transaction"
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Error message
   /transactions/{transactionID}:
     parameters:
@@ -621,15 +621,15 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
-        '404':
+                $ref: "#/components/schemas/Transaction"
+        "404":
           description: Transaction not found
-        '500':
+        "500":
           description: Error message
   /transactions/stop/{transactionID}:
     parameters:
@@ -648,15 +648,15 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
-        '400':
+                $ref: "#/components/schemas/Transaction"
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Error message
   /transactions/userTransactions/{userID}:
     parameters:
@@ -672,14 +672,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Transaction'
+                  $ref: "#/components/schemas/Transaction"
   /transactions/chargerTransactions/{connectorID}:
     parameters:
       - in: path
@@ -694,14 +694,14 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Transaction'
+                  $ref: "#/components/schemas/Transaction"
   /invoices:
     post:
       tags:
@@ -719,7 +719,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json: {}
@@ -759,11 +759,11 @@ paths:
           required: true
           description: Numeric ID of the invoice to get.
       responses:
-        '200':
+        "200":
           description: Successful response.
           content:
             application/pdf: {}
-        '404':
+        "404":
           description: Invoice not found
           content:
             application/json: {}
@@ -789,15 +789,15 @@ paths:
           required: false
           description: Filter invoices after date, format YYYY-MM
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '400':
+        "400":
           description: Bad request
           content:
             application/json: {}
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json: {}
@@ -828,15 +828,15 @@ paths:
           required: false
           description: Filter invoices after status; paid, unpaid or all
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json: {}
-        '400':
+        "400":
           description: Bad request
           content:
             application/json: {}
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json: {}
@@ -846,17 +846,17 @@ paths:
         - ChargePoints
       summary: Gets a list of all charge points
       responses:
-        '200':
+        "200":
           description: Sucessful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ChargePoint'
-        '404':
+                  $ref: "#/components/schemas/ChargePoint"
+        "404":
           description: Not found
-        '500':
+        "500":
           description: Internal server error
     post:
       tags:
@@ -875,17 +875,17 @@ paths:
                 price: 10
                 klarnaReservationAmount: 10
       responses:
-        '201':
+        "201":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ChargePoint'
-        '400':
+                  $ref: "#/components/schemas/ChargePoint"
+        "400":
           description: Error message
-        '500':
+        "500":
           description: Internal server error
   /chargePoints/{chargePointId}:
     parameters:
@@ -899,15 +899,15 @@ paths:
         - ChargePoints
       summary: Gets a charging station based on idTag
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChargePoint'
-        '404':
+                $ref: "#/components/schemas/ChargePoint"
+        "404":
           description: Not found
-        '500':
+        "500":
           description: Internal server error
     put:
       tags:
@@ -925,17 +925,17 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChargePoint'
-        '400':
+                $ref: "#/components/schemas/ChargePoint"
+        "400":
           description: Error message
-        '404':
+        "404":
           description: Not found
-        '500':
+        "500":
           description: Internal server error
     delete:
       tags:
@@ -944,11 +944,11 @@ paths:
       security:
         - bearerAuth: [] # admin
       responses:
-        '204':
+        "204":
           description: Successful response
-        '404':
+        "404":
           description: Not found
-        '500':
+        "500":
           description: Internal server error
 components:
   schemas:
@@ -968,7 +968,7 @@ components:
             - 14.16301
         serialNumber:
           type: string
-          example: 'testnumber15'
+          example: "testnumber15"
         chargePointID:
           type: integer
           format: int64
@@ -980,6 +980,10 @@ components:
           enum:
             - Available
             - Reserved
+        pricePerKwh:
+          type: number
+          description: Price per kWh
+          example: 0.41
       xml:
         name: charger
     ChargePoint:
@@ -1022,7 +1026,7 @@ components:
           example: 79
         pricePerKwh:
           type: string
-          example: '123.00'
+          example: "123.00"
         timestamp:
           type: integer
           example: 1663663253
@@ -1031,7 +1035,7 @@ components:
           example: null
         userID:
           type: string
-          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+          example: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
         session_id:
           type: string
           example: null
