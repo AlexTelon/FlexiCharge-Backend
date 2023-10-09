@@ -47,11 +47,11 @@ module.exports = function ({ databaseInterfaceChargers, verifyUser, verifyAdmin 
   });
 
   router.post("/", verifyUser, verifyAdmin, function (request, response) {
-    const chargerPointID = request.body.chargePointId;
+    const chargerPointID = request.body.chargePointID;
     const location = request.body.location;
     const serialNumber = request.body.serialNumber;
 
-    databaseInterfaceChargers.addCharger(chargerPointId, serialNumber, location, function (errorCodes, connectorID) {
+    databaseInterfaceChargers.addCharger(chargerPointID, serialNumber, location, function (errorCodes, connectorID) {
       if (errorCodes.length == 0) {
         response.status(201).json(connectorID);
       } else {
