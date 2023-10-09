@@ -8,7 +8,19 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
           callback(errorCode, []);
         });
       } else {
-        callback([], chargers);
+        databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, tarrif) {
+          if (Object.keys(error).length > 0) {
+            dbErrorCheck.checkError(error, function (errorCode) {
+              callback(errorCode, []);
+            });
+          } else {
+            const { price: pricePerKwh } = tarrif.dataValues;
+            chargers.forEach((charger) => {
+              charger["pricePerKwh"] = pricePerKwh;
+            });
+            callback([], chargers);
+          }
+        });
       }
     });
   };
@@ -30,7 +42,18 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
         callback([], []);
         return;
       }
-      callback([], charger);
+
+      databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, tarrif) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
+        } else {
+          const { price: pricePerKwh } = tarrif.dataValues;
+          charger["pricePerKwh"] = pricePerKwh;
+          callback([], charger);
+        }
+      });
     });
   };
 
@@ -48,7 +71,17 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
           if (charger == null) {
             callback([], []);
           } else {
-            callback([], charger);
+            databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, tarrif) {
+              if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                  callback(errorCode, []);
+                });
+              } else {
+                const { price: pricePerKwh } = tarrif.dataValues;
+                charger["pricePerKwh"] = pricePerKwh;
+                callback([], charger);
+              }
+            });
           }
         }
       });
@@ -69,7 +102,6 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
             callback(errorCode, []);
           });
         } else {
-          console.log("Tariff:", tarrif);
           const { price: pricePerKwh } = tarrif.dataValues;
           chargers.forEach((charger) => {
             charger["pricePerKwh"] = pricePerKwh;
@@ -77,8 +109,6 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
           callback([], chargers);
         }
       });
-
-      //   callback([], chargers);
     });
   };
 
