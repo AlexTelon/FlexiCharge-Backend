@@ -28,8 +28,6 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
         console.log("Entering Post transactions");
         const { connectorID, paymentType } = request.body;
 
-        console.log(request);
-
         const data = {
             "klarnaClientToken": "",
             "klarnaSessionID": "",
@@ -68,17 +66,13 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
 
     router.put("/start/:transactionID", verifyUser, function (request, response) {
         const transactionID = request.params.transactionID;
-        console.log(1);
-        // const authorization_token = request.body.authorization_token;
-        console.log(2);
+        const authorization_token = request.body.authorization_token;
 
         if (transactionID == 9999) {
-            console.log(3);
             const data = getMockTransaction(true, request.user.sub);
             response.status(200).json(data);
             return;
         }
-        console.log(4);
 
         databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
             console.log(error, klarnaOrder);
