@@ -41,7 +41,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransactionsForCharger = function(connectorID, callback) {
-        databaseInit.Transactions.findAll({ where: {connectorID : connectorID}, raw: true })
+        databaseInit.Transactions.findAll({ include: { model: databaseInit.ChargeSessions , where: { 'connectorID' : connectorID}, raw: true }})
             .then(transactions => callback([], transactions))
             .catch(e => {
                 console.log(e)
