@@ -29,7 +29,7 @@ const Chargers = sequelize.define('Chargers', {
         primaryKey: true,
         allowNull: false
     },
-    coordinates: {
+    location: {
       type: DataTypes.ARRAY(DataTypes.FLOAT),
       unique: false,
       allowNull: false,
@@ -157,7 +157,7 @@ const ChargePoints = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    coordinates: {
+    location: {
       type: DataTypes.ARRAY(DataTypes.FLOAT),
       unique: false,
       allowNull: false,
@@ -269,89 +269,89 @@ sequelize.sync().then(function () {
       ChargePoints.create({
         name: "Airport Parking, Jönköping",
         address: "Flygplansvägen",
-        coordinates: [57.749812214261034, 14.070100435207065],
+        location: [57.749812214261034, 14.070100435207065],
       });
       ChargePoints.create({
         name: "Jönköping University",
         address: "Gjuterigatan 5",
-        coordinates: [57.777714, 14.16301],
+        location: [57.777714, 14.16301],
       });
       ChargePoints.create({
         name: "Nässjö Centralstation",
         address: "Järnvägsgatan 26",
-        coordinates: [57.652328901782795, 14.694810832097543],
+        location: [57.652328901782795, 14.694810832097543],
       });
       ChargePoints.create({
         name: "Coop, Forserum",
         address: "Jönköpingsvägen 2",
-        coordinates: [57.70022044183724, 14.475150415104222],
+        location: [57.70022044183724, 14.475150415104222],
       });
       Chargers.create({
         connectorID: 100000,
-        coordinates: [57.777714, 14.16301],
+        location: [57.777714, 14.16301],
         serialNumber: "testchargeralwaysconnected",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
         connectorID: 100001,
-        coordinates: [57.777714, 14.16301],
+        location: [57.777714, 14.16301],
         serialNumber: "abc111",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
         connectorID: 100002,
-        coordinates: [57.777714, 14.16301],
+        location: [57.777714, 14.16301],
         serialNumber: "abc112",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
         connectorID: 100003,
-        coordinates: [57.777714, 14.16301],
+        location: [57.777714, 14.16301],
         serialNumber: "abc113",
         status: "Available",
         chargePointID: 1, //Jönköping University
       });
       Chargers.create({
         connectorID: 100004,
-        coordinates: [57.652328901782795, 14.694810832097543],
+        location: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc114",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
       Chargers.create({
         connectorID: 100005,
-        coordinates: [57.652328901782795, 14.694810832097543],
+        location: [57.652328901782795, 14.694810832097543],
         serialNumber: "abc115",
         status: "Available",
         chargePointID: 2, //Nässjö Centralstation
       });
       Chargers.create({
         connectorID: 100006,
-        coordinates: [57.70022044183724, 14.475150415104222],
+        location: [57.70022044183724, 14.475150415104222],
         serialNumber: "abc116",
         status: "Available",
         chargePointID: 3, //Coop, Forserum
       });
       Chargers.create({
         connectorID: 100007,
-        coordinates: [57.749812214261034, 14.070100435207065],
+        location: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc117",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
       Chargers.create({
         connectorID: 100008,
-        coordinates: [57.749812214261034, 14.070100435207065],
+        location: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc118",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping
       });
       Chargers.create({
         connectorID: 100009,
-        coordinates: [57.749812214261034, 14.070100435207065],
+        location: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc119",
         status: "Available",
         chargePointID: 4, // Airport Parking, Jönköping

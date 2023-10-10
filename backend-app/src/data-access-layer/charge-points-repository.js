@@ -21,11 +21,11 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.addChargePoint = function(name, address, coordinates, callback) {
+    exports.addChargePoint = function(name, address, location, callback) {
         const chargePoint = {
             name: name,
             address: address,
-            coordinates: coordinates
+            location: location
         }
 
         databaseInit.ChargePoints.create(chargePoint)
@@ -56,7 +56,7 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.updateChargePoint = function(chargePointID, name, address, coordinates, callback) {
+    exports.updateChargePoint = function(chargePointID, name, address, location, callback) {
         let updateProperties = {}
 
         if (name != null) {
@@ -67,8 +67,8 @@ module.exports = function({ databaseInit }) {
             updateProperties.address = address
         }
 
-        if (coordinates != null) {
-            updateProperties.coordinates = coordinates
+        if (location != null) {
+            updateProperties.location = location
         }
 
         databaseInit.ChargePoints.update(updateProperties, {
