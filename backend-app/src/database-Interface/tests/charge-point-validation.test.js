@@ -8,7 +8,7 @@ const VALID_LOCATION = [VALID_LATITUDE, VALID_LONGITUDE];
 
 describe("Charge Point Validation with input:", () => {
   test("empty strings", () => {
-    const errors = chargePointValidation.chargePointValidation("", "", "", "");
+    const errors = chargePointValidation.chargePointValidation("", "", "");
     expect(errors.length).toBe(3);
   });
   test("valid input", () => {

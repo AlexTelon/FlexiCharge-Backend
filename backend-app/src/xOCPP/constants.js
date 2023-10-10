@@ -1,7 +1,7 @@
 module.exports = function({}){
 
     exports.get = function() {
-        
+
         const constants = {
             INVALID_ID: "InvalidId",
             INVALID_CHARGE_POINT: "InvalidChargePoint",
@@ -48,20 +48,16 @@ module.exports = function({}){
             START_TRANSACTION: "StartTransaction",
             STOP_TRANSACTION: "StopTransaction",
             METER_VALUES: "MeterValues",
-            
-            
+
             CHARGE_LEVEL_UPDATE: "ChargeLevelUpdate",
-            
 
             CURRENT_CHARGE_PERCENTAGE: "CurrentChargePercentage",
             KWH_TRANSFERRED: "kWhTransferred",
 
-            //Possible answers for DataTransfer 
+            //Possible answers for DataTransfer
             ACCEPTED: "Accepted",
             REJECTED: "Rejected",
             UNKOWN_MESSAGE_ID :"UnknownMessageId",
-
-
 
             //Possible status states a charger can have
             AVAILABLE: "Available",
@@ -102,7 +98,6 @@ module.exports = function({}){
             RESPONSE_STATUS_REJECTED: "ResponseStatusRejected",
             INVALID_USER_ID: "InvalidUserID",
 
-            
             /** LIVE STREAM METRICS CONSTANTS */
             LIVEMETRICS_TOPIC_PREFIX: '/metrics/',
 
@@ -119,8 +114,6 @@ module.exports = function({}){
 
         return constants
     }
-
-
 
     return exports
 }

@@ -20,18 +20,18 @@ class TestApiChargers:
 
     # The way I've learnt is that test should be simple and only test one thing, so using 2 asserts might be wrong
 
-    def test_chargerid_exists(self, chargerid="100007"):
+    def test_connectorID_exists(self, connectorID="100007"):
 
-        url = CHARGER_API_URL + chargerid
+        url = CHARGER_API_URL + connectorID
 
         r = requests.get(url)
 
         # If the response code is 200 this code will execute
         response_body = r.json()
-        got_id = int(response_body['chargerID'])
+        got_id = int(response_body['connectorID'])
         # The actual test.
         assert got_id == int(
-            chargerid), f"Returned ChargerID does not match the one supplied. expected: {chargerid} got: {got_id}"
+            connectorID), f"Returned connectorID does not match the one supplied. expected: {connectorID} got: {got_id}"
 
     # In order to run this test we need a bearer auth token retrieved when logging into the system.
 
@@ -60,23 +60,23 @@ class TestApiChargers:
         #       *  create charger X
         #       *  assert that charger X DOES exists
 
-    def test_chargerid_exists_status_code(self, chargerid="100000"):
-        url = CHARGER_API_URL + chargerid
+    def test_connectorID_exists_status_code(self, connectorID="100000"):
+        url = CHARGER_API_URL + connectorID
         r = requests.get(url)
 
-        assert r.status_code == 200, "Charger with id: " + chargerid + " does not exist."
+        assert r.status_code == 200, "Charger with id: " + connectorID + " does not exist."
 
-    def test_charger_does_not_exist_status_code(self, chargerid="99999"):
-        url = CHARGER_API_URL + chargerid
+    def test_charger_does_not_exist_status_code(self, connectorID="99999"):
+        url = CHARGER_API_URL + connectorID
         r = requests.get(url)
 
-        assert r.status_code == 404, "Charger with id: " + chargerid + " exists."
+        assert r.status_code == 404, "Charger with id: " + connectorID + " exists."
 
     # Function to test if charger is available
     # DOESNT WORK PROPERLY
 
-    def test_charger_status_is_available(self, chargerid="100006"):
-        url = CHARGER_API_URL + chargerid
+    def test_charger_status_is_available(self, connectorID="100006"):
+        url = CHARGER_API_URL + connectorID
         r = requests.get(url)
 
         status = r.json()["status"]

@@ -25,7 +25,6 @@ module.exports = function ({ constants }){
             console.log('\n---------- ' + messageActionString + ' passed validation ----------\n')
             return []
         }
-        
     }
 
     exports.validateBootNotificationConf = function (parsedMessage) {
@@ -61,7 +60,7 @@ module.exports = function ({ constants }){
                 {
                     type: "object",
                     properties: {
-                        connectorId: {type: "integer"},                        
+                        connectorId: {type: "integer"},
                         idTag: {type: "integer"},
                         meterStart: {type: "integer"},
                         timestamp: {type: "integer"}
@@ -69,7 +68,7 @@ module.exports = function ({ constants }){
                     required: ["connectorId", "idTag", "meterStart", "timestamp"]
                 }
             ]
-        }        
+        }
 
         const validationErrors = getMessageErrorsWithSchema(parsedMessage, StartTransactionReqSchema, 'StartTransactionReq')
         return validationErrors
@@ -157,7 +156,7 @@ module.exports = function ({ constants }){
                 }
             ]
         }
-        
+
         const validationErrors = getMessageErrorsWithSchema(parsedMessage, stopTransactionConfSchema, 'StopTransactionConf')
         return validationErrors
     }
@@ -181,7 +180,7 @@ module.exports = function ({ constants }){
                     required: ["connectorID", "expiryDate", "idTag", "reservationID"]
                 }
             ]
-        }        
+        }
 
         const validationErrors = getMessageErrorsWithSchema(parsedMessage, ReserveNowReqSchema, 'ReserveNowReq')
         return validationErrors
@@ -204,7 +203,7 @@ module.exports = function ({ constants }){
                     required: ["vendorId", "messageId", "data"]
                 }
             ]
-        }        
+        }
 
         const validationErrors = getMessageErrorsWithSchema(parsedMessage, dataTransferReqSchema, 'DataTransferReq')
         return validationErrors
@@ -218,16 +217,16 @@ module.exports = function ({ constants }){
                 {type: "string"},
                 {type: "string"},
                 {
-                    type: "object", 
+                    type: "object",
                     properties: {
                         connectorId: {type: "number"},
                         transactionId: {type: "number"},
                         timestamp: {type: "number"},
                         values: {
-                            type: "object", 
+                            type: "object",
                             properties: {
                                 chargingPercent: {
-                                    type: "object", 
+                                    type: "object",
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
@@ -236,7 +235,7 @@ module.exports = function ({ constants }){
                                     required: ["value", "unit", "measurand"],
                                 },
                                 chargingPower: {
-                                    type: "object", 
+                                    type: "object",
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
@@ -244,9 +243,9 @@ module.exports = function ({ constants }){
                                     },
                                     required: ["value", "unit", "measurand"],
                                 },
-                                
+
                                 chargedSoFar: {
-                                    type: "object", 
+                                    type: "object",
                                     properties: {
                                         value: {type: "number"},
                                         unit: {type: "string"},
@@ -260,7 +259,7 @@ module.exports = function ({ constants }){
                     required: ["connectorId", "transactionId", "timestamp", "values"]
                 }
             ]
-        }  
+        }
 
         const validationErrors = getMessageErrorsWithSchema(parsedMessage, meterValuesReqSchema, 'MeterValuesReq')
         return validationErrors

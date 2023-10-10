@@ -14,21 +14,21 @@
 [ 3,
   "uniqueID",
   "ReserveNow",
-  { 
+  {
     "status": "Accepted"
     } ]
 
 [ 3,
   "uniqueID",
   "RemoteStartTransaction",
-  { 
+  {
     "status": "Accepted"
     } ]
 
 [ 3,
   "uniqueID",
   "RemoteStopTransaction",
-  { 
+  {
     "status": "Accepted"
     } ]
 
@@ -36,7 +36,7 @@
 [ 2,
   "uniqueID",
   "StatusNotification",
-  { 
+  {
     "errorCode": "NoError",
     "status": "Accepted"
     } ]
@@ -44,7 +44,7 @@
 [ 2,
   "uniqueID",
   "DataTransfer",
-  { 
+  {
     "messageId": "ChargeLevelUpdate",
     "data": "{\"transactionId\":57,\"latestMeterValue\":133769,\"CurrentChargePercentage\":69}"
     } ]
@@ -52,7 +52,7 @@
 [ 2,
   "uniqueID",
   "StartTransaction",
-  { 
+  {
     "connectorId": 1,
     "idTag": 1,
     "meterStart": 1,
@@ -64,7 +64,7 @@
 [  2,
   "uniqueID",
   "StopTransaction",
-  { 
+  {
     "connectorId": 1,
     "idTag": 1,
     "meterStop": 1,
@@ -73,8 +73,8 @@
     "timestamp":1234512345124123
     } ]
 
-[   
-    2, 
+[
+    2,
     "uniqueID",
     "MeterValues",
     {
