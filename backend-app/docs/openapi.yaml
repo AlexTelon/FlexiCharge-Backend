@@ -750,6 +750,123 @@ paths:
                   anyOf:
                     - $ref: '#/components/schemas/Transaction-Ongoing'
                     - $ref: '#/components/schemas/Transaction-Historic'
+  /transactions:
+    post:
+      tags:
+        - Transactions (Deprecated)
+      deprecated: true
+      summary: Create a transaction
+      description: |-
+        Creates a transaction that can be started using the `transactionID` returned
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connectorID:
+                  type: integer
+                  example: 100000
+                isKlarnaPayment:
+                  type: boolean
+                  example: true
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-OLD'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transactions/start/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    put:
+      tags:
+        - Transactions (Deprecated)
+      deprecated: true
+      summary: Start a transaction
+      description: |-
+        Starts a transaction
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-OLD'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transactions/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    get:
+      tags:
+        - Transactions (Deprecated)
+      deprecated: true
+      summary: Get status of a transaction
+      description: |-
+        Gets the status of a transaction
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-OLD'
+        '404':
+          description: Transaction not found
+        '500':
+          description: Error message
+  /transactions/stop/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    put:
+      tags:
+        - Transactions (Deprecated)
+      deprecated: true
+      summary: Stop a transaction
+      description: |-
+        Stops a transaction
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-OLD'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
   /invoices:
     post:
       tags:
@@ -1124,6 +1241,48 @@ components:
         country:
           type: string
           example: "SE"
+    Transaction-OLD:
+      type: object
+      properties:
+        transactionID:
+          type: integer
+          example: 9999
+        isKlarnaPayment:
+          type: boolean
+          example: false
+        kwhTransfered:
+          type: number
+          example: 50
+        currentChargePercentage:
+          type: number
+          example: 79
+        pricePerKwh:
+          type: string
+          example: '123.00'
+        timestamp:
+          type: integer
+          example: 1663663253
+        paymentID:
+          type: string
+          example: null
+        userID:
+          type: string
+          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+        session_id:
+          type: string
+          example: null
+        klarna_consumer_token:
+          type: string
+          example: null
+        paymentConfirmed:
+          type: boolean
+          example: null
+        meterStart:
+          type: integer
+          example: 1
+        connectorID:
+          type: integer
+          example: 100000
   securitySchemes:
     bearerAuth:
       type: http
