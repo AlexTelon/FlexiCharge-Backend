@@ -764,7 +764,7 @@ paths:
             schema:
               type: object
               properties:
-                chargerID:
+                connectorID:
                   type: integer
                   example: 100000
                 isKlarnaPayment:

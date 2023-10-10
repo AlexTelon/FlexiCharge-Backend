@@ -16,7 +16,7 @@ module.exports = function ({ databaseInterfaceTransactions, dataAccessLayerKlarn
             "klarna_consumer_token": null,
             "paymentConfirmed": true,
             "meterStart": 1,
-            "chargerID": 100000
+            "connectorID": 100000
         };
     }
 
@@ -24,7 +24,7 @@ module.exports = function ({ databaseInterfaceTransactions, dataAccessLayerKlarn
 
     router.post('/', function (request, response) {
 
-        const { userID, chargerID, isKlarnaPayment, pricePerKwh } = request.body;
+        const { userID, connectorID, isKlarnaPayment, pricePerKwh } = request.body;
         const data = getMockTransaction();
 
         const price = 500;
