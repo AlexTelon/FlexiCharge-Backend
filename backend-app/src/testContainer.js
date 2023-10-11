@@ -297,6 +297,11 @@ function ocppInterfaceMock() {
             callback(null, {
                 meterStop: 2000
             })
+        },
+        reserveNow: function (connectorID, idTag, parentIdTag, callback) {
+            callback(null, {
+                status: "Accepted"
+            })
         }
     }
 }

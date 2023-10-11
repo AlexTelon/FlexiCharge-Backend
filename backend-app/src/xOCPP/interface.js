@@ -1,4 +1,3 @@
-
 module.exports = function ({ v, constants, interfaceHandler, func }) {
     const c = constants.get()
 

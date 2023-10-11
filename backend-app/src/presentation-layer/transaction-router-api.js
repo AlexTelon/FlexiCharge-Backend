@@ -58,19 +58,18 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
                 const chargeSessionID = chargeSession.dataValues.chargeSessionID;
 
-                // FIX Variables
+                // TODO: FIX Variables
                 payNow = false;
-                paymentDueDate = Date.now();
-                paymentMethod = "Klarna"
+                paymentDueDate = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14; // Today + 2 weeks (this is NOT a proper way of doing this!)
                 totalPrice = 0;
-                databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, function (errors, transaction) {
+                databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentType, totalPrice, function (errors, transaction) {
                     const transactionID = transaction.transactionID;
                     if (errors.length > 0) {
                         response.status(400).json(errors)
                     } else if (transactionID) {
                         response.status(201).json({
                             "transactionID": transactionID
-                            // Send klarna things.
+                            // TODO: Send klarna things.
                         })
                     } else {
                         response.status(500).json(errors)
