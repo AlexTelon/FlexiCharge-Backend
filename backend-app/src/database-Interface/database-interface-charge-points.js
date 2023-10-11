@@ -21,8 +21,7 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
                   callback(errorCode, []);
                 });
               } else {
-                console.log(tarrif);
-                const { price: pricePerKwh } = tarrif.dataValues;
+                const { price: pricePerKwh } = tarrif;
 
                 const formattedPrice = parseInt(pricePerKwh.replace(".", ""));
                 chargePoint["price"] = formattedPrice;
@@ -49,7 +48,7 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
               callback(errorCode, []);
             });
           } else {
-            const { price: pricePerKwh } = tarrif.dataValues;
+            const { price: pricePerKwh } = tarrif;
 
             const formattedPrice = parseInt(pricePerKwh.replace(".", ""));
             chargePoints.forEach((chargePoint) => {
