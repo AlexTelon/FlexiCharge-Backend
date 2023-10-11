@@ -94,7 +94,7 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
 
         if (transactionID == 9999) {
             // 1/10 that charging is comleted
-            const data = getMockTransaction(Math.random() > 0.1, request.user.sub);
+            const data = getMockTransaction(false, request.user.sub);
             response.status(200).json(data);
             return;
         }

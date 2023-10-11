@@ -35,12 +35,12 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
         })
     }
 
-    exports.addChargePoint = function (name, address, coordinates, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, coordinates)
+    exports.addChargePoint = function (name, address, location, callback) {
+        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            dataAccessLayerChargePoints.addChargePoint(name, address, coordinates, function (error, chargePointID) {
+            dataAccessLayerChargePoints.addChargePoint(name, address, location, function (error, chargePointID) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
@@ -69,12 +69,12 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
         }
     }
 
-    exports.updateChargePoint = function (chargePointID, name, address, coordinates, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, coordinates)
+    exports.updateChargePoint = function (chargePointID, name, address, location, callback) {
+        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
         } else {
-            dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, coordinates, function (error, updatedChargePoint) {
+            dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, location, function (error, updatedChargePoint) {
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
                         callback(errorCode, [])
