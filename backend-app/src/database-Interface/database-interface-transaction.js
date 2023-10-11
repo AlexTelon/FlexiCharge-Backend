@@ -18,7 +18,6 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                 if (error != null || returnObject.status == "Rejected") {
                     callback(["couldNotReserveCharger"], [])
                 } else {
-                    console.log("Before adding transaction 2")
                     dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function (errorCode) {
@@ -35,11 +34,11 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
     }
 
     exports.startTransaction = function (transactionID, callback) {
-        // const validationErrors = transactionValidation.getTransactionValidation(transactionID);
-        // if (validationErrors.length > 0) {
-        //   callback(validationErrors, []);
-        //   return;
-        // }
+        const validationErrors = transactionValidation.getTransactionValidation(transactionID);
+        if (validationErrors.length > 0) {
+            callback(validationErrors, []);
+            return;
+        }
 
         dataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
             if (Object.keys(error).length > 0) {
@@ -68,11 +67,11 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
     };
 
     exports.stopTransaction = function (transactionID, callback) {
-        // const validationErrors = transactionValidation.getTransactionValidation(transactionID);
-        // if (validationErrors.length > 0) {
-        //   callback(validationErrors, []);
-        //   return;
-        // }
+        const validationErrors = transactionValidation.getTransactionValidation(transactionID);
+        if (validationErrors.length > 0) {
+            callback(validationErrors, []);
+            return;
+        }
 
         dataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
             if (Object.keys(error).length > 0) {
@@ -86,7 +85,7 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                 return;
             }
 
-            console.log(1, transaction)
+            // Uppdatera ChargeSession med endTime.
 
             ocppInterface.remoteStopTransaction(transaction['ChargeSession.connectorID'], transaction.transactionID, function (error, returnObject) {
                 if (error != null || returnObject.status == "Rejected") {
@@ -94,7 +93,6 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                     callback(["couldNotStopTransaction"], []);
                     return;
                 }
-                console.log("dbInterfaceTran, remoteStopTransaction")
                 callback([], transaction);
             });
         });

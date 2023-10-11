@@ -163,7 +163,7 @@ function transactionsRepositoryMock() {
     }
 
     return {
-        addTransaction: function(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+        addTransaction: function (chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
             callback([], {
                 ...defaultItem,
                 chargeSessionID,
@@ -214,7 +214,7 @@ function transactionsRepositoryMock() {
                 chargeSessionID
             })
         },
-        getTransactionsForCharger: function( connectorID, callback) {
+        getTransactionsForCharger: function (connectorID, callback) {
             callback([], [{
                 ...defaultItem,
                 connectorID
@@ -249,7 +249,7 @@ function electricityTarriffRepositoryMock() {
         getElectricityTariffsOrderByDate: function (callback) {
             callback([], [defaultItem])
         },
-            removeElectricityTariff: function (date, callback) {
+        removeElectricityTariff: function (date, callback) {
             callback([], true)
         },
     }
@@ -258,25 +258,25 @@ function electricityTarriffRepositoryMock() {
 function klarnaPaymentsRepositoryMock() {
     const defaultItem = {
         klarnaPaymentID: 1,
-        transactionID : 1,
+        transactionID: 1,
         order_id: "a35az35g_46sfh3_547sdfg",
         client_token: "a34657dh54#4ts47",
         session_id: "47mlkdfmt232m5l",
     }
 
     return {
-        getKlarnaPaymentByTransactionID : function (transactionID, callback) {
-            callback([], {...defaultItem, transactionID})
+        getKlarnaPaymentByTransactionID: function (transactionID, callback) {
+            callback([], { ...defaultItem, transactionID })
         },
-        addKlarnaPayment : function (client_token, session_id, transactionID, callback) {
+        addKlarnaPayment: function (client_token, session_id, transactionID, callback) {
             callback([], {
-                klarnaPaymentID : 2,
+                klarnaPaymentID: 2,
                 client_token,
                 session_id,
                 transactionID
             })
         },
-        updateOrderID : function (transactionID, order_id, callback) {
+        updateOrderID: function (transactionID, order_id, callback) {
             callback([], {
                 ...defaultItem,
                 order_id,
@@ -288,12 +288,12 @@ function klarnaPaymentsRepositoryMock() {
 
 function ocppInterfaceMock() {
     return {
-        remoteStartTransaction: function(connectorID, transactionID, callback) {
+        remoteStartTransaction: function (connectorID, transactionID, callback) {
             callback(null, {
                 meterStart: 1032
             })
         },
-        remoteStopTransaction: function(connectorID, transactionID, callback) {
+        remoteStopTransaction: function (connectorID, transactionID, callback) {
             callback(null, {
                 meterStop: 2000
             })
@@ -303,18 +303,18 @@ function ocppInterfaceMock() {
 
 function klarnaRepositoryMock() {
     return {
-        getNewKlarnaPaymentSession: function(totalPrice, callback) {
+        getNewKlarnaPaymentSession: function (totalPrice, callback) {
             callback([], {
-                session_id : "fake_session_id",
-                client_token : "fake_client_token"
+                session_id: "fake_session_id",
+                client_token: "fake_client_token"
             })
         },
-        createKlarnaOrder: function(totalPrice, authorization_token, callback) {
+        createKlarnaOrder: function (totalPrice, authorization_token, callback) {
             callback([], {
                 order_id: "fake_order_id"
             })
         },
-        finalizeKlarnaOrder: function(totalPrice, order_id, callback) {
+        finalizeKlarnaOrder: function (totalPrice, order_id, callback) {
             callback([], [])
         }
     }

@@ -33,8 +33,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
             "transactionID": 0
         }
 
-        // const userID = request.user.sub;
-        const userID = 1;
+        const userID = request.user.sub;
 
         if (connectorID === 100_000) {
             const price = 500;
@@ -59,9 +58,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
                 const chargeSessionID = chargeSession.dataValues.chargeSessionID;
 
-                console.log('chargeSessionID', chargeSessionID)
-
-                // FIX
+                // FIX Variables
                 payNow = false;
                 paymentDueDate = Date.now();
                 paymentMethod = "Klarna"
@@ -154,7 +151,6 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
                 response.status(400).json(error);
                 return;
             }
-            console.log("HTTP Response incoming")
             response.status(200).json({
                 price: stoppedTransaction.totalPrice,
                 startTimstamp: stoppedTransaction['ChargeSession.startTimstamp'],
@@ -163,7 +159,6 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
                 discount: stoppedTransaction.discount,
                 connectorID: stoppedTransaction['ChargeSession.connectorID'],
                 userID: stoppedTransaction.userID
-
             });
         });
     });
