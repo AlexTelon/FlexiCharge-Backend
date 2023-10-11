@@ -156,5 +156,5 @@ describe("Invoice date", () => {
       "2022-11-11"
     );
     expect(errors.length).toEqual(0);
-  });
+  });  
 });

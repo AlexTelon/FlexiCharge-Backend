@@ -4,7 +4,11 @@ module.exports = function({ databaseInit }) {
 
     exports.getChargePoint = function(chargePointID, callback) {
         databaseInit.ChargePoints.findOne({ where: { chargePointID: chargePointID }, raw: true })
-            .then(chargePoint => callback([], chargePoint))
+            .then(chargePoint => {
+                chargePoint.price = 500_00
+                chargePoint.klarnaReservationAmount = 0
+                callback([], chargePoint)
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
@@ -13,7 +17,13 @@ module.exports = function({ databaseInit }) {
 
     exports.getChargePoints = function(callback) {
         databaseInit.ChargePoints.findAll({ raw: true })
-            .then(chargePoints => callback([], chargePoints))
+            .then(chargePoints => {
+                chargePoints.forEach(chargePoint => {
+                    chargePoint.price = 500_00
+                    chargePoint.klarnaReservationAmount = 0
+                })
+                callback([], chargePoints)
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
@@ -21,11 +31,11 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.addChargePoint = function(name, address, coordinates, callback) {
+    exports.addChargePoint = function(name, address, location, callback) {
         const chargePoint = {
             name: name,
             address: address,
-            coordinates: coordinates
+            location: location
         }
 
         databaseInit.ChargePoints.create(chargePoint)
@@ -56,7 +66,7 @@ module.exports = function({ databaseInit }) {
 
     }
 
-    exports.updateChargePoint = function(chargePointID, name, address, coordinates, callback) {
+    exports.updateChargePoint = function(chargePointID, name, address, location, callback) {
         let updateProperties = {}
 
         if (name != null) {
@@ -67,8 +77,8 @@ module.exports = function({ databaseInit }) {
             updateProperties.address = address
         }
 
-        if (coordinates != null) {
-            updateProperties.coordinates = coordinates
+        if (location != null) {
+            updateProperties.location = location
         }
 
         databaseInit.ChargePoints.update(updateProperties, {

@@ -33,7 +33,8 @@ container.register({
   //Presentation layers
   chargePointsRouter: awilix.asFunction(require("./presentation-layer/charge-point-router-api")),
   chargersRouter: awilix.asFunction(require("./presentation-layer/chargers-router-api")),
-  transactionsRouter: awilix.asFunction(require("./presentation-layer/transactions-router-api")),
+  transactionsRouter: awilix.asFunction(require("./presentation-layer/transactions-router-api-OLD")), // For backwards compatibility
+  transactionRouter: awilix.asFunction(require("./presentation-layer/transaction-router-api")),
   authenticationRouter: awilix.asFunction(require("./presentation-layer/authentication-router-api")),
   invoicesRouter: awilix.asFunction(require("./presentation-layer/invoices-router-api")),
   adminRouter: awilix.asFunction(require("./presentation-layer/admin-router-api")),

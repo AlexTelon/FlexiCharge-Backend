@@ -68,13 +68,13 @@ module.exports = function ({ dataAccessLayerChargers, dbErrorCheck, chargerValid
     });
   };
 
-  exports.addCharger = function (chargePointID, serialNumber, coordinates, callback) {
-    const ValidationErrors = chargerValidation.getAddChargerValidation(coordinates, serialNumber, chargePointID);
+  exports.addCharger = function (chargePointID, serialNumber, location, callback) {
+    const ValidationErrors = chargerValidation.getAddChargerValidation(location, serialNumber, chargePointID);
     if (ValidationErrors.length > 0) {
       callback(ValidationErrors, []);
       return;
     }
-    dataAccessLayerChargers.addCharger(chargePointID, serialNumber, coordinates, function (error, connectorID) {
+    dataAccessLayerChargers.addCharger(chargePointID, serialNumber, location, function (error, connectorID) {
       if (Object.keys(error).length > 0) {
         dbErrorCheck.checkError(error, function (errorCode) {
           callback(errorCode, []);

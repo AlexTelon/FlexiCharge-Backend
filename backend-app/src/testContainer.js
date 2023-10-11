@@ -5,7 +5,7 @@ function chargePointRepositoryMock() {
         chargePointID: 1,
         name: "Coop, Forserum",
         address: "Värnamovägen",
-        coordinates: [57.70022044183724, 14.475150415104222]
+        location: [57.70022044183724, 14.475150415104222]
     }
 
     return {
@@ -18,22 +18,22 @@ function chargePointRepositoryMock() {
         getChargePoints: function (callback) {
             callback([], [defaultItem])
         },
-        addChargePoint: function (name, address, coordinates, callback) {
+        addChargePoint: function (name, address, location, callback) {
             callback([], {
                 chargePointID: 2,
                 name,
                 address,
-                coordinates
+                location
             })
         },
         removeChargePoint: function (chargePointID, callback) {
             callback([], true)
         },
-        updateChargePoint: function (chargePointID, name, coordinates, address, callback) {
+        updateChargePoint: function (chargePointID, name, location, address, callback) {
             callback([], {
                 chargePointID,
                 name,
-                coordinates,
+                location,
                 address
             })
         }
@@ -101,7 +101,7 @@ function chargeSessionsRepositoryMock() {
 function chargersRepositoryMock() {
     const defaultItem = {
         connectorID: 100000,
-        coordinates: [57.749812214261034, 14.070100435207065],
+        location: [57.749812214261034, 14.070100435207065],
         serialNumber: "abc123",
         status: 'Available'
     }
@@ -125,12 +125,12 @@ function chargersRepositoryMock() {
         getAvailableChargers: function (callback) {
             callback([], [defaultItem])
         },
-        addCharger: function (chargePointID, serialNumber, coordinates, callback) {
+        addCharger: function (chargePointID, serialNumber, location, callback) {
             const newCharger = {
                 connectorID: 2,
                 chargePointID,
                 serialNumber,
-                coordinates,
+                location,
             }
 
             callback([], newCharger)

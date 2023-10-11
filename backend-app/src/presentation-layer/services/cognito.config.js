@@ -26,17 +26,7 @@ module.exports = function ({ adminValidation }) {
         SecretHash: this.generateHash(username),
       };
       try {
-        const data = await this.cognitoIdentity
-          .signUp(params)
-          .promise()
-          .then((result) => {
-            const paramsGroup = {
-              GroupName: "Users",
-              Username: username,
-              UserPoolId: config.USER_POOL,
-            };
-            this.cognitoIdentity.adminAddUserToGroup(paramsGroup).promise();
-          });
+        await this.cognitoIdentity.signUp(params).promise();
         return true;
       } catch (error) {
         return error;
@@ -52,7 +42,7 @@ module.exports = function ({ adminValidation }) {
       };
 
       try {
-        const data = await this.cognitoIdentity.confirmSignUp(params).promise();
+        await this.cognitoIdentity.confirmSignUp(params).promise();
         return true;
       } catch (error) {
         return error;
