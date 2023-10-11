@@ -3,6 +3,8 @@ module.exports = function ({ databaseInit }) {
     const exports = {}
 
     exports.addTransaction = function (chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+        console.log("final addTransaction MEthod")
+        console.log(chargeSessionID + " : " + userID)
         const date = (Date.now() / 1000 | 0)
         const transaction = {
             userID: userID,
@@ -23,7 +25,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransaction = function (transactionID, callback) {
-        databaseInit.Transactions.findOne({ where: { transactionID: transactionID }, raw: true })
+        databaseInit.Transactions.findOne({ where: { transactionID: transactionID }, include: { model: databaseInit.ChargeSessions }, raw: true })
             .then(transaction => callback([], transaction))
             .catch(e => {
                 console.log(e)
@@ -41,7 +43,7 @@ module.exports = function ({ databaseInit }) {
     }
 
     exports.getTransactionsForCharger = function(connectorID, callback) {
-        databaseInit.Transactions.findAll({ include: { model: databaseInit.ChargeSessions , where: { 'connectorID' : connectorID}, raw: true }})
+        databaseInit.Transactions.findAll({ include: { model: databaseInit.ChargeSessions, where: { 'connectorID' : connectorID }, raw: true }})
             .then(transactions => callback([], transactions))
             .catch(e => {
                 console.log(e)

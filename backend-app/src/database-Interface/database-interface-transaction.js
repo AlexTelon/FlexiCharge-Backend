@@ -1,20 +1,70 @@
-module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck }) {
-  const exports = {};
+module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck, ocppInterface }) {
 
-  exports.addTransaction = function (chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
-    const validationErrors = transactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow);
-    if (validationErrors.length > 0) {
-      callback(validationErrors, []);
-      return;
+    const exports = {}
+
+    exports.addTransaction = function (chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
+        const validationErrors = transactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
+        if (validationErrors.length > 0) {
+            callback(validationErrors, [])
+            return
+        }
+        else {
+            timestamp = (Date.now() / 1000 | 0)
+            connectorID = connectorID
+            idTag = 0;
+            parentIdTag = 0; // Optional according to OCPP
+
+            ocppInterface.reserveNow(connectorID, idTag, parentIdTag, function (error, returnObject) {
+                console.log("Entering ocppInterface reserveNow")
+                if (error != null || returnObject.status == "Rejected") {
+                    callback(["couldNotReserveCharger"], [])
+                } else {
+                  console.log("Before adding transaction 2")
+                    dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
+                        if (Object.keys(error).length > 0) {
+                            dbErrorCheck.checkError(error, function (errorCode) {
+                                callback(errorCode, [])
+                            })
+                            return
+                        }
+                        callback([], transaction)
+                    })
+                }
+            })
+        }
+
     }
-    dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transactionID) {
+
+  exports.startTransaction = function (transactionID, callback) {
+    // const validationErrors = transactionValidation.getTransactionValidation(transactionID);
+    // if (validationErrors.length > 0) {
+    //   callback(validationErrors, []);
+    //   return;
+    // }
+
+    dataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
       if (Object.keys(error).length > 0) {
         dbErrorCheck.checkError(error, function (errorCode) {
           callback(errorCode, []);
         });
         return;
       }
-      callback([], transactionID);
+      if (transaction == null) {
+        callback([], []);
+        return;
+      }
+
+      console.log(1, transaction)
+
+      ocppInterface.remoteStartTransaction(transaction['ChargeSession.connectorID'], transaction.transactionID, function (error, returnObject) {
+        if (error != null || returnObject.status == "Rejected") {
+            console.error('Error:', error, returnObject);
+            callback(["couldNotStartTransaction"], []);
+            return;
+        }
+
+        callback([], transaction);
+      });
     });
   };
 

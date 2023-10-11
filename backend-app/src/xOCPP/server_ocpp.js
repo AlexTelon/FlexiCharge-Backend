@@ -14,7 +14,7 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
             let originArray = origin.split("/")
             let clientType = originArray[1]
 
-            switch(clientType){
+            switch (clientType) {
                 //ws://123.123.123:1337/user/abc123-123-123
                 case 'user':
                     const userID = originArray[originArray.length - 1].toString()
@@ -24,6 +24,7 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
                     break
 
                 case 'charger':
+                case 'connector':
                     let chargerSerial = (originArray[originArray.length - 1]).toString()
                     // Validate and handle connecting charger:
                     chargerClientHandler.handleClient(ws, chargerSerial)
@@ -31,9 +32,9 @@ module.exports = function ({ chargerClientHandler, v, constants, userClientHandl
             }
         })
 
-        if(config.RUN_OCPP_TEST){
-            setTimeout(function(){
-                tester.runTests(function(results){
+        if (config.RUN_OCPP_TEST) {
+            setTimeout(function () {
+                tester.runTests(function (results) {
                     console.log('\nFAILED OCPP TESTS: ', results.failedTests, '\n')
                     console.log('\nSUCCESSFUL OCPP TESTS: ', results.successfulTests, '\n')
                 })

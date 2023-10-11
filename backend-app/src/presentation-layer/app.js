@@ -36,7 +36,7 @@ module.exports = function({chargersRouter, transactionRouter, transactionsRouter
     app.use('/swagger', swaggerUi.serve, swaggerUi.setup(openApiDocument));
     app.use('/chargers', chargersRouter)
     app.use('/transaction', transactionRouter)
-    app.use('/transactions', transactionsRouter)
+    app.use('/transactions', transactionRouter)
     app.use('/chargePoints', chargePointsRouter)
     app.use('/auth', authenticationRouter)
     app.use('/admin', adminRouter)

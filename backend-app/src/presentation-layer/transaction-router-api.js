@@ -1,6 +1,6 @@
 var express = require("express");
 
-module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAccessLayerKlarna }) {
+module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceChargeSessions, verifyUser, dataAccessLayerKlarna }) {
 
     function getMockTransaction(ongoing, userID) {
         return ongoing ? {
@@ -23,9 +23,8 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
 
     const router = express.Router();
 
-    router.post("/", verifyUser, function (request, response) {
+    router.post("/", /* verifyUser, */ function (request, response) {
 
-        console.log("Entering Post transactions");
         const { connectorID, paymentType } = request.body;
 
         const data = {
@@ -52,19 +51,41 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             return;
         }
 
-        const isKlarnaPayment = paymentType === 'klarna';
-        const pricePerKWh = 123.45;
+        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, function (errors, chargeSession){
+            if (errors.length > 0) {
+                response.status(400).json(errors)
+            } else if (chargeSession) {
 
-        databaseInterfaceTransactions.addTransaction(userID, connectorID, isKlarnaPayment, pricePerKWh, function (errors, transactionID) {
-            if (errors.length > 0) { response.status(400).json(errors); return; }
-            if (!transactionID) { response.status(500).json(errors); return; }
+                const chargeSessionID = chargeSession.dataValues.chargeSessionID;
 
-            data.transactionID = transactionID;
-            response.status(201).json(data);
-        });
+                console.log('chargeSessionID', chargeSessionID)
+                
+                // FIX
+                payNow = false;
+                paymentDueDate = Date.now();
+                paymentMethod = "Klarna"
+                totalPrice = 0;
+                console.log("Before addTransaction")
+                databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, function (errors, transaction) {
+                    const transactionID = transaction.transactionID;
+                    if (errors.length > 0) {
+                        response.status(400).json(errors)
+                    } else if (transactionID) {
+                        response.status(201).json({
+                            "transactionID": transactionID
+                            // Send klarna things.
+                        })
+                    } else {
+                        response.status(500).json(errors)
+                    }
+                })
+            } else {
+                response.status(500).json(errors)
+            }
+        })
     });
 
-    router.put("/start/:transactionID", verifyUser, function (request, response) {
+    router.put("/start/:transactionID", /* verifyUser, */ function (request, response) {
         const transactionID = request.params.transactionID;
         const authorization_token = request.body.authorization_token;
 
@@ -74,8 +95,8 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             return;
         }
 
-        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
-            console.log(error, klarnaOrder);
+        databaseInterfaceTransactions.startTransaction(transactionID, function (error, transaction) {
+            console.log(error, transaction);
             if (error.length > 0) {
                 if (error.includes("internalError") || error.includes("dbError")) {
                     response.status(500).json(error);
@@ -85,11 +106,18 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
                 return;
             }
 
-            response.status(200).json(klarnaOrder);
+            response.status(200).json({
+                startTimstamp: transaction['ChargeSession.startTimstamp'],
+                kwhTransfered: transaction['ChargeSession.kwhTransfered'],
+                currentChargePercentage: transaction['ChargeSession.currentChargePercentage'],
+                pricePerKwh: 999,
+                connectorID: transaction['ChargeSession.connectorID'],
+                userID: transaction.userID
+            });
         });
     });
 
-    router.get("/:transactionID", verifyUser, function (request, response) {
+    router.get("/:transactionID", /* verifyUser, */ function (request, response) {
         const transactionID = request.params.transactionID;
 
         if (transactionID == 9999) {
@@ -107,7 +135,7 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
         });
     });
 
-    router.put("/stop/:transactionID", verifyUser, function (request, response) {
+    router.put("/stop/:transactionID", /* verifyUser, */ function (request, response) {
         const transactionID = request.params.transactionID;
 
         if (transactionID == 9999) {
@@ -124,7 +152,7 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
         });
     });
 
-    router.get("/userTransactions/:userID", verifyUser, function (request, response) {
+    router.get("/userTransactions/:userID", /* verifyUser, */ function (request, response) {
         const userID = request.params.userID;
 
         databaseInterfaceTransactions.getTransactionsForUser(userID, function (errors, userTransaction) {
@@ -135,7 +163,7 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
         });
     });
 
-    router.get("/chargerTransactions/:connectorID", verifyUser, function (request, response) {
+    router.get("/chargerTransactions/:connectorID", /* verifyUser, */ function (request, response) {
         const connectorID = request.params.connectorID;
 
         databaseInterfaceTransactions.getTransactionsForCharger(connectorID, function (errors, chargerTransaction) {
