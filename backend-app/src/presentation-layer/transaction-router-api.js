@@ -12,8 +12,8 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
             "userID": userID,
         } : {
             "price": Math.floor(Math.random() * 1_000_00) + 1, // Random number between 0 and 100 000 (= 1 000,00 kr)
-            "startTimstamp":  Math.floor(Date.now() / 1000) - 3600 - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) 1 hour up to 2 hours ago
-            "endTimstamp":  Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
+            "startTimstamp": Math.floor(Date.now() / 1000) - 3600 - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) 1 hour up to 2 hours ago
+            "endTimstamp": Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
             "kwhTransferred": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
             "discount": 0,
             "connectorID": 100_000,
@@ -25,25 +25,34 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
     router.post("/", function (request, response) {
 
-        const { userID, connectorID } = request.body;
+        const { connectorID, paymentType } = request.body;
 
-        if (connectorID == 100000) {
-            const data = getMockTransaction();
-            databaseInterfaceTransactions.getNewKlarnaPaymentSession(userID, connectorID, function (error, klarnaOrder) {
-                console.log(error);
-                console.log(klarnaOrder);
-                if (error.length === 0) {
-                    data.klarna_consumer_token = klarnaOrder
-                    response.status(200).json(klarnaOrder)
-                } else if (error.includes("internalError") || error.includes("dbError")) {
-                    response.status(500).json(error)
-                } else {
-                    response.status(400).json(error);
-                }
-            })
+        const data = {
+            "klarnaClientToken": "",
+            "klarnaSessionID": "",
+            "transactionID": 0
+        }
+
+        // const userID = request.user.sub;
+        const userID = 1;
+
+        if (connectorID === 100_000) {
+            const price = 500;
+
+            dataAccessLayerKlarna.getNewKlarnaPaymentSession(price, async function (error, klarnaSessionTransaction) {
+                if (error.length > 0) { response.status(400).json(error); return; }
+                if (!klarnaSessionTransaction) { response.status(500).json(error); return; }
+
+                data.klarnaClientToken = klarnaSessionTransaction.client_token;
+                data.klarnaSessionID = klarnaSessionTransaction.session_id;
+                data.transactionID = 9999;
+
+                response.status(201).json(data);
+            });
             return;
         }
-        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, function (errors, chargeSession){
+
+        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, function (errors, chargeSession) {
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (chargeSession) {
@@ -51,13 +60,12 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
                 const chargeSessionID = chargeSession.dataValues.chargeSessionID;
 
                 console.log('chargeSessionID', chargeSessionID)
-                
+
                 // FIX
                 payNow = false;
                 paymentDueDate = Date.now();
                 paymentMethod = "Klarna"
                 totalPrice = 0;
-                console.log("Before addTransaction")
                 databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, function (errors, transaction) {
                     const transactionID = transaction.transactionID;
                     if (errors.length > 0) {
@@ -114,7 +122,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
         if (transactionID == 9999) {
             // 1/10 that charging is comleted
-            const data = getMockTransaction(Math.random() > 0.1, request.user.sub);
+            const data = getMockTransaction(false, request.user.sub);
             response.status(200).json(data);
             return;
         }
@@ -136,11 +144,27 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
             return;
         }
 
-        databaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
-            if (error.length > 0) { response.status(400).json(error); return; }
-            if (!stoppedTransaction) { response.status(500).json(error); return; }
+        databaseInterfaceTransactions.stopTransaction(transactionID, function (error, stoppedTransaction) {
+            console.log(error, stoppedTransaction);
+            if (error.length > 0) {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error);
+                    return;
+                }
+                response.status(400).json(error);
+                return;
+            }
+            console.log("HTTP Response incoming")
+            response.status(200).json({
+                price: stoppedTransaction.totalPrice,
+                startTimstamp: stoppedTransaction['ChargeSession.startTimstamp'],
+                endTimstamp: stoppedTransaction['ChargeSession.endTimstamp'],
+                kwhTransferred: stoppedTransaction['ChargeSession.kWhTransferred'],
+                discount: stoppedTransaction.discount,
+                connectorID: stoppedTransaction['ChargeSession.connectorID'],
+                userID: stoppedTransaction.userID
 
-            response.status(200).json(stoppedTransaction);
+            });
         });
     });
 
