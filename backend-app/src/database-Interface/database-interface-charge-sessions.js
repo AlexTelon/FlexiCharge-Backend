@@ -20,7 +20,7 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
                 return
             }
             else if (chargeSession.chargeSessionID) {
-                dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, 1, function (error, updatedChargeSession) {
+                dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, 0, function (error, updatedChargeSession) {
                     if (Object.keys(error).length > 0) {
                         dbErrorCheck.checkError(error, function (errorCode) {
                             callback(errorCode, [])
