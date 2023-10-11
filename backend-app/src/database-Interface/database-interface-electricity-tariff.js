@@ -5,6 +5,24 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
     dataAccessLayerElectricityTariffs.getElectricityTariffsOrderByDate(callback);
   };
 
+  exports.generateCurrentElectricityTariff = function (callback) {
+    const maxPrice = 6.0;
+    const minPrice = 0.5;
+
+    let currentDate = new Date();
+    currentDate.setMinutes(0, 0, 0);
+    const timestamp = new Date(currentDate.getTime()).toISOString();
+
+    const price = (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2);
+    dataAccessLayerElectricityTariffs.addElectricityTariff(timestamp, price, "SEK", (error, tariff) => {
+      if (error.length > 0) {
+        callback(error, []);
+        return;
+      }
+      callback([], tariff);
+    });
+  };
+
   exports.generateElectricityTariffs = function (offset, callback) {
     const generateDays = 30;
     const maxPrice = 6.0;
@@ -27,6 +45,7 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
     }
     Promise.all(promises)
       .then(function (tariffs) {
+        console.log(tariffs);
         callback([], tariffs);
       })
       .catch((e) => {
@@ -48,26 +67,13 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
         if (tariff != null) {
           callback([], tariff);
         } else {
-          //No tariffs found for this date, call the function to generate a new set.
-          exports.generateElectricityTariffs(0, function (error, result) {
+          exports.generateCurrentElectricityTariff(function (error, newTariff) {
             if (Object.keys(error).length > 0) {
               dbErrorCheck.checkError(error, function (errorCode) {
                 callback(errorCode, []);
               });
             } else {
-              let curDate = new Date();
-              curDate.setMinutes(0, 0, 0);
-              const queryDate2 = new Date(currentDate).toISOString();
-              dataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate2, function (error, newTariff) {
-                if (Object.keys(error).length > 0) {
-                  dbErrorCheck.checkError(error, function (errorCode) {
-                    callback(errorCode, []);
-                  });
-                } else {
-                  //Created new tariffs and fetched the new one for current time.
-                  callback([], newTariff);
-                }
-              });
+              callback([], newTariff);
             }
           });
         }
