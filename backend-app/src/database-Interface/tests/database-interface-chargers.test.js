@@ -62,9 +62,9 @@ describe("getAvailableChargers", () => {
 describe("addCharger", () => {
     const chargePointID = 100001
     const serialNumber = "bca245"
-    const coordinates = [23.12, 55.43]
-    test("Add a Charger", (done) => {
-        databaseInterfaceChargers.addCharger(chargePointID, serialNumber, coordinates, (error, charger) => {
+    const location = [23.12, 55.43]
+    test("Get all Chargers with status of 'Available'", (done) => {
+        databaseInterfaceChargers.addCharger(chargePointID, serialNumber, location, (error, charger) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

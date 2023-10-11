@@ -1,327 +1,290 @@
-var express = require('express')
-const checkJwt = require('./middleware/jwt.middleware')
-const checkIfAdmin = require('./middleware/admin.middleware')
+var express = require("express");
 
-const AdminCognitoService = require('./services/cognito.admin.config')
+module.exports = function ({ adminCognitoService, verifyUser, verifyAdmin }) {
+  const router = express.Router();
+  const cognito = new adminCognitoService();
 
+  router.post("/sign-in", function (req, res) {
+    const { username, password } = req.body;
 
-module.exports = function () {
-    const router = express.Router()
-    const cognito = new AdminCognitoService();
+    cognito.adminSignIn(username, password).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-    router.post('/sign-in', function (req, res) {
+  router.post("/set-user-password", verifyUser, verifyAdmin, function (req, res) {
+    const { username, password } = req.body;
 
-        const { username, password } = req.body;
+    cognito.setUserPassword(username, password).then((result) => {
+      if (result.statusCode === 201) {
+        res.status(200).json(result).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-        cognito.adminSignIn(username, password)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+  router.get("/users/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
+    cognito.getUser(username).then((result) => {
+      if (result.statusCode === 200) {
+        console.log(result);
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-    router.post('/set-user-password', checkJwt, checkIfAdmin, function (req, res) {
+  router.get("/users", verifyUser, verifyAdmin, function (req, res) {
+    // req.query.token replaces the + with a space, making the token incorrect
+    const token = req.query.pagination_token;
+    const limit = req.query.limit;
+    const filterAttribute = req.query.filter_attribute;
+    const filterValue = req.query.filter_value;
 
-        const { username, password } = req.body;
+    let paginationToken = undefined;
+    if (token) {
+      // re adds the + which makes the token correct again
+      paginationToken = token.replace(/\ /g, "+");
+    }
 
-        cognito.setUserPassword(username, password)
-            .then(result => {
-                if (result.statusCode === 201) {
-                    res.status(200).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+    cognito.getUsers(paginationToken, limit, filterAttribute, filterValue).then((result) => {
+      if (result.statusCode === 200) {
+        console.log(result);
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-    router.get('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username
-        cognito.getUser(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    console.log(result);
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+  router.get("/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
+    cognito.getAdmin(username).then((result) => {
+      if (result.statusCode === 200) {
+        console.log(result);
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
+  router.get("/", verifyUser, verifyAdmin, function (req, res) {
+    // req.query.token replaces the + with a space, making the token incorrect
+    const token = req.query.pagination_token;
+    const limit = req.query.limit;
+    const filterAttribute = req.query.filter_attribute;
+    const filterValue = req.query.filter_value;
 
-    router.get('/users', checkJwt, checkIfAdmin, function (req, res) {
+    let paginationToken = undefined;
+    if (token) {
+      // re adds the + which makes the token correct again
+      paginationToken = token.replace(/\ /g, "+");
+    }
 
-        // req.query.token replaces the + with a space, making the token incorrect
-        const token = req.query.pagination_token
-        const limit = req.query.limit
-        const filterAttribute = req.query.filter_attribute
-        const filterValue = req.query.filter_value
+    cognito.getAdmins(paginationToken, limit, filterAttribute, filterValue).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-        let paginationToken = undefined
-        if (token) {
-            // re adds the + which makes the token correct again
-            paginationToken = token.replace(/\ /g, '+')
-        }
+  router.post("/users", verifyUser, verifyAdmin, async function (req, res) {
+    const { username, password } = req.body;
 
-        cognito.getUsers(paginationToken, limit, filterAttribute, filterValue)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    console.log(result);
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+    cognito.createUser(username, password).then((result) => {
+      if (result.statusCode === 201) {
+        res.status(201).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
+  router.post("/", verifyUser, verifyAdmin, function (req, res) {
+    const { username, password } = req.body;
 
-    router.get('/:username', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username
-        cognito.getAdmin(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    console.log(result);
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
-    router.get('/', checkJwt, checkIfAdmin, function (req, res) {
-        // req.query.token replaces the + with a space, making the token incorrect
-        const token = req.query.pagination_token
-        const limit = req.query.limit
-        const filterAttribute = req.query.filter_attribute
-        const filterValue = req.query.filter_value
+    cognito.createAdmin(username, password).then((result) => {
+      if (result.statusCode === 201) {
+        res.status(201).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-        let paginationToken = undefined
-        if (token) {
-            // re adds the + which makes the token correct again
-            paginationToken = token.replace(/\ /g, '+')
-        }
+  router.delete("/users/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-        cognito.getAdmins(paginationToken, limit, filterAttribute, filterValue)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+    cognito.deleteUser(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-    router.post('/users', checkJwt, checkIfAdmin, async function (req, res) {
-        const { username, password } = req.body;
+  router.delete("/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-        cognito.createUser(username, password)
-            .then(result => {
-                if (result.statusCode === 201) {
-                    res.status(201).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
-    router.post('/', checkJwt, checkIfAdmin, function (req, res) {
-        const { username, password } = req.body;
+    cognito.deleteAdmin(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else {
+        console.log(result);
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-        cognito.createAdmin(username, password)
-            .then(result => {
-                if (result.statusCode === 201) {
-                    res.status(201).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+  router.put("/users/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
+    const { userAttributes } = req.body;
 
-    router.delete('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
+    cognito.updateUserAttributes(username, userAttributes).then((result) => {
+      if (result.statusCode === 204) {
+        res.status(204).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-        cognito.deleteUser(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
+  router.put("/users/:username/enable", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-    router.delete('/:username', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
+    cognito.enableUser(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-        cognito.deleteAdmin(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                }
-            })
-    })
+  router.put("/users/:username/disable", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-    router.put('/users/:username', checkJwt, checkIfAdmin, function (req, res) {
+    cognito.disableUser(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-        const username = req.params.username;
-        const { userAttributes } = req.body;
+  router.put("/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
+    const { userAttributes } = req.body;
 
-        cognito.updateUserAttributes(username, userAttributes)
-            .then(result => {
-                if (result.statusCode === 204) {
-                    res.status(204).json(result.data).end();
+    cognito.updateAdminAttributes(username, userAttributes).then((result) => {
+      if (result.statusCode === 204) {
+        res.status(204).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-                } else if (result.statusCode === 400) {
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
+  router.put("/:username/enable", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-    router.put('/users/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
+    cognito.enableAdmin(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
+  router.put("/:username/disable", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-        cognito.enableUser(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
+    cognito.disableAdmin(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        console.log(result);
+        res.status(400).json(result).end();
+      } else {
+        console.log(result);
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
+  router.post("/reset-user-password/:username", verifyUser, verifyAdmin, function (req, res) {
+    const username = req.params.username;
 
-    router.put('/users/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
+    cognito.resetUserPassword(username).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else if (result.statusCode === 400) {
+        res.status(400).json(result).end();
+      } else {
+        res.status(500).json(result).end();
+      }
+    });
+  });
 
-        cognito.disableUser(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
+  router.post("/set-admin-password", verifyUser, verifyAdmin, function (req, res) {
+    const { username, password } = req.body;
 
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
+    cognito.setAdminPassword(username, password).then((result) => {
+      res.status(200).json(result).end();
+    });
+  });
 
-    router.put('/:username', checkJwt, checkIfAdmin, function (req, res) {
+  router.post("/force-change-password", function (req, res) {
+    const { username, password, session } = req.body;
 
-        const username = req.params.username;
-        const { userAttributes } = req.body;
+    cognito.respondToAuthChallenge(username, password, session).then((result) => {
+      if (result.statusCode === 200) {
+        res.status(200).json(result.data).end();
+      } else {
+        res.status(400).json(result).end();
+      }
+    });
+  });
 
-        cognito.updateAdminAttributes(username, userAttributes)
-            .then(result => {
-                if (result.statusCode === 204) {
-                    res.status(204).json(result.data).end();
-
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
-
-    router.put('/:username/enable', checkJwt, checkIfAdmin, function (req, res) {
-
-        const username = req.params.username;
-
-        cognito.enableAdmin(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
-    router.put('/:username/disable', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
-
-        cognito.disableAdmin(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-
-                } else if (result.statusCode === 400) {
-                    console.log(result);
-                    res.status(400).json(result).end();
-                } else {
-                    console.log(result);
-                    res.status(500).json(result).end();
-                }
-            })
-    })
-
-    router.post('/reset-user-password/:username', checkJwt, checkIfAdmin, function (req, res) {
-        const username = req.params.username;
-
-        cognito.resetUserPassword(username)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else if (result.statusCode === 400) {
-                    res.status(400).json(result).end();
-                } else {
-                    res.status(500).json(result).end();
-                }
-            })
-    })
-
-    router.post('/set-admin-password', checkJwt, checkIfAdmin, function (req, res) {
-        const { username, password } = req.body;
-
-        cognito.setAdminPassword(username, password)
-            .then(result => {
-                res.status(200).json(result).end();
-            })
-    })
-
-    router.post('/force-change-password', function (req, res) {
-
-        const { username, password, session } = req.body;
-
-        cognito.respondToAuthChallenge(username, password, session)
-            .then(result => {
-                if (result.statusCode === 200) {
-                    res.status(200).json(result.data).end();
-                } else {
-                    res.status(400).json(result).end();
-                }
-            })
-    })
-
-    return router
-}
+  return router;
+};

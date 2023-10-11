@@ -38,11 +38,11 @@ module.exports = function ({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function (chargePointID, serialNumber, coordinates, callback) {
+    exports.addCharger = function (chargePointID, serialNumber, location, callback) {
         const charger = {
             chargePointID: chargePointID,
             serialNumber: serialNumber,
-            coordinates: coordinates,
+            location: location,
             status: 'Reserved'
         }
 

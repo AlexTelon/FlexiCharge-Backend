@@ -34,8 +34,8 @@ describe("addChargePoint", () => {
     test("Add a Charge Point", (done) => {
         const name = "SuperCharger"
         const address = "Lidl"
-        const coordinates = [31.351, 124.23]
-        databaseInterfaceChargePoints.addChargePoint(name, address, coordinates, (error, addedChargePoint) => {
+        const location = [31.351, 124.23]
+        databaseInterfaceChargePoints.addChargePoint(name, address, location, (error, addedChargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
@@ -66,8 +66,8 @@ describe("updateChargePoint", () => {
         const chargePointID = 23
         const name = "SuperCharger"
         const address = "Lidl"
-        const coordinates = [31.351, 124.23]
-        databaseInterfaceChargePoints.updateChargePoint(chargePointID, name, address, coordinates, (error, updatedChargePoint) => {
+        const location = [31.351, 124.23]
+        databaseInterfaceChargePoints.updateChargePoint(chargePointID, name, address, location, (error, updatedChargePoint) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;

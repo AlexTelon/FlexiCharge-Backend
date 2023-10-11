@@ -47,6 +47,9 @@ jobs:
         envkey_DATABASE_PASSWORD: "UNNEEDED"
         envkey_DATABASE_HOST: "UNNEEDED"
         envkey_KLARNA_TOKEN: ${{ secrets.KLARNA_TOKEN }}
+        envkey_TEST_URL: ${{ secrets.TEST_URL }}
+        envkey_TEST_USER_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
+        envkey_TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         directory: backend-app/
 
     # # Runs sequentially to starting the back-end app
