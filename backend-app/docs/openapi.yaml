@@ -1094,10 +1094,6 @@ components:
           enum:
             - Available
             - Reserved
-        pricePerKwh:
-          type: number
-          description: Price per kWh
-          example: 0.41
       xml:
         name: charger
     ChargePoint:
@@ -1118,8 +1114,10 @@ components:
             - 57.777714
             - 14.16301
         price:
-          type: string
-          example: 20
+          type: integer
+          format: int64
+          example: 381
+          description: "Integer containing 2 decimals. Example 381 => 3.81 kr/kWh"
         klarnaReservationAmount:
           type: number
           example: 400
