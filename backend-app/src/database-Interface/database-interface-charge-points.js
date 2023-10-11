@@ -62,20 +62,18 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
     });
   };
 
-    exports.addChargePoint = function (name, address, location, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
+  exports.addChargePoint = function (name, address, location, callback) {
+    const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.addChargePoint(name, address, location, function (error, chargePointID) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
         } else {
-            dataAccessLayerChargePoints.addChargePoint(name, address, location, function (error, chargePointID) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], chargePointID)
-                }
-            })
+          callback([], chargePointID);
         }
       });
     }
@@ -98,20 +96,18 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
     }
   };
 
-    exports.updateChargePoint = function (chargePointID, name, address, location, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
+  exports.updateChargePoint = function (chargePointID, name, address, location, callback) {
+    const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, location, function (error, updatedChargePoint) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
         } else {
-            dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, location, function (error, updatedChargePoint) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], updatedChargePoint)
-                }
-            })
+          callback([], updatedChargePoint);
         }
       });
     }
