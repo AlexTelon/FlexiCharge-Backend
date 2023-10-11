@@ -23,7 +23,7 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
               } else {
                 const { price: pricePerKwh } = tarrif;
 
-                const formattedPrice = parseInt(pricePerKwh.replace(".", ""));
+                const formattedPrice = parseInt(Math.floor(pricePerKwh * 100));
                 chargePoint["price"] = formattedPrice;
                 chargePoint["klarnaReservationAmount"] = 0;
                 callback([], chargePoint);
@@ -50,7 +50,8 @@ module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePo
           } else {
             const { price: pricePerKwh } = tarrif;
 
-            const formattedPrice = parseInt(pricePerKwh.replace(".", ""));
+            const formattedPrice = parseInt(Math.floor(pricePerKwh * 100));
+
             chargePoints.forEach((chargePoint) => {
               chargePoint["price"] = formattedPrice;
               chargePoint["klarnaReservationAmount"] = 0;
