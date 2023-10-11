@@ -4,7 +4,11 @@ module.exports = function({ databaseInit }) {
 
     exports.getChargePoint = function(chargePointID, callback) {
         databaseInit.ChargePoints.findOne({ where: { chargePointID: chargePointID }, raw: true })
-            .then(chargePoint => callback([], chargePoint))
+            .then(chargePoint => {
+                chargePoint.price = 500_00
+                chargePoint.klarnaReservationAmount = 0
+                callback([], chargePoint)
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
@@ -13,7 +17,13 @@ module.exports = function({ databaseInit }) {
 
     exports.getChargePoints = function(callback) {
         databaseInit.ChargePoints.findAll({ raw: true })
-            .then(chargePoints => callback([], chargePoints))
+            .then(chargePoints => {
+                chargePoints.forEach(chargePoint => {
+                    chargePoint.price = 500_00
+                    chargePoint.klarnaReservationAmount = 0
+                })
+                callback([], chargePoints)
+            })
             .catch(e => {
                 console.log(e)
                 callback(e, [])
