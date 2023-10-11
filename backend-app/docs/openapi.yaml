@@ -28,11 +28,19 @@ paths:
             application/json:
               schema:
                 type: object
-                example:
-                  accessToken: accesToken
-                  email: email
-                  username: username
-                  user_id: user_id
+                properties:
+                  accessToken:
+                    type: string
+                    example: accesToken
+                  email:
+                    type: string
+                    example: email
+                  username:
+                    type: string
+                    example: username
+                  user_id:
+                    type: string
+                    example: user_id
         '400':
           description: Incorrect username or password
           content:
@@ -58,15 +66,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              example:
-                firstName: string
-                lastName: string
-                phoneNumber: string
-                streetAddress: string
-                zipCode: string
-                city: string
-                country: string
+              $ref: '#/components/schemas/UserInformation'
       responses:
         '204':
           description: Successful response
@@ -94,16 +94,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  username: email
-                  firstName: firstName
-                  lastName: lastName
-                  phoneNumber: phoneNumber
-                  streetAdress: streetAddress
-                  zipCode: zipCode
-                  city: city
-                  country: country
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        type: string
+                        example: test.person@example.com
+                  - $ref: '#/components/schemas/UserInformation'
         '400':
           description: Bad request
   /auth/sign-up:
@@ -192,6 +189,23 @@ paths:
           description: Successful response
           content:
             application/json: {}
+  /auth/delete-user:
+    delete:
+      tags:
+        - User
+      summary: Delete a user account
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+        '404':
+          description: User not found
+        '403':
+          description: Forbidden
+        '401':
+          description: Unauthorized
+      description: Deletes an account with the access token
   /admin/users/{username}:
     parameters:
       - in: path
@@ -319,17 +333,18 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                example:
-                  username: email
-                  firstName: firstName
-                  lastName: lastName
-                  phoneNumber: phoneNumber
-                  streetAdress: streetAddress
-                  zipCode: zipCode
-                  city: city
-                  country: country
-                  userID: userID
+                allOf:
+                  - type: object
+                    properties:
+                      username:
+                        type: string
+                        example: test.person@example.com
+                  - $ref: '#/components/schemas/UserInformation'
+                  - type: object
+                    properties:
+                      userID:
+                        type: string
+                        example: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
         '400':
           description: Bad request
         '401':
@@ -515,12 +530,20 @@ paths:
           application/json:
             schema:
               type: object
-              example:
-                chargerPointNumber: 23
+              properties:
+                chargePointID:
+                  type: integer
+                  example: 23
                 location:
-                  - 57.777714
-                  - 14.16301
-                serialNumber: android
+                  type: array
+                  items:
+                    type: number
+                  example:
+                    - 57.777714
+                    - 14.16301
+                serialNumber:
+                  type: string
+                  example: charger-serial
       security:
         - bearerAuth: [] # admin
       responses:
@@ -545,10 +568,193 @@ paths:
                   $ref: '#/components/schemas/Charger'
         '404':
           description: Error message
-  /transactions:
+  /transaction:
     post:
       tags:
         - Transactions
+      summary: Create a transaction
+      description: |-
+        Creates a transaction that can be started using the `transactionID` returned
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                connectorID:
+                  type: integer
+                  example: 100000
+                paymentType:
+                  type: string
+                  example: 'klarna'
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  klarnaClientToken:
+                    type: string
+                    example: <token>
+                  klarnaSessionID:
+                    type: string
+                    example: <sessionID>
+                  transactionID:
+                    type: integer
+                    example: 9999
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transaction/start/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    put:
+      tags:
+        - Transactions
+      summary: Start a transaction
+      description: |-
+        Starts a transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authorization_token:
+                  type: string
+                  description: authorization_token from Klarna, for Klarna payments only
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-Ongoing'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transaction/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    get:
+      tags:
+        - Transactions
+      summary: Get status of a transaction
+      description: |-
+        Gets the status of a transaction
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Transaction-Ongoing'
+                  - $ref: '#/components/schemas/Transaction-Historic'
+        '404':
+          description: Transaction not found
+        '500':
+          description: Error message
+  /transaction/stop/{transactionID}:
+    parameters:
+      - in: path
+        name: transactionID
+        schema:
+          type: integer
+          example: 9999
+        required: true
+    put:
+      tags:
+        - Transactions
+      summary: Stop a transaction
+      description: |-
+        Stops a transaction
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction-Historic'
+        '400':
+          description: Error message
+        '500':
+          description: Error message
+  /transaction/userTransactions/{userID}:
+    parameters:
+      - in: path
+        name: userID
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - Transactions
+      summary: Transaction by userID
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/Transaction-Ongoing'
+                    - $ref: '#/components/schemas/Transaction-Historic'
+  /transaction/chargerTransactions/{connectorID}:
+    parameters:
+      - in: path
+        name: connectorID
+        schema:
+          type: integer
+        required: true
+    get:
+      tags:
+        - Transactions
+      summary: Transaction by transactions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  anyOf:
+                    - $ref: '#/components/schemas/Transaction-Ongoing'
+                    - $ref: '#/components/schemas/Transaction-Historic'
+  /transactions:
+    post:
+      tags:
+        - Transactions (Deprecated)
+      deprecated: true
       summary: Create a transaction
       description: |-
         Creates a transaction that can be started using the `transactionID` returned
@@ -572,7 +778,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/Transaction-OLD'
         '400':
           description: Error message
         '500':
@@ -583,11 +789,12 @@ paths:
         name: transactionID
         schema:
           type: integer
-          example: 100000
+          example: 9999
         required: true
     put:
       tags:
-        - Transactions
+        - Transactions (Deprecated)
+      deprecated: true
       summary: Start a transaction
       description: |-
         Starts a transaction
@@ -599,7 +806,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/Transaction-OLD'
         '400':
           description: Error message
         '500':
@@ -610,11 +817,12 @@ paths:
         name: transactionID
         schema:
           type: integer
-          example: 100000
+          example: 9999
         required: true
     get:
       tags:
-        - Transactions
+        - Transactions (Deprecated)
+      deprecated: true
       summary: Get status of a transaction
       description: |-
         Gets the status of a transaction
@@ -626,7 +834,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/Transaction-OLD'
         '404':
           description: Transaction not found
         '500':
@@ -637,11 +845,12 @@ paths:
         name: transactionID
         schema:
           type: integer
-          example: 100000
+          example: 9999
         required: true
     put:
       tags:
-        - Transactions
+        - Transactions (Deprecated)
+      deprecated: true
       summary: Stop a transaction
       description: |-
         Stops a transaction
@@ -653,55 +862,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/Transaction-OLD'
         '400':
           description: Error message
         '500':
           description: Error message
-  /transactions/userTransactions/{userID}:
-    parameters:
-      - in: path
-        name: userID
-        schema:
-          type: integer
-        required: true
-    get:
-      tags:
-        - Transactions
-      summary: Transaction by userID
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
-  /transactions/chargerTransactions/{connectorID}:
-    parameters:
-      - in: path
-        name: connectorID
-        schema:
-          type: integer
-        required: true
-    get:
-      tags:
-        - Transactions
-      summary: Transaction by transactions
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
   /invoices:
     post:
       tags:
@@ -972,8 +1137,10 @@ components:
           description: Charger status
           example: Available
           enum:
+            - Unavailable
             - Available
-            - Reserved
+            - Occupied
+            - Faulty
       xml:
         name: charger
     ChargePoint:
@@ -999,7 +1166,82 @@ components:
         klarnaReservationAmount:
           type: number
           example: 400
-    Transaction:
+    Transaction-Ongoing:
+      type: object
+      properties:
+        startTimstamp:
+          type: integer
+          example: 1696863503
+          description: UNIX timestamp (seconds)
+        kwhTransfered:
+          type: number
+          example: 10
+        currentChargePercentage:
+          type: number
+          example: 50.0
+        pricePerKwh:
+          type: integer
+          example: 10000
+          description: Price in öre (1/100 SEK)
+        connectorID:
+          type: integer
+          example: 100000
+        userID:
+          type: string
+          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+    Transaction-Historic:
+      type: object
+      properties:
+        price:
+          type: integer
+          example: 10000
+          description: Price in öre (1/100 SEK)
+        startTimstamp:
+          type: integer
+          example: 1696863503
+          description: UNIX timestamp (seconds)
+        endTimstamp:
+          type: integer
+          example: 1696864503
+          description: UNIX timestamp (seconds)
+        kwhTransfered:
+          type: number
+          example: 10
+        discount:
+          type: integer
+          example: 0
+          description: Discount in %
+        connectorID:
+          type: integer
+          example: 100000
+        userID:
+          type: string
+          example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+    UserInformation:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "Test"
+        lastName:
+          type: string
+          example: "Person"
+        phoneNumber:
+          type: string
+          example: "+46701234567"
+        streetAddress:
+          type: string
+          example: "Storgatan 5"
+        zipCode:
+          type: string
+          example: "123 45"
+        city:
+          type: string
+          example: "Jönköping"
+        country:
+          type: string
+          example: "SE"
+    Transaction-OLD:
       type: object
       properties:
         transactionID:
@@ -1041,7 +1283,6 @@ components:
         connectorID:
           type: integer
           example: 100000
-
   securitySchemes:
     bearerAuth:
       type: http

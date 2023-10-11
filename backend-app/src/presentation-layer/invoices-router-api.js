@@ -1,7 +1,6 @@
 const express = require("express");
-const checkJwt = require("./middleware/jwt.middleware");
 
-module.exports = function ({ databaseInterfaceInvoices }) {
+module.exports = function ({ databaseInterfaceInvoices, verifyUser }) {
   const router = express.Router();
 
   /**
@@ -9,7 +8,7 @@ module.exports = function ({ databaseInterfaceInvoices }) {
    *
    * Not implemented!!
    */
-  router.post("/", checkJwt, function (req, res) {
+  router.post("/", verifyUser, function (req, res) {
     const { userID, dateStart, dateEnd } = req.body;
 
     res.status(201).json({
@@ -23,11 +22,8 @@ module.exports = function ({ databaseInterfaceInvoices }) {
    * Get a list of invoices for all users.
    * Filter options: date & status
    */
-  router.get("/users", checkJwt, (req, res) => {
-    const invoices = databaseInterfaceInvoices.getAllInvoices(
-      req.user,
-      req.query
-    );
+  router.get("/users", verifyUser, (req, res) => {
+    const invoices = databaseInterfaceInvoices.getAllInvoices(req.user, req.query);
     res.status(200).json(invoices);
   });
 
@@ -35,14 +31,10 @@ module.exports = function ({ databaseInterfaceInvoices }) {
    * Get a list of invoices for a specific user.
    * Filter options: status
    */
-  router.get("/users/:userID", checkJwt, function (req, res) {
+  router.get("/users/:userID", verifyUser, function (req, res) {
     const { userID } = req.params;
 
-    const invoices = databaseInterfaceInvoices.getAllInvoicesByUserID(
-      userID,
-      req.user,
-      req.query
-    );
+    const invoices = databaseInterfaceInvoices.getAllInvoicesByUserID(userID, req.user, req.query);
     res.status(200).json(invoices);
   });
 

@@ -2,7 +2,7 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
 
     const exports = {}
 
-    exports.startChargeSession = function (connectorID, userID, payNow, paymentDueDate, paymentMethod, callback) {
+    exports.startChargeSession = function (connectorID, userID, callback) {
         const validationErrors = chargeSessionValidation.getAddChargeSessionValidation(connectorID, userID)
 
         if (validationErrors.length > 0) {
@@ -12,44 +12,27 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
 
         startTime = (Date.now() / 1000 | 0)
 
-        dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, startTime, function (error, chargeSession) {
+        dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, startTime, function (error, chargeSessionID) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
                 return
             }
+            else if (chargeSessionID) {
+                callback([], chargeSessionID)
+            }
+            // Updates MeterStart value in table. Should be set to 0 or 1? Not a variable since we just added the ChargeSession.
+                // dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, (error, updatedChargeSession) => {
+                //     if (Object.keys(error).length > 0) {
+                //         dbErrorCheck.checkError(error, function (errorCode) {
+                //             callback(errorCode, [])
+                //         })
+                //         return
+                //     }
 
-            // When chargeSession is added, it's started. Which in turn:
-            // 1. Creates a new transaction
-            // 2. Contacts OCPP interface and starts the remoteTransaction
-            totalPrice = null
-            dataAccessLayerTransactions.addTransaction(chargeSession.chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                    return
-                }
-
-                ocppInterface.remoteStartTransaction(chargeSession.connectorID, transaction.transactionID, function (error, returnObject) {
-                    if (error != null || returnObject.status == "Rejected") {
-                        callback(["couldNotStartOCPPTransaction"], [])
-                        return
-                    }
-
-                    dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, (error, updatedChargeSession) => {
-                        if (Object.keys(error).length > 0) {
-                            dbErrorCheck.checkError(error, function (errorCode) {
-                                callback(errorCode, [])
-                            })
-                            return
-                        }
-
-                        callback([], updatedChargeSession)
-                    })
-                })
-            })
+                //     callback([], updatedChargeSession)
+                // })
         })
     }
 
