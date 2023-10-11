@@ -1187,9 +1187,7 @@ components:
 
 
         ``
-        {
-          "authorization": "Bearer AYABeAvR1_coVz0EnKxmy..."
-        }
+          Authorization: Bearer <accessToken>
         ``
     Forbidden:
       description: >-
