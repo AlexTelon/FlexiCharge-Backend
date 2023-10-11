@@ -45,7 +45,6 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
     }
     Promise.all(promises)
       .then(function (tariffs) {
-        console.log(tariffs);
         callback([], tariffs);
       })
       .catch((e) => {
