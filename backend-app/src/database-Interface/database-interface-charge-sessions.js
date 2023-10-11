@@ -12,27 +12,24 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
 
         startTime = (Date.now() / 1000 | 0)
 
-        dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, startTime, function (error, chargeSessionID) {
+        dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, startTime, function (error, chargeSession) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
                 return
             }
-            else if (chargeSessionID) {
-                callback([], chargeSessionID)
+            else if (chargeSession.chargeSessionID) {
+                dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, 1, function (error, updatedChargeSession) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
+                            callback(errorCode, [])
+                        })
+                        return
+                    }
+                    callback([], chargeSession)
+                })
             }
-            // Updates MeterStart value in table. Should be set to 0 or 1? Not a variable since we just added the ChargeSession.
-                // dataAccessLayerChargeSessions.updateMeterStart(chargeSession.chargeSessionID, returnObject.meterStart, (error, updatedChargeSession) => {
-                //     if (Object.keys(error).length > 0) {
-                //         dbErrorCheck.checkError(error, function (errorCode) {
-                //             callback(errorCode, [])
-                //         })
-                //         return
-                //     }
-
-                //     callback([], updatedChargeSession)
-                // })
         })
     }
 
@@ -189,7 +186,7 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
 
     exports.updateMeterStart = function (chargeSessionID, meterStart, callback) {
         const validationErrors = chargeSessionValidation.updateMeterStartValidation(chargeSessionID, meterStart)
-        if(validationErrors.length > 0) { callback(validationErrors, []); return }
+        if (validationErrors.length > 0) { callback(validationErrors, []); return }
 
         dataAccessLayerChargeSessions.updateMeterStart(chargeSessionID, meterStart, (error, updatedChargingSession) => {
             if (Object.keys(error).length > 0) {
