@@ -23,7 +23,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
     const router = express.Router();
 
-    router.post("/", /* verifyUser, */ function (request, response) {
+    router.post("/", verifyUser, function (request, response) {
 
         const { connectorID, paymentType } = request.body;
 
@@ -85,7 +85,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
         })
     });
 
-    router.put("/start/:transactionID", /* verifyUser, */ function (request, response) {
+    router.put("/start/:transactionID", verifyUser, function (request, response) {
         const transactionID = request.params.transactionID;
         const authorization_token = request.body.authorization_token;
 
@@ -117,7 +117,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
         });
     });
 
-    router.get("/:transactionID", /* verifyUser, */ function (request, response) {
+    router.get("/:transactionID", verifyUser, function (request, response) {
         const transactionID = request.params.transactionID;
 
         if (transactionID == 9999) {
@@ -135,7 +135,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
         });
     });
 
-    router.put("/stop/:transactionID", /* verifyUser, */ function (request, response) {
+    router.put("/stop/:transactionID", verifyUser, function (request, response) {
         const transactionID = request.params.transactionID;
 
         if (transactionID == 9999) {
@@ -152,7 +152,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
         });
     });
 
-    router.get("/userTransactions/:userID", /* verifyUser, */ function (request, response) {
+    router.get("/userTransactions/:userID", verifyUser, function (request, response) {
         const userID = request.params.userID;
 
         databaseInterfaceTransactions.getTransactionsForUser(userID, function (errors, userTransaction) {
@@ -163,7 +163,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
         });
     });
 
-    router.get("/chargerTransactions/:connectorID", /* verifyUser, */ function (request, response) {
+    router.get("/chargerTransactions/:connectorID", verifyUser, function (request, response) {
         const connectorID = request.params.connectorID;
 
         databaseInterfaceTransactions.getTransactionsForCharger(connectorID, function (errors, chargerTransaction) {
