@@ -6,17 +6,14 @@ describe("Start a ChargeSession", () => {
     test("Start a ChargeSession", (done) => {
         const connectorID = 1
         const userID = 2
-        const payNow = null
-        const paymentDueDate = null
-        const paymentMethod = null
 
-        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, payNow, paymentDueDate, paymentMethod, (error, startedChargeSession) => {
+        databaseInterfaceChargeSessions.startChargeSession(connectorID, userID, (error, startedChargeSession) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
             }
 
-            expect(startedChargeSession.meterStart).toBe(1032)
+            expect(startedChargeSession.connectorID).toBe(connectorID)
             done()
         })
     });

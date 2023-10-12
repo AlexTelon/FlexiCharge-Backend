@@ -9,10 +9,14 @@ describe('Authentication Router API', () => {
   const password = config.TEST_USER_PASSWORD;
 
   test('should return a 200 status code and a token when valid credentials are provided', async () => {
-    const response = await axios.post(`${URL}/auth/sign-in`, {
-      username: username,
-      password: password
-    });
-    expect(response.status).toBe(200);
+    try {
+      const response = await axios.post(`${URL}/auth/sign-in`, {
+        username: username,
+        password: password
+      });
+      expect(response.status).toBe(200);
+    } catch(error) {
+      expect(false).toBeTruthy();
+    }
   });
 });
