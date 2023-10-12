@@ -11,17 +11,26 @@ describe('chargers tests', () => {
   let token = '';
 
   test('should log in', async () => {
-    const response = await axios.post(`${URL}/auth/sign-in`, {
-      username: username,
-      password: password
-    });
-    token = response.data.accessToken;
+    try {
+      const response = await axios.post(`${URL}/auth/sign-in`, {
+        username: username,
+        password: password
+      });
+      token = response.data.accessToken;
+      expect(token).toBeDefined();
+    } catch(error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   test('should return a list of charge points', async () => {
-    const response = await axios.get(`${URL}/chargers`);
-    expect(response.status).toBe(200);
-    // expect(response.data.length).toBe(3103);
+    try {
+      const response = await axios.get(`${URL}/chargers`);
+      expect(response.status).toBe(200);
+      // expect(response.data.length).toBe(3103);
+    } catch (error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   test('post test for the charger', async () => {
@@ -36,35 +45,45 @@ describe('chargers tests', () => {
       ],
       serialNumber: "testcharger"
     };
-    const response = await axios.post(`${URL}/chargers`, data, { headers });
-    connectorID = response.data.connectorID;
-    expect(response.status).toBe(201);
+    try {
+      const response = await axios.post(`${URL}/chargers`, data, { headers });
+      connectorID = response.data.connectorID;
+      expect(response.status).toBe(201);
+    } catch (error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   test('should return a specific charger', async () => {
-    const response = await axios.get(`${URL}/chargers/${connectorID}`);
-    expect(response.status).toBe(200);
+    try {
+      const response = await axios.get(`${URL}/chargers/${connectorID}`);
+      expect(response.status).toBe(200);
+    } catch (error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   test('should delete a charger', async () => {
     const headers = {
       'Authorization': `Bearer ${token}`
     };
-    const response = await axios.delete(`${URL}/chargers/${connectorID}`, { headers });
-    expect(response.status).toBe(204);
+    try {
+      const response = await axios.delete(`${URL}/chargers/${connectorID}`, { headers });
+      expect(response.status).toBe(204);
+    } catch (error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   test('should return all available chargers', async () => {
-    const response = await axios.get(`${URL}/chargers/available`);
-    expect(response.status).toBe(200);
-    if (Array.isArray(response.data)) {
+    try {
+      const response = await axios.get(`${URL}/chargers/available`);
+      expect(response.status).toBe(200);
       for (const charger of response.data) {
-        if (charger.status === 'Available') {
-          expect(charger.status).toBe('Available');
-        }
+        expect(charger.status).toBe('Available');
       }
-    } else if (response.data.status === 'Available') {
-        expect(response.data.status).toBe('Available');
-      }
+    } catch (error) {
+      expect(false).toBeTruthy();
+    }
   });
 });

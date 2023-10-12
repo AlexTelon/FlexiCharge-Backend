@@ -23,7 +23,6 @@ module.exports = function ({ func, constants, v, databaseInterfaceChargers }) {
                         message = getMessageRemoteStopCall(connectorID, action, payload, callback)
                         break
                 }
-                console.log("This is sent: from interfaceHandler " + message)
                 socket.send(message)
 
             } else {

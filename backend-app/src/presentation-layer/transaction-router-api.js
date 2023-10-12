@@ -1,10 +1,10 @@
 var express = require("express");
 
-module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAccessLayerKlarna }) {
+module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceChargeSessions, databaseInterfaceKlarnaPayments, verifyUser, dataAccessLayerKlarna }) {
 
     function getMockTransaction(ongoing, userID) {
         return ongoing ? {
-            "startTimstamp": Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
+            "startTimestamp": Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
             "kwhTransferred": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
             "currentChargePercentage": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
             "pricePerKWh": Math.floor(Math.random() * 100_00) + 1, // Random number between 0 and 10 000 (= 100,00 kr)
@@ -12,8 +12,8 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             "userID": userID,
         } : {
             "price": Math.floor(Math.random() * 1_000_00) + 1, // Random number between 0 and 100 000 (= 1 000,00 kr)
-            "startTimstamp":  Math.floor(Date.now() / 1000) - 3600 - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) 1 hour up to 2 hours ago
-            "endTimstamp":  Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
+            "startTimestamp": Math.floor(Date.now() / 1000) - 3600 - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) 1 hour up to 2 hours ago
+            "endTimestamp": Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 3600), // UNIX timestamp (seconds) from (randomly) up to 1 hour ago
             "kwhTransferred": Math.floor(Math.random() * 100) + 1, // Random number between 0 and 100
             "discount": 0,
             "connectorID": 100_000,
@@ -25,7 +25,6 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
 
     router.post("/", verifyUser, function (request, response) {
 
-        console.log("Entering Post transactions");
         const { connectorID, paymentType } = request.body;
 
         const data = {
@@ -52,21 +51,46 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             return;
         }
 
-        const isKlarnaPayment = paymentType === 'klarna';
-        const pricePerKWh = 123.45;
+        databaseInterfaceChargeSessions.createChargeSession(connectorID, userID, function (errors, chargeSession) {
+            if (errors.length > 0) {
+                response.status(400).json(errors)
+            } else if (chargeSession) {
 
-        databaseInterfaceTransactions.addTransaction(userID, connectorID, isKlarnaPayment, pricePerKWh, function (errors, transactionID) {
-            if (errors.length > 0) { response.status(400).json(errors); return; }
-            if (!transactionID) { response.status(500).json(errors); return; }
+                const chargeSessionID = chargeSession.dataValues.chargeSessionID;
 
-            data.transactionID = transactionID;
-            response.status(201).json(data);
-        });
+                databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, paymentType, function (errors, transaction) {
+                    const transactionID = transaction.transactionID;
+                    if (errors.length > 0) {
+                        response.status(400).json(errors)
+                    } else if (transactionID) {
+
+                        data.transactionID = transactionID;
+
+                        const price = 500;
+
+                        dataAccessLayerKlarna.getNewKlarnaPaymentSession(price, async function (error, klarnaSessionTransaction) {
+                            if (error.length > 0) { response.status(400).json(error); return; }
+                            if (!klarnaSessionTransaction) { response.status(500).json(error); return; }
+
+                            data.klarnaClientToken = klarnaSessionTransaction.client_token;
+                            data.klarnaSessionID = klarnaSessionTransaction.session_id;
+
+                            response.status(201).json(data);
+                        });
+                    } else {
+                        response.status(500).json(errors)
+                    }
+                })
+            } else {
+                response.status(500).json(errors)
+            }
+        })
     });
 
     router.put("/start/:transactionID", verifyUser, function (request, response) {
         const transactionID = request.params.transactionID;
         const authorization_token = request.body.authorization_token;
+        // TODO: Check authorization_token (from Klarna, to make sure that the user has paid)
 
         if (transactionID == 9999) {
             const data = getMockTransaction(true, request.user.sub);
@@ -74,8 +98,8 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             return;
         }
 
-        databaseInterfaceTransactions.createKlarnaOrder(transactionID, authorization_token, function (error, klarnaOrder) {
-            console.log(error, klarnaOrder);
+        databaseInterfaceTransactions.startTransaction(transactionID, function (error, transaction) {
+            console.log('tra-sat_0', error, transaction);
             if (error.length > 0) {
                 if (error.includes("internalError") || error.includes("dbError")) {
                     response.status(500).json(error);
@@ -85,7 +109,18 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
                 return;
             }
 
-            response.status(200).json(klarnaOrder);
+            const data = {
+                startTimestamp: transaction['ChargeSession.startTime'] || null,
+                kwhTransferred: transaction['ChargeSession.kWhTransferred'] || 0,
+                currentChargePercentage: transaction['ChargeSession.currentChargePercentage'] || 0,
+                pricePerKwh: 999 || null,
+                connectorID: transaction['ChargeSession.connectorID'] || null,
+                userID: transaction.userID || null
+            }
+
+            console.log('tra-sat_1', transaction, data)
+
+            response.status(200).json(data);
         });
     });
 
@@ -103,7 +138,24 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             if (errors.length > 0) { response.status(500).json(errors); return; }
             if (transaction.length === 0) { response.status(404).end(); return; }
 
-            response.status(200).json(transaction);
+            console.log('tra-rg', transaction);
+
+            response.status(200).json(('ChargeSession.endTime' in transaction && transaction['ChargeSession.endTime'] > 0) ? {
+                price: transaction.totalPrice || 0,
+                startTimestamp: transaction['ChargeSession.startTime'] || null,
+                endTimestamp: transaction['ChargeSession.endTime'] || null,
+                kwhTransferred: transaction['ChargeSession.kWhTransferred'] || 0,
+                discount: transaction.discount || 0,
+                connectorID: transaction['ChargeSession.connectorID'] || null,
+                userID: transaction.userID || null,
+            } : {
+                startTimestamp: transaction['ChargeSession.startTime'] || null,
+                kwhTransferred: transaction['ChargeSession.kWhTransferred'] || 0,
+                currentChargePercentage: transaction['ChargeSession.currentChargePercentage'] || 0,
+                pricePerKwh: 999 || null,
+                connectorID: transaction['ChargeSession.connectorID'] || null,
+                userID: transaction.userID || null,
+            });
         });
     });
 
@@ -116,11 +168,30 @@ module.exports = function ({ databaseInterfaceTransactions, verifyUser, dataAcce
             return;
         }
 
-        databaseInterfaceTransactions.finalizeKlarnaOrder(transactionID, function (error, stoppedTransaction) {
-            if (error.length > 0) { response.status(400).json(error); return; }
-            if (!stoppedTransaction) { response.status(500).json(error); return; }
+        databaseInterfaceTransactions.stopTransaction(transactionID, function (error, transaction) {
+            console.log('tra-sot_0', error, transaction);
+            if (error.length > 0) {
+                if (error.includes("internalError") || error.includes("dbError")) {
+                    response.status(500).json(error);
+                    return;
+                }
+                response.status(400).json(error);
+                return;
+            }
 
-            response.status(200).json(stoppedTransaction);
+            const data = {
+                price: transaction.totalPrice || 0,
+                startTimestamp: transaction['ChargeSession.startTime'] || null,
+                endTimestamp: transaction['ChargeSession.endTime'] || null,
+                kwhTransferred: transaction['ChargeSession.kWhTransferred'] || 0,
+                discount: transaction.discount || 0,
+                connectorID: transaction['ChargeSession.connectorID'] || null,
+                userID: transaction.userID || null,
+            }
+
+            console.log('tra-sot_1', transaction, data)
+
+            response.status(200).json(data);
         });
     });
 

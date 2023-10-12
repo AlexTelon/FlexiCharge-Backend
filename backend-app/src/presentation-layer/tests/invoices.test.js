@@ -10,11 +10,16 @@ describe('All invoices tests', () => {
   let token = '';
 
   test('should log in', async () => {
-    const response = await axios.post(`${URL}/auth/sign-in`, {
-      username: username,
-      password: password
-    });
-    token = response.data.accessToken;
+    try {
+      const response = await axios.post(`${URL}/auth/sign-in`, {
+        username: username,
+        password: password
+      });
+      token = response.data.accessToken;
+      expect(token).toBeDefined();
+    } catch(error) {
+      expect(false).toBeTruthy();
+    }
   });
 
   // test('should create an invoice', async () => {
