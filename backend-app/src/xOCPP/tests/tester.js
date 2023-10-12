@@ -1,6 +1,6 @@
 const config = require("../../config")
 
-module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
+module.exports = function ({ serverTests, chargerTests, liveMetricsTests, constants }) {
     const c = constants.get()
     let failedTests = []
     let successfulTests = []

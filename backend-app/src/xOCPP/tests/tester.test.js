@@ -3,20 +3,6 @@ const { describe, expect, test } = require("@jest/globals");
 
 
 module.exports = function ({ ocpp, chargerTests, liveMetricsTests, constants }) {
-    const c = constants.get();
-    
-    describe("Websocket Server", () => {
-        beforeAll("Start the server", () => {
-            ocpp.startServer();
-        });
-
-        test(() => {
-            expect((ocpp.startServer().wss != ""));
-        });
-    });
-}
-
-module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
     const c = constants.get()
     let failedTests = []
     let successfulTests = []
@@ -48,7 +34,15 @@ module.exports = function ({ chargerTests, liveMetricsTests, constants }) {
         })
         
     }
+    describe("Tets Charger", () => {
+        beforeAll("Start Server", () => {
+            ocpp.startServer();
+        });
 
+        test("Connect charger to Socket Server", () => {
+            
+        });
+    });
     runChargerTests = function(callback){ /** PLEASE NOTE THAT THIS ONLY WORKS WITH LOCAL DATABASE AND THE CORRECT TEST DATA IN THE LOCAL DATABASE */
         console.log('\n========= RUNNING TESTS FOR CHARGER ==========\n')
         chargerTests.connectAsChargerSocket(c.CHARGER_ID, function(ws){

@@ -49,7 +49,7 @@ module.exports = function ({}) {
       jest.clearAllMocks();
     });
 
-    it('Should handle a valiud client connection with an existing charger', () => {
+    it('Should handle a valid client connection with an existing charger', () => {
 
       //Mock database response
       mockDatabaseInterfaceCharger.getChargerBySerialNumber.mockImplementation((serial, callback) => {

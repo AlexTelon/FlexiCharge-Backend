@@ -1,9 +1,6 @@
 const WebSocket = require('ws')
-const serverModule = require('./server_ocpp')
 
-const config = require('../config')
-
-const { describe, expect, test } = require("@jest/globals");
+const { describe, expect, it } = require("@jest/globals");
 const { afterEach, beforeEach } = require('node:test');
 
 jest.mock('ws');
