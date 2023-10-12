@@ -3,6 +3,7 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
     const exports = {}
 
     exports.createChargeSession = function (connectorID, userID, callback) {
+    exports.createChargeSession = function (connectorID, userID, callback) {
         const validationErrors = chargeSessionValidation.getAddChargeSessionValidation(connectorID, userID)
 
         if (validationErrors.length > 0) {
@@ -11,12 +12,33 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
         }
 
         dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, function (error, chargeSession) {
+        dataAccessLayerChargeSessions.addChargeSession(connectorID, userID, function (error, chargeSession) {
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, [])
                 })
                 return
             }
+            callback([], chargeSession)
+        })
+    }
+
+    exports.startChargeSession = function (chargeSessionID, startTime, meterStart, callback) {
+        // const validationErrors = chargeSessionValidation.getAddChargeSessionValidation(connectorID, userID)
+
+        // if (validationErrors.length > 0) {
+        //     callback(validationErrors, [])
+        //     return
+        // }
+
+        dataAccessLayerChargeSessions.updateMeterStart(chargeSessionID, startTime, meterStart, function (error, chargeSession) {
+            if (Object.keys(error).length > 0) {
+                dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [])
+                })
+                return
+            }
+            callback([], chargeSession)
             callback([], chargeSession)
         })
     }
@@ -92,12 +114,20 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
         console.debug('dis-ecs_0', chargeSessionID, timestamp, kWhTransferred)
         // const validationErrors = chargeSessionValidation.endChargeSessionValidation(chargeSessionID)
         // if (validationErrors.length > 0) { callback(validationErrors, []); return }
+    exports.endChargeSession = function (chargeSessionID, timestamp, kWhTransferred, callback) {
+        console.debug('dis-ecs_0', chargeSessionID, timestamp, kWhTransferred)
+        // const validationErrors = chargeSessionValidation.endChargeSessionValidation(chargeSessionID)
+        // if (validationErrors.length > 0) { callback(validationErrors, []); return }
+
+        dataAccessLayerChargeSessions.updateMeterStop(chargeSessionID, timestamp, kWhTransferred, function (error, chargeSession) {
+            console.debug('dis-ecs_1', chargeSession)
 
         dataAccessLayerChargeSessions.updateMeterStop(chargeSessionID, timestamp, kWhTransferred, function (error, chargeSession) {
             console.debug('dis-ecs_1', chargeSession)
 
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
+                    callback(errorCode, [], [])
                     callback(errorCode, [], [])
                 })
                 return
@@ -106,13 +136,22 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
             dataAccessLayerTransactions.getTransactionForChargeSession(chargeSessionID, function (error, transaction) {
                 console.debug('dis-ecs_2', transaction)
 
+                console.debug('dis-ecs_2', transaction)
+
                 if (Object.keys(error).length > 0) {
                     dbErrorCheck.checkError(error, function (errorCode) {
+                        callback(errorCode, [], [])
                         callback(errorCode, [], [])
                     })
                     return
                 }
 
+                // databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, electricityTariff) {
+                ((error, electricityTariff) => {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
+                            callback(errorCode, [], [])
+                        })
                 // databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, electricityTariff) {
                 ((error, electricityTariff) => {
                     if (Object.keys(error).length > 0) {
@@ -127,9 +166,13 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function (errorCode) {
                                 callback(errorCode, [], [])
+                                callback(errorCode, [], [])
                             })
                             return
                         }
+                        callback([], updatedTransaction[1][0], chargeSession)
+                    })
+                })([], { price: 3.33 })
                         callback([], updatedTransaction[1][0], chargeSession)
                     })
                 })([], { price: 3.33 })
