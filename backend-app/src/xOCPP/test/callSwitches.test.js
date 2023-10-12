@@ -1,6 +1,6 @@
 
-const { describe, expect, it } = require("@jest/globals");
-const { afterEach, beforeEach, before } = require('node:test');
+
+
 
 const mockFunc = {
   getCallResultNotImplemeted: jest.fn(),
@@ -15,13 +15,11 @@ const mockFunc = {
 
 
 
-module.exports = function ({ chargerMessageHandler, c }) {
-  exports.testCallSwitch = function () {
 
-    const uniqueID = 'unique123';
-    const chargerID = 'charger123';
-
-    describe('callSwitch', () => {
+    describe('callSwitch', (chargerMessageHandler, constants) => {
+      const c = constants.get()
+      const uniqueID = 'unique123';
+      const chargerID = 'charger123';
 
       beforeEach(() => {
         jest.clearAllMocks();
@@ -100,14 +98,14 @@ module.exports = function ({ chargerMessageHandler, c }) {
         expect(result).toBe('meterValuesResponse');
       });
     });
-  };
 
-  exports.testResultCallSwitch = function (interfaceHandler) {
 
-    const uniqueID = 'unique123';
-    const chargerID = 'charger123';
 
-    describe('callResultCallSwitch', () => {
+
+    describe('callResultCallSwitch', (chargerMessageHandler, constants) => {
+      const c = constants.get();
+      const uniqueID = 'unique123';
+      const chargerID = 'charger123';
 
       beforeEach(() => {
         jest.clearAllMocks();
@@ -195,5 +193,3 @@ module.exports = function ({ chargerMessageHandler, c }) {
         expect(() => callResultSwitch(uniqueID, response)).toThrow(c.RESPONSE_STATUS_REJECTED);
       });
     });
-  };
-}

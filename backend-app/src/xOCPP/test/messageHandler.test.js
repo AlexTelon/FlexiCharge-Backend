@@ -48,14 +48,13 @@ const mockConfig = {
 
 module.exports = function ({ chargerMessageHandler, c, broker, databaseInterfaceTransactions, databaseInterfaceCharger }) {
 
-  exports.testMessageHandler = function () {
 
-    const chargerID = 'charger123';
-    const clientSocketMock = {
-      send: jest.fn(),
-    };
-
-    describe('handleMessage', () => {
+    describe('handleMessage', (chargerMessageHandler) => {
+      
+      const chargerID = 'charger123';
+      const clientSocketMock = {
+        send: jest.fn(),
+      };
 
       beforeEach(() => {
         jest.clearAllMocks();
@@ -98,7 +97,7 @@ module.exports = function ({ chargerMessageHandler, c, broker, databaseInterface
 
   exports.testMeterValues = function () {
 
-    describe('testMeterValues', () => {
+    describe('testMeterValues', (chargerMessageHandler) => {
       
       const chargerID = 'charger123';
       const userID = 'user123';
@@ -119,7 +118,7 @@ module.exports = function ({ chargerMessageHandler, c, broker, databaseInterface
         mockV.getConnectedChargerSocket.mockReturnValue(socket);
         mockFunc.buildJSONMessage.mockReturnValue('mockedResponse');
 
-        handleMeterValues(chargerID, request);
+        chargerMessageHandler.handleMeterValues(chargerID, request);
 
         expect(mockV.getUserIDWithTransactionID).toHaveBeenCalledWith('transaction123');
         expect(mockV.getConnectedChargerSocket).toHaveBeenCalledWith(chargerID);
@@ -138,7 +137,7 @@ module.exports = function ({ chargerMessageHandler, c, broker, databaseInterface
         mockV.getConnectedChargerSocket.mockReturn(socket);
         mockFunc.buildJSONMessage.mockReturn('mockedResponse');
 
-        handleMeterValues(chargerID, request);
+        chargerMessageHandler.handleMeterValues(chargerID, request);
 
         expect(mockV.getUserIDWithTransactionID).toHaveBeenCalledWith('transaction123');
         expect(mockV.getConnectedChargerSocket).toHaveBeenCalledWith(chargerID);
@@ -159,7 +158,7 @@ module.exports = function ({ chargerMessageHandler, c, broker, databaseInterface
     };
     const callbackMock = jest.fn();
 
-    describe('handleStopTransaction', () => {
+    describe('handleStopTransaction', (databaseInterfaceCharger, chargerMessageHandler) => {
 
       beforeEach(() => {
         jest.clearAllMocks();

@@ -1,7 +1,6 @@
 
-const { describe, expect, test } = require("@jest/globals");
-const exp = require("constants");
-const { afterEach, beforeEach } = require('node:test');
+const { describe, expect, it } = require("@jest/globals");
+const {  beforeEach } = require('node:test');
 
 const mockDatabaseInterfaceCharger = {
   getChargerBySerialNumber: jest.fn(),
@@ -35,7 +34,6 @@ const mockFunc = {
   getUniqueId: jest.fn(),
 };
 
-module.exports = function ({}) {
   describe("Handle Client", () => {
     let mockClientSocket;
     const chargerSerial = 'chargerSerial';
@@ -106,4 +104,3 @@ module.exports = function ({}) {
       expect(mockClientSocket.terminate).toHaveBeenCalledTimes(1);
     });
   });
-};
