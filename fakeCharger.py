@@ -47,9 +47,10 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
         CURRENT_CHARGE_PERCENTAGE = 0
         CURRENT_CHARGE_POWER = 0
         CURRENT_CHARGED_SO_FAR = 0
+        print(f'-1 {CURRENT_CHARGED_SO_FAR=}')
 
         def threadFunc():
-            global STATE
+            global STATE, CURRENT_CHARGE_PERCENTAGE, CURRENT_CHARGE_POWER, CURRENT_CHARGED_SO_FAR
             print('threadFunc')
 
             # Reset
@@ -60,6 +61,7 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
             print('Starting live metrics')
             while STATE == 'WAITING_FOR_REMOTE_STOP_TRANSACTION':
                 print('Sending live metrics', f'{STATE=}')
+                print(f'2 {CURRENT_CHARGED_SO_FAR=}')
                 send([
                     OCPP_REQUEST,
                     f"100007MeterValues{timestamp()}",
@@ -114,9 +116,21 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
 
                 CURRENT_CHARGED_SO_FAR += math.floor(CURRENT_CHARGE_POWER * LIVE_DATA_INTERVAL / 3600)
 
+                print(f'4 {CURRENT_CHARGED_SO_FAR=}')
+
                 time.sleep(LIVE_DATA_INTERVAL)
 
             print('Stopping live metrics')
+
+        send([
+            OCPP_REQUEST,
+            f"100007StatusNotification{timestamp()}",
+            "StatusNotification",
+            {
+                "errorCode": "NoError",
+                "status": "Available"
+            }
+        ])
 
         while True:
             message = recv('message')
@@ -128,6 +142,19 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
             }
 
             if STATE == 'WAITING_FOR_RESERVE_NOW':
+
+                if message['type'] and message['operation'] == 'StatusNotification': continue
+
+                send([
+                    OCPP_REQUEST,
+                    f"100007StatusNotification{timestamp()}",
+                    "StatusNotification",
+                    {
+                        "errorCode": "NoError",
+                        "status": "Available"
+                    }
+                ])
+
                 if message['operation'] == 'ReserveNow':
                     send([
                         OCPP_RESPONSE,
@@ -174,6 +201,7 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
 
             elif STATE == 'WAITING_FOR_REMOTE_STOP_TRANSACTION':
                 if message['operation'] == 'RemoteStopTransaction':
+                    print(f'0 {CURRENT_CHARGED_SO_FAR=}')
                     send([
                         OCPP_RESPONSE,
                         message['uid'],
@@ -182,6 +210,7 @@ with connect(f'{BASE_URL}/charger/{CHARGER_SERIAL}') as websocket:
                             "status": "Accepted"
                         }
                     ])
+                    print(f'1 {CURRENT_CHARGED_SO_FAR=}')
                     send([
                         OCPP_REQUEST,
                         message['uid'],

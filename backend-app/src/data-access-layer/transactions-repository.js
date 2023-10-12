@@ -2,16 +2,17 @@ module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.addTransaction = function (chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
-        console.log(chargeSessionID + " : " + userID)
+    exports.addTransaction = function (chargeSessionID, userID, paymentMethod, callback) {
+        console.log('tr-at_0', chargeSessionID + " : " + userID)
         const date = (Date.now() / 1000 | 0)
+        if (paymentMethod.toLowerCase() === 'klarna') paymentMethod = 'Klarna';
         const transaction = {
             userID: userID,
             chargeSessionID: chargeSessionID,
-            payNow: payNow,
+            payNow: false,
             paymentMethod: paymentMethod,
-            paymentDueDate: paymentDueDate,
-            totalPrice: totalPrice,
+            paymentDueDate: null,
+            totalPrice: null,
             transactionDate: date
         }
 
@@ -117,7 +118,7 @@ module.exports = function ({ databaseInit }) {
                 chargeSessionID: chargeSessionID
             }
         }).then(function (transaction) {
-            callback([], transaction)
+            callback([], transaction.dataValues)
         }).catch(e => {
             console.log(e)
             callback(e, [])

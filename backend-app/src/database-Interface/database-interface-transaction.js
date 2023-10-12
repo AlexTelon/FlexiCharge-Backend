@@ -1,24 +1,24 @@
-module.exports = function ({ dataAccessLayerTransactions, transactionValidation, dbErrorCheck, ocppInterface }) {
+module.exports = function ({ dataAccessLayerTransactions, databaseInterfaceChargeSessions, transactionValidation, dbErrorCheck, ocppInterface }) {
 
     const exports = {}
 
-    exports.addTransaction = function (chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, callback) {
-        const validationErrors = transactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
+    exports.addTransaction = function (chargeSessionID, userID, connectorID, paymentMethod, callback) {
+        // TODO: Fix validation
+        const validationErrors = true || transactionValidation.getAddTransactionValidation(chargeSessionID, userID, payNow)
         if (validationErrors.length > 0) {
             callback(validationErrors, [])
             return
         }
         else {
-            timestamp = (Date.now() / 1000 | 0)
-            connectorID = connectorID
-            idTag = 0;
-            parentIdTag = 0; // Optional according to OCPP
+            connectorID = connectorID;
+            const idTag = 0;
+            const parentIdTag = 0; // Optional according to OCPP
 
             ocppInterface.reserveNow(connectorID, idTag, parentIdTag, function (error, returnObject) {
                 if (error != null || returnObject.status == "Rejected") {
                     callback(["couldNotReserveCharger"], [])
                 } else {
-                    dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, function (error, transaction) {
+                    dataAccessLayerTransactions.addTransaction(chargeSessionID, userID, paymentMethod, function (error, transaction) {
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function (errorCode) {
                                 callback(errorCode, [])
@@ -52,7 +52,8 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                 return;
             }
 
-            console.log(1, transaction)
+            console.log('dit-sat_0', 'hej')
+            console.log('dit-sat_1', transaction)
 
             ocppInterface.remoteStartTransaction(transaction['ChargeSession.connectorID'], transaction.transactionID, function (error, returnObject) {
                 if (error != null || returnObject.status == "Rejected") {
@@ -61,7 +62,31 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                     return;
                 }
 
-                callback([], transaction);
+                console.log('dit-sat_2', transaction, returnObject);
+
+                const timestamp = returnObject.timestamp;
+                const meterStart = returnObject.meterStart;
+
+                databaseInterfaceChargeSessions.startChargeSession(transaction.chargeSessionID, timestamp, meterStart, function (error, updatedChargeSession) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
+                            callback(errorCode, [])
+                        })
+                        return
+                    }
+
+                    console.log('dit-sat_3', updatedChargeSession, transaction);
+
+                    for(key in updatedChargeSession) {
+                        console.log('dit-sat_4', 'Key', key, 'val', updatedChargeSession[key])
+                        transaction[`ChargeSession.${key}`] = updatedChargeSession[key];
+                    }
+
+                    console.log('dit-sat_5', transaction);
+
+                    callback([], transaction);
+                });
+
             });
         });
     };
@@ -74,6 +99,7 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
         }
 
         dataAccessLayerTransactions.getTransaction(transactionID, function (error, transaction) {
+            console.log('dit-sot_0', error, transaction)
             if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
                     callback(errorCode, []);
@@ -93,7 +119,31 @@ module.exports = function ({ dataAccessLayerTransactions, transactionValidation,
                     callback(["couldNotStopTransaction"], []);
                     return;
                 }
-                callback([], transaction);
+
+                console.log('dit-sot_1', transaction, returnObject);
+
+                const timestamp = returnObject.timestamp;
+                const kWhTransferred = (returnObject.meterStop - transaction['ChargeSession.meterStart']) / 1000;
+
+                databaseInterfaceChargeSessions.endChargeSession(transaction.chargeSessionID, timestamp, kWhTransferred, function (error, transaction, updatedChargeSession) {
+                    if (Object.keys(error).length > 0) {
+                        dbErrorCheck.checkError(error, function (errorCode) {
+                            callback(errorCode, [])
+                        })
+                        return
+                    }
+
+                    console.log('dit-sot_3', updatedChargeSession, transaction);
+
+                    for(key in updatedChargeSession) {
+                        console.log('dit-sot_4', 'Key', key, 'val', updatedChargeSession[key])
+                        transaction[`ChargeSession.${key}`] = updatedChargeSession[key];
+                    }
+
+                    console.log('dit-sot_5', transaction);
+
+                    callback([], transaction);
+                });
             });
         });
     };

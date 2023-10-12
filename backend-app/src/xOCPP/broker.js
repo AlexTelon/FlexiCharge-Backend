@@ -29,17 +29,26 @@ module.exports = function ({ v, constants, func, databaseInterfaceTransactions, 
         const currentTimestamp = metricsMessage[3].timestamp
         const lastDbTimestamp = v.getLastLiveMetricsTimestamp(transactionID)
 
-        if (lastDbTimestamp && (currentTimestamp - lastDbTimestamp) >= config.LIVEMETRICS_DB_UPDATE_INTERVAL) {
+        console.log('o-b-ptlm_0', transactionID, currentTimestamp, lastDbTimestamp, (currentTimestamp - lastDbTimestamp), config.LIVEMETRICS_DB_UPDATE_INTERVAL)
+
+        if (!lastDbTimestamp || (currentTimestamp - lastDbTimestamp) >= config.LIVEMETRICS_DB_UPDATE_INTERVAL) {
             const chargingPercent = metricsMessage[3].values.chargingPercent.value
             const kWhTransferred = metricsMessage[3].values.chargedSoFar.value / 1000
+
+            console.log(1, chargingPercent, kWhTransferred)
 
             databaseInterfaceTransactions.getTransaction(transactionID, function (errors, transaction) {
                 if (errors.length > 0) { console.log(errors); return; } // HANDLE ERRORS
                 if (transaction.length === 0) { return; }
 
+                console.log(2)
+
                 const chargeSessionID = transaction.chargeSessionID
 
+                console.log(3)
+
                 databaseInterfaceChargeSessions.updateChargingState(chargeSessionID, chargingPercent, kWhTransferred, function (error, updatedChargeSession) {
+                    console.log('updatedChargeSession', updatedChargeSession);
                     if (error.length || !updatedChargeSession) {
                         console.log('Something went wrong when trying to update transaction from latest MeterValues in DB (transactionID: ' + chargeSessionID + ')')
                     } else {
@@ -47,8 +56,8 @@ module.exports = function ({ v, constants, func, databaseInterfaceTransactions, 
                     }
                 })
             });
-        } else if (!lastDbTimestamp) {
-            v.updateLastLiveMetricsTimestamp(transactionID, currentTimestamp)
+        } else {
+            console.log('Update not in interval');
         }
 
         if (!thereIsSubscribers) {
