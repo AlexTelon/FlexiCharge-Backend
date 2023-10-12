@@ -122,7 +122,7 @@ module.exports = function ({ dataAccessLayerChargeSessions, dataAccessLayerTrans
                         return
                     }
                     //Extend to check if the charge session has gone longer than an hour and then both hours have tariffs and a average might be good?
-                    const totalPrice = Math.ceil(kWhTransferred * electricityTariff.price)
+                    const totalPrice = Math.ceil(kWhTransferred * electricityTariff.price * 1_00)
                     dataAccessLayerTransactions.updateTotalPrice(transaction.transactionID, totalPrice, function (error, updatedTransaction) {
                         if (Object.keys(error).length > 0) {
                             dbErrorCheck.checkError(error, function (errorCode) {

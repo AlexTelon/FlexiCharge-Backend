@@ -27,6 +27,8 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
         const { connectorID, paymentType } = request.body;
 
+        console.debug('tra-pt_0', connectorID, paymentType);
+
         const data = {
             "klarnaClientToken": "",
             "klarnaSessionID": "",
@@ -51,12 +53,18 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
             return;
         }
 
+        console.debug('tra-pt_1');
+
         databaseInterfaceChargeSessions.createChargeSession(connectorID, userID, function (errors, chargeSession) {
+            console.debug('tra-pt_2', chargeSession);
+
             if (errors.length > 0) {
                 response.status(400).json(errors)
             } else if (chargeSession) {
 
                 const chargeSessionID = chargeSession.dataValues.chargeSessionID;
+
+                console.debug('tra-pt_3', chargeSession);
 
                 databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, paymentType, function (errors, transaction) {
                     const transactionID = transaction.transactionID;
@@ -75,6 +83,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
                             data.klarnaClientToken = klarnaSessionTransaction.client_token;
                             data.klarnaSessionID = klarnaSessionTransaction.session_id;
 
+                            console.debug('tra-pt_4', data);
                             response.status(201).json(data);
                         });
                     } else {
