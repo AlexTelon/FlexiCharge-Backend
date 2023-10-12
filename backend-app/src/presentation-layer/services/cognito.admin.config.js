@@ -214,7 +214,7 @@ module.exports = function ({ adminValidation }) {
       let params = {
         Limit: limit,
         UserPoolId: this.userPool,
-        GroupName: "Users",
+        GroupName: "Admins",
       };
       if (paginationToken !== undefined) {
         params.NextToken = paginationToken;
