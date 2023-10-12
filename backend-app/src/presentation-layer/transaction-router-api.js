@@ -129,7 +129,7 @@ module.exports = function ({ databaseInterfaceTransactions, databaseInterfaceCha
 
         if (transactionID == 9999) {
             // 1/10 that charging is comleted
-            const data = getMockTransaction(false, request.user.sub);
+            const data = getMockTransaction(true, request.user.sub);
             response.status(200).json(data);
             return;
         }
