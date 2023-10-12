@@ -1,8 +1,8 @@
-module.exports = function({ databaseInit }) {
+module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.getChargers = function(callback) {
+    exports.getChargers = function (callback) {
         databaseInit.Chargers.findAll({ raw: true })
             .then(chargers => callback([], chargers))
             .catch(e => {
@@ -11,8 +11,8 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getCharger = function(chargerId, callback) {
-        databaseInit.Chargers.findOne({ where: { chargerID: chargerId }, raw: true })
+    exports.getCharger = function (connectorID, callback) {
+        databaseInit.Chargers.findOne({ where: { connectorID: connectorID }, raw: true })
             .then(charger => callback([], charger))
             .catch(e => {
                 console.log(e)
@@ -20,7 +20,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getChargerBySerialNumber = function(serialNumber, callback) {
+    exports.getChargerBySerialNumber = function (serialNumber, callback) {
         databaseInit.Chargers.findOne({ where: { serialNumber: serialNumber }, raw: true })
             .then(charger => callback([], charger))
             .catch(e => {
@@ -29,7 +29,7 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.getAvailableChargers = function(callback) {
+    exports.getAvailableChargers = function (callback) {
         databaseInit.Chargers.findAll({ where: { status: 'Available' }, raw: true })
             .then(chargers => callback([], chargers))
             .catch(e => {
@@ -38,32 +38,30 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.addCharger = function(chargePointId, serialNumber, location, callback) {
+    exports.addCharger = function (chargePointID, serialNumber, location, callback) {
         const charger = {
-            chargePointID: chargePointId,
+            chargePointID: chargePointID,
             serialNumber: serialNumber,
             location: location,
-            status: 'Available'
+            status: 'Reserved'
         }
 
-        databaseInit.Chargers.max("chargerID")
-            .then(function(biggestChargerID) {
-                if (biggestChargerID != undefined && biggestChargerID != null && biggestChargerID != NaN && biggestChargerID >= 100000) {
-                    charger.chargerID = biggestChargerID + 1;
+        databaseInit.Chargers.max("connectorID")
+            .then(function (biggestconnectorID) {
+                if (biggestconnectorID != undefined && biggestconnectorID != null && biggestconnectorID != NaN && biggestconnectorID >= 100000) {
+                    charger.connectorID = biggestconnectorID + 1;
                 } else {
-                    charger.chargerID = 100000;
+                    charger.connectorID = 100000;
                 }
 
-                console.log(charger);
-
                 databaseInit.Chargers.create(charger)
-                    .then(createdCharger => callback([], createdCharger.chargerID))
+                    .then(createdCharger => callback([], createdCharger))
                     .catch(e => {
                         if (!e.errors === undefined) {
-                            if (e.errors[0].message == "chargerID must be unique") {
-                                charger.chargerID = parseInt(e.errors[0].value) + 1;
+                            if (e.errors[0].message == "connectorID must be unique") {
+                                charger.connectorID = parseInt(e.errors[0].value) + 1;
                                 databaseInit.Chargers.create(charger)
-                                    .then(createdCharger => callback([], createdCharger.chargerID))
+                                    .then(createdCharger => callback([], createdCharger))
                                     .catch(e => {
                                         console.log(e)
                                         callback(["dbError"], [])
@@ -84,14 +82,14 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.removeCharger = function(chargerId, callback) {
+    exports.removeCharger = function (connectorID, callback) {
         databaseInit.Chargers.destroy({
-                where: { chargerID: chargerId },
-                raw: true
-            })
-            .then(numberDeletedOfChargers => {
+            where: { connectorID: connectorID },
+            raw: true
+        })
+            .then(numberOfDeletedChargers => {
 
-                if (numberDeletedOfChargers == 0) {
+                if (numberOfDeletedChargers == 0) {
                     callback([], false)
                 } else {
                     callback([], true)
@@ -104,14 +102,14 @@ module.exports = function({ databaseInit }) {
             })
     }
 
-    exports.updateChargerStatus = function(chargerId, status, callback) {
+    exports.updateChargerStatus = function (connectorID, status, callback) {
         databaseInit.Chargers.update({
-                status: status
-            }, {
-                where: { chargerID: chargerId },
-                returning: true,
-                raw: true
-            })
+            status: status
+        }, {
+            where: { connectorID: connectorID },
+            returning: true,
+            raw: true
+        })
             .then(charger => {
                 if (charger[1][0] === undefined || charger == null) {
                     callback([], false)
@@ -124,7 +122,6 @@ module.exports = function({ databaseInit }) {
                 callback(e, [])
             })
     }
-
 
     return exports
 }

@@ -11,20 +11,20 @@ module.exports = function ({ v, constants, func, databaseInterfaceTransactions }
             if(userSocket){
                 userSocket.send(jsonMessage)
             }
-        }) 
+        })
 
         if(token){
             v.addLiveMetricsToken(userID, token)
             callback([])
         } else {
             callback([c.INTERNAL_ERROR])
-        } 
+        }
     }
 
     exports.publishToLiveMetrics = function(userID, metricsMessage, callback){
         const topic = `${c.LIVEMETRICS_TOPIC_PREFIX}${userID}`
         const thereIsSubscribers = PubSub.publish(topic, metricsMessage) // thereIsSubscribers only represents if there are any subscribers to the topic!!!
-        
+
         const transactionID = metricsMessage[3].transactionId
         const currentTimestamp = metricsMessage[3].timestamp
         const lastDbTimestamp = v.getLastLiveMetricsTimestamp(transactionID)

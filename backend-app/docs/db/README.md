@@ -5,7 +5,7 @@
   - Name: "refactoring-database-structure"
   - Link: [Branch](https://github.com/knowitrickard/FlexiCharge-Backend/tree/refactoring-database-structure)
   - [Backup](https://drive.google.com/file/d/1sIOtSlLaWU1wGjl4CZKd0jZ8oWMaV-T3/view?usp=sharing) - In case someone deletes the branch
-  - ![Branch](https://img.shields.io/github/last-commit/knowitrickard/FlexiCharge-Backend/refactoring-database-structure?style=for-the-badge) 
+  - ![Branch](https://img.shields.io/github/last-commit/knowitrickard/FlexiCharge-Backend/refactoring-database-structure?style=for-the-badge)
 
 
 - **Documentation of most important parts** "Might not be available from main-branch"
@@ -55,8 +55,7 @@
            ```
     - .env - variable
       - `config.USE_LOCAL_DATABASE == 1` - 1 for local, 0 for RDS.
-        
-    
+
 - **pgAdminTool** :heart_eyes: - Your Best Friend
     - Used to access the database
       - Use the credentials provided in the **Database Population** section.
@@ -118,6 +117,5 @@
 - [**KlarnaAPI**](https://docs.klarna.com/klarna-payments/integrate-with-klarna-payments/)
 - [**RDS**](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html)
 - [**Sequelize-ORM**](https://sequelize.org/docs/v6/getting-started/)
-
 
 ### [🔙 Back To Main Documentation](../../../README.md)
