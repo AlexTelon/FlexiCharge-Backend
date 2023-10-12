@@ -75,11 +75,11 @@ const ChargeSessions = sequelize.define(
       allowNull: true,
     },
     startTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     endTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },

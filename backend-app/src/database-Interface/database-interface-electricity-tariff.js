@@ -24,6 +24,7 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
   };
 
   exports.generateElectricityTariffs = function (offset, callback) {
+    console.debug("diet-get_0");
     const generateDays = 30;
     const maxPrice = 6.0;
     const minPrice = 0.5;
@@ -34,11 +35,15 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
     let iterationTime = startDate.getTime();
     const promises = [];
 
+    console.debug("diet-get_1");
     for (var hour = startDate.getHours(); hour < 24 * generateDays; hour++) {
       price = (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2);
+      console.debug("diet-get_2", price);
       promises.push(
-        dataAccessLayerElectricityTariffs.addElectricityTariff(new Date(iterationTime).toISOString(), price, "SEK", function (error, result) {
-          if (error) console.error(error);
+        dataAccessLayerElectricityTariffs.addElectricityTariff({
+          date: new Date(iterationTime).toISOString(),
+          price: price,
+          currency: "SEK",
         })
       );
       iterationTime += 1 * 60 * 60 * 1000;
@@ -54,18 +59,23 @@ module.exports = function ({ dataAccessLayerElectricityTariffs, dbErrorCheck }) 
   };
 
   exports.getCurrentElectricityTariff = function (callback) {
+    console.debug("diet-gcet_0");
     let currentDate = new Date();
     currentDate.setMinutes(0, 0, 0);
     const queryDate = new Date(currentDate).toISOString();
     dataAccessLayerElectricityTariffs.getElectricityTariffByDate(queryDate, function (error, tariff) {
+      console.debug("diet-gcet_1", error, tariff);
       if (Object.keys(error).length > 0) {
         dbErrorCheck.checkError(error, function (errorCode) {
           callback(errorCode, []);
         });
       } else {
+        console.debug("diet-gcet_2");
         if (tariff != null) {
           callback([], tariff);
         } else {
+          console.debug("diet-gcet_3");
+          //No tariffs found for this date, call the function to generate a new set.
           exports.generateCurrentElectricityTariff(function (error, newTariff) {
             if (Object.keys(error).length > 0) {
               dbErrorCheck.checkError(error, function (errorCode) {

@@ -2,12 +2,16 @@ module.exports = function ({ databaseInit }) {
   const exports = {};
 
   exports.addElectricityTariff = function (timestamp, price, currency, callback) {
+    console.debug("etr-aet_0", timestamp, price, currency);
     databaseInit.ElectricityTariffs.create({
       timestamp: timestamp,
       price: price,
       currency: currency,
     })
-      .then((electricityTariff) => callback([], electricityTariff))
+      .then((electricityTariff) => {
+        console.debug("etr-aet_1", electricityTariff);
+        callback([], electricityTariff);
+      })
       .catch((e) => {
         console.log(e);
         callback(e, []);

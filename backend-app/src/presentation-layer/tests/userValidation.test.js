@@ -3,32 +3,49 @@ const assert = require("assert");
 const { expect, describe } = require("@jest/globals");
 const config = require("../../config");
 
+const URL = config.TEST_URL;
+const username = config.TEST_USER_USERNAME;
+const password = config.TEST_USER_PASSWORD;
+
 describe("Authentication Verification Test", () => {
-  it("Fetch an access token by signing in", async () => {
-    const loginResponse = await axios.post("http://localhost:8080/auth/sign-in", {
-      username: config.TEST_USER_USERNAME,
-      password: config.TEST_USER_PASSWORD,
-    });
+  let token = '';
 
-    const { accessToken } = loginResponse.data;
+  test('should log in', async () => {
+    try {
+      const loginResponse = await axios.post(`${URL}/auth/sign-in`, {
+        username: username,
+        password: password
+      });
+      token = loginResponse.data.accessToken;
+      expect(token).toBeDefined();
+    } catch(error) {
+      expect(false).toBeTruthy();
+    }
+  });
 
-    const successExpectedResponse = await axios.get("http://localhost:8080/auth/user-information", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    // console.log("Response expects status 200 and got", successExpectedResponse.status);
-    expect(successExpectedResponse.status).toBe(200);
+  test('Try the access token', async () => {
 
     try {
-      const errorExpectedResponse = await axios.get("http://localhost:8080/auth/user-information", {
+      const successExpectedResponse = await axios.get(`${URL}/auth/user-information`, {
         headers: {
-          Authorization: `Bearer ${accessToken}e`,
+          Authorization: `Bearer ${token}`,
         },
       });
+      expect(successExpectedResponse.status).toBe(200);
     } catch (error) {
-      // console.log("Response expects status 401 and got", error.response.status);
+      expect(false).toBeTruthy();
+    }
+  });
+
+  test('Try an incorrect access token', async () => {
+    try {
+      const errorExpectedResponse = await axios.get(`${URL}/auth/user-information`, {
+        headers: {
+          Authorization: `Bearer ${token}e`,
+        },
+      });
+      expect(false).toBeTruthy();
+    } catch (error) {
       expect(error.response.status).toBe(401);
     }
   });
