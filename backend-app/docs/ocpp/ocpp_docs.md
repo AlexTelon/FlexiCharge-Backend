@@ -1,5 +1,24 @@
+The Project is using the 1.6 OCPP
+Information used 2023 Fall: [Oasis-Open Speicfication](https://www.oasis-open.org/committees/download.php/58944/ocpp-1.6.pdf)
+
+## Definiton of Done (used Fall 2023)
+- Code changes shall pass tests.
+- Code shall be tested.
+- Code shall be documented.
+- Code should successfully run in production.
+
+## Basic Information
+- OCPP Handles the communication between the OCPP and the Charger. The OCPP Squad should have good communication with the charger squad and the rest of backend.
+
+## Technical debt
+- The socket messages sent between the charger and OCPP needs to change "name". For example, remoteStartTransaction but it should be remoteStartChargeSession.
+- Validation is not used everywhere.
+- Existing functions that are not used.
+- Charger statuses have been implemented using integers in database. (Not supporting all statuses listed in documentation)
 
 # Local DB + WebSockets/OCPP 101
+- All communication between OCPP and charger is through Websockets using port 1337.
+- All communication between OCPP and the API is through HTTP using port 8080.
 
 ## Requirements
 - Backend repo
@@ -9,7 +28,7 @@
 
 ## How to connect to local database
 1. Clone repo
-2. Create an .env file and set USE_LOCAL_DATABASE = 1. set LIVEMETRICS_DB_UPDATE_INTERVAL = 10000 to update DB every 10 seconds.
+2. Create an .env file and set USE_LOCAL_DATABASE = 1. set LIVEMETRICS_DB_UPDATE_INTERVAL = 5 to update DB every 5 seconds.
 3. Get information for the rest of .env file from AWS
 
 ## How to test server-side websockets
@@ -55,8 +74,9 @@ Web Sockets send and receive messages. With the OCPP protocol, this is how the b
 `http://SERVER_IP_HERE:8080/tests/ocpp`
 
 ## Manual testing
-Manual testing requires the use of Postman to send messages. To send a message without errors, the process has to be initiated through the API.
+- Manual testing requires the use of Postman to send messages. To send a message without errors, the process has to be initiated through the API.
 To start, connect as a charger via Postman as the desired charger you want to act as.
+- (Option 2) The Python script fakeCharger.py located in the repo can instead be used to act as the charger and send requests and responses as a charger should if it was connected.
 
 ### Good to know
 - At index 0 in the array of the socket message the number represent:
