@@ -15,8 +15,7 @@
 
   Tests for the following interfaces are not yet implemented:
 
- 1. invoices
- 2. live-metrics? (a live-metric interface may be needed for the future)
+ 1. live-metrics? (a live-metric interface may be needed for the future)
 
 ### [🔙Main Database Documentation](../../../docs/db/README.md)
 
