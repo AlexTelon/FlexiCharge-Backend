@@ -2,13 +2,14 @@ module.exports = function ({ databaseInit }) {
 
     const exports = {}
 
-    exports.addChargeSession = function (connectorID, userID, startTime, callback) {
+    exports.addChargeSession = function (connectorID, userID, callback) {
         const chargeSession = {
             connectorID: connectorID,
             userID: userID,
             currentChargePercentage: null,
             kWhTransferred: null,
-            startTime: startTime
+            startTime: null,
+            meterStart: null,
         }
 
         databaseInit.ChargeSessions.create(chargeSession)
@@ -52,21 +53,6 @@ module.exports = function ({ databaseInit }) {
         })
     }
 
-    exports.updateChargingEndTime = function (chargeSessionID, endTime, callback) {
-        databaseInit.ChargeSessions.update({
-            endTime: endTime
-        }, {
-            where: { chargeSessionID: chargeSessionID },
-            raw: true,
-            returning: true
-        }).then(updatedChargeSession => {
-            callback([], updatedChargeSession)
-        }).catch(e => {
-            console.log(e)
-            callback(e, [])
-        })
-    }
-
     exports.updateChargingState = function (chargeSessionID, currentChargePercentage, kWhTransferred, callback) {
         databaseInit.ChargeSessions.update({
             kWhTransferred: kWhTransferred,
@@ -83,14 +69,37 @@ module.exports = function ({ databaseInit }) {
         })
     }
 
-    exports.updateMeterStart = function (chargeSessionID, meterStart, callback) {
+    exports.updateMeterStart = function (chargeSessionID, startTime, meterStart, callback) {
+        console.log('csr-umsa_0', startTime, meterStart);
         databaseInit.ChargeSessions.update({
+            startTime: startTime,
             meterStart: meterStart,
         }, {
             where: { chargeSessionID: chargeSessionID },
             raw: true,
             returning: true
         }).then(updatedChargeSession => {
+            updatedChargeSession = updatedChargeSession[1][0]
+            console.log('csr-umsa_1', updatedChargeSession)
+            callback([], updatedChargeSession)
+        }).catch(e => {
+            console.log(e)
+            callback(e, [])
+        })
+    }
+
+    exports.updateMeterStop = function (chargeSessionID, endTime, kWhTransferred, callback) {
+        console.log('csr-umso_0', endTime, kWhTransferred);
+        databaseInit.ChargeSessions.update({
+            endTime: endTime,
+            kWhTransferred: kWhTransferred,
+        }, {
+            where: { chargeSessionID: chargeSessionID },
+            raw: true,
+            returning: true
+        }).then(updatedChargeSession => {
+            updatedChargeSession = updatedChargeSession[1][0]
+            console.log('csr-umso_1', updatedChargeSession)
             callback([], updatedChargeSession)
         }).catch(e => {
             console.log(e)

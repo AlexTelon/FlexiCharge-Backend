@@ -1,90 +1,118 @@
-module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePointValidation }) {
+module.exports = function ({ dataAccessLayerChargePoints, dbErrorCheck, chargePointValidation, databaseInterfaceElectricityTariffs }) {
+  const exports = {};
 
-    const exports = {}
-
-    exports.getChargePoint = function (chargePointID, callback) {
-        const validationErrors = chargePointValidation.getChargePointValidation(chargePointID)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
+  exports.getChargePoint = function (chargePointID, callback) {
+    const validationErrors = chargePointValidation.getChargePointValidation(chargePointID);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.getChargePoint(chargePointID, function (error, chargePoint) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
         } else {
-            dataAccessLayerChargePoints.getChargePoint(chargePointID, function (error, chargePoint) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    if (chargePoint == null) {
-                        callback([], [])
-                    } else {
-                        callback([], chargePoint)
-                    }
-                }
-            })
-        }
-    }
-
-    exports.getChargePoints = function (callback) {
-        dataAccessLayerChargePoints.getChargePoints(function (error, chargePoints) {
-            if (Object.keys(error).length > 0) {
+          if (chargePoint == null) {
+            callback([], []);
+          } else {
+            databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, tarrif) {
+              if (Object.keys(error).length > 0) {
                 dbErrorCheck.checkError(error, function (errorCode) {
-                    callback(errorCode, [])
-                })
-            } else {
-                callback([], chargePoints)
-            }
-        })
-    }
+                  callback(errorCode, []);
+                });
+              } else {
+                const { price: pricePerKwh } = tarrif;
 
-    exports.addChargePoint = function (name, address, location, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
-        } else {
-            dataAccessLayerChargePoints.addChargePoint(name, address, location, function (error, chargePointID) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], chargePointID)
-                }
-            })
+                const formattedPrice = parseInt(Math.floor(pricePerKwh * 100));
+                chargePoint["price"] = formattedPrice;
+                chargePoint["klarnaReservationAmount"] = 0;
+                callback([], chargePoint);
+              }
+            });
+          }
         }
+      });
     }
+  };
 
-    exports.removeChargePoint = function (chargePointID, callback) {
-        const validationErrors = chargePointValidation.getRemoveChargePointValidation(chargePointID)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
+  exports.getChargePoints = function (callback) {
+    dataAccessLayerChargePoints.getChargePoints(function (error, chargePoints) {
+      if (Object.keys(error).length > 0) {
+        dbErrorCheck.checkError(error, function (errorCode) {
+          callback(errorCode, []);
+        });
+      } else {
+        databaseInterfaceElectricityTariffs.getCurrentElectricityTariff(function (error, tarrif) {
+          if (Object.keys(error).length > 0) {
+            dbErrorCheck.checkError(error, function (errorCode) {
+              callback(errorCode, []);
+            });
+          } else {
+            const { price: pricePerKwh } = tarrif;
+
+            const formattedPrice = parseInt(Math.floor(pricePerKwh * 100));
+
+            chargePoints.forEach((chargePoint) => {
+              chargePoint["price"] = formattedPrice;
+              chargePoint["klarnaReservationAmount"] = 0;
+            });
+            callback([], chargePoints);
+          }
+        });
+      }
+    });
+  };
+
+  exports.addChargePoint = function (name, address, location, callback) {
+    const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.addChargePoint(name, address, location, function (error, chargePointID) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
         } else {
-            dataAccessLayerChargePoints.removeChargePoint(chargePointID, function (error, chargePointWasRemoved) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, chargePointWasRemoved)
-                    })
-                } else {
-                    callback([], chargePointWasRemoved)
-                }
-            })
+          callback([], chargePointID);
         }
+      });
     }
+  };
 
-    exports.updateChargePoint = function (chargePointID, name, address, location, callback) {
-        const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location)
-        if (validationErrors.length > 0) {
-            callback(validationErrors, [])
+  exports.removeChargePoint = function (chargePointID, callback) {
+    const validationErrors = chargePointValidation.getRemoveChargePointValidation(chargePointID);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.removeChargePoint(chargePointID, function (error, chargePointWasRemoved) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, chargePointWasRemoved);
+          });
         } else {
-            dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, location, function (error, updatedChargePoint) {
-                if (Object.keys(error).length > 0) {
-                    dbErrorCheck.checkError(error, function (errorCode) {
-                        callback(errorCode, [])
-                    })
-                } else {
-                    callback([], updatedChargePoint)
-                }
-            })
+          callback([], chargePointWasRemoved);
         }
+      });
     }
+  };
 
-    return exports
-}
+  exports.updateChargePoint = function (chargePointID, name, address, location, callback) {
+    const validationErrors = chargePointValidation.getAddChargePointValidation(name, address, location);
+    if (validationErrors.length > 0) {
+      callback(validationErrors, []);
+    } else {
+      dataAccessLayerChargePoints.updateChargePoint(chargePointID, name, address, location, function (error, updatedChargePoint) {
+        if (Object.keys(error).length > 0) {
+          dbErrorCheck.checkError(error, function (errorCode) {
+            callback(errorCode, []);
+          });
+        } else {
+          callback([], updatedChargePoint);
+        }
+      });
+    }
+  };
+
+  return exports;
+};

@@ -132,7 +132,7 @@ module.exports = function ({ func, v, constants, interfaceHandler, databaseInter
 
 
         } else {
-            console.log("getStartTransactionResponse -> No callback tied to this connectorID OR invalid connectorID")
+            console.log("getStopTransactionResponse -> No callback tied to this connectorID OR invalid connectorID")
 
             if (socket != null) {
                 socket.send(func.getGenericError(uniqueID, c.NO_ACTIVE_TRANSACTION))

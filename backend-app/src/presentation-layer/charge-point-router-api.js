@@ -31,7 +31,7 @@ module.exports = function ({ databaseInterfaceChargePoints, verifyUser, verifyAd
   router.post("/", verifyUser, verifyAdmin, function (request, response) {
     const name = request.body.name;
     const location = request.body.location;
-    const address = request.body.address;
+    const address = request.body.address || '        ';
     databaseInterfaceChargePoints.addChargePoint(name, address, location, function (errors, chargePointID) {
       if (errors.length > 0) {
         response.status(400).json(errors);

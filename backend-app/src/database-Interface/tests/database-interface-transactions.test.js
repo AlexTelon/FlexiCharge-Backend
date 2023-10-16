@@ -5,12 +5,13 @@ const databaseInterfaceTransactions = testContainer.resolve("databaseInterfaceTr
 describe("addTransaction", () => {
     test("Add a transaction", (done) => {
         const chargeSessionID = 1
+        const connectorID = 100_000
         const userID = 12
         const payNow = false
         const paymentDueDate = null
         const paymentMethod = null
         const totalPrice = null
-        databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, payNow, paymentDueDate, paymentMethod, totalPrice, (error, transaction) => {
+        databaseInterfaceTransactions.addTransaction(chargeSessionID, userID, connectorID, payNow, paymentDueDate, paymentMethod, totalPrice, (error, transaction) => {
             if (Object.keys(error).length > 0) {
                 done(error);
                 return;
