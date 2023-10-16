@@ -12,10 +12,47 @@
 
 
 ## What is done and what is not done
+### The tests that are currently implemented cover the following interfaces:
 
-  Tests for the following interfaces are not yet implemented:
+#### databaseInterfaceElectricityTariffs:
+ tests for the getElectricityTariffsOrderByDate, and getCurrentElectricityTariff functions.
 
- 1. live-metrics? (a live-metric interface may be needed for the future)
+
+#### databaseInterfaceTransactions: 
+tests for the addTransaction, getTransaction, getTransactionsForUser, updatePaymentMethod, updatepaidDate, updateTotalPrice, getTransactionsForCharger and getTransactionForChargeSession functions.
+
+#### invoicesValidation: 
+tests for the getInvoiceIDValidation, getUserIDValidation, getInvoiceStatusFilterValidation, getInvoiceDateFilterValidation, and 
+getInvoiceDateValidation functions.
+
+#### transactionsValidation: 
+tests for the getAddTransactionValidation, getUpdateTransactionChargingStatus, and addKlarnaTransactionValidation functions.
+
+#### databaseInterfaceKlarnaPayemnts:
+tests for the getNewKlarnaPaymentSession, createKlarnaOrder and finalizeKlarnaOrder functions.
+
+#### chargePointValidation:
+tests for the chargePointValidation function.
+
+#### chargerValidation:
+tests for the getChargerBySerialNumberValidation, getAddChargerValidation and getUpdateChargerStatusValidation functions.
+
+#### databaseInterfaceChargePoints:
+tests for the getChargePoint, getChargePoints, addChargePoint, removeChargePoint and updateChargePoint functions.
+
+#### databaseInterfaceChargeSessions:
+tests for the startChargeSession, getChargeSession, getChargeSessions, updateChargingState, endChargeSession, calculateTotalChargePrice and updateMeterStart functions.
+
+#### databaseInterfaceChargersTest:
+tests for the getChargers, getCharger, getChargerBySerialNumber, getAvailableChargers, addCharger, removeCharger and updateChargerStatus functions.
+
+
+**The tests ensure that the functions are working as expected and handle various edge cases such as invalid inputs, empty strings, and non-string values.**
+
+### Tests for the following interfaces are not yet implemented:
+
+ #### 1. live-metrics? 
+ (a live-metric interface may be needed for the future)
 
 ### [🔙Main Database Documentation](../../../docs/db/README.md)
 
